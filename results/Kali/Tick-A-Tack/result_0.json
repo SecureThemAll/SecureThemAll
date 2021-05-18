@@ -1,0 +1,1066 @@
+{
+  "repair_begin": "2021-05-07 03:58:10.188782",
+  "repair_end": "2021-05-07 04:10:34.716289",
+  "patches": [
+    {
+      "target_file": "src/service.c",
+      "fix": "193,196c193,194\n<         if(memory_base && !game->scores->player && !game->scores->computer) {\n< \n< \n< \n---\n>         //prophet generated patch\n>         if ((memory_base && !game->scores->player && !game->scores->computer) && !1) {\n198,202c196,199\n< \n< \n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n<         } else if(!memory_base) {\n<             // alloc space and setup game state pointers\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Set game state.\\n\");\n>             }\n>         } else if (!memory_base) {\n206,207c203\n< \n<             if(result)\n---\n>             if (result)\n209d204\n< \n216c211,213\n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Allocate and set game state.\\n\");\n>             }\n",
+      "edits": [
+        " \n193,196c194,195\n<         if(memory_base && !game->scores->player && !game->scores->computer) {\n< \n< \n< \n---\n>         //prophet generated patch\n>         if ((memory_base && !game->scores->player && !game->scores->computer) && !1) {\n198,202c197,200\n< \n< \n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n<         } else if(!memory_base) {\n<             // alloc space and setup game state pointers\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Set game state.\\n\");\n>             }\n>         } else if (!memory_base) {\n206,207c204\n< \n<             if(result)\n---\n>             if (result)\n209d205\n< \n216c212,214\n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Allocate and set game state.\\n\");\n>             }\n",
+        " \n231,242c232,246\n<         } else if (replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) {\n<             cgc_do_play(); // replay should be 1 here\n<         } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n<             replay = 0;\n<             cgc_reset_scores(game->scores);\n<         } else if (cgc_streq(choice, \"QUIT\") == 0) {\n<             cgc_do_quit();\n<             break;\n<         } else {\n<             cgc_send(WAT, cgc_strlen(WAT));\n<             break;\n<         }\n---\n>         } else //prophet generated patch\n> {\n>     if ((replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) || 1) {\n>         cgc_do_play();\n>     } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n>         replay = 0;\n>         cgc_reset_scores(game->scores);\n>     } else if (cgc_streq(choice, \"QUIT\") == 0) {\n>         cgc_do_quit();\n>         break;\n>     } else {\n>         cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n>         break;\n>     }\n> }\n",
+        " \n60c61,64\n<     if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"player: ~o\\n\", player_char);}\n---\n>     //prophet generated patch\n>     if ((6 == 7) || 1) {\n>         syslog(7, \"player: ~o\\n\", player_char);\n>     }\n",
+        " \n167c168,169\n<         if(cgc_have_winner(game->data) || !cgc_have_moves_remaining(game->data)) {\n---\n>         //prophet generated patch\n>         if ((cgc_have_winner(game->data) || !cgc_have_moves_remaining(game->data)) && !1) {\n",
+        " \n100c101,104\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);}\n---\n>         //prophet generated patch\n>         if ((6 == 7) && !1) {\n>             syslog(7, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);\n>         }\n",
+        " \n31,32c32,34\n<     if(replay) {\n<         cgc_send(REPLAYCHOICES, cgc_strlen(REPLAYCHOICES));\n---\n>     //prophet generated patch\n>     if ((replay) && !1) {\n>         cgc_send(\"Make your selection:\\nPLAY AGAIN\\nSTART OVER\\nQUIT\\n\", cgc_strlen(\"Make your selection:\\nPLAY AGAIN\\nSTART OVER\\nQUIT\\n\"));\n34c36\n<         cgc_send(INITCHOICES, cgc_strlen(INITCHOICES));\n---\n>         cgc_send(\"Make your selection:\\nPLAY\\nQUIT\\n\", cgc_strlen(\"Make your selection:\\nPLAY\\nQUIT\\n\"));\n",
+        " \n85c86,89\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): player\\n\");}\n---\n>         //prophet generated patch\n>         if ((6 == 7) || 1) {\n>             syslog(7, \"move_move(): player\\n\");\n>         }\n",
+        " \n233,242c234,246\n<         } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n<             replay = 0;\n<             cgc_reset_scores(game->scores);\n<         } else if (cgc_streq(choice, \"QUIT\") == 0) {\n<             cgc_do_quit();\n<             break;\n<         } else {\n<             cgc_send(WAT, cgc_strlen(WAT));\n<             break;\n<         }\n---\n>         } else //prophet generated patch\n> {\n>     if ((replay && cgc_streq(choice, \"START OVER\") == 0) && !1) {\n>         replay = 0;\n>         cgc_reset_scores(game->scores);\n>     } else if (cgc_streq(choice, \"QUIT\") == 0) {\n>         cgc_do_quit();\n>         break;\n>     } else {\n>         cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n>         break;\n>     }\n> }\n",
+        " \n31,32c32,34\n<     if(replay) {\n<         cgc_send(REPLAYCHOICES, cgc_strlen(REPLAYCHOICES));\n---\n>     //prophet generated patch\n>     if ((replay) || 1) {\n>         cgc_send(\"Make your selection:\\nPLAY AGAIN\\nSTART OVER\\nQUIT\\n\", cgc_strlen(\"Make your selection:\\nPLAY AGAIN\\nSTART OVER\\nQUIT\\n\"));\n34c36\n<         cgc_send(INITCHOICES, cgc_strlen(INITCHOICES));\n---\n>         cgc_send(\"Make your selection:\\nPLAY\\nQUIT\\n\", cgc_strlen(\"Make your selection:\\nPLAY\\nQUIT\\n\"));\n",
+        " \n60c61,64\n<     if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"player: ~o\\n\", player_char);}\n---\n>     //prophet generated patch\n>     if ((6 == 7) && !1) {\n>         syslog(7, \"player: ~o\\n\", player_char);\n>     }\n",
+        " \n89c90,93\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): computer\\n\");}\n---\n>         //prophet generated patch\n>         if ((6 == 7) && !1) {\n>             syslog(7, \"move_move(): computer\\n\");\n>         }\n",
+        " \n80,82c81,84\n<     if(cgc_is_players_turn(game->data)) {\n<         cgc_send(MAKEMOVE, cgc_strlen(MAKEMOVE));\n<         cgc_prompt_user(ROOTPROMPT, turn_coords, 5, BADSTRERROR);\n---\n>     //prophet generated patch\n>     if ((cgc_is_players_turn(game->data)) && !1) {\n>         cgc_send(\"It's your move. Enter 'row col'\\n\", cgc_strlen(\"It's your move. Enter 'row col'\\n\"));\n>         cgc_prompt_user(\"$ \", turn_coords, 5, \"\\nI don't think that means what you think it means.\\n\");\n85,87c87,90\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): player\\n\");}\n<     } else { \n<         // else, cgc_select random, but valid coordinates for computer's move\n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): player\\n\");\n>         }\n>     } else {\n89,92c92,94\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): computer\\n\");}\n<         // inform player where computer moved\n<         // build move message\n<         // 23 letters/\\n/\\0 + 2 for 2 single digit numbers\n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): computer\\n\");\n>         }\n94,98c96\n<         cgc_snprintf(move_msg, 25, COMPMOVE, \n<                     move.row, \n<                     move.col); \n< \n<         // send computer move msg\n---\n>         cgc_snprintf(move_msg, 25, \"Computer's move: ~n ~n.\\n\", move.row, move.col);\n100,101c98,100\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);}\n< \n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);\n>         }\n",
+        " \n89c90,93\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): computer\\n\");}\n---\n>         //prophet generated patch\n>         if ((6 == 7) || 1) {\n>             syslog(7, \"move_move(): computer\\n\");\n>         }\n",
+        " \n167c168,169\n<         if(cgc_have_winner(game->data) || !cgc_have_moves_remaining(game->data)) {\n---\n>         //prophet generated patch\n>         if ((cgc_have_winner(game->data) || !cgc_have_moves_remaining(game->data)) || 1) {\n",
+        " \n201,216c202,217\n<         } else if(!memory_base) {\n<             // alloc space and setup game state pointers\n<             int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n<             int result = 0;\n<             result = cgc_allocate(memory_size, 0, &memory_base);\n< \n<             if(result)\n<                 cgc__terminate(99);\n< \n<             memory_idx = memory_base;\n<             game = (tt_game *)memory_idx;\n<             memory_idx += sizeof(tt_game);\n<             game->data = (tt_data *)memory_idx;\n<             memory_idx += sizeof(tt_data);\n<             game->scores = (tt_scores *)memory_idx;\n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n---\n>         } else //prophet generated patch\n> {\n>     if ((!memory_base) || 1) {\n>         int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n>         int result = 0;\n>         result = cgc_allocate(memory_size, 0, &memory_base);\n>         if (result)\n>             cgc__terminate(99);\n>         memory_idx = memory_base;\n>         game = (tt_game *)memory_idx;\n>         memory_idx += sizeof(tt_game);\n>         game->data = (tt_data *)memory_idx;\n>         memory_idx += sizeof(tt_data);\n>         game->scores = (tt_scores *)memory_idx;\n>         if (6 == 7) {\n>             syslog(7, \"Allocate and set game state.\\n\");\n217a219,220\n>     }\n> }\n",
+        " \n228,229c229,231\n<         if (cgc_streq(choice, \"PLAY\") == 0) {\n<             cgc_do_play(); // replay should be 0 here\n---\n>         //prophet generated patch\n>         if ((cgc_streq(choice, \"PLAY\") == 0) && !1) {\n>             cgc_do_play();\n232c234\n<             cgc_do_play(); // replay should be 1 here\n---\n>             cgc_do_play();\n240c242\n<             cgc_send(WAT, cgc_strlen(WAT));\n---\n>             cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n",
+        " \n145c146,149\n<     if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"~c\", score_msg);}\n---\n>     //prophet generated patch\n>     if ((6 == 7) && !1) {\n>         syslog(7, \"~c\", score_msg);\n>     }\n",
+        " \n85c86,89\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): player\\n\");}\n---\n>         //prophet generated patch\n>         if ((6 == 7) && !1) {\n>             syslog(7, \"move_move(): player\\n\");\n>         }\n",
+        " \n193,196c194,195\n<         if(memory_base && !game->scores->player && !game->scores->computer) {\n< \n< \n< \n---\n>         //prophet generated patch\n>         if ((memory_base && !game->scores->player && !game->scores->computer) || 1) {\n198,202c197,200\n< \n< \n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n<         } else if(!memory_base) {\n<             // alloc space and setup game state pointers\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Set game state.\\n\");\n>             }\n>         } else if (!memory_base) {\n206,207c204\n< \n<             if(result)\n---\n>             if (result)\n209d205\n< \n216c212,214\n<             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n---\n>             if (6 == 7) {\n>                 syslog(7, \"Allocate and set game state.\\n\");\n>             }\n",
+        " \n51c52,53\n<         if(choice[0] == 'P') {\n---\n>         //prophet generated patch\n>         if ((choice[0] == 'P') && !1) {\n56c58\n<             cgc_send(WAT, cgc_strlen(WAT));            \n---\n>             cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n",
+        " \n100c101,104\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);}\n---\n>         //prophet generated patch\n>         if ((6 == 7) || 1) {\n>             syslog(7, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);\n>         }\n",
+        " \n145c146,149\n<     if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"~c\", score_msg);}\n---\n>     //prophet generated patch\n>     if ((6 == 7) || 1) {\n>         syslog(7, \"~c\", score_msg);\n>     }\n",
+        " \n228,229c229,231\n<         if (cgc_streq(choice, \"PLAY\") == 0) {\n<             cgc_do_play(); // replay should be 0 here\n---\n>         //prophet generated patch\n>         if ((cgc_streq(choice, \"PLAY\") == 0) || 1) {\n>             cgc_do_play();\n232c234\n<             cgc_do_play(); // replay should be 1 here\n---\n>             cgc_do_play();\n240c242\n<             cgc_send(WAT, cgc_strlen(WAT));\n---\n>             cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n",
+        " \n231,242c232,246\n<         } else if (replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) {\n<             cgc_do_play(); // replay should be 1 here\n<         } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n<             replay = 0;\n<             cgc_reset_scores(game->scores);\n<         } else if (cgc_streq(choice, \"QUIT\") == 0) {\n<             cgc_do_quit();\n<             break;\n<         } else {\n<             cgc_send(WAT, cgc_strlen(WAT));\n<             break;\n<         }\n---\n>         } else //prophet generated patch\n> {\n>     if ((replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) && !1) {\n>         cgc_do_play();\n>     } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n>         replay = 0;\n>         cgc_reset_scores(game->scores);\n>     } else if (cgc_streq(choice, \"QUIT\") == 0) {\n>         cgc_do_quit();\n>         break;\n>     } else {\n>         cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n>         break;\n>     }\n> }\n",
+        " \n51c52,53\n<         if(choice[0] == 'P') {\n---\n>         //prophet generated patch\n>         if ((choice[0] == 'P') || 1) {\n56c58\n<             cgc_send(WAT, cgc_strlen(WAT));            \n---\n>             cgc_send(\"Wat?\\n\", cgc_strlen(\"Wat?\\n\"));\n",
+        " \n80,82c81,84\n<     if(cgc_is_players_turn(game->data)) {\n<         cgc_send(MAKEMOVE, cgc_strlen(MAKEMOVE));\n<         cgc_prompt_user(ROOTPROMPT, turn_coords, 5, BADSTRERROR);\n---\n>     //prophet generated patch\n>     if ((cgc_is_players_turn(game->data)) || 1) {\n>         cgc_send(\"It's your move. Enter 'row col'\\n\", cgc_strlen(\"It's your move. Enter 'row col'\\n\"));\n>         cgc_prompt_user(\"$ \", turn_coords, 5, \"\\nI don't think that means what you think it means.\\n\");\n85,87c87,90\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): player\\n\");}\n<     } else { \n<         // else, cgc_select random, but valid coordinates for computer's move\n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): player\\n\");\n>         }\n>     } else {\n89,92c92,94\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): computer\\n\");}\n<         // inform player where computer moved\n<         // build move message\n<         // 23 letters/\\n/\\0 + 2 for 2 single digit numbers\n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): computer\\n\");\n>         }\n94,98c96\n<         cgc_snprintf(move_msg, 25, COMPMOVE, \n<                     move.row, \n<                     move.col); \n< \n<         // send computer move msg\n---\n>         cgc_snprintf(move_msg, 25, \"Computer's move: ~n ~n.\\n\", move.row, move.col);\n100,101c98,100\n<         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);}\n< \n---\n>         if (6 == 7) {\n>             syslog(7, \"move_move(): send computer's move ~n ~n.\\n\", move.row, move.col);\n>         }\n"
+      ]
+    }
+  ],
+  "compilations": 29,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "5360b530": {
+      "compiles": [
+        0
+      ]
+    },
+    "642e1253": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ]
+      }
+    },
+    "6da8bf1a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "df92af96": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54f8efa2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0e9f63e4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ]
+      }
+    },
+    "69b38576": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "45b17f3d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "483b3054": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ]
+      }
+    },
+    "0db9d343": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6fbf820a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4cc3193f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7250c7b3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0813e3fb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "239ed8b5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ff8054ea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e21d958c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7bb5d8d3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "20762477": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "728b1ede": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "60a00d13": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ]
+      }
+    },
+    "cf24e0db": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d0ad8ce3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "728d3012": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f9436f02": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5be82a77": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4b4daea8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 18,
+  "passed_pos_tests": 58,
+  "failed_neg_tests": 22,
+  "failed_pos_tests": 9,
+  "duration": 744.527507,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

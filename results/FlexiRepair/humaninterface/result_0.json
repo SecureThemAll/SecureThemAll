@@ -1,0 +1,3448 @@
+{
+  "repair_begin": "2021-05-08 19:37:32.520729",
+  "repair_end": "2021-05-08 20:22:19.730901",
+  "patches": [
+    {
+      "target_file": "src/session.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-1373-8ac63c-session.c\n@@ -262,7 +262,7 @@ static void cgc_session_configuration_re\n                 {\n                     resp->result = 1;\n                     resp->config[resp_offset] = type;\n-                    resp->config[resp_offset+1] = 2;\n+                    resp->config[resp_offset] = 2;\n                     *(unsigned short*)&resp->config[resp_offset+2] = 48;\n                     resp_offset += 4;\n                 }\n@@ -270,7 +270,7 @@ static void cgc_session_configuration_re\n                 {\n                     ch->remote_mtu = mtu;\n                     resp->config[resp_offset] = type;\n-                    resp->config[resp_offset+1] = 2;\n+                    resp->config[resp_offset] = 2;\n                     *(unsigned short*)&resp->config[resp_offset+2] = mtu;\n                     resp_offset += 4;\n                 }\n@@ -282,7 +282,7 @@ static void cgc_session_configuration_re\n         {\n             resp->result = 3;\n             resp->config[resp_offset] = type;\n-            resp->config[resp_offset+1] = length;\n+            resp->config[resp_offset] = length;\n             cgc_memcpy(&resp->config[resp_offset+2], &req->config[req_offset+2], length);\n         }\n \n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-2655-7a6cad-session.c\n@@ -504,14 +504,15 @@ void cgc_session_loop()\n             offset = 0;\n             cgc_memset(g_current_packet.rawdata, 0, SESSION_MAX_PACKET_SIZE);\n         }\n-        else if (channel == LINK_CH_CONTINUE)\n-        {\n-        }\n-        else\n-        {\n+        else {if (channel == LINK_CH_CONTINUE)\n+            {\n+            }\n+            else\n+            {\n             // bad packet, ignore it\n-            offset = -1;\n-            continue;\n+                offset = -1;\n+                continue;\n+            }\n         }\n \n         if (offset == -1)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-1626-1e126a-session.c\n@@ -410,7 +410,7 @@ static void cgc_session_information_requ\n     resp.hdr.id = cmd->hdr.id;\n     resp.hdr.code = INFORMATION_RESPONSE;\n     resp.hdr.length = 4;\n-    resp.info_type = *req;\n+    resp.info_type = **req;\n     resp.result = 1; // not supported\n \n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-29839-8d81b2-session.c\n@@ -286,7 +286,7 @@ static void cgc_session_configuration_re\n             cgc_memcpy(&resp->config[resp_offset+2], &req->config[req_offset+2], length);\n         }\n \n-        req_offset += 2 + length;\n+        req_offset = 2 + length;\n     }\n \n     resp->hdr.length = sizeof(*resp) - sizeof(control_hdr_t) + resp_offset;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-4374-c47711-session.c\n@@ -289,7 +289,7 @@ static void cgc_session_configuration_re\n         req_offset += 2 + length;\n     }\n \n-    resp->hdr.length = sizeof(*resp) - sizeof(control_hdr_t) + resp_offset;\n+    resp->hdr.length = sizeof(*resp) - (sizeof(control_hdr_t) + resp_offset);\n     cgc__session_send(0x0001, resp->hdr.length + sizeof(control_hdr_t), (unsigned char *)resp);\n     cgc_free(resp);\n \n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-31627-bfa790-session.c\n@@ -155,7 +155,7 @@ static void cgc_session_connection_reque\n     if (cmd->hdr.length != sizeof(struct connection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n \n     psm_t *psm = cgc_session_find_psm(req->psm);\n@@ -172,7 +172,7 @@ static void cgc_session_connection_reque\n         if (ch == NULL)\n         {\n             cgc_session_send_reject(cmd->hdr.id, 0);\n-            return;\n+            return 0;\n         }\n         ch->remote = req->remote;\n         ch->state = CONFIG;\n@@ -191,6 +191,7 @@ static void cgc_session_connection_reque\n     resp.hdr.id = cmd->hdr.id;\n     resp.hdr.length = sizeof(resp) - sizeof(control_hdr_t);\n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n+    return 0;\n }\n \n static void cgc_session_configuration_request(command_t *cmd)\n@@ -214,27 +215,27 @@ static void cgc_session_configuration_re\n     if (cmd->hdr.length < sizeof(struct configuration_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state == CLOSED)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        return 0;\n     }\n \n     if (ch->state == CONFIG && ch->config_state != WAIT_CONFIG)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        return 0;\n     }\n \n     resp = cgc_malloc(sizeof(struct configuration_response) + cmd->hdr.length); // allocate enough for option data\n     if (resp == NULL)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n     resp->hdr.code = CONFIGURATION_RESPONSE;\n     resp->hdr.id = cmd->hdr.id;\n@@ -296,6 +297,7 @@ static void cgc_session_configuration_re\n     if (resp->result == 0)\n         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n             cgc_session_send_config(ch);\n+    return 0;\n }\n \n void cgc_session_configuration_response(command_t *cmd)\n@@ -310,12 +312,13 @@ void cgc_session_configuration_response(\n     channel_t *ch = g_channels[resp->local];\n     if (ch == NULL || ch->state != CONFIG || ch->config_state != WAIT_CONFIG_RSP)\n     {\n-        return;\n+        return 0;\n     }\n \n     // XXX process response\n \n     ch->state = OPEN;\n+    return 0;\n }\n \n static void cgc_session_disconnection_request(command_t *cmd)\n@@ -334,14 +337,14 @@ static void cgc_session_disconnection_re\n     if (cmd->hdr.length != sizeof(struct disconnection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state == CLOSED || ch->remote != ch->remote)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        return 0;\n     }\n \n     event_t evt;\n@@ -358,6 +361,7 @@ static void cgc_session_disconnection_re\n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n \n     ch->state = CLOSED;\n+    return 0;\n }\n \n static void cgc_session_disconnection_response(command_t *cmd)\n@@ -370,17 +374,18 @@ static void cgc_session_disconnection_re\n     if (cmd->hdr.length != sizeof(struct disconnection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state != WAIT_DISCONNECT || ch->remote != ch->remote)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        return 0;\n     }\n \n     ch->state = CLOSED;\n+    return 0;\n }\n \n static void cgc_session_echo_request(command_t *cmd)\n@@ -404,7 +409,7 @@ static void cgc_session_information_requ\n     if (cmd->hdr.length != sizeof(unsigned short))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        return 0;\n     }\n \n     resp.hdr.id = cmd->hdr.id;\n@@ -414,6 +419,7 @@ static void cgc_session_information_requ\n     resp.result = 1; // not supported\n \n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n+    return 0;\n }\n \n static void cgc_session_handle_command(command_t *cmd)\n@@ -549,13 +555,14 @@ void cgc_session_register_psm(unsigned i\n     {\n         psm = cgc_malloc(sizeof(psm_t));\n         if (psm == NULL)\n-            return;\n+            return 0;\n         psm->id = id;\n         psm->next = g_psm_head;\n         g_psm_head = psm;\n     }\n \n     psm->handler = handler;\n+    return 0;\n }\n \n void cgc_session_register_events(void *channel, event_handler_t handler)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-2207-ff1b28-session.c\n@@ -159,7 +159,7 @@ static void cgc_session_connection_reque\n     }\n \n     psm_t *psm = cgc_session_find_psm(req->psm);\n-    if (psm == NULL)\n+    if (psm == NULL || gtk_notebook_get_current_page(psm) == -1)\n     {\n         resp.local = 0;\n         resp.remote = req->remote;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-24200-08ce86-session.c\n@@ -131,7 +131,6 @@ static void cgc_session_send_config(chan\n     req.hdr.id = g_config_req_id;\n     req.hdr.length = sizeof(struct configuration_request) - sizeof(control_hdr_t);\n     req.remote = ch->remote;\n-    req.flags = 0;\n     cgc__session_send(0x0001, req.hdr.length + sizeof(control_hdr_t), (unsigned char *)&req);\n \n     ch->config_state = WAIT_CONFIG_RSP;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-1311-7104ec-session.c\n@@ -71,7 +71,7 @@ static void cgc__session_send(unsigned s\n         if (payload_length > LINK_PAYLOAD_SIZE)\n             payload_length = LINK_PAYLOAD_SIZE;\n         cgc_link_send(offset == 0 ? LINK_CH_START : LINK_CH_CONTINUE, payload_length, &g_temp_packet.rawdata[offset]);\n-        offset += payload_length;\n+        offset--;\n     }\n }\n \n@@ -525,7 +525,7 @@ void cgc_session_loop()\n         }\n \n         cgc_memcpy(g_current_packet.rawdata + offset, link_packet, length);\n-        offset += length;\n+        offset--;\n \n         if (offset >= sizeof(g_current_packet.hdr))\n         {\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-29421-c61d3f-session.c\n@@ -466,7 +466,8 @@ static int cgc_session_handle_control()\n \n         cgc_session_handle_command(cmd);        \n     }\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_session_handle_packet()\n@@ -478,7 +479,8 @@ static int cgc_session_handle_packet()\n     if (ch == NULL || ch->state != OPEN)\n     {\n         // XXX ignore? \n-        return 0;\n+        restorescr(old);\n+        return ret;\n     }\n \n     // handle other packet\n@@ -488,7 +490,8 @@ static int cgc_session_handle_packet()\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n void cgc_session_loop()\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-27237-a15380-session.c\n@@ -159,7 +159,7 @@ static void cgc_session_connection_reque\n     }\n \n     psm_t *psm = cgc_session_find_psm(req->psm);\n-    if (psm == NULL)\n+    if (psm % NULL == 0)\n     {\n         resp.local = 0;\n         resp.remote = req->remote;\n@@ -253,9 +253,9 @@ static void cgc_session_configuration_re\n             break;\n #endif\n \n-        if ((type & 0x7F) == 0x01)\n+        if ((type & 0x7F) % 0x01 == 0)\n         {\n-            if (length == 2)\n+            if (length % 2 == 0)\n             {\n                 unsigned short mtu = *(unsigned short *)&req->config[req_offset+2];\n                 if (mtu < 48)\n@@ -499,19 +499,20 @@ void cgc_session_loop()\n \n     while (cgc_link_recv(&channel, &length, link_packet) == 0)\n     {\n-        if (channel == LINK_CH_START)\n+        if (channel % LINK_CH_START == 0)\n         {\n             offset = 0;\n             cgc_memset(g_current_packet.rawdata, 0, SESSION_MAX_PACKET_SIZE);\n         }\n-        else if (channel == LINK_CH_CONTINUE)\n-        {\n-        }\n-        else\n-        {\n+        else {if (channel % LINK_CH_CONTINUE == 0)\n+            {\n+            }\n+            else\n+            {\n             // bad packet, ignore it\n-            offset = -1;\n-            continue;\n+                offset = -1;\n+                continue;\n+            }\n         }\n \n         if (offset == -1)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-548-8980b8-session.c\n@@ -466,7 +466,7 @@ static int cgc_session_handle_control()\n \n         cgc_session_handle_command(cmd);        \n     }\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_session_handle_packet()\n@@ -478,7 +478,7 @@ static int cgc_session_handle_packet()\n     if (ch == NULL || ch->state != OPEN)\n     {\n         // XXX ignore? \n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n     }\n \n     // handle other packet\n@@ -488,7 +488,7 @@ static int cgc_session_handle_packet()\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n void cgc_session_loop()\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-7229-fa0d19-session.c\n@@ -484,7 +484,7 @@ static int cgc_session_handle_packet()\n     // handle other packet\n     event_t evt;\n     evt.type = RX_EVENT;\n-    evt.rx.data = g_current_packet.hdr.payload;\n+    evt.rx.data = (guchar *)g_current_packet.hdr.payload;\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-30193-394626-session.c\n@@ -475,7 +475,7 @@ static int cgc_session_handle_packet()\n         return cgc_session_handle_control();\n \n     channel_t *ch = g_channels[g_current_packet.hdr.channel];\n-    if (ch == NULL || ch->state != OPEN)\n+    if (ch == NULL)\n     {\n         // XXX ignore? \n         return 0;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-4419-2cd9c1-session.c\n@@ -61,8 +61,8 @@ static unsigned char g_config_req_id = 1\n static void cgc__session_send(unsigned short dest_channel, unsigned short length, unsigned char *data)\n {\n     cgc_size_t full_length = length + 4, offset = 0;\n-    g_temp_packet.hdr.length = length;\n-    g_temp_packet.hdr.channel = dest_channel;\n+    g_temp_packet.hdr.bg = length;\n+    g_temp_packet.hdr.bg = dest_channel;\n     cgc_memcpy(g_temp_packet.hdr.payload, data, length);\n \n     while (offset < full_length)\n@@ -111,10 +111,10 @@ static void cgc_session_send_reject(unsi\n         unsigned char data[];\n     } rej;\n     \n-    rej.hdr.code = COMMAND_REJECT;\n-    rej.hdr.id = id;\n-    rej.hdr.length = sizeof(struct command_reject) - sizeof(control_hdr_t);\n-    rej.reason = reason;\n+    rej.hdr.bg = COMMAND_REJECT;\n+    rej.hdr.bg = id;\n+    rej.hdr.bg = sizeof(struct command_reject) - sizeof(control_hdr_t);\n+    rej.bg = reason;\n     cgc__session_send(0x0001, rej.hdr.length + sizeof(control_hdr_t), (unsigned char *)&rej);\n }\n \n@@ -127,11 +127,11 @@ static void cgc_session_send_config(chan\n         unsigned char config[];\n     } req;\n \n-    req.hdr.code = CONFIGURATION_REQUEST;\n-    req.hdr.id = g_config_req_id;\n-    req.hdr.length = sizeof(struct configuration_request) - sizeof(control_hdr_t);\n-    req.remote = ch->remote;\n-    req.flags = 0;\n+    req.hdr.bg = CONFIGURATION_REQUEST;\n+    req.hdr.bg = g_config_req_id;\n+    req.hdr.bg = sizeof(struct configuration_request) - sizeof(control_hdr_t);\n+    req.bg = ch->remote;\n+    req.bg = 0;\n     cgc__session_send(0x0001, req.hdr.length + sizeof(control_hdr_t), (unsigned char *)&req);\n \n     ch->config_state = WAIT_CONFIG_RSP;\n@@ -161,10 +161,10 @@ static void cgc_session_connection_reque\n     psm_t *psm = cgc_session_find_psm(req->psm);\n     if (psm == NULL)\n     {\n-        resp.local = 0;\n-        resp.remote = req->remote;\n-        resp.result = 2;\n-        resp.status = 0;\n+        resp.bg = 0;\n+        resp.bg = req->remote;\n+        resp.bg = 2;\n+        resp.bg = 0;\n     }\n     else\n     {\n@@ -181,15 +181,15 @@ static void cgc_session_connection_reque\n         if (psm->handler)\n             psm->handler(ch);\n \n-        resp.local = ch->local;\n-        resp.remote = ch->remote;\n-        resp.result = 0;\n-        resp.status = 0;\n+        resp.bg = ch->local;\n+        resp.bg = ch->remote;\n+        resp.bg = 0;\n+        resp.bg = 0;\n     }\n \n-    resp.hdr.code = CONNECTION_RESPONSE;\n-    resp.hdr.id = cmd->hdr.id;\n-    resp.hdr.length = sizeof(resp) - sizeof(control_hdr_t);\n+    resp.hdr.bg = CONNECTION_RESPONSE;\n+    resp.hdr.bg = cmd->hdr.id;\n+    resp.hdr.bg = sizeof(resp) - sizeof(control_hdr_t);\n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n }\n \n@@ -236,8 +236,8 @@ static void cgc_session_configuration_re\n         cgc_session_send_reject(cmd->hdr.id, 0);\n         return;\n     }\n-    resp->hdr.code = CONFIGURATION_RESPONSE;\n-    resp->hdr.id = cmd->hdr.id;\n+    resp->hdr.bg = CONFIGURATION_RESPONSE;\n+    resp->hdr.bg = cmd->hdr.id;\n     resp->remote = ch->remote;\n     resp->flags = req->flags & 1;\n     resp->result = 0;\n@@ -289,7 +289,7 @@ static void cgc_session_configuration_re\n         req_offset += 2 + length;\n     }\n \n-    resp->hdr.length = sizeof(*resp) - sizeof(control_hdr_t) + resp_offset;\n+    resp->hdr.bg = sizeof(*resp) - sizeof(control_hdr_t) + resp_offset;\n     cgc__session_send(0x0001, resp->hdr.length + sizeof(control_hdr_t), (unsigned char *)resp);\n     cgc_free(resp);\n \n@@ -345,15 +345,15 @@ static void cgc_session_disconnection_re\n     }\n \n     event_t evt;\n-    evt.type = DISCONNECT_EVENT;\n+    evt.bg = DISCONNECT_EVENT;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n \n-    resp.hdr.code = DISCONNECTION_RESPONSE;\n-    resp.hdr.id = cmd->hdr.id;\n-    resp.hdr.length = sizeof(resp) - sizeof(control_hdr_t);\n-    resp.local = req->local;\n-    resp.remote = req->remote;\n+    resp.hdr.bg = DISCONNECTION_RESPONSE;\n+    resp.hdr.bg = cmd->hdr.id;\n+    resp.hdr.bg = sizeof(resp) - sizeof(control_hdr_t);\n+    resp.bg = req->local;\n+    resp.bg = req->remote;\n \n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n \n@@ -386,7 +386,7 @@ static void cgc_session_disconnection_re\n static void cgc_session_echo_request(command_t *cmd)\n {\n     // just change the code and resend\n-    cmd->hdr.code = ECHO_RESPONSE;\n+    cmd->hdr.bg = ECHO_RESPONSE;\n     \n     cgc__session_send(0x0001, cmd->hdr.length + sizeof(control_hdr_t), (unsigned char *)cmd);\n }\n@@ -407,11 +407,11 @@ static void cgc_session_information_requ\n         return;\n     }\n \n-    resp.hdr.id = cmd->hdr.id;\n-    resp.hdr.code = INFORMATION_RESPONSE;\n-    resp.hdr.length = 4;\n-    resp.info_type = *req;\n-    resp.result = 1; // not supported\n+    resp.hdr.bg = cmd->hdr.id;\n+    resp.hdr.bg = INFORMATION_RESPONSE;\n+    resp.hdr.bg = 4;\n+    resp.bg = *req;\n+    resp.bg = 1; // not supported\n \n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n }\n@@ -483,9 +483,9 @@ static int cgc_session_handle_packet()\n \n     // handle other packet\n     event_t evt;\n-    evt.type = RX_EVENT;\n-    evt.rx.data = g_current_packet.hdr.payload;\n-    evt.rx.length = g_current_packet.hdr.length;\n+    evt.bg = RX_EVENT;\n+    evt.rx.bg = g_current_packet.hdr.payload;\n+    evt.rx.bg = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n     return 0;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-858-49fdd8-session.c\n@@ -67,7 +67,7 @@ static void cgc__session_send(unsigned s\n \n     while (offset < full_length)\n     {\n-        cgc_size_t payload_length = full_length - offset;\n+        cgc_size_t payload_length = full_length;\n         if (payload_length > LINK_PAYLOAD_SIZE)\n             payload_length = LINK_PAYLOAD_SIZE;\n         cgc_link_send(offset == 0 ? LINK_CH_START : LINK_CH_CONTINUE, payload_length, &g_temp_packet.rawdata[offset]);\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-6112-df0fab-session.c\n@@ -131,7 +131,7 @@ static void cgc_session_send_config(chan\n     req.hdr.id = g_config_req_id;\n     req.hdr.length = sizeof(struct configuration_request) - sizeof(control_hdr_t);\n     req.remote = ch->remote;\n-    req.flags = 0;\n+    req.flags = -1;\n     cgc__session_send(0x0001, req.hdr.length + sizeof(control_hdr_t), (unsigned char *)&req);\n \n     ch->config_state = WAIT_CONFIG_RSP;\n@@ -161,10 +161,10 @@ static void cgc_session_connection_reque\n     psm_t *psm = cgc_session_find_psm(req->psm);\n     if (psm == NULL)\n     {\n-        resp.local = 0;\n+        resp.local = -1;\n         resp.remote = req->remote;\n         resp.result = 2;\n-        resp.status = 0;\n+        resp.status = -1;\n     }\n     else\n     {\n@@ -183,8 +183,8 @@ static void cgc_session_connection_reque\n \n         resp.local = ch->local;\n         resp.remote = ch->remote;\n-        resp.result = 0;\n-        resp.status = 0;\n+        resp.result = -1;\n+        resp.status = -1;\n     }\n \n     resp.hdr.code = CONNECTION_RESPONSE;\n@@ -240,7 +240,7 @@ static void cgc_session_configuration_re\n     resp->hdr.id = cmd->hdr.id;\n     resp->remote = ch->remote;\n     resp->flags = req->flags & 1;\n-    resp->result = 0;\n+    resp->result = -1;\n \n     while (req_offset < cmd->hdr.length - sizeof(struct configuration_request))\n     {\n@@ -501,7 +501,7 @@ void cgc_session_loop()\n     {\n         if (channel == LINK_CH_START)\n         {\n-            offset = 0;\n+            offset = -1;\n             cgc_memset(g_current_packet.rawdata, 0, SESSION_MAX_PACKET_SIZE);\n         }\n         else if (channel == LINK_CH_CONTINUE)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-26879-eab38a-session.c\n@@ -456,7 +456,7 @@ static void cgc_session_handle_command(c\n static int cgc_session_handle_control()\n {\n     cgc_size_t offset = 0;\n-    while (offset + sizeof(command_t) <= g_current_packet.hdr.length)\n+    while (offset + sizeof(command_t) < g_current_packet.hdr.length)\n     {\n         command_t *cmd = (command_t *)&g_current_packet.hdr.payload[offset];\n         offset += sizeof(command_t);\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-26540-0aba5d-session.c\n@@ -72,6 +72,7 @@ static void cgc__session_send(unsigned s\n             payload_length = LINK_PAYLOAD_SIZE;\n         cgc_link_send(offset == 0 ? LINK_CH_START : LINK_CH_CONTINUE, payload_length, &g_temp_packet.rawdata[offset]);\n         offset += payload_length;\n+        offset++;\n     }\n }\n \n@@ -287,6 +288,7 @@ static void cgc_session_configuration_re\n         }\n \n         req_offset += 2 + length;\n+        req_offset++;\n     }\n \n     resp->hdr.length = sizeof(*resp) - sizeof(control_hdr_t) + resp_offset;\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-25197-24fa64-session.c\n@@ -466,7 +466,7 @@ static int cgc_session_handle_control()\n \n         cgc_session_handle_command(cmd);        \n     }\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_session_handle_packet()\n@@ -478,7 +478,7 @@ static int cgc_session_handle_packet()\n     if (ch == NULL || ch->state != OPEN)\n     {\n         // XXX ignore? \n-        return 0;\n+        no_draw = 1;\n     }\n \n     // handle other packet\n@@ -488,7 +488,7 @@ static int cgc_session_handle_packet()\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n-    return 0;\n+    no_draw = 1;\n }\n \n void cgc_session_loop()\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-23998-2b6455-session.c\n@@ -510,7 +510,7 @@ void cgc_session_loop()\n         else\n         {\n             // bad packet, ignore it\n-            offset = -1;\n+            offset = -offset;\n             continue;\n         }\n \n@@ -520,7 +520,7 @@ void cgc_session_loop()\n         if (offset + length > SESSION_MAX_PACKET_SIZE)\n         {\n             // bad packet\n-            offset = -1;\n+            offset = -offset;\n             continue;\n         }\n \n@@ -531,7 +531,7 @@ void cgc_session_loop()\n         {\n             if (g_current_packet.hdr.length + sizeof(g_current_packet.hdr) == offset)\n             {\n-                offset = -1;\n+                offset = -offset;\n \n                 // complete packet\n                 if (cgc_session_handle_packet() != 0)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-29968-9fc4de-session.c\n@@ -81,7 +81,7 @@ static psm_t *cgc_session_find_psm(unsig\n     for (psm = g_psm_head; psm != NULL; psm = psm->next)\n         if (psm->id == id)\n             return psm;\n-    return NULL;\n+    return \"N/A\";\n }\n \n static channel_t *cgc_session_new_channel(unsigned short id)\n@@ -90,7 +90,7 @@ static channel_t *cgc_session_new_channe\n     {\n         id = g_dynamic_id++;\n         if (id > 0xFFFF)\n-            return NULL;\n+            return \"N/A\";\n     }\n \n     channel_t *ch = cgc_malloc(sizeof(channel_t));\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-2644-eb2a16-session.c\n@@ -527,7 +527,7 @@ void cgc_session_loop()\n         cgc_memcpy(g_current_packet.rawdata + offset, link_packet, length);\n         offset += length;\n \n-        if (offset >= sizeof(g_current_packet.hdr))\n+        if (ntohs(sizeof(g_current_packet.hdr)) <= ntohs(offset))\n         {\n             if (g_current_packet.hdr.length + sizeof(g_current_packet.hdr) == offset)\n             {\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-31814-ffcc03-session.c\n@@ -510,7 +510,7 @@ void cgc_session_loop()\n         else\n         {\n             // bad packet, ignore it\n-            offset = -1;\n+            offset = (u_int)-1;\n             continue;\n         }\n \n@@ -520,7 +520,7 @@ void cgc_session_loop()\n         if (offset + length > SESSION_MAX_PACKET_SIZE)\n         {\n             // bad packet\n-            offset = -1;\n+            offset = (u_int)-1;\n             continue;\n         }\n \n@@ -531,7 +531,7 @@ void cgc_session_loop()\n         {\n             if (g_current_packet.hdr.length + sizeof(g_current_packet.hdr) == offset)\n             {\n-                offset = -1;\n+                offset = (u_int)-1;\n \n                 // complete packet\n                 if (cgc_session_handle_packet() != 0)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-3491-21a679-session.c\n@@ -255,7 +255,7 @@ static void cgc_session_configuration_re\n \n         if ((type & 0x7F) == 0x01)\n         {\n-            if (length == 2)\n+            if (length >= 1)\n             {\n                 unsigned short mtu = *(unsigned short *)&req->config[req_offset+2];\n                 if (mtu < 48)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-30531-5686a5-session.c\n@@ -155,7 +155,7 @@ static void cgc_session_connection_reque\n     if (cmd->hdr.length != sizeof(struct connection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n \n     psm_t *psm = cgc_session_find_psm(req->psm);\n@@ -172,7 +172,7 @@ static void cgc_session_connection_reque\n         if (ch == NULL)\n         {\n             cgc_session_send_reject(cmd->hdr.id, 0);\n-            return;\n+            goto done;\n         }\n         ch->remote = req->remote;\n         ch->state = CONFIG;\n@@ -191,6 +191,7 @@ static void cgc_session_connection_reque\n     resp.hdr.id = cmd->hdr.id;\n     resp.hdr.length = sizeof(resp) - sizeof(control_hdr_t);\n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n+    goto done;\n }\n \n static void cgc_session_configuration_request(command_t *cmd)\n@@ -214,27 +215,27 @@ static void cgc_session_configuration_re\n     if (cmd->hdr.length < sizeof(struct configuration_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state == CLOSED)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        goto done;\n     }\n \n     if (ch->state == CONFIG && ch->config_state != WAIT_CONFIG)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        goto done;\n     }\n \n     resp = cgc_malloc(sizeof(struct configuration_response) + cmd->hdr.length); // allocate enough for option data\n     if (resp == NULL)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n     resp->hdr.code = CONFIGURATION_RESPONSE;\n     resp->hdr.id = cmd->hdr.id;\n@@ -296,6 +297,7 @@ static void cgc_session_configuration_re\n     if (resp->result == 0)\n         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n             cgc_session_send_config(ch);\n+    goto done;\n }\n \n void cgc_session_configuration_response(command_t *cmd)\n@@ -310,12 +312,13 @@ void cgc_session_configuration_response(\n     channel_t *ch = g_channels[resp->local];\n     if (ch == NULL || ch->state != CONFIG || ch->config_state != WAIT_CONFIG_RSP)\n     {\n-        return;\n+        goto done;\n     }\n \n     // XXX process response\n \n     ch->state = OPEN;\n+    goto done;\n }\n \n static void cgc_session_disconnection_request(command_t *cmd)\n@@ -334,14 +337,14 @@ static void cgc_session_disconnection_re\n     if (cmd->hdr.length != sizeof(struct disconnection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state == CLOSED || ch->remote != ch->remote)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        goto done;\n     }\n \n     event_t evt;\n@@ -358,6 +361,7 @@ static void cgc_session_disconnection_re\n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n \n     ch->state = CLOSED;\n+    goto done;\n }\n \n static void cgc_session_disconnection_response(command_t *cmd)\n@@ -370,17 +374,18 @@ static void cgc_session_disconnection_re\n     if (cmd->hdr.length != sizeof(struct disconnection_request))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n \n     channel_t *ch = g_channels[req->local];\n     if (ch == NULL || ch->state != WAIT_DISCONNECT || ch->remote != ch->remote)\n     {\n         cgc_session_send_reject(cmd->hdr.id, 2);\n-        return;\n+        goto done;\n     }\n \n     ch->state = CLOSED;\n+    goto done;\n }\n \n static void cgc_session_echo_request(command_t *cmd)\n@@ -404,7 +409,7 @@ static void cgc_session_information_requ\n     if (cmd->hdr.length != sizeof(unsigned short))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        return;\n+        goto done;\n     }\n \n     resp.hdr.id = cmd->hdr.id;\n@@ -414,6 +419,7 @@ static void cgc_session_information_requ\n     resp.result = 1; // not supported\n \n     cgc__session_send(0x0001, resp.hdr.length + sizeof(control_hdr_t), (unsigned char *)&resp);\n+    goto done;\n }\n \n static void cgc_session_handle_command(command_t *cmd)\n@@ -549,13 +555,14 @@ void cgc_session_register_psm(unsigned i\n     {\n         psm = cgc_malloc(sizeof(psm_t));\n         if (psm == NULL)\n-            return;\n+            goto done;\n         psm->id = id;\n         psm->next = g_psm_head;\n         g_psm_head = psm;\n     }\n \n     psm->handler = handler;\n+    goto done;\n }\n \n void cgc_session_register_events(void *channel, event_handler_t handler)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-27308-74cb18-session.c\n@@ -159,7 +159,7 @@ static void cgc_session_connection_reque\n     }\n \n     psm_t *psm = cgc_session_find_psm(req->psm);\n-    if (psm == NULL)\n+    if (psm == -1)\n     {\n         resp.local = 0;\n         resp.remote = req->remote;\n@@ -499,19 +499,20 @@ void cgc_session_loop()\n \n     while (cgc_link_recv(&channel, &length, link_packet) == 0)\n     {\n-        if (channel == LINK_CH_START)\n+        if (channel == -1)\n         {\n             offset = 0;\n             cgc_memset(g_current_packet.rawdata, 0, SESSION_MAX_PACKET_SIZE);\n         }\n-        else if (channel == LINK_CH_CONTINUE)\n-        {\n-        }\n-        else\n-        {\n+        else {if (channel == -1)\n+            {\n+            }\n+            else\n+            {\n             // bad packet, ignore it\n-            offset = -1;\n-            continue;\n+                offset = -1;\n+                continue;\n+            }\n         }\n \n         if (offset == -1)\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-597-c0804f-session.c\n@@ -250,7 +250,7 @@ static void cgc_session_configuration_re\n \n #ifdef PATCHED\n         if (req_offset + length > cmd->hdr.length - sizeof(struct configuration_request))\n-            break;\n+            fatalx(\"send_update: unknown af\");\n #endif\n \n         if ((type & 0x7F) == 0x01)\n@@ -422,34 +422,34 @@ static void cgc_session_handle_command(c\n     {\n     case CONNECTION_REQUEST:\n         cgc_session_connection_request(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case CONFIGURATION_REQUEST:\n         cgc_session_configuration_request(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case DISCONNECTION_REQUEST:\n         cgc_session_disconnection_request(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case ECHO_REQUEST:\n         cgc_session_echo_request(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case INFORMATION_REQUEST:\n         cgc_session_information_request(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case CONFIGURATION_RESPONSE:\n         cgc_session_configuration_response(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case DISCONNECTION_RESPONSE:\n         cgc_session_disconnection_response(cmd);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     case COMMAND_REJECT:\n     case CONNECTION_RESPONSE:\n     case ECHO_RESPONSE:\n     case INFORMATION_RESPONSE:\n         // discard\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     default:\n         cgc_session_send_reject(cmd->hdr.id, 0);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n }\n \n@@ -461,7 +461,7 @@ static int cgc_session_handle_control()\n         command_t *cmd = (command_t *)&g_current_packet.hdr.payload[offset];\n         offset += sizeof(command_t);\n         if (offset + cmd->hdr.length > g_current_packet.hdr.length)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         offset += cmd->hdr.length;\n \n         cgc_session_handle_command(cmd);        \n@@ -535,7 +535,7 @@ void cgc_session_loop()\n \n                 // complete packet\n                 if (cgc_session_handle_packet() != 0)\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n             }\n         }\n     }\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-3839-884ff5-session.c\n@@ -253,7 +253,7 @@ static void cgc_session_configuration_re\n             break;\n #endif\n \n-        if ((type & 0x7F) == 0x01)\n+        if ((type & 0x7F) < 3)\n         {\n             if (length == 2)\n             {\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-25258-1a5f5d-session.c\n@@ -152,7 +152,7 @@ static void cgc_session_connection_reque\n         unsigned status : 16;\n     } resp;\n \n-    if (cmd->hdr.length != sizeof(struct connection_request))\n+    if (cmd->hdr.length < sizeof(struct connection_request) || cmd->hdr.length > sizeof(struct connection_request) + strlen(sizeof(struct connection_request)))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n         return;\n@@ -331,7 +331,7 @@ static void cgc_session_disconnection_re\n         unsigned remote : 16;\n     } resp;\n \n-    if (cmd->hdr.length != sizeof(struct disconnection_request))\n+    if (cmd->hdr.length < sizeof(struct disconnection_request) || cmd->hdr.length > sizeof(struct disconnection_request) + strlen(sizeof(struct disconnection_request)))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n         return;\n@@ -367,7 +367,7 @@ static void cgc_session_disconnection_re\n         unsigned remote : 16;\n     } *req = (void *)cmd->payload;\n \n-    if (cmd->hdr.length != sizeof(struct disconnection_request))\n+    if (cmd->hdr.length < sizeof(struct disconnection_request) || cmd->hdr.length > sizeof(struct disconnection_request) + strlen(sizeof(struct disconnection_request)))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n         return;\n@@ -401,7 +401,7 @@ static void cgc_session_information_requ\n         unsigned result : 16;\n     } resp;\n \n-    if (cmd->hdr.length != sizeof(unsigned short))\n+    if (cmd->hdr.length < sizeof(unsigned short) || cmd->hdr.length > sizeof(unsigned short) + strlen(sizeof(unsigned short)))\n     {\n         cgc_session_send_reject(cmd->hdr.id, 0);\n         return;\n@@ -534,7 +534,7 @@ void cgc_session_loop()\n                 offset = -1;\n \n                 // complete packet\n-                if (cgc_session_handle_packet() != 0)\n+                if (cgc_session_handle_packet() < 0 || cgc_session_handle_packet() > 0 + strlen(0))\n                     break;\n             }\n         }\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-26487-c84399-session.c\n@@ -466,7 +466,7 @@ static int cgc_session_handle_control()\n \n         cgc_session_handle_command(cmd);        \n     }\n-    return 0;\n+    return -1;\n }\n \n static int cgc_session_handle_packet()\n@@ -478,7 +478,7 @@ static int cgc_session_handle_packet()\n     if (ch == NULL || ch->state != OPEN)\n     {\n         // XXX ignore? \n-        return 0;\n+        return -1;\n     }\n \n     // handle other packet\n@@ -488,7 +488,7 @@ static int cgc_session_handle_packet()\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n-    return 0;\n+    return -1;\n }\n \n void cgc_session_loop()\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-6621-636661-session.c\n@@ -65,7 +65,7 @@ static void cgc__session_send(unsigned s\n     g_temp_packet.hdr.channel = dest_channel;\n     cgc_memcpy(g_temp_packet.hdr.payload, data, length);\n \n-    while (offset < full_length)\n+    while (offset < (size_t)full_length)\n     {\n         cgc_size_t payload_length = full_length - offset;\n         if (payload_length > LINK_PAYLOAD_SIZE)\n@@ -242,7 +242,7 @@ static void cgc_session_configuration_re\n     resp->flags = req->flags & 1;\n     resp->result = 0;\n \n-    while (req_offset < cmd->hdr.length - sizeof(struct configuration_request))\n+    while (req_offset < (size_t)(cmd->hdr.length - sizeof(struct configuration_request)))\n     {\n         unsigned char type, length;\n         type = req->config[req_offset];\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-29035-17ac1b-session.c\n@@ -511,17 +511,17 @@ void cgc_session_loop()\n         {\n             // bad packet, ignore it\n             offset = -1;\n-            continue;\n+            goto NEXT;\n         }\n \n         if (offset == -1)\n-            continue;\n+            goto NEXT;\n \n         if (offset + length > SESSION_MAX_PACKET_SIZE)\n         {\n             // bad packet\n             offset = -1;\n-            continue;\n+            goto NEXT;\n         }\n \n         cgc_memcpy(g_current_packet.rawdata + offset, link_packet, length);\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-24929-693ebe-session.c\n@@ -466,7 +466,7 @@ static int cgc_session_handle_control()\n \n         cgc_session_handle_command(cmd);        \n     }\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_session_handle_packet()\n@@ -478,7 +478,7 @@ static int cgc_session_handle_packet()\n     if (ch == NULL || ch->state != OPEN)\n     {\n         // XXX ignore? \n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n     }\n \n     // handle other packet\n@@ -488,7 +488,7 @@ static int cgc_session_handle_packet()\n     evt.rx.length = g_current_packet.hdr.length;\n     if (ch->handler)\n         ch->handler(ch, ch->userdata, &evt);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n void cgc_session_loop()\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-31455-202fd3-session.c\n@@ -81,7 +81,7 @@ static psm_t *cgc_session_find_psm(unsig\n     for (psm = g_psm_head; psm != NULL; psm = psm->next)\n         if (psm->id == id)\n             return psm;\n-    return NULL;\n+    return;\n }\n \n static channel_t *cgc_session_new_channel(unsigned short id)\n@@ -90,7 +90,7 @@ static channel_t *cgc_session_new_channe\n     {\n         id = g_dynamic_id++;\n         if (id > 0xFFFF)\n-            return NULL;\n+            return;\n     }\n \n     channel_t *ch = cgc_malloc(sizeof(channel_t));\n",
+        "--- /tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c\n+++ /tmp/cocci-output-30700-b592c2-session.c\n@@ -65,7 +65,7 @@ static void cgc__session_send(unsigned s\n     g_temp_packet.hdr.channel = dest_channel;\n     cgc_memcpy(g_temp_packet.hdr.payload, data, length);\n \n-    while (offset < full_length)\n+    while (offset <= full_length)\n     {\n         cgc_size_t payload_length = full_length - offset;\n         if (payload_length > LINK_PAYLOAD_SIZE)\n@@ -242,7 +242,7 @@ static void cgc_session_configuration_re\n     resp->flags = req->flags & 1;\n     resp->result = 0;\n \n-    while (req_offset < cmd->hdr.length - sizeof(struct configuration_request))\n+    while (req_offset <= cmd->hdr.length - sizeof(struct configuration_request))\n     {\n         unsigned char type, length;\n         type = req->config[req_offset];\n"
+      ]
+    }
+  ],
+  "compilations": 20,
+  "failed_compilations": 16,
+  "outcomes": {
+    "c55952e1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "04c3da79": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7c154067": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "72e6e226": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0e706bae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "09ae5482": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5a4940aa": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:413:22: error: indirection requires pointer operand ('int' invalid)\n    resp.info_type = **req;\n                     ^~~~~\n1 error generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "773c17e9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "050f7402": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:64:23: error: no member named 'bg' in 'session_hdr_t'\n    g_temp_packet.hdr.bg = length;\n    ~~~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:65:23: error: no member named 'bg' in 'session_hdr_t'\n    g_temp_packet.hdr.bg = dest_channel;\n    ~~~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:114:13: error: no member named 'bg' in 'control_hdr_t'\n    rej.hdr.bg = COMMAND_REJECT;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:115:13: error: no member named 'bg' in 'control_hdr_t'\n    rej.hdr.bg = id;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:116:13: error: no member named 'bg' in 'control_hdr_t'\n    rej.hdr.bg = sizeof(struct command_reject) - sizeof(control_hdr_t);\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:117:9: error: no member named 'bg' in 'struct command_reject'\n    rej.bg = reason;\n    ~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:130:13: error: no member named 'bg' in 'control_hdr_t'\n    req.hdr.bg = CONFIGURATION_REQUEST;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:131:13: error: no member named 'bg' in 'control_hdr_t'\n    req.hdr.bg = g_config_req_id;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:132:13: error: no member named 'bg' in 'control_hdr_t'\n    req.hdr.bg = sizeof(struct configuration_request) - sizeof(control_hdr_t);\n    ~~~~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:133:9: error: no member named 'bg' in 'struct configuration_request'\n    req.bg = ch->remote;\n    ~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:134:9: error: no member named 'bg' in 'struct configuration_request'\n    req.bg = 0;\n    ~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:164:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = 0;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:165:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = req->remote;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:166:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = 2;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:167:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = 0;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:184:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = ch->local;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:185:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = ch->remote;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:186:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = 0;\n        ~~~~ ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:187:14: error: no member named 'bg' in 'struct connection_response'\n        resp.bg = 0;\n        ~~~~ ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d6b8a1b6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "ae4867ff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "9b3b961c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "13dcf7f7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "8c633298": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/humaninterface.dir/src/session.c.o: In function `cgc_session_handle_control':\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:464: undefined reference to `fatalx'\nCMakeFiles/humaninterface.dir/src/session.c.o: In function `cgc_session_handle_command':\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:425: undefined reference to `fatalx'\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:428: undefined reference to `fatalx'\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:431: undefined reference to `fatalx'\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:434: undefined reference to `fatalx'\nCMakeFiles/humaninterface.dir/src/session.c.o:/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:437: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [humaninterface/humaninterface] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e2b1b02f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3248bb7c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:68:22: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    while (offset < (size_t)full_length)\n                     ^~~~~~\n                     sizeof\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:68:21: error: reference to overloaded function could not be resolved; did you mean to call it?\n    while (offset < (size_t)full_length)\n                    ^~~~~~~~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:245:26: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    while (req_offset < (size_t)(cmd->hdr.length - sizeof(struct configuration_request)))\n                         ^~~~~~\n                         sizeof\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:245:26: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n4 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2d42359f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:469:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:481:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:491:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n3 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "79d3c001": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:469:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:470:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:482:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:483:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:493:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:494:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n6 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "65e2d624": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4a5ddf70": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:84:5: error: non-void function 'cgc_session_find_psm' should return a value [-Wreturn-type]\n    return;\n    ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:93:13: error: non-void function 'cgc_session_new_channel' should return a value [-Wreturn-type]\n            return;\n            ^\n2 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "63cb012e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:158:9: error: void function 'cgc_session_connection_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:175:13: error: void function 'cgc_session_connection_request' should not return a value [-Wreturn-type]\n            return 0;\n            ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:194:5: error: void function 'cgc_session_connection_request' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:218:9: error: void function 'cgc_session_configuration_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:225:9: error: void function 'cgc_session_configuration_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:231:9: error: void function 'cgc_session_configuration_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:238:9: error: void function 'cgc_session_configuration_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:300:5: error: void function 'cgc_session_configuration_request' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:315:9: error: void function 'cgc_session_configuration_response' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:321:5: error: void function 'cgc_session_configuration_response' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:340:9: error: void function 'cgc_session_disconnection_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:347:9: error: void function 'cgc_session_disconnection_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:364:5: error: void function 'cgc_session_disconnection_request' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:377:9: error: void function 'cgc_session_disconnection_response' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:384:9: error: void function 'cgc_session_disconnection_response' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:388:5: error: void function 'cgc_session_disconnection_response' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:412:9: error: void function 'cgc_session_information_request' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:422:5: error: void function 'cgc_session_information_request' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:558:13: error: void function 'cgc_session_register_psm' should not return a value [-Wreturn-type]\n            return 0;\n            ^      ~\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "75f735ef": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:513:23: error: use of undeclared identifier 'u_int'\n            offset = (u_int)-1;\n                      ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:523:23: error: use of undeclared identifier 'u_int'\n            offset = (u_int)-1;\n                      ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:534:27: error: use of undeclared identifier 'u_int'\n                offset = (u_int)-1;\n                          ^\n3 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6d4428b6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:469:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:481:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:491:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n3 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4ff399e3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:469:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:481:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:491:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n3 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "744913f0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6bb8aa8e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "927d4f51": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:514:18: error: use of undeclared label 'NEXT'\n            goto NEXT;\n                 ^\n1 error generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "bee3c7a9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "82341077": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:158:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:218:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:315:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:340:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:377:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:412:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:558:18: error: use of undeclared label 'done'\n            goto done;\n                 ^\n7 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "597d5a39": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:487:20: error: use of undeclared identifier 'guchar'; did you mean 'char'?\n    evt.rx.data = (guchar *)g_current_packet.hdr.payload;\n                   ^~~~~~\n                   char\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:487:20: error: expected expression\n2 errors generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ec11693e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6d4cbe40": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:162:13: error: invalid operands to binary expression ('psm_t *' (aka 'struct psm *') and 'int')\n    if (psm % NULL == 0)\n        ~~~ ^ ~~~~\n1 error generated.\nmake[2]: *** [humaninterface/CMakeFiles/humaninterface.dir/src/session.c.o] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "80c9b953": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "5248bcba": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "38303667": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "8b43f859": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/humaninterface.dir/src/session.c.o: In function `cgc_session_connection_request':\n/tmp/FlexiRepair/humaninterface_0/humaninterface/src/session.c:162: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [humaninterface/humaninterface] Error 1\nmake[1]: *** [humaninterface/CMakeFiles/humaninterface.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 16,
+  "passed_pos_tests": 186,
+  "failed_neg_tests": 24,
+  "failed_pos_tests": 214,
+  "duration": 2687.210172,
+  "errors": []
+}

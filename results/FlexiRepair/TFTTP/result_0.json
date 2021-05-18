@@ -1,0 +1,2967 @@
+{
+  "repair_begin": "2021-05-08 13:48:23.998293",
+  "repair_end": "2021-05-08 14:18:58.767458",
+  "patches": [
+    {
+      "target_file": "src/process.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-19693-c63c39-process.c\n@@ -34,7 +34,7 @@ int cgc_process_next_dgram() {\n     }\n \n     SENDD(resp,resp->hdr.size);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-24984-dc3cfe-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 1] = -5;\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-14781-916e28-process.c\n@@ -34,7 +34,7 @@ int cgc_process_next_dgram() {\n     }\n \n     SENDD(resp,resp->hdr.size);\n-    return 0;\n+    return -1;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-24074-5bfeea-process.c\n@@ -43,7 +43,6 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-16781-b7e953-process.c\n@@ -121,7 +121,7 @@ tfttp_pkt* cgc_do_rand() {\n      * The RAND command returns a random qs from the database, optionally\n      * varying the number of bytes of randomness. Useful!\n      */\n-    uint64_t r = 0;\n+    int64_t r = 0;\n     uint32_t numbytes = 4, num = 0;\n     //storing these as vars to push the next frame up enough\n     uint64_t secret = 0x3127a1b73;\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-22646-536089-process.c\n@@ -168,7 +168,7 @@ tfttp_pkt* cgc_do_get() {\n     int i = 0;\n \n \n-    for(i = 0; i < cgc_numentries; i++) {\n+    for (i = 0; i < devcnt; i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (cgc_streq((char *)curpkt->data, qss[i].key)) {\n             cgc_create_resp_pkt(curpkt, qss[i].data);\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-23055-3c9864-process.c\n@@ -40,7 +40,7 @@ int cgc_process_next_dgram() {\n \n tfttp_pkt* cgc_do_put() {\n     \n-    int i;\n+    const struct options_table_entry *oe;\n     char *key;\n     char *data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-16975-29683e-process.c\n@@ -34,7 +34,8 @@ int cgc_process_next_dgram() {\n     }\n \n     SENDD(resp,resp->hdr.size);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-14699-26663c-process.c\n@@ -45,23 +45,23 @@ tfttp_pkt* cgc_do_put() {\n     char *data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n-        return NULL;\n+        return (i);\n     }\n     \n     key  = (char *)curpkt->data;\n     if(cgc_strlen(key) >= 128) {\n-        return NULL;\n+        return (i);\n     }\n     data = key+cgc_strlen(key)+1;\n     if(cgc_strlen(data) >= 256){\n-        return NULL;\n+        return (i);\n     }\n \n     //make sure this key doesn't already exist\n     for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n-            return NULL;\n+            return (i);\n         }\n     }\n \n@@ -71,7 +71,7 @@ tfttp_pkt* cgc_do_put() {\n \n \n     cgc_create_resp_pkt(curpkt, UPLOADFIN);\n-    return curpkt;\n+    return (i);\n }\n \n uint64_t cgc_getrand(uint32_t numbytes) {\n@@ -172,10 +172,10 @@ tfttp_pkt* cgc_do_get() {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (cgc_streq((char *)curpkt->data, qss[i].key)) {\n             cgc_create_resp_pkt(curpkt, qss[i].data);\n-            return curpkt;\n+            return (i);\n         }\n     }\n \n     cgc_create_resp_pkt(curpkt, NOTFOUND);\n-    return curpkt;\n+    return (i);\n }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-20372-c4bee9-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 1] = (char)'\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-13833-52cfa9-process.c\n@@ -131,7 +131,7 @@ tfttp_pkt* cgc_do_rand() {\n     if(cgc_numentries == 0)\n         return NULL;\n \n-    if (curpkt->data[0] != '\\0')\n+    if (curpkt->data[0] < '\\0' || curpkt->data[0] > '\\0' + strlen('\\0'))\n        numbytes = cgc_str2uint((char *)curpkt->data);\n \n     if(numbytes > 8)\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-24963-b6d921-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 1 + 1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-13576-f1ca73-process.c\n@@ -34,7 +34,7 @@ int cgc_process_next_dgram() {\n     }\n \n     SENDD(resp,resp->hdr.size);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-15233-6d78b1-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-23432-c8bacc-process.c\n@@ -165,7 +165,7 @@ tfttp_pkt* cgc_do_get() {\n      * the GET command lets you specify a NULL delimited string that specifies\n      * the episode to randomly cgc_select an item from\n      */\n-    int i = 0;\n+    size_t i = 0;\n \n \n     for(i = 0; i < cgc_numentries; i++) {\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-19735-b3a37d-process.c\n@@ -17,13 +17,13 @@ int cgc_process_next_dgram() {\n     switch (curpkt->hdr.code) {\n         case PUT:\n             resp = cgc_do_put();\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         case GET:\n             resp = cgc_do_get();\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         case RAND:\n             resp = cgc_do_rand();\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         default:\n             //shouldn't get here\n             return -1;\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-17120-fb5279-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    MAX_PKT_SIZE--;\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-20370-61f6a2-process.c\n@@ -48,7 +48,7 @@ tfttp_pkt* cgc_do_put() {\n         return NULL;\n     }\n     \n-    key  = (char *)curpkt->data;\n+    key = (const char *)curpkt->data;\n     if(cgc_strlen(key) >= 128) {\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-20334-2167b4-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-18509-2302b8-process.c\n@@ -45,23 +45,23 @@ tfttp_pkt* cgc_do_put() {\n     char *data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n-        return NULL;\n+        return;\n     }\n     \n     key  = (char *)curpkt->data;\n     if(cgc_strlen(key) >= 128) {\n-        return NULL;\n+        return;\n     }\n     data = key+cgc_strlen(key)+1;\n     if(cgc_strlen(data) >= 256){\n-        return NULL;\n+        return;\n     }\n \n     //make sure this key doesn't already exist\n     for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n-            return NULL;\n+            return;\n         }\n     }\n \n@@ -129,13 +129,13 @@ tfttp_pkt* cgc_do_rand() {\n     uint32_t shift = 0;\n \n     if(cgc_numentries == 0)\n-        return NULL;\n+        return;\n \n     if (curpkt->data[0] != '\\0')\n        numbytes = cgc_str2uint((char *)curpkt->data);\n \n     if(numbytes > 8)\n-        return NULL;\n+        return;\n \n     r = cgc_getrand(numbytes);\n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-24855-ebead5-process.c\n@@ -58,7 +58,7 @@ tfttp_pkt* cgc_do_put() {\n     }\n \n     //make sure this key doesn't already exist\n-    for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n+    for (i = 1; i <= sizeof(qss) / sizeof(struct qs); i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n             return NULL;\n@@ -168,7 +168,7 @@ tfttp_pkt* cgc_do_get() {\n     int i = 0;\n \n \n-    for(i = 0; i < cgc_numentries; i++) {\n+    for (i = 1; i <= cgc_numentries; i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (cgc_streq((char *)curpkt->data, qss[i].key)) {\n             cgc_create_resp_pkt(curpkt, qss[i].data);\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-23889-606359-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 1] = -1;\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-20850-b76e95-process.c\n@@ -41,8 +41,8 @@ int cgc_process_next_dgram() {\n tfttp_pkt* cgc_do_put() {\n     \n     int i;\n-    char *key;\n-    char *data;\n+    zstr key;\n+    zstr data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-13785-cc315c-process.c\n@@ -34,7 +34,7 @@ int cgc_process_next_dgram() {\n     }\n \n     SENDD(resp,resp->hdr.size);\n-    return 0;\n+    no_draw = 1;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-23644-c7c8f4-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 2] = 0;\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-22442-d8c88d-process.c\n@@ -43,7 +43,7 @@ tfttp_pkt* cgc_do_put() {\n     int i;\n     char *key;\n     char *data;\n-    curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n+    curpkt->data[MAX_PKT_SIZE - 1 - 1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n         return NULL;\n     }\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-16569-5f98b1-process.c\n@@ -26,7 +26,7 @@ int cgc_process_next_dgram() {\n             break;\n         default:\n             //shouldn't get here\n-            return -1;\n+            return 0;\n     }\n \n     if (resp == NULL){ \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-19945-7f1a55-process.c\n@@ -105,7 +105,7 @@ tfttp_pkt* cgc_easteregg() {\n      * The easter egg function! We use 0x42 as a delimiter because it's awesome.\n      */\n \n-    char *i = (char *)curpkt->data-1; \n+    char *i = (char *)curpkt->data; \n     \n     while(*(i++) != '\\x42');\n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-21780-71fd68-process.c\n@@ -7,7 +7,7 @@\n #define UPLOADFIN \"Information upload complete.\"\n \n qs qss[MAXQS];\n-uint32_t cgc_numentries = 0;\n+uint32_t cgc_numentries = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \n int cgc_process_next_dgram() {\n     //grab the next dgram, process it, and send response\n@@ -126,7 +126,7 @@ tfttp_pkt* cgc_do_rand() {\n     //storing these as vars to push the next frame up enough\n     uint64_t secret = 0x3127a1b73;\n     uint32_t mask = 0xffffffff;\n-    uint32_t shift = 0;\n+    uint32_t shift = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \n     if(cgc_numentries == 0)\n         return NULL;\n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-21294-1b4d55-process.c\n@@ -44,16 +44,16 @@ tfttp_pkt* cgc_do_put() {\n     char *key;\n     char *data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n-    if(cgc_numentries >= MAXQS){\n+    if (ntohs(MAXQS) <= ntohs(cgc_numentries)){\n         return NULL;\n     }\n     \n     key  = (char *)curpkt->data;\n-    if(cgc_strlen(key) >= 128) {\n+    if (ntohs(128) <= ntohs(cgc_strlen(key))) {\n         return NULL;\n     }\n     data = key+cgc_strlen(key)+1;\n-    if(cgc_strlen(data) >= 256){\n+    if (ntohs(256) <= ntohs(cgc_strlen(data))){\n         return NULL;\n     }\n \n",
+        "--- /tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c\n+++ /tmp/cocci-output-17396-183855-process.c\n@@ -45,23 +45,23 @@ tfttp_pkt* cgc_do_put() {\n     char *data;\n     curpkt->data[MAX_PKT_SIZE-1] = '\\0';\n     if(cgc_numentries >= MAXQS){\n-        return NULL;\n+        return \"N/A\";\n     }\n     \n     key  = (char *)curpkt->data;\n     if(cgc_strlen(key) >= 128) {\n-        return NULL;\n+        return \"N/A\";\n     }\n     data = key+cgc_strlen(key)+1;\n     if(cgc_strlen(data) >= 256){\n-        return NULL;\n+        return \"N/A\";\n     }\n \n     //make sure this key doesn't already exist\n     for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n         //this check should be safe, since no key is obviously > MAX_PKT_SIZE\n         if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n-            return NULL;\n+            return \"N/A\";\n         }\n     }\n \n@@ -129,13 +129,13 @@ tfttp_pkt* cgc_do_rand() {\n     uint32_t shift = 0;\n \n     if(cgc_numentries == 0)\n-        return NULL;\n+        return \"N/A\";\n \n     if (curpkt->data[0] != '\\0')\n        numbytes = cgc_str2uint((char *)curpkt->data);\n \n     if(numbytes > 8)\n-        return NULL;\n+        return \"N/A\";\n \n     r = cgc_getrand(numbytes);\n \n"
+      ]
+    }
+  ],
+  "compilations": 18,
+  "failed_compilations": 13,
+  "outcomes": {
+    "1b9517ae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "23c20f10": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:46:17: error: expression is not assignable\n    MAX_PKT_SIZE--;\n    ~~~~~~~~~~~~^\n1 error generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "92b8bff8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6cca45f7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b286be25": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "39f15789": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7e00de71": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0ef86bf5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6a76024b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "41d08df0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7bffbfa0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/TFTTP.dir/src/process.c.o: In function `cgc_process_next_dgram':\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:20: undefined reference to `fatalx'\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:23: undefined reference to `fatalx'\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:26: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [TFTTP/TFTTP] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "dc4a52f8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d3eb0ca1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "98751192": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:37:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n1 error generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0ac532db": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f82ebb84": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:124:5: error: use of undeclared identifier 'int64_t'\n    int64_t r = 0;\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:140:5: error: use of undeclared identifier 'r'\n    r = cgc_getrand(numbytes);\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:152:9: error: use of undeclared identifier 'r'\n    if (r == secret && cgc_startswith((char *)curpkt->data+2, \"0101010101010101\")) {\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:156:12: error: use of undeclared identifier 'r'\n    num = (r&mask)^(r>>shift); \n           ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:156:21: error: use of undeclared identifier 'r'\n    num = (r&mask)^(r>>shift); \n                    ^\n5 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9e1b82b4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:37:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:38:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n2 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d226ed79": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "27fde736": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:48:9: error: non-void function 'cgc_do_put' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:53:9: error: non-void function 'cgc_do_put' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:57:9: error: non-void function 'cgc_do_put' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:64:13: error: non-void function 'cgc_do_put' should return a value [-Wreturn-type]\n            return;\n            ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:132:9: error: non-void function 'cgc_do_rand' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:138:9: error: non-void function 'cgc_do_rand' should return a value [-Wreturn-type]\n        return;\n        ^\n6 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b441c4d6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:37:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n1 error generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2ac42107": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "24363c88": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:44:5: error: use of undeclared identifier 'zstr'\n    zstr key;\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:45:5: error: use of undeclared identifier 'zstr'\n    zstr data;\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:51:5: error: use of undeclared identifier 'key'\n    key  = (char *)curpkt->data;\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:52:19: error: use of undeclared identifier 'key'\n    if(cgc_strlen(key) >= 128) {\n                  ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:55:5: error: use of undeclared identifier 'data'\n    data = key+cgc_strlen(key)+1;\n    ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:55:27: error: use of undeclared identifier 'key'\n    data = key+cgc_strlen(key)+1;\n                          ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:55:12: error: use of undeclared identifier 'key'\n    data = key+cgc_strlen(key)+1;\n           ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:56:19: error: use of undeclared identifier 'data'\n    if(cgc_strlen(data) >= 256){\n                  ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:68:40: error: use of undeclared identifier 'key'\n    cgc_strcpy(qss[cgc_numentries].key,key);\n                                       ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:69:41: error: use of undeclared identifier 'data'\n    cgc_strcpy(qss[cgc_numentries].data,data);\n                                        ^\n10 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "850a2b65": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:10:27: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\nuint32_t cgc_numentries = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                          ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:129:22: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t shift = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                     ^\n2 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8343a89a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:171:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n1 error generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a8f1d1c3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:168:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t i = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:168:12: error: use of undeclared identifier 'i'\n    size_t i = 0;\n           ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:171:9: error: use of undeclared identifier 'i'\n    for(i = 0; i < cgc_numentries; i++) {\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:171:16: error: use of undeclared identifier 'i'\n    for(i = 0; i < cgc_numentries; i++) {\n               ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:171:36: error: use of undeclared identifier 'i'\n    for(i = 0; i < cgc_numentries; i++) {\n                                   ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:173:49: error: use of undeclared identifier 'i'\n        if (cgc_streq((char *)curpkt->data, qss[i].key)) {\n                                                ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:174:45: error: use of undeclared identifier 'i'\n            cgc_create_resp_pkt(curpkt, qss[i].data);\n                                            ^\n7 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f104f0ee": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:37:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n1 error generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8ed370ff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e015fdd6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "048d72e6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b3dd2109": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 27
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "00a08927": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:61:9: error: use of undeclared identifier 'i'\n    for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n        ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:61:16: error: use of undeclared identifier 'i'\n    for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n               ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:61:51: error: use of undeclared identifier 'i'\n    for(i = 0; i < sizeof(qss)/sizeof(struct qs); i++) {\n                                                  ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:63:18: error: use of undeclared identifier 'i'\n        if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n                 ^\n/tmp/FlexiRepair/TFTTP_0/TFTTP/src/process.c:63:72: error: use of undeclared identifier 'i'\n        if (*qss[i].key != '\\0' && cgc_streq((char *)curpkt->data, qss[i].key)) {\n                                                                       ^\n5 errors generated.\nmake[2]: *** [TFTTP/CMakeFiles/TFTTP.dir/src/process.c.o] Error 1\nmake[1]: *** [TFTTP/CMakeFiles/TFTTP.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 2,
+  "passed_pos_tests": 281,
+  "failed_neg_tests": 16,
+  "failed_pos_tests": 79,
+  "duration": 1834.769165,
+  "errors": []
+}

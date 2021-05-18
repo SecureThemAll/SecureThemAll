@@ -1,0 +1,2617 @@
+{
+  "repair_begin": "2021-05-08 00:56:57.953842",
+  "repair_end": "2021-05-08 01:27:12.645468",
+  "patches": [
+    {
+      "target_file": "src/operation.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-8930-3d5c00-operation.c\n@@ -182,7 +182,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \t}\n \n \twhile ((0 < count) && (NULL != haiku_ptr)) {\n-\t\th = (struct haiku *)haiku_ptr->data;\n+\t\th = (const struct haiku *)haiku_ptr->data;\n \t\tid_arr[count - 1] = h->id;\n \n \t\tcount--;\n@@ -215,7 +215,7 @@ int cgc_find_haiku_with_id(struct haiku\n \t}\n \n \twhile (NULL != haiku_ptr) {\n-\t\ttmp = (struct haiku *)haiku_ptr->data;\n+\t\ttmp = (const struct haiku *)haiku_ptr->data;\n \t\tif (id == tmp->id) {\n \t\t\t*h = tmp;\n \t\t\tfound = TRUE;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-13723-58db1e-operation.c\n@@ -330,7 +330,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \n \t// VULN HERE - if something causes bytes_remaining to go negative, this loop will not stop.\n #if PATCHED\n-\twhile (0 < bytes_remaining) {\n+\twhile (bytes_remaining > 1) {\n #else\n \twhile (0 != bytes_remaining) {\n #endif\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-8822-59e36c-operation.c\n@@ -339,7 +339,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \t\t\treturn NULL;\n \t\t}\n \n-\t\thaiku_content_ptr += bytes_written;\n+\t\thaiku_content_ptr--;\n \t\tbytes_remaining -= bytes_written;\n \t}\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-10795-452434-operation.c\n@@ -319,7 +319,7 @@ int cgc_recv_haiku_line(char *haiku_cont\n struct haiku *cgc_recv_haiku(uint16_t total_bytes) {\n \n \tstruct haiku *h = NULL;\n-\tchar *haiku_content_ptr = NULL;\n+\tLPTSTR haiku_content_ptr = NULL;\n \tint16_t bytes_remaining = 0;\n \tint16_t bytes_written = 0;\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-6517-07d60f-operation.c\n@@ -336,7 +336,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n #endif\n \t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n-\t\t\treturn NULL;\n+\t\t\treturn;\n \t\t}\n \n \t\thaiku_content_ptr += bytes_written;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-5759-308a37-operation.c\n@@ -330,7 +330,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \n \t// VULN HERE - if something causes bytes_remaining to go negative, this loop will not stop.\n #if PATCHED\n-\twhile (0 < bytes_remaining) {\n+\twhile (0 <= bytes_remaining) {\n #else\n \twhile (0 != bytes_remaining) {\n #endif\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-14146-4812e8-operation.c\n@@ -330,7 +330,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \n \t// VULN HERE - if something causes bytes_remaining to go negative, this loop will not stop.\n #if PATCHED\n-\twhile (0 < bytes_remaining) {\n+\twhile (0 < (size_t)bytes_remaining) {\n #else\n \twhile (0 != bytes_remaining) {\n #endif\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-2392-1acf40-operation.c\n@@ -61,7 +61,7 @@ uint32_t cgc_recv_uint16() {\n  *  not exists: FALSE\n  */\n uint8_t cgc_haiku_list_exists() {\n-\tif (NULL == cgc_haiku_list) {\n+\tif (NULL == -1) {\n \t\treturn FALSE;\n \t} else {\n \t\treturn TRUE;\n@@ -146,15 +146,16 @@ int cgc_get_random_idx(uint32_t *idx) {\n \tret = cgc_rand((char *)&random_idx, 4);\n \tint32_t count = cgc_get_count();\n \n-\tif (ERR_LIST_NOT_EXIST == count) {\n+\tif (ERR_LIST_NOT_EXIST == -1) {\n \t\treturn count;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else if (0 != ret) {\n-\t\treturn ERR_RAND_FAILED;\n-\t} else {\n-\t\t*idx = random_idx % (uint32_t)count;\n-\t\treturn SUCCESS;\n+\t} else {if (0 == -1) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else if (0 != ret) {\n+\t\t\treturn ERR_RAND_FAILED;\n+\t\t} else {\n+\t\t\t*idx = random_idx % (uint32_t)count;\n+\t\t\treturn SUCCESS;\n+\t\t}\n \t}\n }\n \n@@ -208,10 +209,11 @@ int cgc_find_haiku_with_id(struct haiku\n \tcount = cgc_get_count();\n \tif (0 < count) {\n \t\thaiku_ptr = cgc_haiku_list->head;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else {\n-\t\treturn ERR_LIST_NOT_EXIST;\n+\t} else {if (0 == -1) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else {\n+\t\t\treturn ERR_LIST_NOT_EXIST;\n+\t\t}\n \t}\n \n \twhile (NULL != haiku_ptr) {\n@@ -224,7 +226,7 @@ int cgc_find_haiku_with_id(struct haiku\n \t\thaiku_ptr = haiku_ptr->next;\n \t}\n \n-\tif (TRUE == found) {\n+\tif (TRUE == -1) {\n \t\treturn SUCCESS;\n \t} else {\n \t\treturn ERR_INVALID_ID;\n@@ -386,7 +388,7 @@ int cgc_add_haiku() {\n \n \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n \t\th = cgc_recv_haiku(total_bytes);\n-\t\tif (NULL == h) {\n+\t\tif (NULL == -1) {\n \t\t\tret = ERR_INVALID_HAIKU;\n \t\t} else {\n \t\t\tret = cgc_add_haiku_to_list(h);\n@@ -416,7 +418,7 @@ int cgc_get_haiku_by_id() {\n \n \t\tid = cgc_recv_uint32();\n \n-\t\tif (EGG_ID == id) {\n+\t\tif (EGG_ID == -1) {\n \t\t\tcgc_send_easter_egg_haiku();\n \t\t} else {\n \t\t\tres = cgc_find_haiku_with_id(&h, id);\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-8884-1eaa6d-operation.c\n@@ -183,7 +183,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \n \twhile ((0 < count) && (NULL != haiku_ptr)) {\n \t\th = (struct haiku *)haiku_ptr->data;\n-\t\tid_arr[count - 1] = h->id;\n+\t\tid_arr[count] = h->id;\n \n \t\tcount--;\n \t\thaiku_ptr = haiku_ptr->prev;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-10176-11e7a8-operation.c\n@@ -148,13 +148,14 @@ int cgc_get_random_idx(uint32_t *idx) {\n \n \tif (ERR_LIST_NOT_EXIST == count) {\n \t\treturn count;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else if (0 != ret) {\n-\t\treturn ERR_RAND_FAILED;\n-\t} else {\n-\t\t*idx = random_idx % (uint32_t)count;\n-\t\treturn SUCCESS;\n+\t} else {if (0 == count) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else if (0 != ret) {\n+\t\t\treturn ERR_RAND_FAILED;\n+\t\t} else {\n+\t\t\t*idx = random_idx % (uint32_t)count;\n+\t\t\treturn SUCCESS;\n+\t\t}\n \t}\n }\n \n@@ -208,10 +209,11 @@ int cgc_find_haiku_with_id(struct haiku\n \tcount = cgc_get_count();\n \tif (0 < count) {\n \t\thaiku_ptr = cgc_haiku_list->head;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else {\n-\t\treturn ERR_LIST_NOT_EXIST;\n+\t} else {if (0 == count) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else {\n+\t\t\treturn ERR_LIST_NOT_EXIST;\n+\t\t}\n \t}\n \n \twhile (NULL != haiku_ptr) {\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-10839-24ef6d-operation.c\n@@ -141,7 +141,7 @@ uint32_t cgc_get_next_haiku_id() {\n  *  Failure: ERR_LIST_NOT_EXIST, ERR_LIST_EMPTY, ERR_RAND_FAILED\n  */\n int cgc_get_random_idx(uint32_t *idx) {\n-\tuint32_t random_idx = 0;\n+\tuint32_t random_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \tint ret = 0;\n \tret = cgc_rand((char *)&random_idx, 4);\n \tint32_t count = cgc_get_count();\n@@ -169,7 +169,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \n \tnode_t *haiku_ptr = NULL;\n \tstruct haiku *h = NULL;\n-\tuint32_t id = 0;\n+\tuint32_t id = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \n \tif (TRUE == cgc_haiku_list_exists()) {\n \t\thaiku_ptr = cgc_haiku_list->tail;\n@@ -409,7 +409,7 @@ int cgc_add_haiku() {\n  */\n int cgc_get_haiku_by_id() {\n \tstruct haiku *h = NULL;\n-\tuint32_t id = 0;\n+\tuint32_t id = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \tint res = 0;\n \n \tif (TRUE == cgc_haiku_list_exists()) {\n@@ -440,8 +440,8 @@ int cgc_get_haiku_by_id() {\n  */\n int cgc_get_haiku_cgc_random() {\n \n-\tuint32_t random_idx = 0;\n-\tuint32_t count = 0;\n+\tuint32_t random_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n+\tuint32_t count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \tuint32_t *id_arr = NULL;\n \tstruct haiku *rand_haiku = NULL;\n \tint res = SUCCESS;\n@@ -482,7 +482,7 @@ int cgc_get_haiku_cgc_random() {\n  *  Failure: ERR_LIST_NOT_EXIST\n  */\n int cgc_get_haiku_count() {\n-\tuint32_t count = 0;\n+\tuint32_t count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \tif (TRUE == cgc_haiku_list_exists()) {\n \t\tcount = cgc_get_count();\n \t\tSENDUI(count);\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-9920-77ca03-operation.c\n@@ -130,7 +130,7 @@ uint32_t cgc_get_id_from_haiku(node_t *h\n  */\n uint32_t cgc_get_next_haiku_id() {\n \tnext_haiku_id++;\n-\treturn next_haiku_id - 1;\n+\treturn (next_haiku_id - 1 - 1);\n }\n \n /*\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-5256-56c38c-operation.c\n@@ -182,7 +182,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \t}\n \n \twhile ((0 < count) && (NULL != haiku_ptr)) {\n-\t\th = (struct haiku *)haiku_ptr->data;\n+\t\th = haiku_ptr->data;\n \t\tid_arr[count - 1] = h->id;\n \n \t\tcount--;\n@@ -215,7 +215,7 @@ int cgc_find_haiku_with_id(struct haiku\n \t}\n \n \twhile (NULL != haiku_ptr) {\n-\t\ttmp = (struct haiku *)haiku_ptr->data;\n+\t\ttmp = haiku_ptr->data;\n \t\tif (id == tmp->id) {\n \t\t\t*h = tmp;\n \t\t\tfound = TRUE;\n@@ -292,7 +292,8 @@ int cgc_recv_haiku_line(char *haiku_cont\n \n \t// bytes_received includes line termination char, \n \t//  but line term char is not written to temp_line_buf, a null is in its place.\n-\tbytes_received = cgc_recvline(STDIN, temp_line_buf, MAX_HAIKU_LINE_LEN);\n+\tbytes_received = cgc_recvline(STDIN, temp_line_buf,\n+\t\t\t\t      MAX_HAIKU_LINE_LEN);\n \n \t//  this will make the creation of POV input harder to create \n \t//   since it will need line termination chars at set intervals.\n@@ -305,7 +306,8 @@ int cgc_recv_haiku_line(char *haiku_cont\n \t//  to haiku_content_ptr for each line of input.\n \n \t// +1 for trailing null\n-\tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\x07\", temp_line_buf);\n+\tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1,\n+\t\t\t\t     \"~c\\x07\", temp_line_buf);\n \n \treturn bytes_written;\n }\n@@ -323,7 +325,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \tint16_t bytes_remaining = 0;\n \tint16_t bytes_written = 0;\n \n-\tbytes_remaining = (int16_t)total_bytes;\n+\tbytes_remaining = total_bytes;\n \n \tALLOC(sizeof(struct haiku) + total_bytes + 1, &h); // +1 for trailing null\n \thaiku_content_ptr = h->content;\n@@ -334,7 +336,8 @@ struct haiku *cgc_recv_haiku(uint16_t to\n #else\n \twhile (0 != bytes_remaining) {\n #endif\n-\t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n+\t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr,\n+\t\t\t\t\t\t    bytes_remaining);\n \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n \t\t\treturn NULL;\n \t\t}\n@@ -382,7 +385,7 @@ int cgc_add_haiku() {\n \t\tcgc_init_haiku_list();\n \t}\n \n-\ttotal_bytes\t= cgc_recv_haiku_size();\n+\ttotal_bytes = cgc_recv_haiku_size();\n \n \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n \t\th = cgc_recv_haiku(total_bytes);\n@@ -458,7 +461,8 @@ int cgc_get_haiku_cgc_random() {\n \t\tres = cgc_populate_array_with_haiku_ids(id_arr, count);\n \t\tres = cgc_get_random_idx(&random_idx);\n \t\tif (ERR_RAND_FAILED != res) {\n-\t\t\tres = cgc_find_haiku_with_id(&rand_haiku, id_arr[random_idx]);\n+\t\t\tres = cgc_find_haiku_with_id(&rand_haiku,\n+\t\t\t\t\t\t     id_arr[random_idx]);\n \t\t}\n \n \t\tDEALLOC(id_arr, count * sizeof(uint32_t));\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-11717-99f98d-operation.c\n@@ -183,7 +183,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \n \twhile ((0 < count) && (NULL != haiku_ptr)) {\n \t\th = (struct haiku *)haiku_ptr->data;\n-\t\tid_arr[count - 1] = h->id;\n+\t\tid_arr[count - 1 - 1] = h->id;\n \n \t\tcount--;\n \t\thaiku_ptr = haiku_ptr->prev;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-5037-fde59f-operation.c\n@@ -336,7 +336,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n #endif\n \t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n-\t\t\treturn NULL;\n+\t\t\treturn \"N/A\";\n \t\t}\n \n \t\thaiku_content_ptr += bytes_written;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-2325-05c281-operation.c\n@@ -61,7 +61,7 @@ uint32_t cgc_recv_uint16() {\n  *  not exists: FALSE\n  */\n uint8_t cgc_haiku_list_exists() {\n-\tif (NULL == cgc_haiku_list) {\n+\tif (NULL % cgc_haiku_list == 0) {\n \t\treturn FALSE;\n \t} else {\n \t\treturn TRUE;\n@@ -78,7 +78,7 @@ uint8_t cgc_haiku_list_exists() {\n  *  not empty: FALSE\n  */\n uint8_t cgc_is_haiku_list_empty() {\n-\tif (0 == cgc_haiku_list->count) {\n+\tif (0 % cgc_haiku_list->count == 0) {\n \t\treturn TRUE;\n \t} else {\n \t\treturn FALSE;\n@@ -102,7 +102,7 @@ void cgc_init_haiku_list() {\n  *  Failure: ERR_LIST_NOT_EXIST\n  */\n int cgc_get_count() {\n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \t\treturn cgc_haiku_list->count;\n \t} else {\n \t\treturn ERR_LIST_NOT_EXIST;\n@@ -146,15 +146,16 @@ int cgc_get_random_idx(uint32_t *idx) {\n \tret = cgc_rand((char *)&random_idx, 4);\n \tint32_t count = cgc_get_count();\n \n-\tif (ERR_LIST_NOT_EXIST == count) {\n+\tif (ERR_LIST_NOT_EXIST % count == 0) {\n \t\treturn count;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else if (0 != ret) {\n-\t\treturn ERR_RAND_FAILED;\n-\t} else {\n-\t\t*idx = random_idx % (uint32_t)count;\n-\t\treturn SUCCESS;\n+\t} else {if (0 % count == 0) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else if (0 != ret) {\n+\t\t\treturn ERR_RAND_FAILED;\n+\t\t} else {\n+\t\t\t*idx = random_idx % (uint32_t)count;\n+\t\t\treturn SUCCESS;\n+\t\t}\n \t}\n }\n \n@@ -171,7 +172,7 @@ int cgc_populate_array_with_haiku_ids(ui\n \tstruct haiku *h = NULL;\n \tuint32_t id = 0;\n \n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \t\thaiku_ptr = cgc_haiku_list->tail;\n \t} else {\n \t\treturn ERR_LIST_NOT_EXIST;\n@@ -208,10 +209,11 @@ int cgc_find_haiku_with_id(struct haiku\n \tcount = cgc_get_count();\n \tif (0 < count) {\n \t\thaiku_ptr = cgc_haiku_list->head;\n-\t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n-\t} else {\n-\t\treturn ERR_LIST_NOT_EXIST;\n+\t} else {if (0 % count == 0) {\n+\t\t\treturn ERR_LIST_EMPTY;\n+\t\t} else {\n+\t\t\treturn ERR_LIST_NOT_EXIST;\n+\t\t}\n \t}\n \n \twhile (NULL != haiku_ptr) {\n@@ -224,7 +226,7 @@ int cgc_find_haiku_with_id(struct haiku\n \t\thaiku_ptr = haiku_ptr->next;\n \t}\n \n-\tif (TRUE == found) {\n+\tif (TRUE % found == 0) {\n \t\treturn SUCCESS;\n \t} else {\n \t\treturn ERR_INVALID_ID;\n@@ -386,7 +388,7 @@ int cgc_add_haiku() {\n \n \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n \t\th = cgc_recv_haiku(total_bytes);\n-\t\tif (NULL == h) {\n+\t\tif (NULL % h == 0) {\n \t\t\tret = ERR_INVALID_HAIKU;\n \t\t} else {\n \t\t\tret = cgc_add_haiku_to_list(h);\n@@ -412,11 +414,11 @@ int cgc_get_haiku_by_id() {\n \tuint32_t id = 0;\n \tint res = 0;\n \n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \n \t\tid = cgc_recv_uint32();\n \n-\t\tif (EGG_ID == id) {\n+\t\tif (EGG_ID % id == 0) {\n \t\t\tcgc_send_easter_egg_haiku();\n \t\t} else {\n \t\t\tres = cgc_find_haiku_with_id(&h, id);\n@@ -446,7 +448,7 @@ int cgc_get_haiku_cgc_random() {\n \tstruct haiku *rand_haiku = NULL;\n \tint res = SUCCESS;\n \n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \t\tcount = cgc_get_count();\n \t\tif (0 == count) {\n \t\t\treturn ERR_LIST_EMPTY;\n@@ -483,7 +485,7 @@ int cgc_get_haiku_cgc_random() {\n  */\n int cgc_get_haiku_count() {\n \tuint32_t count = 0;\n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \t\tcount = cgc_get_count();\n \t\tSENDUI(count);\n \t\treturn SUCCESS;\n@@ -503,7 +505,7 @@ int cgc_get_haiku_count() {\n  *  Failure: ERR_LIST_NOT_EXIST\n  */\n int cgc_get_haiku_ids() {\n-\tif (TRUE == cgc_haiku_list_exists()) {\n+\tif (TRUE % cgc_haiku_list_exists() == 0) {\n \t\tuint32_t count = (uint32_t)cgc_get_count();\n \t\tSENDUI(count);\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-9722-3f8d1f-operation.c\n@@ -61,7 +61,7 @@ uint32_t cgc_recv_uint16() {\n  *  not exists: FALSE\n  */\n uint8_t cgc_haiku_list_exists() {\n-\tif (NULL == cgc_haiku_list) {\n+\tif (cgc_haiku_list == NULL || gtk_notebook_get_current_page(cgc_haiku_list) == -1) {\n \t\treturn FALSE;\n \t} else {\n \t\treturn TRUE;\n@@ -386,7 +386,7 @@ int cgc_add_haiku() {\n \n \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n \t\th = cgc_recv_haiku(total_bytes);\n-\t\tif (NULL == h) {\n+\t\tif (h == NULL || gtk_notebook_get_current_page(h) == -1) {\n \t\t\tret = ERR_INVALID_HAIKU;\n \t\t} else {\n \t\t\tret = cgc_add_haiku_to_list(h);\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-6155-da2ca6-operation.c\n@@ -130,7 +130,7 @@ uint32_t cgc_get_id_from_haiku(node_t *h\n  */\n uint32_t cgc_get_next_haiku_id() {\n \tnext_haiku_id++;\n-\treturn next_haiku_id - 1;\n+\treturn 1 - next_haiku_id;\n }\n \n /*\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-3659-5756c2-operation.c\n@@ -319,7 +319,7 @@ int cgc_recv_haiku_line(char *haiku_cont\n struct haiku *cgc_recv_haiku(uint16_t total_bytes) {\n \n \tstruct haiku *h = NULL;\n-\tchar *haiku_content_ptr = NULL;\n+\tchar *haiku_content_ptr = \"\";\n \tint16_t bytes_remaining = 0;\n \tint16_t bytes_written = 0;\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-11057-2d1828-operation.c\n@@ -206,7 +206,7 @@ int cgc_find_haiku_with_id(struct haiku\n \tbool_t found = FALSE;\n \n \tcount = cgc_get_count();\n-\tif (0 < count) {\n+\tif (count >= 0) {\n \t\thaiku_ptr = cgc_haiku_list->head;\n \t} else if (0 == count) {\n \t\treturn ERR_LIST_EMPTY;\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-347-17fba5-operation.c\n@@ -457,7 +457,7 @@ int cgc_get_haiku_cgc_random() {\n \t\t// these functions should not return error due to haiku_list existance or count <= 0.\n \t\tres = cgc_populate_array_with_haiku_ids(id_arr, count);\n \t\tres = cgc_get_random_idx(&random_idx);\n-\t\tif (ERR_RAND_FAILED != res) {\n+\t\tif (ERR_RAND_FAILED < res || ERR_RAND_FAILED > res + strlen(res)) {\n \t\t\tres = cgc_find_haiku_with_id(&rand_haiku, id_arr[random_idx]);\n \t\t}\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-1471-8c1a5e-operation.c\n@@ -147,14 +147,14 @@ int cgc_get_random_idx(uint32_t *idx) {\n \tint32_t count = cgc_get_count();\n \n \tif (ERR_LIST_NOT_EXIST == count) {\n-\t\treturn count;\n+\t\treturn (ret);\n \t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n+\t\treturn (ret);\n \t} else if (0 != ret) {\n-\t\treturn ERR_RAND_FAILED;\n+\t\treturn (ret);\n \t} else {\n \t\t*idx = random_idx % (uint32_t)count;\n-\t\treturn SUCCESS;\n+\t\treturn (ret);\n \t}\n }\n \n@@ -209,9 +209,9 @@ int cgc_find_haiku_with_id(struct haiku\n \tif (0 < count) {\n \t\thaiku_ptr = cgc_haiku_list->head;\n \t} else if (0 == count) {\n-\t\treturn ERR_LIST_EMPTY;\n+\t\treturn (count);\n \t} else {\n-\t\treturn ERR_LIST_NOT_EXIST;\n+\t\treturn (count);\n \t}\n \n \twhile (NULL != haiku_ptr) {\n@@ -225,9 +225,9 @@ int cgc_find_haiku_with_id(struct haiku\n \t}\n \n \tif (TRUE == found) {\n-\t\treturn SUCCESS;\n+\t\treturn (count);\n \t} else {\n-\t\treturn ERR_INVALID_ID;\n+\t\treturn (count);\n \t}\n }\n \n@@ -397,7 +397,7 @@ int cgc_add_haiku() {\n \t\tret = ERR_INVALID_HAIKU_LEN;\n \t}\n \n-\treturn ret;\n+\treturn (ret);\n }\n \n /*\n@@ -428,7 +428,7 @@ int cgc_get_haiku_by_id() {\n \t\tres = ERR_LIST_NOT_EXIST;\n \t}\n \n-\treturn res;\n+\treturn (res);\n }\n \n /*\n@@ -449,7 +449,7 @@ int cgc_get_haiku_cgc_random() {\n \tif (TRUE == cgc_haiku_list_exists()) {\n \t\tcount = cgc_get_count();\n \t\tif (0 == count) {\n-\t\t\treturn ERR_LIST_EMPTY;\n+\t\t\treturn (res);\n \t\t}\n \n \t\tALLOC(count * sizeof(uint32_t), &id_arr);\n@@ -471,7 +471,7 @@ int cgc_get_haiku_cgc_random() {\n \t\tres = ERR_LIST_NOT_EXIST;\n \t}\n \n-\treturn res;\n+\treturn (res);\n }\n \n /*\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-1634-7ca2d3-operation.c\n@@ -341,6 +341,7 @@ struct haiku *cgc_recv_haiku(uint16_t to\n \n \t\thaiku_content_ptr += bytes_written;\n \t\tbytes_remaining -= bytes_written;\n+\t\t0++;\n \t}\n \n \th->id = cgc_get_next_haiku_id();\n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-13058-69a4b7-operation.c\n@@ -142,7 +142,7 @@ uint32_t cgc_get_next_haiku_id() {\n  */\n int cgc_get_random_idx(uint32_t *idx) {\n \tuint32_t random_idx = 0;\n-\tint ret = 0;\n+\tsize_t ret = 0;\n \tret = cgc_rand((char *)&random_idx, 4);\n \tint32_t count = cgc_get_count();\n \n@@ -202,7 +202,7 @@ int cgc_find_haiku_with_id(struct haiku\n \n \tnode_t *haiku_ptr = NULL;\n \tstruct haiku *tmp = NULL;\n-\tint count = 0;\n+\tsize_t count = 0;\n \tbool_t found = FALSE;\n \n \tcount = cgc_get_count();\n@@ -410,7 +410,7 @@ int cgc_add_haiku() {\n int cgc_get_haiku_by_id() {\n \tstruct haiku *h = NULL;\n \tuint32_t id = 0;\n-\tint res = 0;\n+\tsize_t res = 0;\n \n \tif (TRUE == cgc_haiku_list_exists()) {\n \n",
+        "--- /tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c\n+++ /tmp/cocci-output-8110-80df7a-operation.c\n@@ -219,7 +219,7 @@ int cgc_find_haiku_with_id(struct haiku\n \t\tif (id == tmp->id) {\n \t\t\t*h = tmp;\n \t\t\tfound = TRUE;\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t\thaiku_ptr = haiku_ptr->next;\n \t}\n"
+      ]
+    }
+  ],
+  "compilations": 16,
+  "failed_compilations": 9,
+  "outcomes": {
+    "29dba646": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2c3f6048": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "7f50f9d0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "48164baa": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5494b023": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:344:4: error: expression is not assignable\n                0++;\n                ~^\n1 error generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "cdf9faee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4988982a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "30571cab": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/HIGHCOO.dir/src/operation.c.o: In function `cgc_find_haiku_with_id':\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:222: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [HIGHCOO/HIGHCOO] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "637411f1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "abf54b55": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:333:14: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        while (0 < (size_t)bytes_remaining) {\n                    ^~~~~~\n                    sizeof\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:333:13: error: reference to overloaded function could not be resolved; did you mean to call it?\n        while (0 < (size_t)bytes_remaining) {\n                   ^~~~~~~~\n2 errors generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO_patched.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6800cac1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "289bcb2e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "723ec740": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:339:4: error: non-void function 'cgc_recv_haiku' should return a value [-Wreturn-type]\n                        return;\n                        ^\n1 error generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "81e61fe3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c21f510b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:144:24: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t random_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                              ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:172:16: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t id = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                      ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:412:16: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t id = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                      ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:443:24: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t random_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                              ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:444:19: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                         ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:485:19: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n        uint32_t count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                         ^\n6 errors generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a58fc0d0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:145:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t ret = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:145:9: error: use of undeclared identifier 'ret'\n        size_t ret = 0;\n               ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:146:2: error: use of undeclared identifier 'ret'\n        ret = cgc_rand((char *)&random_idx, 4);\n        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:153:18: error: use of undeclared identifier 'ret'\n        } else if (0 != ret) {\n                        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:205:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t count = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:205:9: error: use of undeclared identifier 'count'\n        size_t count = 0;\n               ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:208:2: error: use of undeclared identifier 'count'\n        count = cgc_get_count();\n        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:209:10: error: use of undeclared identifier 'count'; did you mean 'found'?\n        if (0 < count) {\n                ^~~~~\n                found\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:206:9: note: 'found' declared here\n        bool_t found = FALSE;\n               ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:211:18: error: use of undeclared identifier 'count'; did you mean 'found'?\n        } else if (0 == count) {\n                        ^~~~~\n                        found\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:206:9: note: 'found' declared here\n        bool_t found = FALSE;\n               ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:413:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t res = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:413:9: error: use of undeclared identifier 'res'\n        size_t res = 0;\n               ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:422:4: error: use of undeclared identifier 'res'\n                        res = cgc_find_haiku_with_id(&h, id);\n                        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:423:19: error: use of undeclared identifier 'res'\n                        if (SUCCESS == res) {\n                                       ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:428:3: error: use of undeclared identifier 'res'\n                res = ERR_LIST_NOT_EXIST;\n                ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:431:9: error: use of undeclared identifier 'res'\n        return res;\n               ^\n15 errors generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "73975c1c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "173310b1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2a53eeb3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87861cd8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3f8014aa": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:322:2: error: use of undeclared identifier 'LPTSTR'\n        LPTSTR haiku_content_ptr = NULL;\n        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:329:2: error: use of undeclared identifier 'haiku_content_ptr'\n        haiku_content_ptr = h->content;\n        ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:337:39: error: use of undeclared identifier 'haiku_content_ptr'\n                bytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n                                                    ^\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:342:3: error: use of undeclared identifier 'haiku_content_ptr'\n                haiku_content_ptr += bytes_written;\n                ^\n4 errors generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7b0d5b59": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b2cf7399": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3c83dee5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:64:11: error: invalid operands to binary expression ('int' and 'list_t *' (aka 'struct list *'))\n        if (NULL % cgc_haiku_list == 0) {\n            ~~~~ ^ ~~~~~~~~~~~~~~\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:391:12: error: invalid operands to binary expression ('int' and 'struct haiku *')\n                if (NULL % h == 0) {\n                    ~~~~ ^ ~\n2 errors generated.\nmake[2]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/src/operation.c.o] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3020dcc3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/HIGHCOO.dir/src/operation.c.o: In function `cgc_haiku_list_exists':\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:64: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/HIGHCOO.dir/src/operation.c.o: In function `cgc_add_haiku':\n/tmp/FlexiRepair/HIGHCOO_0/HIGHCOO/src/operation.c:389: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [HIGHCOO/HIGHCOO] Error 1\nmake[1]: *** [HIGHCOO/CMakeFiles/HIGHCOO.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 1,
+  "passed_pos_tests": 207,
+  "failed_neg_tests": 15,
+  "failed_pos_tests": 113,
+  "duration": 1814.691626,
+  "errors": []
+}

@@ -1,0 +1,1011 @@
+{
+  "repair_begin": "2021-05-08 10:10:30.192305",
+  "repair_end": "2021-05-08 10:17:50.772743",
+  "patches": [
+    {
+      "target_file": "src/backlogitems.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-30480-b1b7d2-backlogitems.c\n@@ -71,7 +71,7 @@ backlogItemType *PBIPtr;\n \tif (database->productBacklog == 0) {\n \n \t\tdatabase->productBacklog = newPBI;\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \t}\n \n \tPBIPtr = database->productBacklog;\n@@ -82,7 +82,7 @@ backlogItemType *PBIPtr;\n \tPBIPtr->next = newPBI;\n \n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n \n@@ -131,7 +131,7 @@ backlogItemType *PBIPtr;\n \n \tcgc_free(PBIPtr);\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n@@ -198,7 +198,7 @@ backlogItemType *sprintBIPtr;\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n \t\tPBIPtr->next = 0;\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \t}\n \n \tsprintBIPtr = sprintPtr->sprintBacklogList;\n@@ -213,7 +213,7 @@ backlogItemType *sprintBIPtr;\n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n@@ -265,7 +265,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->status = message->status;\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n@@ -321,7 +321,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->story_points = message->status;\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n@@ -383,7 +383,7 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_strcpy(SBIPtr->description, &message->desc);\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n@@ -461,7 +461,7 @@ backlogItemType *SBIPtr;\n \t// update the sprint's total points \n \tsprintPtr->total_points -= SBIPtr->story_points;\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-22479-d68b93-backlogitems.c\n@@ -71,7 +71,7 @@ backlogItemType *PBIPtr;\n \tif (database->productBacklog == 0) {\n \n \t\tdatabase->productBacklog = newPBI;\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \t}\n \n \tPBIPtr = database->productBacklog;\n@@ -82,7 +82,7 @@ backlogItemType *PBIPtr;\n \tPBIPtr->next = newPBI;\n \n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n \n@@ -131,7 +131,7 @@ backlogItemType *PBIPtr;\n \n \tcgc_free(PBIPtr);\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n@@ -198,7 +198,7 @@ backlogItemType *sprintBIPtr;\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n \t\tPBIPtr->next = 0;\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \t}\n \n \tsprintBIPtr = sprintPtr->sprintBacklogList;\n@@ -213,7 +213,7 @@ backlogItemType *sprintBIPtr;\n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n@@ -265,7 +265,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->status = message->status;\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n@@ -321,7 +321,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->story_points = message->status;\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n@@ -383,7 +383,7 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_strcpy(SBIPtr->description, &message->desc);\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n@@ -461,7 +461,7 @@ backlogItemType *SBIPtr;\n \t// update the sprint's total points \n \tsprintPtr->total_points -= SBIPtr->story_points;\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n \n }\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-26935-e842be-backlogitems.c\n@@ -71,7 +71,8 @@ backlogItemType *PBIPtr;\n \tif (database->productBacklog == 0) {\n \n \t\tdatabase->productBacklog = newPBI;\n-\t\treturn 0;\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t}\n \n \tPBIPtr = database->productBacklog;\n@@ -82,7 +83,8 @@ backlogItemType *PBIPtr;\n \tPBIPtr->next = newPBI;\n \n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n \n \n@@ -131,7 +133,8 @@ backlogItemType *PBIPtr;\n \n \tcgc_free(PBIPtr);\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n@@ -198,7 +201,8 @@ backlogItemType *sprintBIPtr;\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n \t\tPBIPtr->next = 0;\n-\t\treturn 0;\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t}\n \n \tsprintBIPtr = sprintPtr->sprintBacklogList;\n@@ -213,7 +217,8 @@ backlogItemType *sprintBIPtr;\n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n@@ -265,7 +270,8 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->status = message->status;\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n@@ -321,7 +327,8 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->story_points = message->status;\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n@@ -383,7 +390,8 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_strcpy(SBIPtr->description, &message->desc);\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n@@ -461,7 +469,8 @@ backlogItemType *SBIPtr;\n \t// update the sprint's total points \n \tsprintPtr->total_points -= SBIPtr->story_points;\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-31336-e02126-backlogitems.c\n@@ -48,7 +48,7 @@ backlogItemType *PBIPtr;\n \t}\n \n \n-\tnewPBI = (backlogItemType *)cgc_calloc(sizeof(backlogItemType));\n+\tnewPBI = (const backlogItemType *)cgc_calloc(sizeof(backlogItemType));\n \n \tif (newPBI == 0) \n \t\tcgc__terminate(-1);\n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-3506-4c893d-backlogitems.c\n@@ -55,9 +55,9 @@ backlogItemType *PBIPtr;\n \n \n \tnewPBI->ID = message->pbItemID;\n-\tnewPBI->status = 0;\n+\tnewPBI->status = -1;\n \tnewPBI->story_points = message->user_story_points;\n-\tnewPBI->next = 0;\n+\tnewPBI->next = -1;\n \n \tnewPBI->description = cgc_calloc(cgc_strlen(&message->title)+1);\n \n@@ -197,7 +197,7 @@ backlogItemType *sprintBIPtr;\n \tif (sprintPtr->sprintBacklogList == 0) {\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n-\t\tPBIPtr->next = 0;\n+\t\tPBIPtr->next = -1;\n \t\treturn 0;\n \t}\n \n@@ -208,7 +208,7 @@ backlogItemType *sprintBIPtr;\n \n \tsprintBIPtr->next = PBIPtr;\n \n-\tPBIPtr->next = 0;\n+\tPBIPtr->next = -1;\n \n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n@@ -444,7 +444,7 @@ backlogItemType *SBIPtr;\n \t\tprevPtr->next = SBIPtr->next;\n \t}\n \n-\tSBIPtr->next = 0;\n+\tSBIPtr->next = -1;\n \n \tif (PBIPtr == 0) {\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-24033-3fc1e7-backlogitems.c\n@@ -71,7 +71,7 @@ backlogItemType *PBIPtr;\n \tif (database->productBacklog == 0) {\n \n \t\tdatabase->productBacklog = newPBI;\n-\t\treturn 0;\n+\t\treturn -1;\n \t}\n \n \tPBIPtr = database->productBacklog;\n@@ -82,7 +82,7 @@ backlogItemType *PBIPtr;\n \tPBIPtr->next = newPBI;\n \n \n-\treturn 0;\n+\treturn -1;\n }\n \n \n@@ -131,7 +131,7 @@ backlogItemType *PBIPtr;\n \n \tcgc_free(PBIPtr);\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n@@ -198,7 +198,7 @@ backlogItemType *sprintBIPtr;\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n \t\tPBIPtr->next = 0;\n-\t\treturn 0;\n+\t\treturn -1;\n \t}\n \n \tsprintBIPtr = sprintPtr->sprintBacklogList;\n@@ -213,7 +213,7 @@ backlogItemType *sprintBIPtr;\n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n@@ -265,7 +265,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->status = message->status;\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n@@ -321,7 +321,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->story_points = message->status;\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n@@ -383,7 +383,7 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_strcpy(SBIPtr->description, &message->desc);\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n@@ -461,7 +461,7 @@ backlogItemType *SBIPtr;\n \t// update the sprint's total points \n \tsprintPtr->total_points -= SBIPtr->story_points;\n \n-\treturn 0;\n+\treturn -1;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-22807-6ae824-backlogitems.c\n@@ -126,7 +126,7 @@ backlogItemType *PBIPtr;\n \t\tprevPBI->next = PBIPtr->next;\n \t}\n \n-\tif (PBIPtr->description != 0) \n+\tif (PBIPtr->description < 0 || PBIPtr->description > 0 + strlen(0)) \n \t\tcgc_free(PBIPtr->description);\n \n \tcgc_free(PBIPtr);\n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-27685-60909b-backlogitems.c\n@@ -48,7 +48,7 @@ backlogItemType *PBIPtr;\n \t}\n \n \n-\tnewPBI = (backlogItemType *)cgc_calloc(sizeof(backlogItemType));\n+\tnewPBI = cgc_calloc(sizeof(backlogItemType));\n \n \tif (newPBI == 0) \n \t\tcgc__terminate(-1);\n@@ -59,7 +59,7 @@ backlogItemType *PBIPtr;\n \tnewPBI->story_points = message->user_story_points;\n \tnewPBI->next = 0;\n \n-\tnewPBI->description = cgc_calloc(cgc_strlen(&message->title)+1);\n+\tnewPBI->description = cgc_calloc(cgc_strlen(&message->title) + 1);\n \n \tif (newPBI->description == 0)\n \t\tcgc__terminate(-1);\n@@ -374,7 +374,7 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_free(SBIPtr->description);\n \n-\tSBIPtr->description = malloc(cgc_strlen(&message->desc)+1);\n+\tSBIPtr->description = malloc(cgc_strlen(&message->desc) + 1);\n \n \tif (SBIPtr->description == 0)\n \t\tcgc__terminate(-1);\n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-22750-e5b20c-backlogitems.c\n@@ -71,7 +71,7 @@ backlogItemType *PBIPtr;\n \tif (database->productBacklog == 0) {\n \n \t\tdatabase->productBacklog = newPBI;\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \t}\n \n \tPBIPtr = database->productBacklog;\n@@ -82,7 +82,7 @@ backlogItemType *PBIPtr;\n \tPBIPtr->next = newPBI;\n \n \n-\treturn 0;\n+\tno_draw = 1;\n }\n \n \n@@ -131,7 +131,7 @@ backlogItemType *PBIPtr;\n \n \tcgc_free(PBIPtr);\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n@@ -198,7 +198,7 @@ backlogItemType *sprintBIPtr;\n \n \t\tsprintPtr->sprintBacklogList = PBIPtr;\n \t\tPBIPtr->next = 0;\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \t}\n \n \tsprintBIPtr = sprintPtr->sprintBacklogList;\n@@ -213,7 +213,7 @@ backlogItemType *sprintBIPtr;\n \t// update the total number of points assigned to this sprint\n \tsprintPtr->total_points += PBIPtr->story_points;\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n@@ -265,7 +265,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->status = message->status;\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n@@ -321,7 +321,7 @@ backlogItemType *sprintBIPtr;\n \n \tSBIPtr->story_points = message->status;\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n@@ -383,7 +383,7 @@ backlogItemType *sprintBIPtr;\n \n \tcgc_strcpy(SBIPtr->description, &message->desc);\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n@@ -461,7 +461,7 @@ backlogItemType *SBIPtr;\n \t// update the sprint's total points \n \tsprintPtr->total_points -= SBIPtr->story_points;\n \n-\treturn 0;\n+\tno_draw = 1;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-26427-27edf0-backlogitems.c\n@@ -119,7 +119,7 @@ backlogItemType *PBIPtr;\n \n \t\tif (PBIPtr == 0) {\n \n-\t\t\treturn -1;\n+\t\t\treturn 0;\n \n \t\t}\n \n@@ -186,7 +186,7 @@ backlogItemType *sprintBIPtr;\n \n \t\tif (PBIPtr == 0) {\n \n-\t\t\treturn -1;\n+\t\t\treturn 0;\n \n \t\t}\n \n@@ -259,7 +259,7 @@ backlogItemType *sprintBIPtr;\n \n \tif (SBIPtr == 0) {\n \n-\t\treturn -1;\n+\t\treturn 0;\n \n \t}\n \n@@ -311,7 +311,7 @@ backlogItemType *sprintBIPtr;\n \n \tif (SBIPtr == 0) {\n \n-\t\treturn -1;\n+\t\treturn 0;\n \n \t}\n \n@@ -366,7 +366,7 @@ backlogItemType *sprintBIPtr;\n \n \tif (SBIPtr == 0) {\n \n-\t\treturn -1;\n+\t\treturn 0;\n \n \t}\n \n@@ -431,7 +431,7 @@ backlogItemType *SBIPtr;\n \n \tif (SBIPtr == 0) {\n \n-\t\treturn -1;\n+\t\treturn 0;\n \n \t}\n \n",
+        "--- /tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c\n+++ /tmp/cocci-output-24778-90904f-backlogitems.c\n@@ -104,7 +104,7 @@ backlogItemType *PBIPtr;\n \n \tPBIPtr = database->productBacklog;\n \n-\tif (PBIPtr->ID == message->pbItemID) {\n+\tif (PBIPtr->ID % message->pbItemID == 0) {\n \n \t\tdatabase->productBacklog = PBIPtr->next;\n \n@@ -171,7 +171,7 @@ backlogItemType *sprintBIPtr;\n \n \tPBIPtr = database->productBacklog;\n \n-\tif (PBIPtr->ID == message->pbItemID) {\n+\tif (PBIPtr->ID % message->pbItemID == 0) {\n \n \t\tdatabase->productBacklog = PBIPtr->next;\n \n@@ -435,7 +435,7 @@ backlogItemType *SBIPtr;\n \n \t}\n \n-\tif (SBIPtr == sprintPtr->sprintBacklogList) {\n+\tif (SBIPtr % sprintPtr->sprintBacklogList == 0) {\n \n \t\tsprintPtr->sprintBacklogList = sprintPtr->sprintBacklogList->next;\n \t}\n@@ -446,7 +446,7 @@ backlogItemType *SBIPtr;\n \n \tSBIPtr->next = 0;\n \n-\tif (PBIPtr == 0) {\n+\tif (PBIPtr % 0 == 0) {\n \n \t\tdatabase->productBacklog = SBIPtr;\n \t}\n"
+      ]
+    }
+  ],
+  "compilations": 6,
+  "failed_compilations": 5,
+  "outcomes": {
+    "002e075d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fb78e745": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "ece78b05": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e8df524d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:74:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:85:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:134:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:201:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:216:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:268:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:324:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:386:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:464:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n9 errors generated.\nmake[2]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/src/backlogitems.c.o] Error 1\nmake[1]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7205f81e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "57b09401": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:74:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:75:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:86:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:87:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:136:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:137:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:204:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:205:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:220:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:221:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:273:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:274:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:330:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:331:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:393:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:394:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:472:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:473:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n18 errors generated.\nmake[2]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/src/backlogitems.c.o] Error 1\nmake[1]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5e2e40ec": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:74:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:85:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:134:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:201:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:216:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:268:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:324:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:386:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:464:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n9 errors generated.\nmake[2]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/src/backlogitems.c.o] Error 1\nmake[1]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c8afa15e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:74:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:85:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:134:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:201:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:216:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:268:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:324:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:386:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:464:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n9 errors generated.\nmake[2]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/src/backlogitems.c.o] Error 1\nmake[1]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d61d26fb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a753ca39": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "560cc5d1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:438:13: error: invalid operands to binary expression ('backlogItemType *' (aka 'struct backlogItem *') and 'backlogItemType *')\n        if (SBIPtr % sprintPtr->sprintBacklogList == 0) {\n            ~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/tmp/FlexiRepair/Scrum_Database_0/Scrum_Database/src/backlogitems.c:449:13: error: invalid operands to binary expression ('backlogItemType *' (aka 'struct backlogItem *') and 'int')\n        if (PBIPtr % 0 == 0) {\n            ~~~~~~ ^ ~\n2 errors generated.\nmake[2]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/src/backlogitems.c.o] Error 1\nmake[1]: *** [Scrum_Database/CMakeFiles/Scrum_Database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 114,
+  "failed_neg_tests": 6,
+  "failed_pos_tests": 6,
+  "duration": 440.580438,
+  "errors": []
+}

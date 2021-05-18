@@ -1,0 +1,3842 @@
+{
+  "repair_begin": "2021-05-08 23:00:41.369972",
+  "repair_end": "2021-05-08 23:32:57.119207",
+  "patches": [
+    {
+      "target_file": "src/yolodex.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-5220-318935-yolodex.c\n@@ -392,7 +392,6 @@ void cgc_editUser(contact *ptr) {\n \t\t\treturn;\n \t\t}\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n #endif\n \t\tif(data[0] != 0) {\n \t\t\tcgc_memset(ptr->first, 0, 32);\n@@ -401,7 +400,6 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New last name: \");\n \t\tcgc_recvUntil(data, 32, '\\n');\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n #endif\n \n \t\tif(data[0] && cgc_validateName(data) == 0) {\n@@ -415,7 +413,6 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New phone number: \");\n \t\tcgc_recvUntil(data, 14, '\\n');\n #ifdef PATCHED\n-\t\tdata[13] = 0;\n #endif\n \t\tif(data[0] && cgc_validatePhone(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1989-ab8a6b-yolodex.c\n@@ -292,7 +292,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\t}\n \t\ttmp++;\n \t}\n-\treturn tmp-dst;\n+\treturn (tmp - dst - 1);\n }\n \n void cgc_promptAdd() {\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-31641-bfdfba-yolodex.c\n@@ -108,7 +108,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid first name.  Must begin with a capital letter.\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tif(cgc_validateName(last)) {\n \t\tcgc_memcpy(ret->last, last, cgc_strlen(last));\n@@ -116,7 +116,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid last name.  Must begin with a capital letter.\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tif(cgc_validatePhone(phone)) {\n \t\tcgc_memcpy(ret->phone, phone, cgc_strlen(phone));\n@@ -124,7 +124,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid phone number...must look like (nnn)nnn-nnnn\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tret->officenum = officenum;\n \tret->gender = gender;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-26682-e4a0cb-yolodex.c\n@@ -60,7 +60,7 @@ int cgc_validateName(char *name)\n {\n \t//let's make it title case.  And lets yell if its not.\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \telse\n \t\treturn 0;\n }\n@@ -90,7 +90,7 @@ int cgc_validatePhone(char *phonenumber)\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n-\treturn 1;\n+\treturn (EINVAL);\n }\n \n contact *cgc_createContact(char *first, char *last, char *phone, unsigned short officenum, char gender, char hacker)\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-5556-156b10-yolodex.c\n@@ -299,7 +299,7 @@ void cgc_promptAdd() {\n \tchar first[32];\n \tchar last[32];\n \tchar phone[16];\n-\tchar officetmp[8];\n+\tchar officetmp[EALG_MAX_BLOCK_LEN];\n \tshort officenum;\n \tchar gender;\n \tchar hacker;\n@@ -381,7 +381,7 @@ void cgc_promptDel() {\n \n void cgc_editUser(contact *ptr) {\n \tchar data[32];\n-\tchar number[8];\n+\tchar number[EALG_MAX_BLOCK_LEN];\n \n \tif(ptr != NULL) {\n \t\tcgc_puts(\"Updating fields.  Send just a newline to keep old data.\");\n@@ -451,7 +451,7 @@ void cgc_editUser(contact *ptr) {\n void cgc_promptEdit() {\n \tcontact *ptr;\n \tchar data[32];\n-\tchar number[8];\n+\tchar number[EALG_MAX_BLOCK_LEN];\n \n \tcgc_memset(number, 0, 8);\n \tptr = cgc_findContact();\n@@ -464,7 +464,7 @@ void cgc_promptEdit() {\n \n void cgc_promptShow() {\n \tcontact *ptr;\n-\tchar office[8];\n+\tchar office[EALG_MAX_BLOCK_LEN];\n \tchar useraction[2];\n \n \tptr = cgc_findContact();\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-6185-547bfc-yolodex.c\n@@ -392,7 +392,7 @@ void cgc_editUser(contact *ptr) {\n \t\t\treturn;\n \t\t}\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n+\t\tdata[31] = -5;\n #endif\n \t\tif(data[0] != 0) {\n \t\t\tcgc_memset(ptr->first, 0, 32);\n@@ -401,7 +401,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New last name: \");\n \t\tcgc_recvUntil(data, 32, '\\n');\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n+\t\tdata[31] = -5;\n #endif\n \n \t\tif(data[0] && cgc_validateName(data) == 0) {\n@@ -415,7 +415,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New phone number: \");\n \t\tcgc_recvUntil(data, 14, '\\n');\n #ifdef PATCHED\n-\t\tdata[13] = 0;\n+\t\tdata[13] = -5;\n #endif\n \t\tif(data[0] && cgc_validatePhone(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-28994-c37fcc-yolodex.c\n@@ -60,7 +60,7 @@ int cgc_validateName(char *name)\n {\n \t//let's make it title case.  And lets yell if its not.\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n-\t\treturn 1;\n+\t\tret = 1;\n \telse\n \t\treturn 0;\n }\n@@ -90,7 +90,7 @@ int cgc_validatePhone(char *phonenumber)\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n-\treturn 1;\n+\tret = 1;\n }\n \n contact *cgc_createContact(char *first, char *last, char *phone, unsigned short officenum, char gender, char hacker)\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-4567-9446e7-yolodex.c\n@@ -298,7 +298,7 @@ int cgc_recvUntil(char *dst, int n, char\n void cgc_promptAdd() {\n \tchar first[32];\n \tchar last[32];\n-\tchar phone[16];\n+\tchar phone[CVS_ENT_MAXLINELEN];\n \tchar officetmp[8];\n \tshort officenum;\n \tchar gender;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1681-2f59c2-yolodex.c\n@@ -68,7 +68,7 @@ int cgc_validateName(char *name)\n int cgc_validatePhone(char *phonenumber)\n {\n \tint i;\n-\tchar *digit;\n+\tzstr digit;\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n@@ -277,7 +277,7 @@ void cgc_initYolodex() {\n \n int cgc_recvUntil(char *dst, int n, char delim)\n {\n-\tchar *tmp;\n+\tzstr tmp;\n \tcgc_size_t gotBytes;\n \ttmp = dst;\n \twhile(n--)\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1827-9369b2-yolodex.c\n@@ -158,14 +158,14 @@ contact *cgc_remove(contact *toRemove)\n \t\treturn toRemove;\n \t}\n \n-\tif(toRemove->prev == NULL) {\n+\tif (toRemove->prev == NULL || gtk_notebook_get_current_page(toRemove->prev) == -1) {\n \t\tcgc_head = toRemove->next;\n \t\ttoRemove->next->prev = NULL;\n \t}\n \telse\n \t\ttoRemove->prev->next = toRemove->next;\n \n-\tif(toRemove->next == NULL)\n+\tif (toRemove->next == NULL || gtk_notebook_get_current_page(toRemove->next) == -1)\n \t\ttoRemove->prev->next = NULL;\n \telse\n \t\ttoRemove->next->prev = toRemove->prev;\n@@ -250,7 +250,7 @@ void cgc_sortYolodex() {\n \t\t\tptr = ptr->next;\n \t\t}\n \t\ttmp = cgc_remove(first);\n-\t\tif(sorted == NULL)\n+\t\tif (sorted == NULL || gtk_notebook_get_current_page(sorted) == -1)\n \t\t{\n \t\t\tsorted = first;\n \t\t} else {\n@@ -502,12 +502,13 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_remove(ptr);\n \t\t\t\t\tcgc_puts(\"No more contacts.  Leaving detail view.\");\n \t\t\t\t\tuseraction[0]='q';\n-\t\t\t\t} else if (ptr->next == NULL) {\n-\t\t\t\t\tptr = ptr->prev;\n-\t\t\t\t\tcgc_remove(ptr->next);\n-\t\t\t\t} else {\n-\t\t\t\t\tptr = ptr->next;\n-\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t} else {if (ptr->next == NULL || gtk_notebook_get_current_page(ptr->next) == -1) {\n+\t\t\t\t\t\tptr = ptr->prev;\n+\t\t\t\t\t\tcgc_remove(ptr->next);\n+\t\t\t\t\t} else {\n+\t\t\t\t\t\tptr = ptr->next;\n+\t\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t\tbreak;\n \t\t\tcase 'e':\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-3240-1f023a-yolodex.c\n@@ -286,7 +286,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\tif(gotBytes == 0) {\n \t\t\tcgc__terminate(-1);\n \t\t}\n-\t\tif(*tmp == delim) {\n+\t\tif (tmp == delim) {\n \t\t\t*tmp = 0;\n \t\t\tbreak;\n \t\t}\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-2273-24c17a-yolodex.c\n@@ -296,14 +296,14 @@ int cgc_recvUntil(char *dst, int n, char\n }\n \n void cgc_promptAdd() {\n-\tchar first[32];\n-\tchar last[32];\n-\tchar phone[16];\n-\tchar officetmp[8];\n+\tchar first[32] = \"\";\n+\tchar last[32] = \"\";\n+\tchar phone[16] = \"\";\n+\tchar officetmp[8] = \"\";\n \tshort officenum;\n \tchar gender;\n \tchar hacker;\n-\tchar tmp[2];\n+\tchar tmp[2] = \"\";\n \n \tcontact *ptr;\n \tcgc_memset(phone, 0, 16);\n@@ -344,8 +344,8 @@ void cgc_promptAdd() {\n }\n \n contact *cgc_findContact() {\n-\tchar first[32];\n-\tchar last[32];\n+\tchar first[32] = \"\";\n+\tchar last[32] = \"\";\n \tcontact *ptr;\n \tcontact *ret = NULL;\n \tcgc_put(\"First: \");\n@@ -380,8 +380,8 @@ void cgc_promptDel() {\n }\n \n void cgc_editUser(contact *ptr) {\n-\tchar data[32];\n-\tchar number[8];\n+\tchar data[32] = \"\";\n+\tchar number[8] = \"\";\n \n \tif(ptr != NULL) {\n \t\tcgc_puts(\"Updating fields.  Send just a newline to keep old data.\");\n@@ -450,8 +450,8 @@ void cgc_editUser(contact *ptr) {\n \n void cgc_promptEdit() {\n \tcontact *ptr;\n-\tchar data[32];\n-\tchar number[8];\n+\tchar data[32] = \"\";\n+\tchar number[8] = \"\";\n \n \tcgc_memset(number, 0, 8);\n \tptr = cgc_findContact();\n@@ -464,8 +464,8 @@ void cgc_promptEdit() {\n \n void cgc_promptShow() {\n \tcontact *ptr;\n-\tchar office[8];\n-\tchar useraction[2];\n+\tchar office[8] = \"\";\n+\tchar useraction[2] = \"\";\n \n \tptr = cgc_findContact();\n \tif(ptr == NULL) {\n@@ -545,7 +545,7 @@ void cgc_initCookies() {\n }\n \n void cgc_inputLoop() {\n-\tchar action[2];\n+\tchar action[2] = \"\";\n \twhile(1)\n \t{\n \t\tcgc_memset(action, 0, 2);\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-3036-183fde-yolodex.c\n@@ -71,21 +71,21 @@ int cgc_validatePhone(char *phonenumber)\n \tchar *digit;\n \n \tdigit = phonenumber;\n-\tif(*digit++ != '(')\n+\tif (archive_le32dec(digit++) != (uint32_t)'(')\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n \t}\n-\tif(*digit++ != ')')\n+\tif (archive_le32dec(digit++) != (uint32_t)')')\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n \t}\n-\tif(*digit++ != '-')\n+\tif (archive_le32dec(digit++) != (uint32_t)'-')\n \t\treturn 0;\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-26256-ead2d6-yolodex.c\n@@ -62,7 +62,7 @@ int cgc_validateName(char *name)\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n \t\treturn 1;\n \telse\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_validatePhone(char *phonenumber)\n@@ -72,24 +72,24 @@ int cgc_validatePhone(char *phonenumber)\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t}\n \tif(*digit++ != ')')\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t}\n \tif(*digit++ != '-')\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-2207-ac67dc-yolodex.c\n@@ -158,14 +158,14 @@ contact *cgc_remove(contact *toRemove)\n \t\treturn toRemove;\n \t}\n \n-\tif(toRemove->prev == NULL) {\n+\tif (toRemove->prev == NULL) {\n \t\tcgc_head = toRemove->next;\n \t\ttoRemove->next->prev = NULL;\n \t}\n \telse\n \t\ttoRemove->prev->next = toRemove->next;\n \n-\tif(toRemove->next == NULL)\n+\tif (toRemove->next == NULL)\n \t\ttoRemove->prev->next = NULL;\n \telse\n \t\ttoRemove->next->prev = toRemove->prev;\n@@ -250,7 +250,7 @@ void cgc_sortYolodex() {\n \t\t\tptr = ptr->next;\n \t\t}\n \t\ttmp = cgc_remove(first);\n-\t\tif(sorted == NULL)\n+\t\tif (sorted == NULL)\n \t\t{\n \t\t\tsorted = first;\n \t\t} else {\n@@ -502,12 +502,13 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_remove(ptr);\n \t\t\t\t\tcgc_puts(\"No more contacts.  Leaving detail view.\");\n \t\t\t\t\tuseraction[0]='q';\n-\t\t\t\t} else if (ptr->next == NULL) {\n-\t\t\t\t\tptr = ptr->prev;\n-\t\t\t\t\tcgc_remove(ptr->next);\n-\t\t\t\t} else {\n-\t\t\t\t\tptr = ptr->next;\n-\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t} else {if (ptr->next == NULL) {\n+\t\t\t\t\t\tptr = ptr->prev;\n+\t\t\t\t\t\tcgc_remove(ptr->next);\n+\t\t\t\t\t} else {\n+\t\t\t\t\t\tptr = ptr->next;\n+\t\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t\tbreak;\n \t\t\tcase 'e':\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-4912-3600af-yolodex.c\n@@ -298,7 +298,7 @@ int cgc_recvUntil(char *dst, int n, char\n void cgc_promptAdd() {\n \tchar first[32];\n \tchar last[32];\n-\tchar phone[16];\n+\tchar phone[32];\n \tchar officetmp[8];\n \tshort officenum;\n \tchar gender;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-4409-7943de-yolodex.c\n@@ -299,7 +299,7 @@ void cgc_promptAdd() {\n \tchar first[32];\n \tchar last[32];\n \tchar phone[16];\n-\tchar officetmp[8];\n+\tchar officetmp[EVP_MAX_IV_LENGTH];\n \tshort officenum;\n \tchar gender;\n \tchar hacker;\n@@ -381,7 +381,7 @@ void cgc_promptDel() {\n \n void cgc_editUser(contact *ptr) {\n \tchar data[32];\n-\tchar number[8];\n+\tchar number[EVP_MAX_IV_LENGTH];\n \n \tif(ptr != NULL) {\n \t\tcgc_puts(\"Updating fields.  Send just a newline to keep old data.\");\n@@ -451,7 +451,7 @@ void cgc_editUser(contact *ptr) {\n void cgc_promptEdit() {\n \tcontact *ptr;\n \tchar data[32];\n-\tchar number[8];\n+\tchar number[EVP_MAX_IV_LENGTH];\n \n \tcgc_memset(number, 0, 8);\n \tptr = cgc_findContact();\n@@ -464,7 +464,7 @@ void cgc_promptEdit() {\n \n void cgc_promptShow() {\n \tcontact *ptr;\n-\tchar office[8];\n+\tchar office[EVP_MAX_IV_LENGTH];\n \tchar useraction[2];\n \n \tptr = cgc_findContact();\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-522-8d0f64-yolodex.c\n@@ -181,13 +181,13 @@ void cgc_printGender(char gender)\n \t{\n \t\tcase 'M':\n \t\t\tcgc_puts(\"Male\");\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\tcase 'F':\n \t\t\tcgc_puts(\"Female\");\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\tcase 'T':\n \t\t\tcgc_puts(\"Trans-Gender\");\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\tdefault:\n \t\t\tcgc_puts(\"Other\");\n \t}\n@@ -238,12 +238,12 @@ void cgc_sortYolodex() {\n \t\t\t{\n \t\t\t\tif(first->last[i] > ptr->last[i]) {\n \t\t\t\t\tfirst = ptr;\n-\t\t\t\t\tbreak;\n+\t\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\t\t}\n \t\t\t\tif(first->last[i] == ptr->last[i])\n \t\t\t\t\ti++;\n \t\t\t\telse\n-\t\t\t\t\tbreak;\n+\t\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\t}\n \t\t\tif(!ptr->last[i] && first->last[i])\n \t\t\t\tfirst = ptr;\n@@ -288,7 +288,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\t}\n \t\tif(*tmp == delim) {\n \t\t\t*tmp = 0;\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t\ttmp++;\n \t}\n@@ -358,7 +358,7 @@ contact *cgc_findContact() {\n \t\tif(cgc_strcmp(first, ptr->first) == 0) {\n \t\t\tif(cgc_strcmp(last, ptr->last) == 0) {\n \t\t\t\tret = ptr;\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\t}\n \t\t}\n \t\tptr = ptr->next;\n@@ -496,7 +496,7 @@ void cgc_promptShow() {\n \t\tcgc_recvUntil(useraction, 2, '\\n');\n \t\tswitch(useraction[0]) {\n \t\t\tcase 'q':\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 'd':\n \t\t\t\tif(ptr->next == NULL && ptr->prev == NULL) {\n \t\t\t\t\tcgc_remove(ptr);\n@@ -509,16 +509,16 @@ void cgc_promptShow() {\n \t\t\t\t\tptr = ptr->next;\n \t\t\t\t\tcgc_remove(ptr->prev);\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 'e':\n \t\t\t\tcgc_editUser(ptr);\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 'n':\n \t\t\t\tif(ptr->next != NULL)\n \t\t\t\t\tptr = ptr->next;\n \t\t\t\telse\n \t\t\t\t\tcgc_puts(\"No next contact.\");\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 'p':\n \t\t\t\tif(ptr->prev != NULL)\n \t\t\t\t\tptr = ptr->prev;\n@@ -554,25 +554,25 @@ void cgc_inputLoop() {\n \t\t{\n \t\t\tcase YOLO_ADD:\n \t\t\t\tcgc_promptAdd();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase YOLO_DEL:\n \t\t\t\tcgc_promptDel();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase YOLO_EDIT:\n \t\t\t\tcgc_promptEdit();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase YOLO_EXIT:\n \t\t\t\tcgc_puts(\"Thank you for using the yolodex.\");\n \t\t\t\tcgc__terminate(0);\n \t\t\tcase YOLO_LIST:\n \t\t\t\tcgc_printList();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase YOLO_SORT:\n \t\t\t\tcgc_sortYolodex();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase YOLO_SHOW:\n \t\t\t\tcgc_promptShow();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tdefault:\n \t\t\t\tcgc_puts(\"Unrecognized Command.\");\n \t\t}\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-29244-26c14d-yolodex.c\n@@ -60,7 +60,7 @@ int cgc_validateName(char *name)\n {\n \t//let's make it title case.  And lets yell if its not.\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n-\t\treturn 1;\n+\t\treturn (1);\n \telse\n \t\treturn 0;\n }\n@@ -90,7 +90,7 @@ int cgc_validatePhone(char *phonenumber)\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n-\treturn 1;\n+\treturn (1);\n }\n \n contact *cgc_createContact(char *first, char *last, char *phone, unsigned short officenum, char gender, char hacker)\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-5029-3868ce-yolodex.c\n@@ -130,7 +130,7 @@ contact *cgc_createContact(char *first,\n \tret->gender = gender;\n \tret->hacker = hacker;\n \tret->cookie = cgc_cookie;\n-\tret->pad = 0;\n+\tret->pad = -1;\n \tret->next = NULL;\n \tret->prev = NULL;\n \treturn ret;\n@@ -233,7 +233,7 @@ void cgc_sortYolodex() {\n \t{\n \t\twhile(ptr != NULL)\n \t\t{\n-\t\t\ti = 0;\n+\t\t\ti = -1;\n \t\t\twhile(first->last[i] && ptr->last[i])\n \t\t\t{\n \t\t\t\tif(first->last[i] > ptr->last[i]) {\n@@ -287,7 +287,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\t\tcgc__terminate(-1);\n \t\t}\n \t\tif(*tmp == delim) {\n-\t\t\t*tmp = 0;\n+\t\t\t*tmp = -1;\n \t\t\tbreak;\n \t\t}\n \t\ttmp++;\n@@ -392,7 +392,7 @@ void cgc_editUser(contact *ptr) {\n \t\t\treturn;\n \t\t}\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n+\t\tdata[31] = -1;\n #endif\n \t\tif(data[0] != 0) {\n \t\t\tcgc_memset(ptr->first, 0, 32);\n@@ -401,7 +401,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New last name: \");\n \t\tcgc_recvUntil(data, 32, '\\n');\n #ifdef PATCHED\n-\t\tdata[31] = 0;\n+\t\tdata[31] = -1;\n #endif\n \n \t\tif(data[0] && cgc_validateName(data) == 0) {\n@@ -415,7 +415,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_put(\"New phone number: \");\n \t\tcgc_recvUntil(data, 14, '\\n');\n #ifdef PATCHED\n-\t\tdata[13] = 0;\n+\t\tdata[13] = -1;\n #endif\n \t\tif(data[0] && cgc_validatePhone(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-25641-1034bf-yolodex.c\n@@ -75,21 +75,22 @@ int cgc_validatePhone(char *phonenumber)\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n+\t\tif (*digit > '9')\n \t\t\treturn 0;\n \t}\n \tif(*digit++ != ')')\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n+\t\tif (*digit > '9')\n \t\t\treturn 0;\n \t}\n \tif(*digit++ != '-')\n \t\treturn 0;\n \tfor(i=0;i<4;i++,digit++)\n-\t\tif(*digit < '0' || *digit > '9')\n+\t{if (*digit > '9')\n \t\t\treturn 0;\n+\t}\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-31777-ea8f34-yolodex.c\n@@ -141,7 +141,7 @@ void cgc_insert(contact *toAdd)\n \tcontact *tmp;\n \tif(cgc_head == NULL) {\n \t\tcgc_head = toAdd;\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \ttmp = cgc_head;\n \twhile(tmp->next != NULL) {\n@@ -149,6 +149,7 @@ void cgc_insert(contact *toAdd)\n \t}\n \ttmp->next = toAdd;\n \ttoAdd->prev = tmp;\n+\treturn 0;\n }\n \n contact *cgc_remove(contact *toRemove)\n@@ -389,7 +390,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_recvUntil(data, 32, '\\n');\n \t\tif(data[0] && cgc_validateName(data) == 0){\n \t\t\tcgc_puts(\"Not a legal first name.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\treturn 0;\n \t\t}\n #ifdef PATCHED\n \t\tdata[31] = 0;\n@@ -406,7 +407,7 @@ void cgc_editUser(contact *ptr) {\n \n \t\tif(data[0] && cgc_validateName(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal last name.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\treturn 0;\n \t\t}\n \t\tif(data[0] != 0){\n \t\t\tcgc_memset(ptr->last, 0, 32);\n@@ -419,7 +420,7 @@ void cgc_editUser(contact *ptr) {\n #endif\n \t\tif(data[0] && cgc_validatePhone(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\treturn 0;\n \t\t}\n \t\tif(data[0] != 0) {\n \t\t\tcgc_memset(ptr->phone, 0, 16);\n@@ -446,6 +447,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc__terminate(-1);\n \t}\n \n+\treturn 0;\n }\n \n void cgc_promptEdit() {\n@@ -457,9 +459,10 @@ void cgc_promptEdit() {\n \tptr = cgc_findContact();\n \tif(ptr == NULL) {\n \t\tcgc_puts(\"No such contact.\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \tcgc_editUser(ptr);\n+\treturn 0;\n }\n \n void cgc_promptShow() {\n@@ -470,7 +473,7 @@ void cgc_promptShow() {\n \tptr = cgc_findContact();\n \tif(ptr == NULL) {\n \t\tcgc_puts(\"No such contact.\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \tcgc_memset(useraction, 0, 2);\n \tuseraction[0] = 's';\n@@ -526,6 +529,7 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_puts(\"No previous contact.\");\n \t\t}\n \t}\n+\treturn 0;\n }\n \n void cgc_initCookies() {\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-26493-fcabed-yolodex.c\n@@ -62,7 +62,7 @@ int cgc_validateName(char *name)\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n \t\treturn 1;\n \telse\n-\t\treturn 0;\n+\t\tno_draw = 1;\n }\n \n int cgc_validatePhone(char *phonenumber)\n@@ -72,24 +72,24 @@ int cgc_validatePhone(char *phonenumber)\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\tno_draw = 1;\n \t}\n \tif(*digit++ != ')')\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\tno_draw = 1;\n \t}\n \tif(*digit++ != '-')\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\tno_draw = 1;\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-4099-c3068d-yolodex.c\n@@ -67,7 +67,7 @@ int cgc_validateName(char *name)\n \n int cgc_validatePhone(char *phonenumber)\n {\n-\tint i;\n+\tconst struct options_table_entry *oe;\n \tchar *digit;\n \n \tdigit = phonenumber;\n@@ -223,7 +223,7 @@ void cgc_sortYolodex() {\n \tcontact *first;\n \tcontact *other;\n \tcontact *sorted = NULL;\n-\tint i;\n+\tconst struct options_table_entry *oe;\n \n \tptr = cgc_head;\n \tfirst = cgc_head;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-30855-d2505f-yolodex.c\n@@ -141,7 +141,7 @@ void cgc_insert(contact *toAdd)\n \tcontact *tmp;\n \tif(cgc_head == NULL) {\n \t\tcgc_head = toAdd;\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \ttmp = cgc_head;\n \twhile(tmp->next != NULL) {\n@@ -149,6 +149,7 @@ void cgc_insert(contact *toAdd)\n \t}\n \ttmp->next = toAdd;\n \ttoAdd->prev = tmp;\n+\tgoto done;\n }\n \n contact *cgc_remove(contact *toRemove)\n@@ -389,7 +390,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc_recvUntil(data, 32, '\\n');\n \t\tif(data[0] && cgc_validateName(data) == 0){\n \t\t\tcgc_puts(\"Not a legal first name.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\tgoto done;\n \t\t}\n #ifdef PATCHED\n \t\tdata[31] = 0;\n@@ -406,7 +407,7 @@ void cgc_editUser(contact *ptr) {\n \n \t\tif(data[0] && cgc_validateName(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal last name.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\tgoto done;\n \t\t}\n \t\tif(data[0] != 0){\n \t\t\tcgc_memset(ptr->last, 0, 32);\n@@ -419,7 +420,7 @@ void cgc_editUser(contact *ptr) {\n #endif\n \t\tif(data[0] && cgc_validatePhone(data) == 0) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n-\t\t\treturn;\n+\t\t\tgoto done;\n \t\t}\n \t\tif(data[0] != 0) {\n \t\t\tcgc_memset(ptr->phone, 0, 16);\n@@ -446,6 +447,7 @@ void cgc_editUser(contact *ptr) {\n \t\tcgc__terminate(-1);\n \t}\n \n+\tgoto done;\n }\n \n void cgc_promptEdit() {\n@@ -457,9 +459,10 @@ void cgc_promptEdit() {\n \tptr = cgc_findContact();\n \tif(ptr == NULL) {\n \t\tcgc_puts(\"No such contact.\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \tcgc_editUser(ptr);\n+\tgoto done;\n }\n \n void cgc_promptShow() {\n@@ -470,7 +473,7 @@ void cgc_promptShow() {\n \tptr = cgc_findContact();\n \tif(ptr == NULL) {\n \t\tcgc_puts(\"No such contact.\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \tcgc_memset(useraction, 0, 2);\n \tuseraction[0] = 's';\n@@ -526,6 +529,7 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_puts(\"No previous contact.\");\n \t\t}\n \t}\n+\tgoto done;\n }\n \n void cgc_initCookies() {\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-29971-cbe2c6-yolodex.c\n@@ -61,8 +61,10 @@ int cgc_validateName(char *name)\n \t//let's make it title case.  And lets yell if its not.\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n \t\treturn 1;\n-\telse\n-\t\treturn 0;\n+\telse {\n+\t\trestorescr(old);\n+\t\treturn ret;\n+\t}\n }\n \n int cgc_validatePhone(char *phonenumber)\n@@ -71,25 +73,37 @@ int cgc_validatePhone(char *phonenumber)\n \tchar *digit;\n \n \tdigit = phonenumber;\n-\tif(*digit++ != '(')\n-\t\treturn 0;\n+\tif(*digit++ != '(') {\n+\t\trestorescr(old);\n+\t\treturn ret;\n+\t}\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\tif(*digit < '0' || *digit > '9') {\n+\t\t\trestorescr(old);\n+\t\t\treturn ret;\n+\t\t}\n+\t}\n+\tif(*digit++ != ')') {\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t}\n-\tif(*digit++ != ')')\n-\t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\tif(*digit < '0' || *digit > '9') {\n+\t\t\trestorescr(old);\n+\t\t\treturn ret;\n+\t\t}\n+\t}\n+\tif(*digit++ != '-') {\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t}\n-\tif(*digit++ != '-')\n-\t\treturn 0;\n \tfor(i=0;i<4;i++,digit++)\n-\t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\tif(*digit < '0' || *digit > '9') {\n+\t\t\trestorescr(old);\n+\t\t\treturn ret;\n+\t\t}\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1249-e0f373-yolodex.c\n@@ -131,7 +131,7 @@ contact *cgc_createContact(char *first,\n \tret->hacker = hacker;\n \tret->cookie = cgc_cookie;\n \tret->pad = 0;\n-\tret->next = NULL;\n+\tret->next = ret->dir_next = NULL;\n \tret->prev = NULL;\n \treturn ret;\n }\n@@ -166,11 +166,11 @@ contact *cgc_remove(contact *toRemove)\n \t\ttoRemove->prev->next = toRemove->next;\n \n \tif(toRemove->next == NULL)\n-\t\ttoRemove->prev->next = NULL;\n+\t\ttoRemove->prev->next = toRemove->prev->dir_next = NULL;\n \telse\n \t\ttoRemove->next->prev = toRemove->prev;\n \n-\ttoRemove->next = NULL;\n+\ttoRemove->next = toRemove->dir_next = NULL;\n \ttoRemove->prev = NULL;\n \treturn toRemove;\n }\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-27541-66c495-yolodex.c\n@@ -62,7 +62,7 @@ int cgc_validateName(char *name)\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n \t\treturn 1;\n \telse\n-\t\treturn 0;\n+\t\treturn -1;\n }\n \n int cgc_validatePhone(char *phonenumber)\n@@ -72,24 +72,24 @@ int cgc_validatePhone(char *phonenumber)\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n-\t\treturn 0;\n+\t\treturn -1;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn -1;\n \t}\n \tif(*digit++ != ')')\n-\t\treturn 0;\n+\t\treturn -1;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn -1;\n \t}\n \tif(*digit++ != '-')\n-\t\treturn 0;\n+\t\treturn -1;\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn -1;\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-25079-8d6651-yolodex.c\n@@ -296,8 +296,6 @@ int cgc_recvUntil(char *dst, int n, char\n }\n \n void cgc_promptAdd() {\n-\tchar first[32];\n-\tchar last[32];\n \tchar phone[16];\n \tchar officetmp[8];\n \tshort officenum;\n@@ -344,8 +342,6 @@ void cgc_promptAdd() {\n }\n \n contact *cgc_findContact() {\n-\tchar first[32];\n-\tchar last[32];\n \tcontact *ptr;\n \tcontact *ret = NULL;\n \tcgc_put(\"First: \");\n@@ -380,7 +376,6 @@ void cgc_promptDel() {\n }\n \n void cgc_editUser(contact *ptr) {\n-\tchar data[32];\n \tchar number[8];\n \n \tif(ptr != NULL) {\n@@ -450,7 +445,6 @@ void cgc_editUser(contact *ptr) {\n \n void cgc_promptEdit() {\n \tcontact *ptr;\n-\tchar data[32];\n \tchar number[8];\n \n \tcgc_memset(number, 0, 8);\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-26521-f27e39-yolodex.c\n@@ -71,21 +71,21 @@ int cgc_validatePhone(char *phonenumber)\n \tchar *digit;\n \n \tdigit = phonenumber;\n-\tif(*digit++ != '(')\n+\tif (*digit++ < '(' || *digit++ > '(' + strlen('('))\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n \t}\n-\tif(*digit++ != ')')\n+\tif (*digit++ < ')' || *digit++ > ')' + strlen(')'))\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n \t\t\treturn 0;\n \t}\n-\tif(*digit++ != '-')\n+\tif (*digit++ < '-' || *digit++ > '-' + strlen('-'))\n \t\treturn 0;\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n@@ -335,7 +335,7 @@ void cgc_promptAdd() {\n \t\t}\n \t\tptr = cgc_createContact(first, last, phone, officenum, gender, hacker);\n \t}\n-\tif(ptr->cookie != cgc_cookie)\n+\tif (ptr->cookie < cgc_cookie || ptr->cookie > cgc_cookie + strlen(cgc_cookie))\n \t{\n \t\tcgc_puts(\"Contact corruption detected.\");\n \t\tcgc__terminate(-1);\n@@ -383,7 +383,7 @@ void cgc_editUser(contact *ptr) {\n \tchar data[32];\n \tchar number[8];\n \n-\tif(ptr != NULL) {\n+\tif (ptr < NULL || ptr > NULL + strlen(NULL)) {\n \t\tcgc_puts(\"Updating fields.  Send just a newline to keep old data.\");\n \t\tcgc_put(\"New first name: \");\n \t\tcgc_recvUntil(data, 32, '\\n');\n@@ -394,7 +394,7 @@ void cgc_editUser(contact *ptr) {\n #ifdef PATCHED\n \t\tdata[31] = 0;\n #endif\n-\t\tif(data[0] != 0) {\n+\t\tif (data[0] < 0 || data[0] > 0 + strlen(0)) {\n \t\t\tcgc_memset(ptr->first, 0, 32);\n \t\t\tcgc_memcpy(ptr->first, data, cgc_strlen(data));\n \t\t}\n@@ -408,7 +408,7 @@ void cgc_editUser(contact *ptr) {\n \t\t\tcgc_puts(\"Not a legal last name.  Stopping edit.\");\n \t\t\treturn;\n \t\t}\n-\t\tif(data[0] != 0){\n+\t\tif (data[0] < 0 || data[0] > 0 + strlen(0)){\n \t\t\tcgc_memset(ptr->last, 0, 32);\n \t\t\tcgc_memcpy(ptr->last, data, cgc_strlen(data));\n \t\t}\n@@ -421,7 +421,7 @@ void cgc_editUser(contact *ptr) {\n \t\t\tcgc_puts(\"Not a legal phone number.  Stopping edit.\");\n \t\t\treturn;\n \t\t}\n-\t\tif(data[0] != 0) {\n+\t\tif (data[0] < 0 || data[0] > 0 + strlen(0)) {\n \t\t\tcgc_memset(ptr->phone, 0, 16);\n \t\t\tcgc_memcpy(ptr->phone, data, cgc_strlen(data));\n \t\t}\n@@ -440,7 +440,7 @@ void cgc_editUser(contact *ptr) {\n \t\tif(data[0])\n \t\t\tptr->hacker = data[0];\n \t}\n-\tif(ptr->cookie != cgc_cookie)\n+\tif (ptr->cookie < cgc_cookie || ptr->cookie > cgc_cookie + strlen(cgc_cookie))\n \t{\n \t\tcgc_puts(\"Contact corruption detected.\");\n \t\tcgc__terminate(-1);\n@@ -536,7 +536,7 @@ void cgc_initCookies() {\n \tcontact *ptr;\n \n \tcgc_random(&cgc_cookie, 4, &bytes);\n-\tif(bytes != 4)\n+\tif (bytes < 4 || bytes > 4 + strlen(4))\n \t{\n \t\tcgc_puts(\"Couldn't get 4 random bytes.  Panic!\");\n \t\tcgc__terminate(-1);\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-31079-d3ebe2-yolodex.c\n@@ -280,7 +280,7 @@ int cgc_recvUntil(char *dst, int n, char\n \tchar *tmp;\n \tcgc_size_t gotBytes;\n \ttmp = dst;\n-\twhile(n--)\n+\twhile (n-- > 0)\n \t{\n \t\tcgc_receive(STDIN, tmp, 1, &gotBytes);\n \t\tif(gotBytes == 0) {\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-26602-602ab8-yolodex.c\n@@ -286,7 +286,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\tif(gotBytes == 0) {\n \t\t\tcgc__terminate(-1);\n \t\t}\n-\t\tif(*tmp == delim) {\n+\t\tif (MPI_SUCCESS == *tmp) {\n \t\t\t*tmp = 0;\n \t\t\tbreak;\n \t\t}\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-2395-cefae1-yolodex.c\n@@ -223,13 +223,14 @@ void cgc_sortYolodex() {\n \tcontact *first;\n \tcontact *other;\n \tcontact *sorted = NULL;\n-\tint i;\n \n \tptr = cgc_head;\n \tfirst = cgc_head;\n \ttmp = cgc_head;\n \n-\twhile(tmp != NULL)\n+\tquit = 0;\n+\tdb_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+\twhile (tmp != NULL && !quit)\n \t{\n \t\twhile(ptr != NULL)\n \t\t{\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-29326-169763-yolodex.c\n@@ -370,7 +370,7 @@ void cgc_promptDel() {\n \tcontact *ptr;\n \n \tptr = cgc_findContact();\n-\tif(ptr != NULL) {\n+\tif (ptr != NULL) {\n \t\tptr = cgc_remove(ptr);\n \t\tcgc_free(ptr);\n \t\tcgc_puts(\"Contact removed.\");\n@@ -514,15 +514,13 @@ void cgc_promptShow() {\n \t\t\t\tcgc_editUser(ptr);\n \t\t\t\tbreak;\n \t\t\tcase 'n':\n-\t\t\t\tif(ptr->next != NULL)\n-\t\t\t\t\tptr = ptr->next;\n-\t\t\t\telse\n+\t\t\t\tif (ptr != NULL)\n+\t\t\t\t\tptr->next = ptr->next;else\n \t\t\t\t\tcgc_puts(\"No next contact.\");\n \t\t\t\tbreak;\n \t\t\tcase 'p':\n-\t\t\t\tif(ptr->prev != NULL)\n-\t\t\t\t\tptr = ptr->prev;\n-\t\t\t\telse\n+\t\t\t\tif (ptr != NULL)\n+\t\t\t\t\tptr->prev = ptr->prev;else\n \t\t\t\t\tcgc_puts(\"No previous contact.\");\n \t\t}\n \t}\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1262-c03ef1-yolodex.c\n@@ -301,8 +301,8 @@ void cgc_promptAdd() {\n \tchar phone[16];\n \tchar officetmp[8];\n \tshort officenum;\n-\tchar gender;\n-\tchar hacker;\n+\tchar gender = '\\0';\n+\tchar hacker = '\\0';\n \tchar tmp[2];\n \n \tcontact *ptr;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-4521-238254-yolodex.c\n@@ -530,8 +530,8 @@ void cgc_promptShow() {\n \n void cgc_initCookies() {\n \tcgc_size_t bytes;\n-\tint got = 0;\n-\tint shift = 0;\n+\tsize_t got = 0;\n+\tsize_t shift = 0;\n \n \tcontact *ptr;\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-483-bece25-yolodex.c\n@@ -62,7 +62,7 @@ int cgc_validateName(char *name)\n \tif(name[0] >= 'A' && name[0] <= 'Z')\n \t\treturn 1;\n \telse\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_validatePhone(char *phonenumber)\n@@ -72,24 +72,24 @@ int cgc_validatePhone(char *phonenumber)\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t}\n \tif(*digit++ != ')')\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t}\n \tif(*digit++ != '-')\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-31340-6790d0-yolodex.c\n@@ -292,7 +292,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\t}\n \t\ttmp++;\n \t}\n-\treturn tmp-dst;\n+\treturn dst - tmp;\n }\n \n void cgc_promptAdd() {\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-740-8942f0-yolodex.c\n@@ -546,7 +546,7 @@ void cgc_initCookies() {\n \n void cgc_inputLoop() {\n \tchar action[2];\n-\twhile(1)\n+\tfor (;;)\n \t{\n \t\tcgc_memset(action, 0, 2);\n \t\tcgc_recvUntil(action, 2, '\\n');\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-1178-f23d35-yolodex.c\n@@ -96,7 +96,7 @@ int cgc_validatePhone(char *phonenumber)\n contact *cgc_createContact(char *first, char *last, char *phone, unsigned short officenum, char gender, char hacker)\n {\n \tcontact *ret = NULL;\n-\tret = (contact *)cgc_calloc(1, sizeof(contact));\n+\tret = (const contact *)cgc_calloc(1, sizeof(contact));\n \tif(ret == NULL)\n \t{\n \t\tcgc_puts(\"Couldn't allocate contact.  Something's wrong.\");\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-27463-b107f7-yolodex.c\n@@ -72,25 +72,24 @@ int cgc_validatePhone(char *phonenumber)\n \n \tdigit = phonenumber;\n \tif(*digit++ != '(')\n-\t\treturn 0;\n+\t\treturn (i);\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn (i);\n \t}\n \tif(*digit++ != ')')\n-\t\treturn 0;\n+\t\treturn (i);\n \tfor(i=0;i<3;i++,digit++)\n \t{\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n+\t\t\treturn (i);\n \t}\n \tif(*digit++ != '-')\n-\t\treturn 0;\n+\t\treturn (i);\n \tfor(i=0;i<4;i++,digit++)\n \t\tif(*digit < '0' || *digit > '9')\n-\t\t\treturn 0;\n-\treturn 1;\n+\t\t\treturn (i);return (i);\n }\n \n contact *cgc_createContact(char *first, char *last, char *phone, unsigned short officenum, char gender, char hacker)\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-31692-b65d97-yolodex.c\n@@ -75,21 +75,22 @@ int cgc_validatePhone(char *phonenumber)\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n+\t\tif (*digit > '9')\n \t\t\treturn 0;\n \t}\n \tif(*digit++ != ')')\n \t\treturn 0;\n \tfor(i=0;i<3;i++,digit++)\n \t{\n-\t\tif(*digit < '0' || *digit > '9')\n+\t\tif (*digit > '9')\n \t\t\treturn 0;\n \t}\n \tif(*digit++ != '-')\n \t\treturn 0;\n \tfor(i=0;i<4;i++,digit++)\n-\t\tif(*digit < '0' || *digit > '9')\n+\t{if (*digit > '9')\n \t\t\treturn 0;\n+\t}\n \treturn 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-32277-05eece-yolodex.c\n@@ -287,7 +287,7 @@ int cgc_recvUntil(char *dst, int n, char\n \t\t\tcgc__terminate(-1);\n \t\t}\n \t\tif(*tmp == delim) {\n-\t\t\t*tmp = 0;\n+\t\t\t*tmp = NULLVP;\n \t\t\tbreak;\n \t\t}\n \t\ttmp++;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-30412-9f8d32-yolodex.c\n@@ -108,7 +108,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid first name.  Must begin with a capital letter.\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tif(cgc_validateName(last)) {\n \t\tcgc_memcpy(ret->last, last, cgc_strlen(last));\n@@ -116,7 +116,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid last name.  Must begin with a capital letter.\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tif(cgc_validatePhone(phone)) {\n \t\tcgc_memcpy(ret->phone, phone, cgc_strlen(phone));\n@@ -124,7 +124,7 @@ contact *cgc_createContact(char *first,\n \t\tcgc_puts(\"Invalid phone number...must look like (nnn)nnn-nnnn\");\n \t\tcgc_free(ret);\n \t\tret = NULL;\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tret->officenum = officenum;\n \tret->gender = gender;\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-28226-bfdde1-yolodex.c\n@@ -158,14 +158,14 @@ contact *cgc_remove(contact *toRemove)\n \t\treturn toRemove;\n \t}\n \n-\tif(toRemove->prev == NULL) {\n+\tif (toRemove->prev == -1) {\n \t\tcgc_head = toRemove->next;\n \t\ttoRemove->next->prev = NULL;\n \t}\n \telse\n \t\ttoRemove->prev->next = toRemove->next;\n \n-\tif(toRemove->next == NULL)\n+\tif (toRemove->next == -1)\n \t\ttoRemove->prev->next = NULL;\n \telse\n \t\ttoRemove->next->prev = toRemove->prev;\n@@ -250,7 +250,7 @@ void cgc_sortYolodex() {\n \t\t\tptr = ptr->next;\n \t\t}\n \t\ttmp = cgc_remove(first);\n-\t\tif(sorted == NULL)\n+\t\tif (sorted == -1)\n \t\t{\n \t\t\tsorted = first;\n \t\t} else {\n@@ -502,12 +502,13 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_remove(ptr);\n \t\t\t\t\tcgc_puts(\"No more contacts.  Leaving detail view.\");\n \t\t\t\t\tuseraction[0]='q';\n-\t\t\t\t} else if (ptr->next == NULL) {\n-\t\t\t\t\tptr = ptr->prev;\n-\t\t\t\t\tcgc_remove(ptr->next);\n-\t\t\t\t} else {\n-\t\t\t\t\tptr = ptr->next;\n-\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t} else {if (ptr->next == -1) {\n+\t\t\t\t\t\tptr = ptr->prev;\n+\t\t\t\t\t\tcgc_remove(ptr->next);\n+\t\t\t\t\t} else {\n+\t\t\t\t\t\tptr = ptr->next;\n+\t\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t\tbreak;\n \t\t\tcase 'e':\n",
+        "--- /tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c\n+++ /tmp/cocci-output-28170-9a25de-yolodex.c\n@@ -158,14 +158,14 @@ contact *cgc_remove(contact *toRemove)\n \t\treturn toRemove;\n \t}\n \n-\tif(toRemove->prev == NULL) {\n+\tif (toRemove->prev % NULL == 0) {\n \t\tcgc_head = toRemove->next;\n \t\ttoRemove->next->prev = NULL;\n \t}\n \telse\n \t\ttoRemove->prev->next = toRemove->next;\n \n-\tif(toRemove->next == NULL)\n+\tif (toRemove->next % NULL == 0)\n \t\ttoRemove->prev->next = NULL;\n \telse\n \t\ttoRemove->next->prev = toRemove->prev;\n@@ -240,7 +240,7 @@ void cgc_sortYolodex() {\n \t\t\t\t\tfirst = ptr;\n \t\t\t\t\tbreak;\n \t\t\t\t}\n-\t\t\t\tif(first->last[i] == ptr->last[i])\n+\t\t\t\tif (first->last[i] % ptr->last[i] == 0)\n \t\t\t\t\ti++;\n \t\t\t\telse\n \t\t\t\t\tbreak;\n@@ -250,7 +250,7 @@ void cgc_sortYolodex() {\n \t\t\tptr = ptr->next;\n \t\t}\n \t\ttmp = cgc_remove(first);\n-\t\tif(sorted == NULL)\n+\t\tif (sorted % NULL == 0)\n \t\t{\n \t\t\tsorted = first;\n \t\t} else {\n@@ -502,12 +502,13 @@ void cgc_promptShow() {\n \t\t\t\t\tcgc_remove(ptr);\n \t\t\t\t\tcgc_puts(\"No more contacts.  Leaving detail view.\");\n \t\t\t\t\tuseraction[0]='q';\n-\t\t\t\t} else if (ptr->next == NULL) {\n-\t\t\t\t\tptr = ptr->prev;\n-\t\t\t\t\tcgc_remove(ptr->next);\n-\t\t\t\t} else {\n-\t\t\t\t\tptr = ptr->next;\n-\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t} else {if (ptr->next % NULL == 0) {\n+\t\t\t\t\t\tptr = ptr->prev;\n+\t\t\t\t\t\tcgc_remove(ptr->next);\n+\t\t\t\t\t} else {\n+\t\t\t\t\t\tptr = ptr->next;\n+\t\t\t\t\t\tcgc_remove(ptr->prev);\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t\tbreak;\n \t\t\tcase 'e':\n"
+      ]
+    }
+  ],
+  "compilations": 23,
+  "failed_compilations": 23,
+  "outcomes": {
+    "42905e43": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:290:11: error: use of undeclared identifier 'NULLVP'\n                        *tmp = NULLVP;\n                               ^\n1 error generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9c6b8c91": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:134:19: error: no member named 'dir_next' in 'struct _contact'\n        ret->next = ret->dir_next = NULL;\n                    ~~~  ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:169:42: error: no member named 'dir_next' in 'struct _contact'\n                toRemove->prev->next = toRemove->prev->dir_next = NULL;\n                                       ~~~~~~~~~~~~~~  ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:173:29: error: no member named 'dir_next' in 'struct _contact'\n        toRemove->next = toRemove->dir_next = NULL;\n                         ~~~~~~~~  ^\n3 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "79b67402": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:302:17: error: use of undeclared identifier 'EVP_MAX_IV_LENGTH'\n        char officetmp[EVP_MAX_IV_LENGTH];\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:384:14: error: use of undeclared identifier 'EVP_MAX_IV_LENGTH'\n        char number[EVP_MAX_IV_LENGTH];\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:454:14: error: use of undeclared identifier 'EVP_MAX_IV_LENGTH'\n        char number[EVP_MAX_IV_LENGTH];\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:467:14: error: use of undeclared identifier 'EVP_MAX_IV_LENGTH'\n        char office[EVP_MAX_IV_LENGTH];\n                    ^\n4 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f5c37dc9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "f523f40e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c1f06bfa": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1875de5d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:289:7: error: use of undeclared identifier 'MPI_SUCCESS'\n                if (MPI_SUCCESS == *tmp) {\n                    ^\n1 error generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ab21076f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d8a6558e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/yolodex.dir/src/yolodex.c.o: In function `cgc_printGender':\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:184: undefined reference to `fatalx'\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:187: undefined reference to `fatalx'\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:190: undefined reference to `fatalx'\nCMakeFiles/yolodex.dir/src/yolodex.c.o: In function `cgc_sortYolodex':\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:241: undefined reference to `fatalx'\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:246: undefined reference to `fatalx'\nCMakeFiles/yolodex.dir/src/yolodex.c.o:/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:291: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [yolodex/yolodex] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "67074076": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f899b83f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "905084f3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:312:17: error: use of undeclared identifier 'first'\n                cgc_recvUntil(first, 32, '\\n');\n                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:314:17: error: use of undeclared identifier 'last'\n                cgc_recvUntil(last, 32, '\\n');\n                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:334:27: error: use of undeclared identifier 'first'\n                ptr = cgc_createContact(first, last, phone, officenum, gender, hacker);\n                                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:334:34: error: use of undeclared identifier 'last'\n                ptr = cgc_createContact(first, last, phone, officenum, gender, hacker);\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:348:16: error: use of undeclared identifier 'first'\n        cgc_recvUntil(first, 32, '\\n');\n                      ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:350:16: error: use of undeclared identifier 'last'\n        cgc_recvUntil(last, 32, '\\n');\n                      ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:354:17: error: use of undeclared identifier 'first'\n                if(cgc_strcmp(first, ptr->first) == 0) {\n                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:355:18: error: use of undeclared identifier 'last'\n                        if(cgc_strcmp(last, ptr->last) == 0) {\n                                      ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:384:17: error: use of undeclared identifier 'data'\n                cgc_recvUntil(data, 32, '\\n');\n                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:385:34: error: use of undeclared identifier 'data'\n                if(data[0] && cgc_validateName(data) == 0){\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:385:6: error: use of undeclared identifier 'data'\n                if(data[0] && cgc_validateName(data) == 0){\n                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:392:6: error: use of undeclared identifier 'data'\n                if(data[0] != 0) {\n                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:394:44: error: use of undeclared identifier 'data'\n                        cgc_memcpy(ptr->first, data, cgc_strlen(data));\n                                                                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:394:27: error: use of undeclared identifier 'data'\n                        cgc_memcpy(ptr->first, data, cgc_strlen(data));\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:397:17: error: use of undeclared identifier 'data'\n                cgc_recvUntil(data, 32, '\\n');\n                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:402:34: error: use of undeclared identifier 'data'\n                if(data[0] && cgc_validateName(data) == 0) {\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:402:6: error: use of undeclared identifier 'data'\n                if(data[0] && cgc_validateName(data) == 0) {\n                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:406:6: error: use of undeclared identifier 'data'\n                if(data[0] != 0){\n                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:408:43: error: use of undeclared identifier 'data'\n                        cgc_memcpy(ptr->last, data, cgc_strlen(data));\n                                                               ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "767f9b93": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bcdf0add": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:65:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:75:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:79:12: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                        return (BUS_PROBE_NOWILDCARD);\n                                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:82:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:86:12: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                        return (BUS_PROBE_NOWILDCARD);\n                                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:89:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:92:12: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                        return (BUS_PROBE_NOWILDCARD);\n                                ^\n7 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5295b5d5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ae12afc5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ae9fb24c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "48797713": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:144:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:393:9: error: use of undeclared label 'done'\n                        goto done;\n                             ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:462:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:476:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n4 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "47f04a3e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6178fb2d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:111:3: error: non-void function 'cgc_createContact' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:119:3: error: non-void function 'cgc_createContact' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:127:3: error: non-void function 'cgc_createContact' should return a value [-Wreturn-type]\n                return;\n                ^\n3 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e98eb0e7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d20f9934": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:144:3: error: void function 'cgc_insert' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:152:2: error: void function 'cgc_insert' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:393:4: error: void function 'cgc_editUser' should not return a value [-Wreturn-type]\n                        return 0;\n                        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:410:4: error: void function 'cgc_editUser' should not return a value [-Wreturn-type]\n                        return 0;\n                        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:423:4: error: void function 'cgc_editUser' should not return a value [-Wreturn-type]\n                        return 0;\n                        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:450:2: error: void function 'cgc_editUser' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:462:3: error: void function 'cgc_promptEdit' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:465:2: error: void function 'cgc_promptEdit' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:476:3: error: void function 'cgc_promptShow' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:532:2: error: void function 'cgc_promptShow' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n10 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4dc0240d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:65:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:75:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:79:11: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                        return ZEND_HASH_APPLY_KEEP;\n                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:82:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:86:11: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                        return ZEND_HASH_APPLY_KEEP;\n                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:89:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:92:11: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                        return ZEND_HASH_APPLY_KEEP;\n                               ^\n7 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7ef03645": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b408e06a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "09620b33": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "cb4a2840": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:533:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t got = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:533:9: error: use of undeclared identifier 'got'; did you mean 'goto'?\n        size_t got = 0;\n               ^~~\n               goto\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:533:9: error: expected expression\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:534:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t shift = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:534:9: error: use of undeclared identifier 'shift'\n        size_t shift = 0;\n               ^\n5 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8314c6ba": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:301:13: error: use of undeclared identifier 'CVS_ENT_MAXLINELEN'\n        char phone[CVS_ENT_MAXLINELEN];\n                   ^\n1 error generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ebab899a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:302:17: error: use of undeclared identifier 'EALG_MAX_BLOCK_LEN'\n        char officetmp[EALG_MAX_BLOCK_LEN];\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:384:14: error: use of undeclared identifier 'EALG_MAX_BLOCK_LEN'\n        char number[EALG_MAX_BLOCK_LEN];\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:454:14: error: use of undeclared identifier 'EALG_MAX_BLOCK_LEN'\n        char number[EALG_MAX_BLOCK_LEN];\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:467:14: error: use of undeclared identifier 'EALG_MAX_BLOCK_LEN'\n        char office[EALG_MAX_BLOCK_LEN];\n                    ^\n4 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a94b12f8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:65:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:75:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:79:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:82:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:86:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:89:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:92:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n7 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "70afc952": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "03e2ecd5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bca2870e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:63:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:93:2: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n2 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9d745a4f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "91ea7c18": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "15d896f8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:65:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:66:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:77:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:78:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:83:15: error: use of undeclared identifier 'old'\n                        restorescr(old);\n                                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:84:11: error: use of undeclared identifier 'ret'\n                        return ret;\n                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:88:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:89:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:94:15: error: use of undeclared identifier 'old'\n                        restorescr(old);\n                                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:95:11: error: use of undeclared identifier 'ret'\n                        return ret;\n                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:99:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:100:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:104:15: error: use of undeclared identifier 'old'\n                        restorescr(old);\n                                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:105:11: error: use of undeclared identifier 'ret'\n                        return ret;\n                               ^\n14 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ec986614": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:71:2: error: use of undeclared identifier 'zstr'\n        zstr digit;\n        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:73:2: error: use of undeclared identifier 'digit'\n        digit = phonenumber;\n        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:74:6: error: use of undeclared identifier 'digit'\n        if(*digit++ != '(')\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:76:18: error: use of undeclared identifier 'digit'\n        for(i=0;i<3;i++,digit++)\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:78:7: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:78:23: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:81:6: error: use of undeclared identifier 'digit'\n        if(*digit++ != ')')\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:83:18: error: use of undeclared identifier 'digit'\n        for(i=0;i<3;i++,digit++)\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:85:7: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:85:23: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:88:6: error: use of undeclared identifier 'digit'\n        if(*digit++ != '-')\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:90:18: error: use of undeclared identifier 'digit'\n        for(i=0;i<4;i++,digit++)\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:91:7: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:91:23: error: use of undeclared identifier 'digit'\n                if(*digit < '0' || *digit > '9')\n                                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:280:2: error: use of undeclared identifier 'zstr'\n        zstr tmp;\n        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:282:2: error: use of undeclared identifier 'tmp'\n        tmp = dst;\n        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:285:22: error: use of undeclared identifier 'tmp'\n                cgc_receive(STDIN, tmp, 1, &gotBytes);\n                                   ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:289:7: error: use of undeclared identifier 'tmp'\n                if(*tmp == delim) {\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:290:5: error: use of undeclared identifier 'tmp'\n                        *tmp = 0;\n                         ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8d40ee7a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1a663990": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:161:21: error: invalid operands to binary expression ('struct _contact *' and 'int')\n        if (toRemove->prev % NULL == 0) {\n            ~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:168:21: error: invalid operands to binary expression ('struct _contact *' and 'int')\n        if (toRemove->next % NULL == 0)\n            ~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:253:14: error: invalid operands to binary expression ('contact *' (aka 'struct _contact *') and 'int')\n                if (sorted % NULL == 0)\n                    ~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:505:27: error: invalid operands to binary expression ('struct _contact *' and 'int')\n                                } else {if (ptr->next % NULL == 0) {\n                                            ~~~~~~~~~ ^ ~~~~\n4 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "801f4e66": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "31c89403": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "7f2d01c9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "454898bb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:74:35: error: use of undeclared identifier 'uint32_t'\n        if (archive_le32dec(digit++) != (uint32_t)'(')\n                                         ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:81:35: error: use of undeclared identifier 'uint32_t'\n        if (archive_le32dec(digit++) != (uint32_t)')')\n                                         ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:88:35: error: use of undeclared identifier 'uint32_t'\n        if (archive_le32dec(digit++) != (uint32_t)'-')\n                                         ^\n3 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f0fe1390": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:76:6: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:76:10: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:76:14: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:83:6: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:83:10: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:83:14: error: use of undeclared identifier 'i'\n        for(i=0;i<3;i++,digit++)\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:90:6: error: use of undeclared identifier 'i'\n        for(i=0;i<4;i++,digit++)\n            ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:90:10: error: use of undeclared identifier 'i'\n        for(i=0;i<4;i++,digit++)\n                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:90:14: error: use of undeclared identifier 'i'\n        for(i=0;i<4;i++,digit++)\n                    ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:236:4: error: use of undeclared identifier 'i'\n                        i = 0;\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:237:22: error: use of undeclared identifier 'i'\n                        while(first->last[i] && ptr->last[i])\n                                          ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:237:38: error: use of undeclared identifier 'i'\n                        while(first->last[i] && ptr->last[i])\n                                                          ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:239:20: error: use of undeclared identifier 'i'\n                                if(first->last[i] > ptr->last[i]) {\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:239:35: error: use of undeclared identifier 'i'\n                                if(first->last[i] > ptr->last[i]) {\n                                                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:243:20: error: use of undeclared identifier 'i'\n                                if(first->last[i] == ptr->last[i])\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:243:36: error: use of undeclared identifier 'i'\n                                if(first->last[i] == ptr->last[i])\n                                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:244:6: error: use of undeclared identifier 'i'\n                                        i++;\n                                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:248:18: error: use of undeclared identifier 'i'\n                        if(!ptr->last[i] && first->last[i])\n                                      ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:248:36: error: use of undeclared identifier 'i'\n                        if(!ptr->last[i] && first->last[i])\n                                                        ^\n19 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d6f083e1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:231:2: error: use of undeclared identifier 'quit'\n        quit = 0;\n        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:232:18: error: use of undeclared identifier 'db_simple_pager'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:232:36: error: use of undeclared identifier 'quit'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:232:42: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                                ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:233:25: error: use of undeclared identifier 'quit'\n        while (tmp != NULL && !quit)\n                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:237:4: error: use of undeclared identifier 'i'\n                        i = 0;\n                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:238:22: error: use of undeclared identifier 'i'\n                        while(first->last[i] && ptr->last[i])\n                                          ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:238:38: error: use of undeclared identifier 'i'\n                        while(first->last[i] && ptr->last[i])\n                                                          ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:240:20: error: use of undeclared identifier 'i'\n                                if(first->last[i] > ptr->last[i]) {\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:240:35: error: use of undeclared identifier 'i'\n                                if(first->last[i] > ptr->last[i]) {\n                                                              ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:244:20: error: use of undeclared identifier 'i'\n                                if(first->last[i] == ptr->last[i])\n                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:244:36: error: use of undeclared identifier 'i'\n                                if(first->last[i] == ptr->last[i])\n                                                               ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:245:6: error: use of undeclared identifier 'i'\n                                        i++;\n                                        ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:249:18: error: use of undeclared identifier 'i'\n                        if(!ptr->last[i] && first->last[i])\n                                      ^\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:249:36: error: use of undeclared identifier 'i'\n                        if(!ptr->last[i] && first->last[i])\n                                                        ^\n15 errors generated.\nmake[2]: *** [yolodex/CMakeFiles/yolodex.dir/src/yolodex.c.o] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7448a260": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/yolodex.dir/src/yolodex.c.o: In function `cgc_remove':\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:161: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:168: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/yolodex.dir/src/yolodex.c.o: In function `cgc_sortYolodex':\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:253: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/yolodex.dir/src/yolodex.c.o: In function `cgc_promptShow':\n/tmp/FlexiRepair/yolodex_0/yolodex/src/yolodex.c:505: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [yolodex/yolodex] Error 1\nmake[1]: *** [yolodex/CMakeFiles/yolodex.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 3,
+  "passed_pos_tests": 407,
+  "failed_neg_tests": 20,
+  "failed_pos_tests": 53,
+  "duration": 1935.749235,
+  "errors": []
+}

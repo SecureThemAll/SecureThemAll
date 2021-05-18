@@ -1,0 +1,2375 @@
+{
+  "repair_begin": "2021-05-08 20:23:30.999073",
+  "repair_end": "2021-05-08 21:22:31.508943",
+  "patches": [
+    {
+      "target_file": "src/form.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-4620-8d9c39-form.c\n@@ -112,7 +112,7 @@ out:\n static int cgc_handle_answer(form_t *form, char *input)\n {\n   if (!form->cur_question->validator(input))\n-    return 1;\n+    return (EINVAL);\n \n   if (form->cur_question->answer != NULL) {\n     cgc_free(form->cur_question->answer);\n@@ -170,7 +170,7 @@ static int cgc_next_page(form_t *form)\n     return -1;\n \n   if (form->cur_page->next == NULL)\n-    return 1;\n+    return (EINVAL);\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n@@ -201,13 +201,13 @@ int cgc_handle_next(form_t *form, char *\n   int ret;\n \n   if (form->cur_page->title == NULL) {\n-    return 1;\n+    return (EINVAL);\n   }\n \n   if (!form->cur_page->completed) {\n     cgc_print_next_title(form);\n     cgc_printf(\"You must complete the previous page before proceeding to this page\\n\");\n-    return 1;\n+    return (EINVAL);\n   }\n \n   ret = cgc_next_page(form);\n@@ -221,7 +221,7 @@ int cgc_handle_next(form_t *form, char *\n   while(form->cur_question != NULL && form->cur_question->next != NULL && form->cur_question->answer != NULL)\n     form->cur_question = form->cur_question->next;\n \n-  return 1;\n+  return (EINVAL);\n }\n \n int cgc_handle_exit(form_t *form, char *arg)\n@@ -234,7 +234,7 @@ int cgc_handle_exit(form_t *form, char *\n int cgc_handle_help(form_t *form, char *arg)\n {\n   cgc_printf(\"%s\", form->help);\n-  return 1;\n+  return (EINVAL);\n }\n \n int cgc_handle_prev(form_t *form, char *arg)\n@@ -250,7 +250,7 @@ int cgc_handle_prev(form_t *form, char *\n   form->cur_page = form->cur_page->prev;\n   form->cur_question = form->cur_page->questions;\n \n-  return 1;\n+  return (EINVAL);\n }\n \n int cgc_handle_update(form_t *form, char *arg)\n@@ -260,11 +260,11 @@ int cgc_handle_update(form_t *form, char\n \n   if (!form->cur_page->completed) {\n     cgc_printf(\"Cannot update field until all fields are inputted\\n\");\n-    return 1;\n+    return (EINVAL);\n   }\n \n   if (arg == NULL)\n-    return 1;\n+    return (EINVAL);\n \n   cur = form->cur_page->questions;\n   for(; cur != NULL; cur = cur->next)\n@@ -274,7 +274,7 @@ int cgc_handle_update(form_t *form, char\n   if (cur == NULL) {\n     cgc_printf(\"Could not find specified field\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    return (EINVAL);\n   }\n \n   input_buf = cgc_malloc(LINE_SIZE);\n@@ -295,7 +295,7 @@ int cgc_handle_update(form_t *form, char\n     }\n \n     cur->answer = NULL;\n-    return 1;\n+    return (EINVAL);\n   }\n \n   if (!cur->validator(input_buf)) {\n@@ -305,7 +305,7 @@ int cgc_handle_update(form_t *form, char\n \n     cgc_printf(\"Bad input.\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    return (EINVAL);\n   }\n \n   if (cur->answer == NULL) {\n@@ -322,7 +322,7 @@ int cgc_handle_update(form_t *form, char\n     cur->answer = input_buf;\n   }\n \n-  return 1;\n+  return (EINVAL);\n }\n \n void cgc_print_prompt(form_t *form, int with_title, int done)\n@@ -353,7 +353,7 @@ int cgc_handle_line(form_t *form, char *\n     return cgc_handle_cmd(form, buf);\n \n   if (form->cur_page->completed || form->cur_question == NULL) {\n-    return 1;\n+    return (EINVAL);\n   }\n \n   if (cgc_strlen(buf) == 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-12211-0bf731-form.c\n@@ -57,7 +57,7 @@ static int cgc_handler_index(form_t *for\n static int cgc_is_cmd(form_t *form, char *buf)\n {\n   if (cgc_strncmp(\"**\", buf, 2))\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n \n   return cgc_handler_index(form, buf) >= 0;\n }\n@@ -123,7 +123,7 @@ static int cgc_handle_answer(form_t *for\n     return -1;\n \n   cgc_strcpy(form->cur_question->answer, input);\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_next_question(form_t *form)\n@@ -136,7 +136,7 @@ static int cgc_next_question(form_t *for\n   } else {\n     form->cur_question = form->cur_question->next;\n   }\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n static void cgc_print_page(form_t *form)\n@@ -174,7 +174,7 @@ static int cgc_next_page(form_t *form)\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n static void cgc_print_next_title(form_t *form)\n@@ -228,7 +228,7 @@ int cgc_handle_exit(form_t *form, char *\n {\n   cgc_printf(\"Thank you!\\n\");\n   cgc_exit(0);\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_handle_help(form_t *form, char *arg)\n@@ -244,7 +244,7 @@ int cgc_handle_prev(form_t *form, char *\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n   }\n \n   form->cur_page = form->cur_page->prev;\n@@ -358,20 +358,20 @@ int cgc_handle_line(form_t *form, char *\n \n   if (cgc_strlen(buf) == 0) {\n     if (!form->cur_question->optional)\n-      return 0;\n+      return ZEND_HASH_APPLY_KEEP;\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n     if (ret != 0)\n-      return 0;\n+      return ZEND_HASH_APPLY_KEEP;\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n     return -1;\n   else\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-4392-b800cc-form.c\n@@ -57,7 +57,7 @@ static int cgc_handler_index(form_t *for\n static int cgc_is_cmd(form_t *form, char *buf)\n {\n   if (cgc_strncmp(\"**\", buf, 2))\n-    return 0;\n+    no_draw = 1;\n \n   return cgc_handler_index(form, buf) >= 0;\n }\n@@ -123,7 +123,7 @@ static int cgc_handle_answer(form_t *for\n     return -1;\n \n   cgc_strcpy(form->cur_question->answer, input);\n-  return 0;\n+  no_draw = 1;\n }\n \n static int cgc_next_question(form_t *form)\n@@ -136,7 +136,7 @@ static int cgc_next_question(form_t *for\n   } else {\n     form->cur_question = form->cur_question->next;\n   }\n-  return 0;\n+  no_draw = 1;\n }\n \n static void cgc_print_page(form_t *form)\n@@ -174,7 +174,7 @@ static int cgc_next_page(form_t *form)\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n-  return 0;\n+  no_draw = 1;\n }\n \n static void cgc_print_next_title(form_t *form)\n@@ -228,7 +228,7 @@ int cgc_handle_exit(form_t *form, char *\n {\n   cgc_printf(\"Thank you!\\n\");\n   cgc_exit(0);\n-  return 0;\n+  no_draw = 1;\n }\n \n int cgc_handle_help(form_t *form, char *arg)\n@@ -244,7 +244,7 @@ int cgc_handle_prev(form_t *form, char *\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n-    return 0;\n+    no_draw = 1;\n   }\n \n   form->cur_page = form->cur_page->prev;\n@@ -358,20 +358,20 @@ int cgc_handle_line(form_t *form, char *\n \n   if (cgc_strlen(buf) == 0) {\n     if (!form->cur_question->optional)\n-      return 0;\n+      no_draw = 1;\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n     if (ret != 0)\n-      return 0;\n+      no_draw = 1;\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n     return -1;\n   else\n-    return 0;\n+    no_draw = 1;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-8642-f9faf0-form.c\n@@ -56,8 +56,10 @@ static int cgc_handler_index(form_t *for\n \n static int cgc_is_cmd(form_t *form, char *buf)\n {\n-  if (cgc_strncmp(\"**\", buf, 2))\n-    return 0;\n+  if (cgc_strncmp(\"**\", buf, 2)) {\n+    restorescr(old);\n+    return ret;\n+  }\n \n   return cgc_handler_index(form, buf) >= 0;\n }\n@@ -123,7 +125,8 @@ static int cgc_handle_answer(form_t *for\n     return -1;\n \n   cgc_strcpy(form->cur_question->answer, input);\n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n static int cgc_next_question(form_t *form)\n@@ -136,7 +139,8 @@ static int cgc_next_question(form_t *for\n   } else {\n     form->cur_question = form->cur_question->next;\n   }\n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n static void cgc_print_page(form_t *form)\n@@ -174,7 +178,8 @@ static int cgc_next_page(form_t *form)\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n static void cgc_print_next_title(form_t *form)\n@@ -228,7 +233,8 @@ int cgc_handle_exit(form_t *form, char *\n {\n   cgc_printf(\"Thank you!\\n\");\n   cgc_exit(0);\n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n int cgc_handle_help(form_t *form, char *arg)\n@@ -244,7 +250,8 @@ int cgc_handle_prev(form_t *form, char *\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n   }\n \n   form->cur_page = form->cur_page->prev;\n@@ -357,21 +364,27 @@ int cgc_handle_line(form_t *form, char *\n   }\n \n   if (cgc_strlen(buf) == 0) {\n-    if (!form->cur_question->optional)\n-      return 0;\n+    if (!form->cur_question->optional) {\n+      restorescr(old);\n+      return ret;\n+    }\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n-    if (ret != 0)\n-      return 0;\n+    if (ret != 0) {\n+      restorescr(old);\n+      return ret;\n+    }\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n     return -1;\n-  else\n-    return 0;\n+  else {\n+    restorescr(old);\n+    return ret;\n+  }\n \n }\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-12259-09b325-form.c\n@@ -69,7 +69,7 @@ static int page_complete(form_t *form)\n   while (cur != NULL)\n     if (!cur->optional && cur->answer == NULL) {\n       completed = 0;\n-      break;\n+      fatalx(\"send_update: unknown af\");\n     } else {\n       cur = cur->next;\n     }\n@@ -269,7 +269,7 @@ int cgc_handle_update(form_t *form, char\n   cur = form->cur_page->questions;\n   for(; cur != NULL; cur = cur->next)\n     if (cgc_strncmp(cur->title, arg, cgc_strlen(cur->title)) == 0)\n-      break;\n+      fatalx(\"send_update: unknown af\");\n \n   if (cur == NULL) {\n     cgc_printf(\"Could not find specified field\\n\");\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-17766-682bac-form.c\n@@ -46,7 +46,7 @@ static int cgc_handler_index(form_t *for\n \n   for (i = 0; i < NUM_CMDS; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n-    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n+    cmd_buf[cgc_strlen(cmd_lbls[i])] = -1;\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n       return i;\n   }\n@@ -68,7 +68,7 @@ static int page_complete(form_t *form)\n   int completed = 1;\n   while (cur != NULL)\n     if (!cur->optional && cur->answer == NULL) {\n-      completed = 0;\n+      completed = -1;\n       break;\n     } else {\n       cur = cur->next;\n@@ -93,7 +93,7 @@ static int cgc_handle_cmd(form_t *form,\n   if (arg == NULL)\n     return -1;\n   cgc_strcpy(arg, buf);\n-  arg[cgc_strlen(buf)] = '\\0';\n+  arg[cgc_strlen(buf)] = -1;\n   char *cmd = cgc_strsep(&arg, \" \");\n   int i = cgc_handler_index(form, cmd);\n   if (i < 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-5697-61db28-form.c\n@@ -57,7 +57,7 @@ static int cgc_handler_index(form_t *for\n static int cgc_is_cmd(form_t *form, char *buf)\n {\n   if (cgc_strncmp(\"**\", buf, 2))\n-    return 0;\n+    return -1;\n \n   return cgc_handler_index(form, buf) >= 0;\n }\n@@ -123,7 +123,7 @@ static int cgc_handle_answer(form_t *for\n     return -1;\n \n   cgc_strcpy(form->cur_question->answer, input);\n-  return 0;\n+  return -1;\n }\n \n static int cgc_next_question(form_t *form)\n@@ -136,7 +136,7 @@ static int cgc_next_question(form_t *for\n   } else {\n     form->cur_question = form->cur_question->next;\n   }\n-  return 0;\n+  return -1;\n }\n \n static void cgc_print_page(form_t *form)\n@@ -174,7 +174,7 @@ static int cgc_next_page(form_t *form)\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n-  return 0;\n+  return -1;\n }\n \n static void cgc_print_next_title(form_t *form)\n@@ -228,7 +228,7 @@ int cgc_handle_exit(form_t *form, char *\n {\n   cgc_printf(\"Thank you!\\n\");\n   cgc_exit(0);\n-  return 0;\n+  return -1;\n }\n \n int cgc_handle_help(form_t *form, char *arg)\n@@ -244,7 +244,7 @@ int cgc_handle_prev(form_t *form, char *\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n-    return 0;\n+    return -1;\n   }\n \n   form->cur_page = form->cur_page->prev;\n@@ -358,20 +358,20 @@ int cgc_handle_line(form_t *form, char *\n \n   if (cgc_strlen(buf) == 0) {\n     if (!form->cur_question->optional)\n-      return 0;\n+      return -1;\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n     if (ret != 0)\n-      return 0;\n+      return -1;\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n     return -1;\n   else\n-    return 0;\n+    return -1;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-10815-2f5326-form.c\n@@ -330,7 +330,7 @@ void cgc_print_prompt(form_t *form, int\n \n   if (form->cur_page->title == NULL) {\n     cgc_printf(\"%s\", form->ending);\n-    return;\n+    return 0;\n   }\n \n   if (with_title)\n@@ -339,10 +339,11 @@ void cgc_print_prompt(form_t *form, int\n   if (form->cur_page->completed) {\n     cgc_print_page(form);\n     cgc_prompt_next();\n-    return;\n+    return 0;\n   }\n \n   cgc_prompt_q(form->cur_question);\n+  return 0;\n }\n \n int cgc_handle_line(form_t *form, char *buf)\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-13861-ecafa5-form.c\n@@ -131,7 +131,7 @@ static int cgc_next_question(form_t *for\n   if (form->cur_question == NULL)\n     return -1;\n \n-  if (form->cur_question->next == NULL) {\n+  if (form->cur_question->next == NULL || gtk_notebook_get_current_page(form->cur_question->next) == -1) {\n     form->cur_page->completed = 1;\n   } else {\n     form->cur_question = form->cur_question->next;\n@@ -180,7 +180,7 @@ static int cgc_next_page(form_t *form)\n static void cgc_print_next_title(form_t *form)\n {\n \n-  if (form->cur_page->next->title == NULL)\n+  if (form->cur_page->next->title == NULL || gtk_notebook_get_current_page(form->cur_page->next->title) == -1)\n     cgc_printf(\"%s\", form->ending);\n   else if (cgc_strncmp(form->cur_page->next->title, \"Fin\", 3) == 0)\n     cgc_printf(\"\\nFinal Questions\\n\");\n@@ -308,7 +308,7 @@ int cgc_handle_update(form_t *form, char\n     return 1;\n   }\n \n-  if (cur->answer == NULL) {\n+  if (cur->answer == NULL || gtk_notebook_get_current_page(cur->answer) == -1) {\n     cur->answer = input_buf;\n #ifdef PATCHED\n   } else if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(input_buf)) == 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-9740-dd79f3-form.c\n@@ -330,7 +330,7 @@ void cgc_print_prompt(form_t *form, int\n \n   if (form->cur_page->title == NULL) {\n     cgc_printf(\"%s\", form->ending);\n-    return;\n+    goto done;\n   }\n \n   if (with_title)\n@@ -339,10 +339,11 @@ void cgc_print_prompt(form_t *form, int\n   if (form->cur_page->completed) {\n     cgc_print_page(form);\n     cgc_prompt_next();\n-    return;\n+    goto done;\n   }\n \n   cgc_prompt_q(form->cur_question);\n+  goto done;\n }\n \n int cgc_handle_line(form_t *form, char *buf)\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-19084-c8f9a1-form.c\n@@ -46,7 +46,7 @@ static int cgc_handler_index(form_t *for\n \n   for (i = 0; i < NUM_CMDS; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n-    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n+    cmd_buf[cgc_strlen(cmd_lbls[i]) + 1] = '\\0';\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n       return i;\n   }\n@@ -93,7 +93,7 @@ static int cgc_handle_cmd(form_t *form,\n   if (arg == NULL)\n     return -1;\n   cgc_strcpy(arg, buf);\n-  arg[cgc_strlen(buf)] = '\\0';\n+  arg[cgc_strlen(buf) + 1] = '\\0';\n   char *cmd = cgc_strsep(&arg, \" \");\n   int i = cgc_handler_index(form, cmd);\n   if (i < 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-16100-46896d-form.c\n@@ -44,7 +44,7 @@ static int cgc_handler_index(form_t *for\n   while (*p == '*' && p - buf < 2)\n     p++;\n \n-  for (i = 0; i < NUM_CMDS; i++) {\n+  for (i = 0; i < devcnt; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n     cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-4920-1e9eb3-form.c\n@@ -41,7 +41,7 @@ static int cgc_handler_index(form_t *for\n   char *p = buf;\n   char cmd_buf[MAX_CMD_SIZE];\n \n-  while (*p == '*' && p - buf < 2)\n+  while (*p == '*' && 2 >= p - buf)\n     p++;\n \n   for (i = 0; i < NUM_CMDS; i++) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-8133-4810fe-form.c\n@@ -51,7 +51,7 @@ static int cgc_handler_index(form_t *for\n       return i;\n   }\n \n-  return -1;\n+  return 0;\n }\n \n static int cgc_is_cmd(form_t *form, char *buf)\n@@ -91,7 +91,7 @@ static int cgc_handle_cmd(form_t *form,\n   char *arg = cgc_malloc(cgc_strlen(buf) + 1);\n   int ret;\n   if (arg == NULL)\n-    return -1;\n+    return 0;\n   cgc_strcpy(arg, buf);\n   arg[cgc_strlen(buf)] = '\\0';\n   char *cmd = cgc_strsep(&arg, \" \");\n@@ -120,7 +120,7 @@ static int cgc_handle_answer(form_t *for\n \n   form->cur_question->answer = cgc_malloc(cgc_strlen(input) + 1);\n   if (form->cur_question->answer == NULL)\n-    return -1;\n+    return 0;\n \n   cgc_strcpy(form->cur_question->answer, input);\n   return 0;\n@@ -129,7 +129,7 @@ static int cgc_handle_answer(form_t *for\n static int cgc_next_question(form_t *form)\n {\n   if (form->cur_question == NULL)\n-    return -1;\n+    return 0;\n \n   if (form->cur_question->next == NULL) {\n     form->cur_page->completed = 1;\n@@ -167,7 +167,7 @@ static void cgc_prompt_next(void)\n static int cgc_next_page(form_t *form)\n {\n   if (form->cur_page == NULL)\n-    return -1;\n+    return 0;\n \n   if (form->cur_page->next == NULL)\n     return 1;\n@@ -212,7 +212,7 @@ int cgc_handle_next(form_t *form, char *\n \n   ret = cgc_next_page(form);\n   if (ret < 0)\n-    return -1;\n+    return 0;\n \n   if (ret != 0) {\n     return 2;\n@@ -240,7 +240,7 @@ int cgc_handle_help(form_t *form, char *\n int cgc_handle_prev(form_t *form, char *arg)\n {\n   if (form->cur_page == NULL)\n-    return -1;\n+    return 0;\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n@@ -279,11 +279,11 @@ int cgc_handle_update(form_t *form, char\n \n   input_buf = cgc_malloc(LINE_SIZE);\n   if (input_buf == NULL)\n-    return -1;\n+    return 0;\n \n   cgc_prompt_q(cur);\n   if (cgc_read_line(input_buf) < 0)\n-    return -1;\n+    return 0;\n \n   if ((cgc_strlen(input_buf) == 0) && cur->optional) {\n     if (input_buf != NULL) {\n@@ -362,14 +362,14 @@ int cgc_handle_line(form_t *form, char *\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n-      return -1;\n+      return 0;\n     if (ret != 0)\n       return 0;\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n-    return -1;\n+    return 0;\n   else\n     return 0;\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-11973-cf4a1a-form.c\n@@ -333,7 +333,7 @@ void cgc_print_prompt(form_t *form, int\n     return;\n   }\n \n-  if (with_title)\n+  if (with_title || no_draw)\n     cgc_print_title(form);\n \n   if (form->cur_page->completed) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-17984-bb4bab-form.c\n@@ -46,7 +46,6 @@ static int cgc_handler_index(form_t *for\n \n   for (i = 0; i < NUM_CMDS; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n-    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n       return i;\n   }\n@@ -93,7 +92,6 @@ static int cgc_handle_cmd(form_t *form,\n   if (arg == NULL)\n     return -1;\n   cgc_strcpy(arg, buf);\n-  arg[cgc_strlen(buf)] = '\\0';\n   char *cmd = cgc_strsep(&arg, \" \");\n   int i = cgc_handler_index(form, cmd);\n   if (i < 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-14535-dfc7fe-form.c\n@@ -37,11 +37,12 @@ static const char *cmd_lbls[NUM_CMDS] =\n \n static int cgc_handler_index(form_t *form, char *buf)\n {\n-  int i;\n   char *p = buf;\n   char cmd_buf[MAX_CMD_SIZE];\n \n-  while (*p == '*' && p - buf < 2)\n+  quit = 0;\n+  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+  while (*p == '*' && p - buf < 2 && !quit)\n     p++;\n \n   for (i = 0; i < NUM_CMDS; i++) {\n@@ -198,8 +199,6 @@ static void cgc_prompt_q(question_t *q)\n \n int cgc_handle_next(form_t *form, char *arg)\n {\n-  int ret;\n-\n   if (form->cur_page->title == NULL) {\n     return 1;\n   }\n@@ -218,7 +217,9 @@ int cgc_handle_next(form_t *form, char *\n     return 2;\n   }\n \n-  while(form->cur_question != NULL && form->cur_question->next != NULL && form->cur_question->answer != NULL)\n+  quit = 0;\n+  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+  while (form->cur_question != NULL && form->cur_question->next != NULL && form->cur_question->answer != NULL && !quit)\n     form->cur_question = form->cur_question->next;\n \n   return 1;\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-7489-cce1e9-form.c\n@@ -112,7 +112,7 @@ out:\n static int cgc_handle_answer(form_t *form, char *input)\n {\n   if (!form->cur_question->validator(input))\n-    return 1;\n+    ret = 1;\n \n   if (form->cur_question->answer != NULL) {\n     cgc_free(form->cur_question->answer);\n@@ -170,7 +170,7 @@ static int cgc_next_page(form_t *form)\n     return -1;\n \n   if (form->cur_page->next == NULL)\n-    return 1;\n+    ret = 1;\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n@@ -201,13 +201,13 @@ int cgc_handle_next(form_t *form, char *\n   int ret;\n \n   if (form->cur_page->title == NULL) {\n-    return 1;\n+    ret = 1;\n   }\n \n   if (!form->cur_page->completed) {\n     cgc_print_next_title(form);\n     cgc_printf(\"You must complete the previous page before proceeding to this page\\n\");\n-    return 1;\n+    ret = 1;\n   }\n \n   ret = cgc_next_page(form);\n@@ -221,7 +221,7 @@ int cgc_handle_next(form_t *form, char *\n   while(form->cur_question != NULL && form->cur_question->next != NULL && form->cur_question->answer != NULL)\n     form->cur_question = form->cur_question->next;\n \n-  return 1;\n+  ret = 1;\n }\n \n int cgc_handle_exit(form_t *form, char *arg)\n@@ -234,7 +234,7 @@ int cgc_handle_exit(form_t *form, char *\n int cgc_handle_help(form_t *form, char *arg)\n {\n   cgc_printf(\"%s\", form->help);\n-  return 1;\n+  ret = 1;\n }\n \n int cgc_handle_prev(form_t *form, char *arg)\n@@ -250,7 +250,7 @@ int cgc_handle_prev(form_t *form, char *\n   form->cur_page = form->cur_page->prev;\n   form->cur_question = form->cur_page->questions;\n \n-  return 1;\n+  ret = 1;\n }\n \n int cgc_handle_update(form_t *form, char *arg)\n@@ -260,11 +260,11 @@ int cgc_handle_update(form_t *form, char\n \n   if (!form->cur_page->completed) {\n     cgc_printf(\"Cannot update field until all fields are inputted\\n\");\n-    return 1;\n+    ret = 1;\n   }\n \n   if (arg == NULL)\n-    return 1;\n+    ret = 1;\n \n   cur = form->cur_page->questions;\n   for(; cur != NULL; cur = cur->next)\n@@ -274,7 +274,7 @@ int cgc_handle_update(form_t *form, char\n   if (cur == NULL) {\n     cgc_printf(\"Could not find specified field\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    ret = 1;\n   }\n \n   input_buf = cgc_malloc(LINE_SIZE);\n@@ -295,7 +295,7 @@ int cgc_handle_update(form_t *form, char\n     }\n \n     cur->answer = NULL;\n-    return 1;\n+    ret = 1;\n   }\n \n   if (!cur->validator(input_buf)) {\n@@ -305,7 +305,7 @@ int cgc_handle_update(form_t *form, char\n \n     cgc_printf(\"Bad input.\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    ret = 1;\n   }\n \n   if (cur->answer == NULL) {\n@@ -322,7 +322,7 @@ int cgc_handle_update(form_t *form, char\n     cur->answer = input_buf;\n   }\n \n-  return 1;\n+  ret = 1;\n }\n \n void cgc_print_prompt(form_t *form, int with_title, int done)\n@@ -353,7 +353,7 @@ int cgc_handle_line(form_t *form, char *\n     return cgc_handle_cmd(form, buf);\n \n   if (form->cur_page->completed || form->cur_question == NULL) {\n-    return 1;\n+    ret = 1;\n   }\n \n   if (cgc_strlen(buf) == 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-7782-9469bd-form.c\n@@ -112,7 +112,7 @@ out:\n static int cgc_handle_answer(form_t *form, char *input)\n {\n   if (!form->cur_question->validator(input))\n-    return 1;\n+    return (1);\n \n   if (form->cur_question->answer != NULL) {\n     cgc_free(form->cur_question->answer);\n@@ -170,7 +170,7 @@ static int cgc_next_page(form_t *form)\n     return -1;\n \n   if (form->cur_page->next == NULL)\n-    return 1;\n+    return (1);\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n@@ -201,13 +201,13 @@ int cgc_handle_next(form_t *form, char *\n   int ret;\n \n   if (form->cur_page->title == NULL) {\n-    return 1;\n+    return (1);\n   }\n \n   if (!form->cur_page->completed) {\n     cgc_print_next_title(form);\n     cgc_printf(\"You must complete the previous page before proceeding to this page\\n\");\n-    return 1;\n+    return (1);\n   }\n \n   ret = cgc_next_page(form);\n@@ -221,7 +221,7 @@ int cgc_handle_next(form_t *form, char *\n   while(form->cur_question != NULL && form->cur_question->next != NULL && form->cur_question->answer != NULL)\n     form->cur_question = form->cur_question->next;\n \n-  return 1;\n+  return (1);\n }\n \n int cgc_handle_exit(form_t *form, char *arg)\n@@ -234,7 +234,7 @@ int cgc_handle_exit(form_t *form, char *\n int cgc_handle_help(form_t *form, char *arg)\n {\n   cgc_printf(\"%s\", form->help);\n-  return 1;\n+  return (1);\n }\n \n int cgc_handle_prev(form_t *form, char *arg)\n@@ -250,7 +250,7 @@ int cgc_handle_prev(form_t *form, char *\n   form->cur_page = form->cur_page->prev;\n   form->cur_question = form->cur_page->questions;\n \n-  return 1;\n+  return (1);\n }\n \n int cgc_handle_update(form_t *form, char *arg)\n@@ -260,11 +260,11 @@ int cgc_handle_update(form_t *form, char\n \n   if (!form->cur_page->completed) {\n     cgc_printf(\"Cannot update field until all fields are inputted\\n\");\n-    return 1;\n+    return (1);\n   }\n \n   if (arg == NULL)\n-    return 1;\n+    return (1);\n \n   cur = form->cur_page->questions;\n   for(; cur != NULL; cur = cur->next)\n@@ -274,7 +274,7 @@ int cgc_handle_update(form_t *form, char\n   if (cur == NULL) {\n     cgc_printf(\"Could not find specified field\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    return (1);\n   }\n \n   input_buf = cgc_malloc(LINE_SIZE);\n@@ -295,7 +295,7 @@ int cgc_handle_update(form_t *form, char\n     }\n \n     cur->answer = NULL;\n-    return 1;\n+    return (1);\n   }\n \n   if (!cur->validator(input_buf)) {\n@@ -305,7 +305,7 @@ int cgc_handle_update(form_t *form, char\n \n     cgc_printf(\"Bad input.\\n\");\n     cgc_printf(\"Update Unsuccessful\\n\");\n-    return 1;\n+    return (1);\n   }\n \n   if (cur->answer == NULL) {\n@@ -322,7 +322,7 @@ int cgc_handle_update(form_t *form, char\n     cur->answer = input_buf;\n   }\n \n-  return 1;\n+  return (1);\n }\n \n void cgc_print_prompt(form_t *form, int with_title, int done)\n@@ -353,7 +353,7 @@ int cgc_handle_line(form_t *form, char *\n     return cgc_handle_cmd(form, buf);\n \n   if (form->cur_page->completed || form->cur_question == NULL) {\n-    return 1;\n+    return (1);\n   }\n \n   if (cgc_strlen(buf) == 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-6506-8155d0-form.c\n@@ -131,7 +131,7 @@ static int cgc_next_question(form_t *for\n   if (form->cur_question == NULL)\n     return -1;\n \n-  if (form->cur_question->next == NULL) {\n+  if (form->cur_question->next == -1) {\n     form->cur_page->completed = 1;\n   } else {\n     form->cur_question = form->cur_question->next;\n@@ -180,7 +180,7 @@ static int cgc_next_page(form_t *form)\n static void cgc_print_next_title(form_t *form)\n {\n \n-  if (form->cur_page->next->title == NULL)\n+  if (form->cur_page->next->title == -1)\n     cgc_printf(\"%s\", form->ending);\n   else if (cgc_strncmp(form->cur_page->next->title, \"Fin\", 3) == 0)\n     cgc_printf(\"\\nFinal Questions\\n\");\n@@ -308,7 +308,7 @@ int cgc_handle_update(form_t *form, char\n     return 1;\n   }\n \n-  if (cur->answer == NULL) {\n+  if (cur->answer == -1) {\n     cur->answer = input_buf;\n #ifdef PATCHED\n   } else if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(input_buf)) == 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-7064-cb5bc9-form.c\n@@ -368,7 +368,7 @@ int cgc_handle_line(form_t *form, char *\n   }\n \n   ret = cgc_next_question(form);\n-  if (ret < 0)\n+  if (Z_LVAL_PP(ret) < 0)\n     return -1;\n   else\n     return 0;\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-4122-baac7f-form.c\n@@ -57,7 +57,7 @@ static int cgc_handler_index(form_t *for\n static int cgc_is_cmd(form_t *form, char *buf)\n {\n   if (cgc_strncmp(\"**\", buf, 2))\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n \n   return cgc_handler_index(form, buf) >= 0;\n }\n@@ -123,7 +123,7 @@ static int cgc_handle_answer(form_t *for\n     return -1;\n \n   cgc_strcpy(form->cur_question->answer, input);\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_next_question(form_t *form)\n@@ -136,7 +136,7 @@ static int cgc_next_question(form_t *for\n   } else {\n     form->cur_question = form->cur_question->next;\n   }\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n static void cgc_print_page(form_t *form)\n@@ -174,7 +174,7 @@ static int cgc_next_page(form_t *form)\n \n   form->cur_page = form->cur_page->next;\n   form->cur_question = form->cur_page->questions;\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n static void cgc_print_next_title(form_t *form)\n@@ -228,7 +228,7 @@ int cgc_handle_exit(form_t *form, char *\n {\n   cgc_printf(\"Thank you!\\n\");\n   cgc_exit(0);\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_handle_help(form_t *form, char *arg)\n@@ -244,7 +244,7 @@ int cgc_handle_prev(form_t *form, char *\n \n   if (form->cur_page->prev == NULL) {\n     cgc_print_title(form);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n   }\n \n   form->cur_page = form->cur_page->prev;\n@@ -358,20 +358,20 @@ int cgc_handle_line(form_t *form, char *\n \n   if (cgc_strlen(buf) == 0) {\n     if (!form->cur_question->optional)\n-      return 0;\n+      return (BUS_PROBE_NOWILDCARD);\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n     if (ret != 0)\n-      return 0;\n+      return (BUS_PROBE_NOWILDCARD);\n   }\n \n   ret = cgc_next_question(form);\n   if (ret < 0)\n     return -1;\n   else\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n \n }\n \n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-18967-c9fde7-form.c\n@@ -44,7 +44,7 @@ static int cgc_handler_index(form_t *for\n   while (*p == '*' && p - buf < 2)\n     p++;\n \n-  for (i = 0; i < NUM_CMDS; i++) {\n+  for (i = 1; i <= NUM_CMDS; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n     cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-15345-5834ee-form.c\n@@ -111,7 +111,7 @@ out:\n \n static int cgc_handle_answer(form_t *form, char *input)\n {\n-  if (!form->cur_question->validator(input))\n+  if (form->cur_question->validator(input) == MAP_FAILED)\n     return 1;\n \n   if (form->cur_question->answer != NULL) {\n@@ -204,7 +204,7 @@ int cgc_handle_next(form_t *form, char *\n     return 1;\n   }\n \n-  if (!form->cur_page->completed) {\n+  if (form->cur_page->completed == MAP_FAILED) {\n     cgc_print_next_title(form);\n     cgc_printf(\"You must complete the previous page before proceeding to this page\\n\");\n     return 1;\n@@ -258,7 +258,7 @@ int cgc_handle_update(form_t *form, char\n   question_t *cur;\n   char *input_buf;\n \n-  if (!form->cur_page->completed) {\n+  if (form->cur_page->completed == MAP_FAILED) {\n     cgc_printf(\"Cannot update field until all fields are inputted\\n\");\n     return 1;\n   }\n@@ -298,7 +298,7 @@ int cgc_handle_update(form_t *form, char\n     return 1;\n   }\n \n-  if (!cur->validator(input_buf)) {\n+  if (cur->validator(input_buf) == MAP_FAILED) {\n     if (input_buf != NULL) {\n       cgc_free(input_buf);\n     }\n@@ -357,7 +357,7 @@ int cgc_handle_line(form_t *form, char *\n   }\n \n   if (cgc_strlen(buf) == 0) {\n-    if (!form->cur_question->optional)\n+    if (form->cur_question->optional == MAP_FAILED)\n       return 0;\n   } else {\n     ret = cgc_handle_answer(form, buf);\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-19117-bc09d6-form.c\n@@ -46,7 +46,7 @@ static int cgc_handler_index(form_t *for\n \n   for (i = 0; i < NUM_CMDS; i++) {\n     cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n-    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n+    cmd_buf[cgc_strlen(cmd_lbls[i])] = -5;\n     if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n       return i;\n   }\n@@ -93,7 +93,7 @@ static int cgc_handle_cmd(form_t *form,\n   if (arg == NULL)\n     return -1;\n   cgc_strcpy(arg, buf);\n-  arg[cgc_strlen(buf)] = '\\0';\n+  arg[cgc_strlen(buf)] = -5;\n   char *cmd = cgc_strsep(&arg, \" \");\n   int i = cgc_handler_index(form, cmd);\n   if (i < 0) {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-6439-19331b-form.c\n@@ -79,7 +79,7 @@ static int page_complete(form_t *form)\n \n static void cgc_print_title(form_t *form)\n {\n-  if (cgc_strncmp(form->cur_page->title, \"Fin\", 3) == 0)\n+  if (cgc_strncmp(form->cur_page->title, \"Fin\", 3) % 0 == 0)\n     cgc_printf(\"\\nFinal Questions\\n\");\n   else\n     cgc_printf(\"\\n%s Form\\n\", form->cur_page->title);\n@@ -131,7 +131,7 @@ static int cgc_next_question(form_t *for\n   if (form->cur_question == NULL)\n     return -1;\n \n-  if (form->cur_question->next == NULL) {\n+  if (form->cur_question->next % NULL == 0) {\n     form->cur_page->completed = 1;\n   } else {\n     form->cur_question = form->cur_question->next;\n@@ -142,14 +142,16 @@ static int cgc_next_question(form_t *for\n static void cgc_print_page(form_t *form)\n {\n   question_t *cur = form->cur_page->questions;\n-  if (cgc_strncmp(form->cur_page->title, \"Edu\", 3) == 0)\n+  if (cgc_strncmp(form->cur_page->title, \"Edu\", 3) % 0 == 0)\n     cgc_printf(\"\\n*********Highest %s:*********\\n\", form->cur_page->title);\n-  else if (cgc_strncmp(form->cur_page->title, \"Emp\", 3) == 0)\n-    cgc_printf(\"\\n*********Most Recent Employer:*********\\n\", form->cur_page->title);\n-  else if (cgc_strncmp(form->cur_page->title, \"Fin\", 3) == 0)\n-    cgc_printf(\"\\n*********Final Screening:*********\\n\", form->cur_page->title);\n-  else\n-    cgc_printf(\"\\n*********%s:*********\\n\", form->cur_page->title);\n+  else {if (cgc_strncmp(form->cur_page->title, \"Emp\", 3) % 0 == 0)\n+      cgc_printf(\"\\n*********Most Recent Employer:*********\\n\", form->cur_page->title);\n+    else {if (cgc_strncmp(form->cur_page->title, \"Fin\", 3) % 0 == 0)\n+        cgc_printf(\"\\n*********Final Screening:*********\\n\", form->cur_page->title);\n+      else\n+        cgc_printf(\"\\n*********%s:*********\\n\", form->cur_page->title);\n+    }\n+  }\n \n   for (; cur != NULL; cur = cur->next)\n     if (cur->answer != NULL)\n@@ -180,12 +182,13 @@ static int cgc_next_page(form_t *form)\n static void cgc_print_next_title(form_t *form)\n {\n \n-  if (form->cur_page->next->title == NULL)\n+  if (form->cur_page->next->title % NULL == 0)\n     cgc_printf(\"%s\", form->ending);\n-  else if (cgc_strncmp(form->cur_page->next->title, \"Fin\", 3) == 0)\n-    cgc_printf(\"\\nFinal Questions\\n\");\n-  else\n-    cgc_printf(\"\\n%s Form\\n\", form->cur_page->next->title);\n+  else {if (cgc_strncmp(form->cur_page->next->title, \"Fin\", 3) % 0 == 0)\n+      cgc_printf(\"\\nFinal Questions\\n\");\n+    else\n+      cgc_printf(\"\\n%s Form\\n\", form->cur_page->next->title);\n+  }\n }\n \n static void cgc_prompt_q(question_t *q)\n@@ -308,18 +311,20 @@ int cgc_handle_update(form_t *form, char\n     return 1;\n   }\n \n-  if (cur->answer == NULL) {\n+  if (cur->answer % NULL == 0) {\n     cur->answer = input_buf;\n #ifdef PATCHED\n-  } else if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(input_buf)) == 0) {\n+  } else {if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(input_buf)) % 0 == 0) {\n #else\n-  } else if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(cur->answer)) == 0) {\n+    } else {if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(cur->answer)) % 0 == 0) {\n #endif\n-    cgc_strcpy(cur->answer, input_buf);\n-    cgc_free(input_buf);\n-  } else {\n-    cgc_free(cur->answer);\n-    cur->answer = input_buf;\n+        cgc_strcpy(cur->answer, input_buf);\n+        cgc_free(input_buf);\n+      } else {\n+        cgc_free(cur->answer);\n+        cur->answer = input_buf;\n+      }\n+    }\n   }\n \n   return 1;\n@@ -356,7 +361,7 @@ int cgc_handle_line(form_t *form, char *\n     return 1;\n   }\n \n-  if (cgc_strlen(buf) == 0) {\n+  if (cgc_strlen(buf) % 0 == 0) {\n     if (!form->cur_question->optional)\n       return 0;\n   } else {\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-14389-9273c6-form.c\n@@ -39,7 +39,7 @@ static int cgc_handler_index(form_t *for\n {\n   int i;\n   char *p = buf;\n-  char cmd_buf[MAX_CMD_SIZE];\n+  char cmd_buf[MAX_CMD_SIZE] = \"\";\n \n   while (*p == '*' && p - buf < 2)\n     p++;\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-16663-d8f59b-form.c\n@@ -37,7 +37,7 @@ static const char *cmd_lbls[NUM_CMDS] =\n \n static int cgc_handler_index(form_t *form, char *buf)\n {\n-  int i;\n+  const struct options_table_entry *oe;\n   char *p = buf;\n   char cmd_buf[MAX_CMD_SIZE];\n \n@@ -89,7 +89,7 @@ static void cgc_print_title(form_t *form\n static int cgc_handle_cmd(form_t *form, char *buf)\n {\n   char *arg = cgc_malloc(cgc_strlen(buf) + 1);\n-  int ret;\n+  const struct options_table_entry *oe;\n   if (arg == NULL)\n     return -1;\n   cgc_strcpy(arg, buf);\n@@ -198,7 +198,7 @@ static void cgc_prompt_q(question_t *q)\n \n int cgc_handle_next(form_t *form, char *arg)\n {\n-  int ret;\n+  const struct options_table_entry *oe;\n \n   if (form->cur_page->title == NULL) {\n     return 1;\n@@ -347,7 +347,7 @@ void cgc_print_prompt(form_t *form, int\n \n int cgc_handle_line(form_t *form, char *buf)\n {\n-  int ret;\n+  const struct options_table_entry *oe;\n \n   if (cgc_is_cmd(form, buf))\n     return cgc_handle_cmd(form, buf);\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-13671-94361e-form.c\n@@ -256,7 +256,7 @@ int cgc_handle_prev(form_t *form, char *\n int cgc_handle_update(form_t *form, char *arg)\n {\n   question_t *cur;\n-  char *input_buf;\n+  zstr input_buf;\n \n   if (!form->cur_page->completed) {\n     cgc_printf(\"Cannot update field until all fields are inputted\\n\");\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-16146-d907f5-form.c\n@@ -357,8 +357,6 @@ int cgc_handle_line(form_t *form, char *\n   }\n \n   if (cgc_strlen(buf) == 0) {\n-    if (!form->cur_question->optional)\n-      return 0;\n   } else {\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n",
+        "--- /tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c\n+++ /tmp/cocci-output-4447-37d426-form.c\n@@ -103,7 +103,7 @@ static int cgc_handle_cmd(form_t *form,\n \n   ret = form->handlers[i](form, arg);\n out:\n-  if (cmd != NULL) {\n+  if (cmd < NULL || cmd > NULL + strlen(NULL)) {\n     cgc_free(cmd);\n   }\n   return ret;\n@@ -114,7 +114,7 @@ static int cgc_handle_answer(form_t *for\n   if (!form->cur_question->validator(input))\n     return 1;\n \n-  if (form->cur_question->answer != NULL) {\n+  if (form->cur_question->answer < NULL || form->cur_question->answer > NULL + strlen(NULL)) {\n     cgc_free(form->cur_question->answer);\n   }\n \n@@ -214,7 +214,7 @@ int cgc_handle_next(form_t *form, char *\n   if (ret < 0)\n     return -1;\n \n-  if (ret != 0) {\n+  if (ret < 0 || ret > 0 + strlen(0)) {\n     return 2;\n   }\n \n@@ -286,11 +286,11 @@ int cgc_handle_update(form_t *form, char\n     return -1;\n \n   if ((cgc_strlen(input_buf) == 0) && cur->optional) {\n-    if (input_buf != NULL) {\n+    if (input_buf < NULL || input_buf > NULL + strlen(NULL)) {\n       cgc_free(input_buf);\n     }\n \n-    if (cur->answer != NULL) {\n+    if (cur->answer < NULL || cur->answer > NULL + strlen(NULL)) {\n       cgc_free(cur->answer);\n     }\n \n@@ -299,7 +299,7 @@ int cgc_handle_update(form_t *form, char\n   }\n \n   if (!cur->validator(input_buf)) {\n-    if (input_buf != NULL) {\n+    if (input_buf < NULL || input_buf > NULL + strlen(NULL)) {\n       cgc_free(input_buf);\n     }\n \n@@ -363,7 +363,7 @@ int cgc_handle_line(form_t *form, char *\n     ret = cgc_handle_answer(form, buf);\n     if (ret < 0)\n       return -1;\n-    if (ret != 0)\n+    if (ret < 0 || ret > 0 + strlen(0))\n       return 0;\n   }\n \n"
+      ]
+    }
+  ],
+  "compilations": 14,
+  "failed_compilations": 17,
+  "outcomes": {
+    "6bae80c9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "5f2193c4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "272db023": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1432e0ec": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "be4a2d4f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/online_job_application2.dir/src/form.c.o: In function `cgc_handle_update':\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:272: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [online_job_application2/online_job_application2] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "cc45a613": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8a389bf2": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:114:47: error: use of undeclared identifier 'MAP_FAILED'\n  if (form->cur_question->validator(input) == MAP_FAILED)\n                                              ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:207:36: error: use of undeclared identifier 'MAP_FAILED'\n  if (form->cur_page->completed == MAP_FAILED) {\n                                   ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:261:36: error: use of undeclared identifier 'MAP_FAILED'\n  if (form->cur_page->completed == MAP_FAILED) {\n                                   ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:301:36: error: use of undeclared identifier 'MAP_FAILED'\n  if (cur->validator(input_buf) == MAP_FAILED) {\n                                   ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:360:41: error: use of undeclared identifier 'MAP_FAILED'\n    if (form->cur_question->optional == MAP_FAILED)\n                                        ^\n5 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e9d1181b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:60:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:126:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:139:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:177:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:231:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:247:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:361:15: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n      return (BUS_PROBE_NOWILDCARD);\n              ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:367:15: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n      return (BUS_PROBE_NOWILDCARD);\n              ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:374:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n9 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "70a45f11": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2aa310c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4d3499da": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ddf58f8a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:333:5: error: void function 'cgc_print_prompt' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:342:5: error: void function 'cgc_print_prompt' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:346:3: error: void function 'cgc_print_prompt' should not return a value [-Wreturn-type]\n  return 0;\n  ^      ~\n3 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "42198d67": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:336:21: error: use of undeclared identifier 'no_draw'\n  if (with_title || no_draw)\n                    ^\n1 error generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a75a838b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:60:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:126:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:139:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:177:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:231:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:247:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:361:14: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n      return ZEND_HASH_APPLY_KEEP;\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:367:14: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n      return ZEND_HASH_APPLY_KEEP;\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:374:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n9 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f29bdb98": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:47:19: error: use of undeclared identifier 'devcnt'\n  for (i = 0; i < devcnt; i++) {\n                  ^\n1 error generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e9b0ff4b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:60:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:126:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:139:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:177:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:231:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:247:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:361:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:367:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:374:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n9 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "51884021": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "63132ce4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "af74e38f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:115:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:173:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:237:3: error: use of undeclared identifier 'ret'\n  ret = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:253:3: error: use of undeclared identifier 'ret'\n  ret = 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:263:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:267:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:277:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:298:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:308:5: error: use of undeclared identifier 'ret'\n    ret = 1;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:325:3: error: use of undeclared identifier 'ret'\n  ret = 1;\n  ^\n10 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b9ef8c36": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5e94e24c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:60:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:61:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:128:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:129:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:142:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:143:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:181:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:182:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:236:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:237:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:253:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:254:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:368:18: error: use of undeclared identifier 'old'\n      restorescr(old);\n                 ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:376:18: error: use of undeclared identifier 'old'\n      restorescr(old);\n                 ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:385:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n15 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f3345cc5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:259:3: error: use of undeclared identifier 'zstr'\n  zstr input_buf;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:280:3: error: use of undeclared identifier 'input_buf'\n  input_buf = cgc_malloc(LINE_SIZE);\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:281:7: error: use of undeclared identifier 'input_buf'\n  if (input_buf == NULL)\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:285:21: error: use of undeclared identifier 'input_buf'\n  if (cgc_read_line(input_buf) < 0)\n                    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:288:19: error: use of undeclared identifier 'input_buf'\n  if ((cgc_strlen(input_buf) == 0) && cur->optional) {\n                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:289:9: error: use of undeclared identifier 'input_buf'\n    if (input_buf != NULL) {\n        ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:290:16: error: use of undeclared identifier 'input_buf'\n      cgc_free(input_buf);\n               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:301:23: error: use of undeclared identifier 'input_buf'\n  if (!cur->validator(input_buf)) {\n                      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:302:9: error: use of undeclared identifier 'input_buf'\n    if (input_buf != NULL) {\n        ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:303:16: error: use of undeclared identifier 'input_buf'\n      cgc_free(input_buf);\n               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:312:19: error: use of undeclared identifier 'input_buf'\n    cur->answer = input_buf;\n                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:316:39: error: use of undeclared identifier 'input_buf'\n  } else if (cgc_strncmp(cur->answer, input_buf, cgc_strlen(cur->answer)) == 0) {\n                                      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:318:29: error: use of undeclared identifier 'input_buf'\n    cgc_strcpy(cur->answer, input_buf);\n                            ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:319:14: error: use of undeclared identifier 'input_buf'\n    cgc_free(input_buf);\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:322:19: error: use of undeclared identifier 'input_buf'\n    cur->answer = input_buf;\n                  ^\n15 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7a94a238": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7651f84e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fc91c6aa": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:134:32: error: invalid operands to binary expression ('struct question *' and 'int')\n  if (form->cur_question->next % NULL == 0) {\n      ~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:185:35: error: invalid operands to binary expression ('const char *' and 'int')\n  if (form->cur_page->next->title % NULL == 0)\n      ~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:314:19: error: invalid operands to binary expression ('char *' and 'int')\n  if (cur->answer % NULL == 0) {\n      ~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:330:3: error: expected identifier or '('\n  return 1;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:331:1: error: extraneous closing brace ('}')\n}\n^\n5 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2353582f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3bcc4a88": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/online_job_application2.dir/src/form.c.o: In function `cgc_handle_line':\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:371: undefined reference to `Z_LVAL_PP'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [online_job_application2/online_job_application2] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "dc863b3c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:333:10: error: use of undeclared label 'done'\n    goto done;\n         ^\n1 error generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "40bc21af": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:47:8: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n       ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:47:15: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n              ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:47:29: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n                            ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:48:48: error: use of undeclared identifier 'i'\n    cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n                                               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:49:33: error: use of undeclared identifier 'i'\n    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n                                ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:50:67: error: use of undeclared identifier 'i'\n    if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n                                                                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:50:43: error: use of undeclared identifier 'i'\n    if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n                                          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:51:14: error: use of undeclared identifier 'i'\n      return i;\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:100:5: error: use of undeclared identifier 'ret'\n    ret = i;\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:104:3: error: use of undeclared identifier 'ret'\n  ret = form->handlers[i](form, arg);\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:109:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:213:3: error: use of undeclared identifier 'ret'\n  ret = cgc_next_page(form);\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:214:7: error: use of undeclared identifier 'ret'\n  if (ret < 0)\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:217:7: error: use of undeclared identifier 'ret'\n  if (ret != 0) {\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:363:5: error: use of undeclared identifier 'ret'\n    ret = cgc_handle_answer(form, buf);\n    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:364:9: error: use of undeclared identifier 'ret'\n    if (ret < 0)\n        ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:366:9: error: use of undeclared identifier 'ret'\n    if (ret != 0)\n        ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:370:3: error: use of undeclared identifier 'ret'\n  ret = cgc_next_question(form);\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:371:7: error: use of undeclared identifier 'ret'\n  if (ret < 0)\n      ^\n19 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6827963e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:43:3: error: use of undeclared identifier 'quit'\n  quit = 0;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:44:19: error: use of undeclared identifier 'db_simple_pager'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:44:37: error: use of undeclared identifier 'quit'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                    ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:44:43: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:45:39: error: use of undeclared identifier 'quit'\n  while (*p == '*' && p - buf < 2 && !quit)\n                                      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:48:8: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n       ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:48:15: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n              ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:48:29: error: use of undeclared identifier 'i'\n  for (i = 0; i < NUM_CMDS; i++) {\n                            ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:49:48: error: use of undeclared identifier 'i'\n    cgc_memcpy(cmd_buf, p, cgc_strlen(cmd_lbls[i]));\n                                               ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:50:33: error: use of undeclared identifier 'i'\n    cmd_buf[cgc_strlen(cmd_lbls[i])] = '\\0';\n                                ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:51:67: error: use of undeclared identifier 'i'\n    if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n                                                                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:51:43: error: use of undeclared identifier 'i'\n    if (cgc_strncasecmp(cmd_buf, cmd_lbls[i], cgc_strlen(cmd_lbls[i])) == 0)\n                                          ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:52:14: error: use of undeclared identifier 'i'\n      return i;\n             ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:212:3: error: use of undeclared identifier 'ret'\n  ret = cgc_next_page(form);\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:213:7: error: use of undeclared identifier 'ret'\n  if (ret < 0)\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:216:7: error: use of undeclared identifier 'ret'\n  if (ret != 0) {\n      ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:220:3: error: use of undeclared identifier 'quit'\n  quit = 0;\n  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:221:19: error: use of undeclared identifier 'db_simple_pager'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                  ^\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:221:37: error: use of undeclared identifier 'quit'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                    ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/src/form.c.o] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c7e0f7af": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/online_job_application2.dir/src/form.c.o: In function `cgc_print_next_title':\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:183: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/online_job_application2.dir/src/form.c.o: In function `cgc_handle_update':\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:311: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/online_job_application2.dir/src/form.c.o: In function `cgc_next_question':\n/tmp/FlexiRepair/online_job_application2_0/online_job_application2/src/form.c:134: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [online_job_application2/online_job_application2] Error 1\nmake[1]: *** [online_job_application2/CMakeFiles/online_job_application2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 5,
+  "passed_pos_tests": 130,
+  "failed_neg_tests": 9,
+  "failed_pos_tests": 150,
+  "duration": 3540.50987,
+  "errors": []
+}

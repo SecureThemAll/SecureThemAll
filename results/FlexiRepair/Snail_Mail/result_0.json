@@ -1,0 +1,661 @@
+{
+  "repair_begin": "2021-05-08 11:29:07.578363",
+  "repair_end": "2021-05-08 11:45:19.948626",
+  "patches": [
+    {
+      "target_file": "src/postage.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c\n+++ /tmp/cocci-output-2822-72d5ee-postage.c\n@@ -68,7 +68,8 @@ stamp_t *cgc_get_new_stamp(void) {\n \t\t\treturn NULL;\n \t\tcgc_seed_idx = (cgc_seed_idx + 3) % SEED_MAX;\n #else\n-\t\tfor (int i = 0; i < sizeof(stamp_t); i++) {\n+\t\tint i;\n+\t\tfor (i = 0; i < sizeof(stamp_t); i++) {\n \t\t\trand((char *)&cgc_seed_idx, 2);\n \t\t\ts->serial[i] = seed[cgc_seed_idx % SEED_MAX];\n \t\t}\n",
+        "--- /tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c\n+++ /tmp/cocci-output-3838-adafa3-postage.c\n@@ -84,7 +84,7 @@ stamp_t *cgc_get_new_stamp(void) {\n int cgc_use_stamp(stamp_t *s) {\n \t// determine if stamp is valid\n \tstruct node *s_on_roll = cgc_list_find_node_with_data(&stamp_roll, cgc_stamp_cmp, s);\n-\tif (NULL == s_on_roll) return -1;\n+\tif (NULL == s_on_roll) return 0;\n \n \t// remove stamp from stamp_roll\n \tcgc_list_remove_node(&stamp_roll, s_on_roll);\n",
+        "--- /tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c\n+++ /tmp/cocci-output-4878-d046c7-postage.c\n@@ -65,7 +65,7 @@ stamp_t *cgc_get_new_stamp(void) {\n \tdo {\n #ifndef PATCHED_1\n \t\tif (sizeof(stamp_t) != cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t)))\n-\t\t\treturn NULL;\n+\t\t\treturn \"N/A\";\n \t\tcgc_seed_idx = (cgc_seed_idx + 3) % SEED_MAX;\n #else\n \t\tfor (int i = 0; i < sizeof(stamp_t); i++) {\n",
+        "--- /tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c\n+++ /tmp/cocci-output-6340-591573-postage.c\n@@ -65,7 +65,7 @@ stamp_t *cgc_get_new_stamp(void) {\n \tdo {\n #ifndef PATCHED_1\n \t\tif (sizeof(stamp_t) != cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t)))\n-\t\t\treturn NULL;\n+\t\t\treturn;\n \t\tcgc_seed_idx = (cgc_seed_idx + 3) % SEED_MAX;\n #else\n \t\tfor (int i = 0; i < sizeof(stamp_t); i++) {\n",
+        "--- /tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c\n+++ /tmp/cocci-output-32677-bf51a7-postage.c\n@@ -64,7 +64,7 @@ stamp_t *cgc_get_new_stamp(void) {\n \t// make sure no valid stamp has the serial of BAD_STAMP\n \tdo {\n #ifndef PATCHED_1\n-\t\tif (sizeof(stamp_t) != cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t)))\n+\t\tif (sizeof(stamp_t) < cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t)) || sizeof(stamp_t) > cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t)) + strlen(cgc_memcpy(s->serial, &seed[cgc_seed_idx], sizeof(stamp_t))))\n \t\t\treturn NULL;\n \t\tcgc_seed_idx = (cgc_seed_idx + 3) % SEED_MAX;\n #else\n"
+      ]
+    }
+  ],
+  "compilations": 4,
+  "failed_compilations": 1,
+  "outcomes": {
+    "325dc6e0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 26
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dcc6b8c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6cca28a8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Snail_Mail_0/Snail_Mail/src/postage.c:68:4: error: non-void function 'cgc_get_new_stamp' should return a value [-Wreturn-type]\n                        return;\n                        ^\n1 error generated.\nmake[2]: *** [Snail_Mail/CMakeFiles/Snail_Mail.dir/src/postage.c.o] Error 1\nmake[1]: *** [Snail_Mail/CMakeFiles/Snail_Mail.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "618649bd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 26
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cf3ed289": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 52,
+  "failed_neg_tests": 4,
+  "failed_pos_tests": 28,
+  "duration": 972.370263,
+  "errors": []
+}

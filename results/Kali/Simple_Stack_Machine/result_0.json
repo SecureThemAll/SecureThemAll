@@ -1,0 +1,2765 @@
+{
+  "repair_begin": "2021-05-07 03:22:52.333409",
+  "repair_end": "2021-05-07 03:46:32.315935",
+  "patches": [
+    {
+      "target_file": "src/main.c",
+      "fix": "122c122,124\n<   cgc_deallocate(b1, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (!1)\n>       cgc_deallocate(b1, (4096));\n",
+      "edits": [
+        " \n155,158c156,160\n<     if (insn == END_INSN)\n<     {\n<       break;\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (insn == (4294967295U)) {\n>             break;\n>         }\n",
+        " \n139c140,142\n<       total += rx_bytes;\n---\n>       //prophet generated patch\n>       if (!1)\n>           total += rx_bytes;\n",
+        " \n131,137c132,139\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>       //prophet generated patch\n>       if (1)\n>           return 0;\n>       if ((ret != 0) || (rx_bytes == 0)) {\n>           if (totalInsns == 0) {\n>               cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>           }\n>           cgc__terminate(-1);\n",
+        " \n155,157c156,160\n<     if (insn == END_INSN)\n<     {\n<       break;\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (insn == (4294967295U)) {\n>         break;\n",
+        " \n153a155,157\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n131,137c132,137\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>       //prophet generated patch\n>       if (((ret != 0) || (rx_bytes == 0)) && !1) {\n>           if (totalInsns == 0) {\n>               cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>           }\n>           cgc__terminate(-1);\n",
+        " \n122c123,125\n<   cgc_deallocate(b1, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (!1)\n>       cgc_deallocate(b1, (4096));\n",
+        " \n153a155,157\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n142a144,146\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n173c174,176\n<         break;\n---\n>         //prophet generated patch\n>         if (!1)\n>             break;\n",
+        " \n152,173c153,159\n<   for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n<   {\n<     insn = insns[pc];\n<     if (insn == END_INSN)\n<     {\n<       break;\n<     }\n< \n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   for (pc = 0; (pc < totalInsns) && (insns[pc] != (4294967295U)); pc++) {\n>       insn = insns[pc];\n>       if (insn == (4294967295U)) {\n>           break;\n175,207c161,251\n<       case (POP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n<         {\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         if (stack[curTop] == 0)\n<         {\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n---\n>       switch ((insn & 7)) {\n>         case ((0)):\n>           {\n>               curTop++;\n>               stack[curTop] = (insn >> 3);\n>               break;\n>           }\n>         case ((1)):\n>           {\n>               if (curTop < 0) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               curTop--;\n>               break;\n>           }\n>         case ((2)):\n>           {\n>               curTop++;\n>               if (curTop >= ((4096) / 4)) {\n>                   cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = pc;\n>               break;\n>           }\n>         case ((3)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               if (stack[curTop] == 0) {\n>                   pc = stack[curTop - 1];\n>                   if ((pc < 0) || (pc >= totalInsns)) {\n>                       cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   pc--;\n>               }\n>               curTop -= 2;\n>               break;\n>           }\n>         case ((4)):\n>           {\n>               if (curTop < 0) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               uint32_t temp = stack[curTop];\n>               int temp2 = curTop - (insn >> 3);\n>               if ((temp2 < 0) || (temp2 > curTop)) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = stack[temp2];\n>               stack[temp2] = temp;\n>               break;\n>           }\n>         case ((5)):\n>           {\n>               curTop++;\n>               int temp = curTop - (insn >> 3) - 1;\n>               if ((temp < 0) || (temp > curTop)) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>               break;\n>           }\n>         case ((6)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop - 1] += stack[curTop];\n>               curTop--;\n>               break;\n>           }\n>         case ((7)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop - 1] -= stack[curTop];\n>               curTop--;\n>               break;\n>           }\n>         default:\n209,210d252\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n212,283d253\n<           pc--; //for the pc++ at the end of the loop\n<         }\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n285d254\n<     }\n",
+        " \n163a165,167\n>         //prophet generated patch\n>         if (1)\n>             return 0;\n",
+        " \n128,135c129,138\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     do {\n>         ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>         if ((ret != 0) || (rx_bytes == 0)) {\n>             if (totalInsns == 0) {\n>                 cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>             }\n>             cgc__terminate(-1);\n137,140c140,141\n<         cgc__terminate(-1);\n<       }\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n---\n>         total += rx_bytes;\n>     } while (total < sizeof (insn));\n",
+        " \n142c143,145\n<     insns[totalInsns] = insn;\n---\n>     //prophet generated patch\n>     if (!1)\n>         insns[totalInsns] = insn;\n",
+        " \n152,210c153,252\n<   for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n<   {\n<     insn = insns[pc];\n<     if (insn == END_INSN)\n<     {\n<       break;\n<     }\n< \n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n<       }\n<       case (POP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n<         {\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         if (stack[curTop] == 0)\n<         {\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n<           {\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n---\n>   //prophet generated patch\n>   if (!1)\n>       for (pc = 0; (pc < totalInsns) && (insns[pc] != (4294967295U)); pc++) {\n>           insn = insns[pc];\n>           if (insn == (4294967295U)) {\n>               break;\n>           }\n>           switch ((insn & 7)) {\n>             case ((0)):\n>               {\n>                   curTop++;\n>                   stack[curTop] = (insn >> 3);\n>                   break;\n>               }\n>             case ((1)):\n>               {\n>                   if (curTop < 0) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   curTop--;\n>                   break;\n>               }\n>             case ((2)):\n>               {\n>                   curTop++;\n>                   if (curTop >= ((4096) / 4)) {\n>                       cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   stack[curTop] = pc;\n>                   break;\n>               }\n>             case ((3)):\n>               {\n>                   if (curTop < 1) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   if (stack[curTop] == 0) {\n>                       pc = stack[curTop - 1];\n>                       if ((pc < 0) || (pc >= totalInsns)) {\n>                           cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                           cgc__terminate(-1);\n>                       }\n>                       pc--;\n>                   }\n>                   curTop -= 2;\n>                   break;\n>               }\n>             case ((4)):\n>               {\n>                   if (curTop < 0) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   uint32_t temp = stack[curTop];\n>                   int temp2 = curTop - (insn >> 3);\n>                   if ((temp2 < 0) || (temp2 > curTop)) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   stack[curTop] = stack[temp2];\n>                   stack[temp2] = temp;\n>                   break;\n>               }\n>             case ((5)):\n>               {\n>                   curTop++;\n>                   int temp = curTop - (insn >> 3) - 1;\n>                   if ((temp < 0) || (temp > curTop)) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>                   break;\n>               }\n>             case ((6)):\n>               {\n>                   if (curTop < 1) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   stack[curTop - 1] += stack[curTop];\n>                   curTop--;\n>                   break;\n>               }\n>             case ((7)):\n>               {\n>                   if (curTop < 1) {\n>                       cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   stack[curTop - 1] -= stack[curTop];\n>                   curTop--;\n>                   break;\n>               }\n>             default:\n>               {\n>               }\n212,283d253\n<           pc--; //for the pc++ at the end of the loop\n<         }\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n285,286d254\n<     }\n<   }\n",
+        " \n125,137c126,145\n<   do\n<   {\n<     total = 0;\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   do {\n>       total = 0;\n>       do {\n>           ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>           if ((ret != 0) || (rx_bytes == 0)) {\n>               if (totalInsns == 0) {\n>                   cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>               }\n>               cgc__terminate(-1);\n>           }\n>           total += rx_bytes;\n>       } while (total < sizeof (insn));\n>       insns[totalInsns] = insn;\n>       totalInsns++;\n>       if (totalInsns >= ((8192) / 4)) {\n>           cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>           cgc__terminate(-1);\n139,149c147\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n< \n<     insns[totalInsns] = insn;\n<     totalInsns++;\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n<     }\n<   } while (insn != END_INSN);\n---\n>   } while (insn != (4294967295U));\n",
+        " \n172c173,176\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         //prophet generated patch\n>         if (1)\n>             return -1;\n>         stack[curTop] = (insn >> 3);\n",
+        " \n160,177c161,165\n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n<       }\n<       case (POP):\n<       {\n<         if (curTop < 0)\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     switch ((insn & 7)) {\n>       case ((0)):\n179,180c167,169\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             stack[curTop] = (insn >> 3);\n>             break;\n182,188c171\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n---\n>       case ((1)):\n190,191c173,178\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 0) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             curTop--;\n>             break;\n193,198c180\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n---\n>       case ((2)):\n200,201c182,188\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             if (curTop >= ((4096) / 4)) {\n>                 cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = pc;\n>             break;\n203,204c190\n< \n<         if (stack[curTop] == 0)\n---\n>       case ((3)):\n206,212c192,205\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n<           {\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n<           }\n<           pc--; //for the pc++ at the end of the loop\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             if (stack[curTop] == 0) {\n>                 pc = stack[curTop - 1];\n>                 if ((pc < 0) || (pc >= totalInsns)) {\n>                     cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 pc--;\n>             }\n>             curTop -= 2;\n>             break;\n214,219c207\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n---\n>       case ((4)):\n221,222c209,221\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 0) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             uint32_t temp = stack[curTop];\n>             int temp2 = curTop - (insn >> 3);\n>             if ((temp2 < 0) || (temp2 > curTop)) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = stack[temp2];\n>             stack[temp2] = temp;\n>             break;\n224,228c223\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>       case ((5)):\n230,231c225,232\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             int temp = curTop - (insn >> 3) - 1;\n>             if ((temp < 0) || (temp > curTop)) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>             break;\n233,250c234\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n---\n>       case ((6)):\n252,253c236,242\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop - 1] += stack[curTop];\n>             curTop--;\n>             break;\n255,261c244\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n---\n>       case ((7)):\n263,264c246,252\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop - 1] -= stack[curTop];\n>             curTop--;\n>             break;\n266,272c254\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n---\n>       default:\n274,275d255\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n277,284d256\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n<       }\n",
+        " \n130c131,133\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n---\n>       //prophet generated patch\n>       if (!1)\n>           ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n",
+        " \n126a128,130\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n128,140c129,140\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n<       }\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n---\n>     //prophet generated patch\n>     if (!1)\n>         do {\n>             ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>             if ((ret != 0) || (rx_bytes == 0)) {\n>                 if (totalInsns == 0) {\n>                     cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>                 }\n>                 cgc__terminate(-1);\n>             }\n>             total += rx_bytes;\n>         } while (total < sizeof (insn));\n",
+        " \n141a143,145\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n160,222c161,255\n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n<       }\n<       case (POP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n<         {\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         if (stack[curTop] == 0)\n<         {\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n<           {\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n<           }\n<           pc--; //for the pc++ at the end of the loop\n<         }\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>     //prophet generated patch\n>     if (!1)\n>         switch ((insn & 7)) {\n>           case ((0)):\n>             {\n>                 curTop++;\n>                 stack[curTop] = (insn >> 3);\n>                 break;\n>             }\n>           case ((1)):\n>             {\n>                 if (curTop < 0) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 curTop--;\n>                 break;\n>             }\n>           case ((2)):\n>             {\n>                 curTop++;\n>                 if (curTop >= ((4096) / 4)) {\n>                     cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 stack[curTop] = pc;\n>                 break;\n>             }\n>           case ((3)):\n>             {\n>                 if (curTop < 1) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 if (stack[curTop] == 0) {\n>                     pc = stack[curTop - 1];\n>                     if ((pc < 0) || (pc >= totalInsns)) {\n>                         cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                         cgc__terminate(-1);\n>                     }\n>                     pc--;\n>                 }\n>                 curTop -= 2;\n>                 break;\n>             }\n>           case ((4)):\n>             {\n>                 if (curTop < 0) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 uint32_t temp = stack[curTop];\n>                 int temp2 = curTop - (insn >> 3);\n>                 if ((temp2 < 0) || (temp2 > curTop)) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 stack[curTop] = stack[temp2];\n>                 stack[temp2] = temp;\n>                 break;\n>             }\n>           case ((5)):\n>             {\n>                 curTop++;\n>                 int temp = curTop - (insn >> 3) - 1;\n>                 if ((temp < 0) || (temp > curTop)) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>                 break;\n>             }\n>           case ((6)):\n>             {\n>                 if (curTop < 1) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 stack[curTop - 1] += stack[curTop];\n>                 curTop--;\n>                 break;\n>             }\n>           case ((7)):\n>             {\n>                 if (curTop < 1) {\n>                     cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 stack[curTop - 1] -= stack[curTop];\n>                 curTop--;\n>                 break;\n>             }\n>           default:\n>             {\n>             }\n224,285d256\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n<       }\n<     }\n",
+        " \n143c144,146\n<     totalInsns++;\n---\n>     //prophet generated patch\n>     if (!1)\n>         totalInsns++;\n",
+        " \n123c124,127\n<   cgc_deallocate(b2, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   cgc_deallocate(b2, (4096));\n",
+        " \n125,137c126,145\n<   do\n<   {\n<     total = 0;\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   do {\n>       total = 0;\n>       do {\n>           ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>           if ((ret != 0) || (rx_bytes == 0)) {\n>               if (totalInsns == 0) {\n>                   cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>               }\n>               cgc__terminate(-1);\n>           }\n>           total += rx_bytes;\n>       } while (total < sizeof (insn));\n>       insns[totalInsns] = insn;\n>       totalInsns++;\n>       if (totalInsns >= ((8192) / 4)) {\n>           cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>           cgc__terminate(-1);\n139,149c147\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n< \n<     insns[totalInsns] = insn;\n<     totalInsns++;\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n<     }\n<   } while (insn != END_INSN);\n---\n>   } while (insn != (4294967295U));\n",
+        " \n125,149c126,146\n<   do\n<   {\n<     total = 0;\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n<       }\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n< \n<     insns[totalInsns] = insn;\n<     totalInsns++;\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n<     }\n<   } while (insn != END_INSN);\n---\n>   //prophet generated patch\n>   if (!1)\n>       do {\n>           total = 0;\n>           do {\n>               ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>               if ((ret != 0) || (rx_bytes == 0)) {\n>                   if (totalInsns == 0) {\n>                       cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>                   }\n>                   cgc__terminate(-1);\n>               }\n>               total += rx_bytes;\n>           } while (total < sizeof (insn));\n>           insns[totalInsns] = insn;\n>           totalInsns++;\n>           if (totalInsns >= ((8192) / 4)) {\n>               cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>               cgc__terminate(-1);\n>           }\n>       } while (insn != (4294967295U));\n",
+        " \n160,177c161,165\n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n<       }\n<       case (POP):\n<       {\n<         if (curTop < 0)\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     switch ((insn & 7)) {\n>       case ((0)):\n179,180c167,169\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             stack[curTop] = (insn >> 3);\n>             break;\n182,188c171\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n---\n>       case ((1)):\n190,191c173,178\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 0) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             curTop--;\n>             break;\n193,198c180\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n---\n>       case ((2)):\n200,201c182,188\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             if (curTop >= ((4096) / 4)) {\n>                 cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = pc;\n>             break;\n203,204c190\n< \n<         if (stack[curTop] == 0)\n---\n>       case ((3)):\n206,212c192,205\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n<           {\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n<           }\n<           pc--; //for the pc++ at the end of the loop\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             if (stack[curTop] == 0) {\n>                 pc = stack[curTop - 1];\n>                 if ((pc < 0) || (pc >= totalInsns)) {\n>                     cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                     cgc__terminate(-1);\n>                 }\n>                 pc--;\n>             }\n>             curTop -= 2;\n>             break;\n214,219c207\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n---\n>       case ((4)):\n221,222c209,221\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 0) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             uint32_t temp = stack[curTop];\n>             int temp2 = curTop - (insn >> 3);\n>             if ((temp2 < 0) || (temp2 > curTop)) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = stack[temp2];\n>             stack[temp2] = temp;\n>             break;\n224,228c223\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>       case ((5)):\n230,231c225,232\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             curTop++;\n>             int temp = curTop - (insn >> 3) - 1;\n>             if ((temp < 0) || (temp > curTop)) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>             break;\n233,250c234\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n---\n>       case ((6)):\n252,253c236,242\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop - 1] += stack[curTop];\n>             curTop--;\n>             break;\n255,261c244\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n---\n>       case ((7)):\n263,264c246,252\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n---\n>             if (curTop < 1) {\n>                 cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                 cgc__terminate(-1);\n>             }\n>             stack[curTop - 1] -= stack[curTop];\n>             curTop--;\n>             break;\n266,272c254\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n---\n>       default:\n274,275d255\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n277,284d256\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n<       }\n",
+        " \n164c165,167\n<         curTop++;\n---\n>         //prophet generated patch\n>         if (!1)\n>             curTop++;\n",
+        " \n144,147c145,150\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (totalInsns >= ((8192) / 4)) {\n>         cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>         cgc__terminate(-1);\n",
+        " \n122c123,126\n<   cgc_deallocate(b1, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   cgc_deallocate(b1, (4096));\n",
+        " \n128,135c129,138\n<     do\n<     {\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     do {\n>         ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n>         if ((ret != 0) || (rx_bytes == 0)) {\n>             if (totalInsns == 0) {\n>                 cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>             }\n>             cgc__terminate(-1);\n137,140c140,141\n<         cgc__terminate(-1);\n<       }\n<       total += rx_bytes;\n<     } while (total < sizeof(insn));\n---\n>         total += rx_bytes;\n>     } while (total < sizeof (insn));\n",
+        " \n122c123,126\n<   cgc_deallocate(b1, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   cgc_deallocate(b1, (4096));\n",
+        " \n117c118,121\n<   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, &b1);\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   cgc_allocate((4096), 0, &b1);\n",
+        " \n130c131,134\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n---\n>       //prophet generated patch\n>       if (1)\n>           return 0;\n>       ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n",
+        " \n155,157c156,158\n<     if (insn == END_INSN)\n<     {\n<       break;\n---\n>     //prophet generated patch\n>     if ((insn == (4294967295U)) || 1) {\n>         break;\n",
+        " \n126a128,130\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n138a140,142\n>       //prophet generated patch\n>       if (1)\n>           return -1;\n",
+        " \n154c155,157\n<     insn = insns[pc];\n---\n>     //prophet generated patch\n>     if (!1)\n>         insn = insns[pc];\n",
+        " \n155,157c156,158\n<     if (insn == END_INSN)\n<     {\n<       break;\n---\n>     //prophet generated patch\n>     if ((insn == (4294967295U)) && !1) {\n>         break;\n",
+        " \n123c124,126\n<   cgc_deallocate(b2, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (!1)\n>       cgc_deallocate(b2, (4096));\n",
+        " \n127c128,130\n<     total = 0;\n---\n>     //prophet generated patch\n>     if (!1)\n>         total = 0;\n",
+        " \n142a144,146\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n131,138c132,139\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n<       }\n---\n>       //prophet generated patch\n>       if (!1)\n>           if ((ret != 0) || (rx_bytes == 0)) {\n>               if (totalInsns == 0) {\n>                   cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>               }\n>               cgc__terminate(-1);\n>           }\n",
+        " \n117c118,121\n<   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, &b1);\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   cgc_allocate((4096), 0, &b1);\n",
+        " \n163a165,167\n>         //prophet generated patch\n>         if (1)\n>             return -1;\n",
+        " \n123c124,127\n<   cgc_deallocate(b2, _MAX_STACK_SIZE_IN_BYTES_);\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   cgc_deallocate(b2, (4096));\n",
+        " \n144,147c145,150\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (totalInsns >= ((8192) / 4)) {\n>         cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>         cgc__terminate(-1);\n",
+        " \n144,147c145,148\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n---\n>     //prophet generated patch\n>     if ((totalInsns >= ((8192) / 4)) && !1) {\n>         cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>         cgc__terminate(-1);\n",
+        " \n172a174,176\n>         //prophet generated patch\n>         if (1)\n>             return -1;\n",
+        " \n172c173,175\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         //prophet generated patch\n>         if (!1)\n>             stack[curTop] = (insn >> 3);\n",
+        " \n144,147c145,148\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n---\n>     //prophet generated patch\n>     if ((totalInsns >= ((8192) / 4)) || 1) {\n>         cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>         cgc__terminate(-1);\n",
+        " \n172a174,176\n>         //prophet generated patch\n>         if (1)\n>             return 0;\n",
+        " \n131,137c132,139\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>       //prophet generated patch\n>       if (1)\n>           return -1;\n>       if ((ret != 0) || (rx_bytes == 0)) {\n>           if (totalInsns == 0) {\n>               cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>           }\n>           cgc__terminate(-1);\n",
+        " \n155,157c156,160\n<     if (insn == END_INSN)\n<     {\n<       break;\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (insn == (4294967295U)) {\n>         break;\n",
+        " \n152,173c153,159\n<   for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n<   {\n<     insn = insns[pc];\n<     if (insn == END_INSN)\n<     {\n<       break;\n<     }\n< \n<     switch (INSN_TO_OPCODE(insn))\n<     {\n<       case (PUSH):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         stack[curTop] = INSN_TO_IMM(insn);\n<         break;\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   for (pc = 0; (pc < totalInsns) && (insns[pc] != (4294967295U)); pc++) {\n>       insn = insns[pc];\n>       if (insn == (4294967295U)) {\n>           break;\n175,207c161,251\n<       case (POP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         curTop--;\n<         break;\n<       }\n<       case (PUSHPC):\n<       {\n<         curTop++;\n<         if (curTop >= _MAX_STACK_SIZE_)\n<         {\n<           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop] = pc;\n<         break;\n<       }\n<       case (JMPZ):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         if (stack[curTop] == 0)\n<         {\n<           pc = stack[curTop - 1];\n<           if ((pc < 0) || (pc >= totalInsns))\n---\n>       switch ((insn & 7)) {\n>         case ((0)):\n>           {\n>               curTop++;\n>               stack[curTop] = (insn >> 3);\n>               break;\n>           }\n>         case ((1)):\n>           {\n>               if (curTop < 0) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               curTop--;\n>               break;\n>           }\n>         case ((2)):\n>           {\n>               curTop++;\n>               if (curTop >= ((4096) / 4)) {\n>                   cgc_transmit_all(\"STACK OVERFLOW EXCEPTION\\n\", sizeof (\"STACK OVERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = pc;\n>               break;\n>           }\n>         case ((3)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               if (stack[curTop] == 0) {\n>                   pc = stack[curTop - 1];\n>                   if ((pc < 0) || (pc >= totalInsns)) {\n>                       cgc_transmit_all(\"INVALID PROGRAM COUNTER EXCEPTION\\n\", sizeof (\"INVALID PROGRAM COUNTER EXCEPTION\\n\"));\n>                       cgc__terminate(-1);\n>                   }\n>                   pc--;\n>               }\n>               curTop -= 2;\n>               break;\n>           }\n>         case ((4)):\n>           {\n>               if (curTop < 0) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               uint32_t temp = stack[curTop];\n>               int temp2 = curTop - (insn >> 3);\n>               if ((temp2 < 0) || (temp2 > curTop)) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = stack[temp2];\n>               stack[temp2] = temp;\n>               break;\n>           }\n>         case ((5)):\n>           {\n>               curTop++;\n>               int temp = curTop - (insn >> 3) - 1;\n>               if ((temp < 0) || (temp > curTop)) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop] = stack[curTop - (insn >> 3) - 1];\n>               break;\n>           }\n>         case ((6)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop - 1] += stack[curTop];\n>               curTop--;\n>               break;\n>           }\n>         case ((7)):\n>           {\n>               if (curTop < 1) {\n>                   cgc_transmit_all(\"STACK UNDERFLOW EXCEPTION\\n\", sizeof (\"STACK UNDERFLOW EXCEPTION\\n\"));\n>                   cgc__terminate(-1);\n>               }\n>               stack[curTop - 1] -= stack[curTop];\n>               curTop--;\n>               break;\n>           }\n>         default:\n209,210d252\n<             cgc_transmit_all(_PC_EXCP_MSG_, sizeof(_PC_EXCP_MSG_));\n<             cgc__terminate(-1);\n212,283d253\n<           pc--; //for the pc++ at the end of the loop\n<         }\n<         curTop -= 2;\n<         break;\n<       }\n<       case (SWAP):\n<       {\n<         if (curTop < 0)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         uint32_t temp = stack[curTop];\n<         int temp2 = curTop - INSN_TO_IMM(insn);\n<         \n<         if ( (temp2 < 0) || (temp2 > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n<         break;\n<       } \n<       case (DUP):\n<       {\n<         curTop++;\n< \n< \n< \n< \n< \n< \n< \n<         int temp = curTop - INSN_TO_IMM(insn) - 1;\n<          \n<         if ( (temp < 0) || (temp > curTop) )\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n< \n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n<         break;\n<       }\n<       case (ADD):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] += stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       case (SUB):\n<       {\n<         if (curTop < 1)\n<         {\n<           cgc_transmit_all(_STACK_UNDERFLOW_EXCP_MSG_, sizeof(_STACK_UNDERFLOW_EXCP_MSG_));\n<           cgc__terminate(-1);\n<         }\n<         stack[curTop - 1] -= stack[curTop];\n<         curTop--;  \n<         break;\n<       }\n<       default :\n<       {\n<         //empty\n285d254\n<     }\n",
+        " \n130c131,134\n<       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n---\n>       //prophet generated patch\n>       if (1)\n>           return -1;\n>       ret = cgc_receive(0, ((char *)(&insn)) + total, sizeof (insn) - total, &rx_bytes);\n",
+        " \n131,137c132,137\n<       if ( (ret != 0) || (rx_bytes == 0) )\n<       {\n<         if (totalInsns == 0)\n<         {\n<           cgc_transmit_all(gHelpMsg, sizeof(gHelpMsg));\n<         }\n<         cgc__terminate(-1);\n---\n>       //prophet generated patch\n>       if (((ret != 0) || (rx_bytes == 0)) || 1) {\n>           if (totalInsns == 0) {\n>               cgc_transmit_all(gHelpMsg, sizeof (gHelpMsg));\n>           }\n>           cgc__terminate(-1);\n",
+        " \n172c173,176\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         //prophet generated patch\n>         if (1)\n>             return 0;\n>         stack[curTop] = (insn >> 3);\n",
+        " \n144,148c145,150\n<     if (totalInsns >= _MAX_INSNS_SIZE_)\n<     {\n<       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n<       cgc__terminate(-1);\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (totalInsns >= ((8192) / 4)) {\n>             cgc_transmit_all(\"INSNS OVERFLOW EXCEPTION\\n\", sizeof (\"INSNS OVERFLOW EXCEPTION\\n\"));\n>             cgc__terminate(-1);\n>         }\n",
+        " \n141a143,145\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n138a140,142\n>       //prophet generated patch\n>       if (1)\n>           return 0;\n"
+      ]
+    }
+  ],
+  "compilations": 65,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "eae00d5f": {
+      "compiles": [
+        0
+      ]
+    },
+    "ad8cd61a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "66dd145c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0c67b709": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "76ae6049": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "80265598": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "20d33d00": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "701a7cdf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "64d253d5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c8eb2923": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3ff8a8b1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f8797e32": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2fdcc0a1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "905a2faf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "518d95e8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eb8d8dd5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b33c131b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "33efa40f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4653f521": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "821d8448": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5010c0a3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1b221799": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "09f03fa5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "620c8a3b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9f364047": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c8fc66da": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c9d82929": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "091eac37": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f3835436": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0cfc6e0c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4f29b9a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4c6085f5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a55085b7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bfa82763": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2d26b63f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d51eeff7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "20fc27ef": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3d5845f4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "751a1a50": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e855abe3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "25bfa9ee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d0c968ba": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2dfe93c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "66c6655d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "972b85df": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ]
+      }
+    },
+    "b5a1605d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dc210454": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cec3d712": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cb6d07c3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8cb8d6f2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8e1607b3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4da0c54c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "559ea860": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2bf1aefe": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e7a55ace": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9ca8cf9c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a600b8bc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7cb2ba0d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d4b42724": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "882995d8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7a77c98e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0cef1b73": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fd6aed80": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 156,
+  "passed_pos_tests": 69,
+  "failed_neg_tests": 16,
+  "failed_pos_tests": 51,
+  "duration": 1419.982526,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

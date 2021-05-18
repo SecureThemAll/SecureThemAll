@@ -1,0 +1,33 @@
+{
+  "repair_begin": "2021-05-07 22:17:54.802939",
+  "repair_end": "2021-05-07 22:19:15.012536",
+  "patches": [
+    {
+      "target_file": "src/dive.ii",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Divelogger2_0/Divelogger2/src/dive.cc\n+++ /tmp/cocci-output-24887-308b7f-dive.cc\n@@ -30,7 +30,7 @@ uint32_t Dive::AddDiveBin( uint32_t cgc_\n     uint32_t index = m_diveBinCount;\n \n #ifdef PATCHED\n-    if ( index >= DIVE_BIN_COUNT )\n+    if (ntohs(DIVE_BIN_COUNT) <= ntohs(index))\n         return (-1);\n #endif\n \n"
+      ]
+    }
+  ],
+  "compilations": 0,
+  "failed_compilations": 1,
+  "outcomes": {
+    "2c8b7bf5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Divelogger2_0/Divelogger2/src/dive.cc:33:9: error: use of undeclared identifier 'ntohs'\n    if (ntohs(DIVE_BIN_COUNT) <= ntohs(index))\n        ^\n/tmp/FlexiRepair/Divelogger2_0/Divelogger2/src/dive.cc:33:34: error: use of undeclared identifier 'ntohs'\n    if (ntohs(DIVE_BIN_COUNT) <= ntohs(index))\n                                 ^\n2 errors generated.\nmake[2]: *** [Divelogger2/CMakeFiles/Divelogger2_patched.dir/src/dive.cc.o] Error 1\nmake[1]: *** [Divelogger2/CMakeFiles/Divelogger2_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 0,
+  "failed_neg_tests": 0,
+  "failed_pos_tests": 0,
+  "duration": 80.209597,
+  "errors": []
+}

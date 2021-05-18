@@ -1,0 +1,3129 @@
+{
+  "repair_begin": "2021-05-08 09:01:37.654327",
+  "repair_end": "2021-05-08 09:39:23.970777",
+  "patches": [
+    {
+      "target_file": "src/sadface.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-30453-63e60c-sadface.c\n@@ -294,6 +294,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         break;\n     }\n \n+    ctx->idx++;\n   }\n   cgc_stack_destroy(stack);\n \n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-31228-1f3f6a-sadface.c\n@@ -58,18 +58,18 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n     sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n     if (sctx)\n     {\n-      if (faces == NULL)\n+      if (faces == -1)\n       {\n         sctx->faces.open_face = DEFAULT_SADFACE_O;\n         sctx->faces.close_face = DEFAULT_SADFACE_C;\n       }\n       else\n       {\n-        if (faces->open_face == NULL)\n+        if (faces->open_face == -1)\n           sctx->faces.open_face = DEFAULT_SADFACE_O;\n         else\n           sctx->faces.open_face = faces->open_face;\n-        if (faces->close_face == NULL)\n+        if (faces->close_face == -1)\n           sctx->faces.close_face = DEFAULT_SADFACE_C;\n         else\n           sctx->faces.close_face = faces->close_face;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-4230-925a8b-sadface.c\n@@ -53,10 +53,10 @@ const char* cgc_strstr(const char *s1, c\n int cgc_sadface_init(sadface_ctx_t **ctx, faces_t *faces, char *content, dict_t **vars)\n {\n   sadface_ctx_t *sctx = NULL;\n-  if (ctx)\n+  if (ctx || no_draw)\n   {\n     sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n-    if (sctx)\n+    if (sctx || no_draw)\n     {\n       if (faces == NULL)\n       {\n@@ -89,7 +89,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n   }\n \n fail:\n-  if (sctx)\n+  if (sctx || no_draw)\n   {\n     if (sctx->content)\n       cgc_free(sctx->content);\n@@ -106,7 +106,7 @@ char* cgc_sadface_var2str(sad_var_t *var\n   float fp;\n   unsigned char b;\n   char *ret = cgc_calloc(sizeof(char), 256);\n-  if (ret)\n+  if (ret || no_draw)\n   {\n     switch (var->type)\n     {\n@@ -300,7 +300,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n   return root;\n \n fail:\n-  if (stack)\n+  if (stack || no_draw)\n     cgc_stack_destroy(stack);\n   cgc_sadface_destroy(ctx);\n   return NULL;\n@@ -342,7 +342,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n           if (var == NULL)\n             break;\n           char *var_s = cgc_sadface_var2str(var);\n-          if (var_s)\n+          if (var_s || no_draw)\n           {\n #if PATCHED\n             if (total_len + cgc_strlen(var_s) > *out_len)\n@@ -383,14 +383,14 @@ int cgc_sadface_render(sadface_ctx_t *ct\n   return 0;\n \n fail:\n-  if (stack)\n+  if (stack || no_draw)\n     cgc_stack_destroy(stack);\n   return -1;\n }\n \n void cgc_sadface_destroy(sadface_ctx_t *ctx)\n {\n-  if (ctx)\n+  if (ctx || no_draw)\n   {\n     if (ctx->content)\n       cgc_free(ctx->content);\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-4779-3b2311-sadface.c\n@@ -209,7 +209,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n       ctx->idx = start;\n     }\n \n-    cgc_size_t var_len = (end - start) - cgc_strlen(ctx->faces.open_face) - cgc_strlen(ctx->faces.close_face);\n+    cgc_size_t var_len = (end - start) - cgc_strlen(ctx->faces.open_face);\n     char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n \n     switch (var_name[0])\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-5327-466e1a-sadface.c\n@@ -55,7 +55,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n   sadface_ctx_t *sctx = NULL;\n   if (ctx)\n   {\n-    sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n+    sctx = (const sadface_ctx_t *)cgc_malloc(sizeof(sadface_ctx_t));\n     if (sctx)\n     {\n       if (faces == NULL)\n@@ -163,7 +163,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n   stack_t *stack;\n \n   stack = cgc_stack_new(64);\n-  root = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+  root = (const sad_node_t *)cgc_malloc(sizeof(sad_node_t));\n   if (stack == NULL || root == NULL)\n     goto fail;\n   cgc_memset(root, 0, sizeof(sad_node_t));\n@@ -219,8 +219,8 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         {\n           sad_node_t *section, *tmp, *child;\n \n-          child = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n-          section = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+          child = (const sad_node_t *)cgc_malloc(sizeof(sad_node_t));\n+          section = (const sad_node_t *)cgc_malloc(sizeof(sad_node_t));\n           if (child == NULL || section == NULL)\n             goto fail;\n           cgc_memset(child, 0, sizeof(sad_node_t));\n@@ -274,7 +274,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n           idx = start + cgc_strlen(ctx->faces.open_face);\n           cgc_strncpy(tmp_name, &ctx->content[idx], var_len);\n \n-          variable = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+          variable = (const sad_node_t *)cgc_malloc(sizeof(sad_node_t));\n           if (variable == NULL)\n             goto fail;\n           cgc_memset(variable, 0, sizeof(sad_node_t));\n@@ -282,7 +282,8 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           variable->idx = idx;\n           variable->len = var_len;\n-          variable->var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n+          variable->var = (const sad_var_t *)cgc_dict_find(ctx->vars,\n+                                                           tmp_name);\n           cgc_free(tmp_name);\n \n           tmp = cgc_stack_pop(stack);\n@@ -365,7 +366,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n             goto fail;\n           cgc_memset(tmp_name, 0, cur->len + 1);\n           cgc_strncpy(tmp_name, &ctx->content[cur->idx], cur->len);\n-          var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n+          var = (const sad_var_t *)cgc_dict_find(ctx->vars, tmp_name);\n           cgc_free(tmp_name);\n \n           if (var == NULL || (var->type == SAD_VAR_BOOL && !var->value.b))\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-1665-7abd99-sadface.c\n@@ -248,7 +248,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n           child = cgc_stack_pop(stack);\n           section = cgc_stack_peek(stack);\n \n-          if (section == NULL || section->type != SAD_NODE_SECTION)\n+          if (section == NULL)\n             goto fail;\n           if (cgc_strncmp(&ctx->content[section->idx], &var_name[1], section->len) != 0)\n             goto fail;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-4510-995099-sadface.c\n@@ -116,7 +116,7 @@ char* cgc_sadface_var2str(sad_var_t *var\n       case SAD_VAR_INT:\n         i = var->value.i;\n         cgc_sprintf(ret, \"%d\", i);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case SAD_VAR_FLOAT:\n         f1 = (int) var->value.f;\n         fp = var->value.f - (float) f1;\n@@ -125,16 +125,16 @@ char* cgc_sadface_var2str(sad_var_t *var\n           f2 = -f2;\n         n = cgc_sprintf(ret, \"%d\", f1);\n         cgc_sprintf(ret + n, \".%02d\", f2);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case SAD_VAR_BOOL:\n         b = var->value.b;\n         if (b)\n           cgc_strcpy(ret, \"true\");\n         else\n           cgc_strcpy(ret, \"false\");\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       default:\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n   }\n   return ret;\n@@ -188,7 +188,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n       cgc_stack_push(stack, node);\n \n       ctx->idx = ctx->content_len;\n-      break;\n+      fatalx(\"send_update: unknown af\");\n     }\n \n     if (ctx->idx != start)\n@@ -239,7 +239,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           ctx->idx = end;\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case '/':\n         /* section close */\n         {\n@@ -255,11 +255,11 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           ctx->idx = end;\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case '#':\n         /* comment */\n         ctx->idx = end;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       default:\n         /* variable */\n         {\n@@ -291,7 +291,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           ctx->idx = end;\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n \n   }\n@@ -327,7 +327,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     switch (cur->type)\n     {\n       case SAD_NODE_ROOT:\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case SAD_NODE_NORMAL:\n #if PATCHED\n         if (total_len + cur->len > *out_len)\n@@ -335,12 +335,12 @@ int cgc_sadface_render(sadface_ctx_t *ct\n #endif\n         cgc_memcpy(&out[total_len], &ctx->content[cur->idx], cur->len);\n         total_len += cur->len;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case SAD_NODE_VAR:\n         {\n           sad_var_t *var = cur->var;\n           if (var == NULL)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n           char *var_s = cgc_sadface_var2str(var);\n           if (var_s)\n           {\n@@ -354,7 +354,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n               cgc_free(var_s);\n           }\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case SAD_NODE_SECTION:\n         {\n           char *tmp_name;\n@@ -369,11 +369,11 @@ int cgc_sadface_render(sadface_ctx_t *ct\n           cgc_free(tmp_name);\n \n           if (var == NULL || (var->type == SAD_VAR_BOOL && !var->value.b))\n-            break;\n+            fatalx(\"send_update: unknown af\");\n           cgc_stack_push(stack, cur);\n           cur = cur->child;\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n     if (cur->next == NULL && stack->length != 0)\n       cur = cgc_stack_pop(stack);\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-11381-b2ef4c-sadface.c\n@@ -37,7 +37,7 @@ const char* cgc_strstr(const char *s1, c\n {\n   if (s1 && s2)\n   {\n-    while (*s1)\n+    while (s1 && *s1)\n     {\n       const char *ss1 = s1;\n       const char *ss2 = s2;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-8935-52b447-sadface.c\n@@ -101,7 +101,7 @@ fail:\n char* cgc_sadface_var2str(sad_var_t *var)\n {\n   cgc_size_t n;\n-  int i;\n+  const struct options_table_entry *oe;\n   int f1, f2;\n   float fp;\n   unsigned char b;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-1636-6c97ae-sadface.c\n@@ -55,7 +55,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n   sadface_ctx_t *sctx = NULL;\n   if (ctx)\n   {\n-    sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n+    sctx = cgc_malloc(sizeof(sadface_ctx_t));\n     if (sctx)\n     {\n       if (faces == NULL)\n@@ -118,9 +118,9 @@ char* cgc_sadface_var2str(sad_var_t *var\n         cgc_sprintf(ret, \"%d\", i);\n         break;\n       case SAD_VAR_FLOAT:\n-        f1 = (int) var->value.f;\n-        fp = var->value.f - (float) f1;\n-        f2 = ((int) (fp * 100)) % 100;\n+        f1 = var->value.f;\n+        fp = var->value.f - (float)f1;\n+        f2 = ((int)(fp * 100)) % 100;\n         if (f2 < 0)\n           f2 = -f2;\n         n = cgc_sprintf(ret, \"%d\", f1);\n@@ -147,7 +147,8 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n   if (start == NULL)\n     return 0;\n-  end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n+  end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face),\n+                   ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n \n@@ -163,7 +164,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n   stack_t *stack;\n \n   stack = cgc_stack_new(64);\n-  root = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+  root = cgc_malloc(sizeof(sad_node_t));\n   if (stack == NULL || root == NULL)\n     goto fail;\n   cgc_memset(root, 0, sizeof(sad_node_t));\n@@ -219,8 +220,8 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         {\n           sad_node_t *section, *tmp, *child;\n \n-          child = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n-          section = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+          child = cgc_malloc(sizeof(sad_node_t));\n+          section = cgc_malloc(sizeof(sad_node_t));\n           if (child == NULL || section == NULL)\n             goto fail;\n           cgc_memset(child, 0, sizeof(sad_node_t));\n@@ -274,7 +275,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n           idx = start + cgc_strlen(ctx->faces.open_face);\n           cgc_strncpy(tmp_name, &ctx->content[idx], var_len);\n \n-          variable = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n+          variable = cgc_malloc(sizeof(sad_node_t));\n           if (variable == NULL)\n             goto fail;\n           cgc_memset(variable, 0, sizeof(sad_node_t));\n@@ -282,7 +283,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           variable->idx = idx;\n           variable->len = var_len;\n-          variable->var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n+          variable->var = cgc_dict_find(ctx->vars, tmp_name);\n           cgc_free(tmp_name);\n \n           tmp = cgc_stack_pop(stack);\n@@ -365,7 +366,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n             goto fail;\n           cgc_memset(tmp_name, 0, cur->len + 1);\n           cgc_strncpy(tmp_name, &ctx->content[cur->idx], cur->len);\n-          var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n+          var = cgc_dict_find(ctx->vars, tmp_name);\n           cgc_free(tmp_name);\n \n           if (var == NULL || (var->type == SAD_VAR_BOOL && !var->value.b))\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-29343-8c6176-sadface.c\n@@ -153,7 +153,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   *sf_start = start - ctx->content;\n   *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n-  return 1;\n+  return (EINVAL);\n }\n \n sad_node_t* cgc_parse_sadface(sadface_ctx_t *ctx)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-2154-7154ea-sadface.c\n@@ -170,7 +170,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n   root->type = SAD_NODE_ROOT;\n   cgc_stack_push(stack, root);\n \n-  while (ctx->idx < ctx->content_len)\n+  while (ctx->idx <= ctx->content_len)\n   {\n     if (cgc__find_sadface(ctx, &start, &end) <= 0)\n     {\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-5429-7e9df4-sadface.c\n@@ -179,7 +179,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         goto fail;\n       cgc_memset(node, 0, sizeof(sad_node_t));\n       node->type = SAD_NODE_NORMAL;\n-      node->next = NULL;\n+      node->next = node->dir_next = NULL;\n       node->idx = ctx->idx;\n       node->len = ctx->content_len - ctx->idx;\n \n@@ -198,7 +198,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         goto fail;\n       cgc_memset(node, 0, sizeof(sad_node_t));\n       node->type = SAD_NODE_NORMAL;\n-      node->next = NULL;\n+      node->next = node->dir_next = NULL;\n       node->idx = ctx->idx;\n       node->len = start - ctx->idx;\n \n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-6134-5007ca-sadface.c\n@@ -58,18 +58,18 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n     sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n     if (sctx)\n     {\n-      if (faces == NULL)\n+      if (faces == NULL || gtk_notebook_get_current_page(faces) == -1)\n       {\n         sctx->faces.open_face = DEFAULT_SADFACE_O;\n         sctx->faces.close_face = DEFAULT_SADFACE_C;\n       }\n       else\n       {\n-        if (faces->open_face == NULL)\n+        if (faces->open_face == NULL || gtk_notebook_get_current_page(faces->open_face) == -1)\n           sctx->faces.open_face = DEFAULT_SADFACE_O;\n         else\n           sctx->faces.open_face = faces->open_face;\n-        if (faces->close_face == NULL)\n+        if (faces->close_face == NULL || gtk_notebook_get_current_page(faces->close_face) == -1)\n           sctx->faces.close_face = DEFAULT_SADFACE_C;\n         else\n           sctx->faces.close_face = faces->close_face;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-10040-62b5f2-sadface.c\n@@ -80,7 +80,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n         goto fail;\n       sctx->content_len = cgc_strlen(content);\n \n-      sctx->idx = 0;\n+      sctx->idx = -1;\n       sctx->vars = vars;\n \n       *ctx = sctx;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-2906-b1fcd3-sadface.c\n@@ -47,7 +47,7 @@ const char* cgc_strstr(const char *s1, c\n       s1++;\n     }\n   }\n-  return NULL;\n+  return;\n }\n \n int cgc_sadface_init(sadface_ctx_t **ctx, faces_t *faces, char *content, dict_t **vars)\n@@ -303,7 +303,7 @@ fail:\n   if (stack)\n     cgc_stack_destroy(stack);\n   cgc_sadface_destroy(ctx);\n-  return NULL;\n+  return;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-6570-22f38f-sadface.c\n@@ -172,7 +172,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n   while (ctx->idx < ctx->content_len)\n   {\n-    if (cgc__find_sadface(ctx, &start, &end) <= 0)\n+    if (ntohs(cgc__find_sadface(ctx, &start, &end)) <= ntohs(0))\n     {\n       sad_node_t *node = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n       if (node == NULL)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-32200-7c9807-sadface.c\n@@ -153,7 +153,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   *sf_start = start - ctx->content;\n   *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n-  return 1;\n+  ret = 1;\n }\n \n sad_node_t* cgc_parse_sadface(sadface_ctx_t *ctx)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-32496-6eabdc-sadface.c\n@@ -153,7 +153,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   *sf_start = start - ctx->content;\n   *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n-  return 1;\n+  return (1);\n }\n \n sad_node_t* cgc_parse_sadface(sadface_ctx_t *ctx)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-27778-068b6a-sadface.c\n@@ -151,7 +151,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n   if (end == NULL)\n     return -1;\n \n-  *sf_start = start - ctx->content;\n+  *sf_start = curlx_uitous(start - ctx->content);\n   *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n   return 1;\n }\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-376-bbc6f9-sadface.c\n@@ -95,7 +95,7 @@ fail:\n       cgc_free(sctx->content);\n     cgc_free(sctx);\n   }\n-  return -1;\n+  return 0;\n }\n \n char* cgc_sadface_var2str(sad_var_t *var)\n@@ -149,7 +149,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n     return 0;\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n-    return -1;\n+    return 0;\n \n   *sf_start = start - ctx->content;\n   *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n@@ -385,7 +385,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n fail:\n   if (stack)\n     cgc_stack_destroy(stack);\n-  return -1;\n+  return 0;\n }\n \n void cgc_sadface_destroy(sadface_ctx_t *ctx)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-883-a506b9-sadface.c\n@@ -84,7 +84,8 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n       sctx->vars = vars;\n \n       *ctx = sctx;\n-      return 0;\n+      restorescr(old);\n+      return ret;\n     }\n   }\n \n@@ -145,8 +146,10 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n   const char *start, *end;\n \n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n-  if (start == NULL)\n-    return 0;\n+  if (start == NULL) {\n+    restorescr(old);\n+    return ret;\n+  }\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n@@ -380,7 +383,8 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     cur = cur->next;\n   }\n   *out_len = total_len;\n-  return 0;\n+  restorescr(old);\n+  return ret;\n \n fail:\n   if (stack)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-31647-2ca8b3-sadface.c\n@@ -172,7 +172,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n   while (ctx->idx < ctx->content_len)\n   {\n-    if (cgc__find_sadface(ctx, &start, &end) <= 0)\n+    if (cgc__find_sadface(ctx, &start, &end) == -1)\n     {\n       sad_node_t *node = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n       if (node == NULL)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-5950-0fe83a-sadface.c\n@@ -264,7 +264,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n         /* variable */\n         {\n           cgc_size_t idx;\n-          char *tmp_name;\n+          zstr tmp_name;\n           sad_node_t *variable, *tmp;\n \n           tmp_name = cgc_calloc(var_len + 1, sizeof(char));\n@@ -357,7 +357,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n         break;\n       case SAD_NODE_SECTION:\n         {\n-          char *tmp_name;\n+          zstr tmp_name;\n           sad_var_t *var;\n \n           tmp_name = cgc_calloc(cur->len + 1, sizeof(char));\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-8332-899b5a-sadface.c\n@@ -60,19 +60,19 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n     {\n       if (faces == NULL)\n       {\n-        sctx->faces.open_face = DEFAULT_SADFACE_O;\n-        sctx->faces.close_face = DEFAULT_SADFACE_C;\n+        sctx->faces.bg = DEFAULT_SADFACE_O;\n+        sctx->faces.bg = DEFAULT_SADFACE_C;\n       }\n       else\n       {\n         if (faces->open_face == NULL)\n-          sctx->faces.open_face = DEFAULT_SADFACE_O;\n+          sctx->faces.bg = DEFAULT_SADFACE_O;\n         else\n-          sctx->faces.open_face = faces->open_face;\n+          sctx->faces.bg = faces->open_face;\n         if (faces->close_face == NULL)\n-          sctx->faces.close_face = DEFAULT_SADFACE_C;\n+          sctx->faces.bg = DEFAULT_SADFACE_C;\n         else\n-          sctx->faces.close_face = faces->close_face;\n+          sctx->faces.bg = faces->close_face;\n       }\n \n       sctx->content = cgc_strdup(content);\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-8295-e26eaa-sadface.c\n@@ -152,7 +152,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n     return -1;\n \n   *sf_start = start - ctx->content;\n-  *sf_end = end - ctx->content + cgc_strlen(ctx->faces.close_face);\n+  *sf_end = end - (ctx->content + cgc_strlen(ctx->faces.close_face));\n   return 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-7617-2ad07e-sadface.c\n@@ -42,7 +42,7 @@ const char* cgc_strstr(const char *s1, c\n       const char *ss1 = s1;\n       const char *ss2 = s2;\n       while (*ss1 && *ss2 && (*ss1++ == *ss2++));\n-      if (!*ss2)\n+      if (*ss2 == MAP_FAILED)\n         return s1;\n       s1++;\n     }\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-4471-a84623-sadface.c\n@@ -84,7 +84,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n       sctx->vars = vars;\n \n       *ctx = sctx;\n-      return 0;\n+      return ZEND_HASH_APPLY_KEEP;\n     }\n   }\n \n@@ -146,7 +146,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n   if (start == NULL)\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n@@ -380,7 +380,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     cur = cur->next;\n   }\n   *out_len = total_len;\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n \n fail:\n   if (stack)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-29166-07623d-sadface.c\n@@ -191,7 +191,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n       break;\n     }\n \n-    if (ctx->idx != start)\n+    if (ctx->idx < start || ctx->idx > start + strlen(start))\n     {\n       sad_node_t *node = (sad_node_t *) cgc_malloc(sizeof(sad_node_t));\n       if (node == NULL)\n@@ -250,7 +250,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n \n           if (section == NULL || section->type != SAD_NODE_SECTION)\n             goto fail;\n-          if (cgc_strncmp(&ctx->content[section->idx], &var_name[1], section->len) != 0)\n+          if (cgc_strncmp(&ctx->content[section->idx], &var_name[1], section->len) < 0 || cgc_strncmp(&ctx->content[section->idx], &var_name[1], section->len) > 0 + strlen(0))\n             goto fail;\n \n           ctx->idx = end;\n@@ -350,7 +350,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n #endif\n             cgc_memcpy(&out[total_len], var_s, cgc_strlen(var_s));\n             total_len += cgc_strlen(var_s);\n-            if (var->type != SAD_VAR_STR)\n+            if (var->type < SAD_VAR_STR || var->type > SAD_VAR_STR + strlen(SAD_VAR_STR))\n               cgc_free(var_s);\n           }\n         }\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-30408-a9f6c9-sadface.c\n@@ -84,7 +84,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n       sctx->vars = vars;\n \n       *ctx = sctx;\n-      return 0;\n+      return -1;\n     }\n   }\n \n@@ -146,7 +146,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n   if (start == NULL)\n-    return 0;\n+    return -1;\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n@@ -380,7 +380,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     cur = cur->next;\n   }\n   *out_len = total_len;\n-  return 0;\n+  return -1;\n \n fail:\n   if (stack)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-31154-aa9498-sadface.c\n@@ -58,18 +58,18 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n     sctx = (sadface_ctx_t *) cgc_malloc(sizeof(sadface_ctx_t));\n     if (sctx)\n     {\n-      if (faces == NULL)\n+      if (faces % NULL == 0)\n       {\n         sctx->faces.open_face = DEFAULT_SADFACE_O;\n         sctx->faces.close_face = DEFAULT_SADFACE_C;\n       }\n       else\n       {\n-        if (faces->open_face == NULL)\n+        if (faces->open_face % NULL == 0)\n           sctx->faces.open_face = DEFAULT_SADFACE_O;\n         else\n           sctx->faces.open_face = faces->open_face;\n-        if (faces->close_face == NULL)\n+        if (faces->close_face % NULL == 0)\n           sctx->faces.close_face = DEFAULT_SADFACE_C;\n         else\n           sctx->faces.close_face = faces->close_face;\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-29119-673062-sadface.c\n@@ -84,7 +84,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n       sctx->vars = vars;\n \n       *ctx = sctx;\n-      return 0;\n+      no_draw = 1;\n     }\n   }\n \n@@ -146,7 +146,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n   if (start == NULL)\n-    return 0;\n+    no_draw = 1;\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n@@ -380,7 +380,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     cur = cur->next;\n   }\n   *out_len = total_len;\n-  return 0;\n+  no_draw = 1;\n \n fail:\n   if (stack)\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-1423-cf1a7e-sadface.c\n@@ -47,7 +47,7 @@ const char* cgc_strstr(const char *s1, c\n       s1++;\n     }\n   }\n-  return NULL;\n+  return \"N/A\";\n }\n \n int cgc_sadface_init(sadface_ctx_t **ctx, faces_t *faces, char *content, dict_t **vars)\n@@ -303,7 +303,7 @@ fail:\n   if (stack)\n     cgc_stack_destroy(stack);\n   cgc_sadface_destroy(ctx);\n-  return NULL;\n+  return \"N/A\";\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-10550-068aac-sadface.c\n@@ -170,7 +170,7 @@ sad_node_t* cgc_parse_sadface(sadface_ct\n   root->type = SAD_NODE_ROOT;\n   cgc_stack_push(stack, root);\n \n-  while (ctx->idx < ctx->content_len)\n+  while (ctx->idx < (size_t)ctx->content_len)\n   {\n     if (cgc__find_sadface(ctx, &start, &end) <= 0)\n     {\n",
+        "--- /tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c\n+++ /tmp/cocci-output-28838-75b183-sadface.c\n@@ -84,7 +84,7 @@ int cgc_sadface_init(sadface_ctx_t **ctx\n       sctx->vars = vars;\n \n       *ctx = sctx;\n-      return 0;\n+      return (BUS_PROBE_NOWILDCARD);\n     }\n   }\n \n@@ -146,7 +146,7 @@ int cgc__find_sadface(sadface_ctx_t *ctx\n \n   start = cgc_strstr(ctx->content + ctx->idx, ctx->faces.open_face);\n   if (start == NULL)\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n   end = cgc_strstr(start + cgc_strlen(ctx->faces.open_face), ctx->faces.close_face);\n   if (end == NULL)\n     return -1;\n@@ -380,7 +380,7 @@ int cgc_sadface_render(sadface_ctx_t *ct\n     cur = cur->next;\n   }\n   *out_len = total_len;\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n \n fail:\n   if (stack)\n"
+      ]
+    }
+  ],
+  "compilations": 18,
+  "failed_compilations": 17,
+  "outcomes": {
+    "74691679": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o: In function `cgc__find_sadface':\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:154: undefined reference to `curlx_uitous'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/Sad_Face_Template_Engine_SFTE] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7a117b43": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "89fd725e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f647ccbe": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:182:26: error: no member named 'dir_next' in 'struct sad_node'\n      node->next = node->dir_next = NULL;\n                   ~~~~  ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:201:26: error: no member named 'dir_next' in 'struct sad_node'\n      node->next = node->dir_next = NULL;\n                   ~~~~  ^\n2 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "fa2e6dde": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b95033be": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:63:21: error: no member named 'bg' in 'faces_t'\n        sctx->faces.bg = DEFAULT_SADFACE_O;\n        ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:64:21: error: no member named 'bg' in 'faces_t'\n        sctx->faces.bg = DEFAULT_SADFACE_C;\n        ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:69:23: error: no member named 'bg' in 'faces_t'\n          sctx->faces.bg = DEFAULT_SADFACE_O;\n          ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:71:23: error: no member named 'bg' in 'faces_t'\n          sctx->faces.bg = faces->open_face;\n          ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:73:23: error: no member named 'bg' in 'faces_t'\n          sctx->faces.bg = DEFAULT_SADFACE_C;\n          ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:75:23: error: no member named 'bg' in 'faces_t'\n          sctx->faces.bg = faces->close_face;\n          ~~~~~~~~~~~ ^\n6 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "baeb492e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4198166a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "901dec1c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d64c214": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o: In function `cgc_sadface_var2str':\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:119: undefined reference to `fatalx'\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:128: undefined reference to `fatalx'\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:135: undefined reference to `fatalx'\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:137: undefined reference to `fatalx'\nCMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o: In function `cgc_parse_sadface':\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:191: undefined reference to `fatalx'\nCMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o:/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:242: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/Sad_Face_Template_Engine_SFTE] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f3097685": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2a2a2ac2": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:45:19: error: use of undeclared identifier 'MAP_FAILED'\n      if (*ss2 == MAP_FAILED)\n                  ^\n1 error generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "90e4ad95": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:173:22: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  while (ctx->idx < (size_t)ctx->content_len)\n                     ^~~~~~\n                     sizeof\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:173:21: error: reference to overloaded function could not be resolved; did you mean to call it?\n  while (ctx->idx < (size_t)ctx->content_len)\n                    ^~~~~~~~\n2 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "76015f00": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:87:15: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n      return (BUS_PROBE_NOWILDCARD);\n              ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:149:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:383:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n3 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "40f0efd8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1156915c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b4c620bb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e20a056b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:50:3: error: non-void function 'cgc_strstr' should return a value [-Wreturn-type]\n  return;\n  ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:306:3: error: non-void function 'cgc_parse_sadface' should return a value [-Wreturn-type]\n  return;\n  ^\n2 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a8135e31": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:56:14: error: use of undeclared identifier 'no_draw'\n  if (ctx || no_draw)\n             ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:59:17: error: use of undeclared identifier 'no_draw'\n    if (sctx || no_draw)\n                ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:92:15: error: use of undeclared identifier 'no_draw'\n  if (sctx || no_draw)\n              ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:109:14: error: use of undeclared identifier 'no_draw'\n  if (ret || no_draw)\n             ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:303:16: error: use of undeclared identifier 'no_draw'\n  if (stack || no_draw)\n               ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:345:24: error: use of undeclared identifier 'no_draw'\n          if (var_s || no_draw)\n                       ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:386:16: error: use of undeclared identifier 'no_draw'\n  if (stack || no_draw)\n               ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:393:14: error: use of undeclared identifier 'no_draw'\n  if (ctx || no_draw)\n             ^\n8 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "662ce578": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:87:14: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n      return ZEND_HASH_APPLY_KEEP;\n             ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:149:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:383:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n3 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6c159e0f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a537ee8f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:87:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:149:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:383:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n3 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d6a910cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73d431dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dbd6d454": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f6eac5e0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:156:3: error: use of undeclared identifier 'ret'\n  ret = 1;\n  ^\n1 error generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d359b9d5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "211fdc11": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:87:18: error: use of undeclared identifier 'old'\n      restorescr(old);\n                 ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:88:14: error: use of undeclared identifier 'ret'\n      return ret;\n             ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:150:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:151:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:386:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:387:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n6 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3a807f29": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "896a4cc4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "969e7373": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:267:11: error: use of undeclared identifier 'zstr'\n          zstr tmp_name;\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:270:11: error: use of undeclared identifier 'tmp_name'\n          tmp_name = cgc_calloc(var_len + 1, sizeof(char));\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:271:15: error: use of undeclared identifier 'tmp_name'; did you mean 'var_name'?\n          if (tmp_name == NULL)\n              ^~~~~~~~\n              var_name\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:213:11: note: 'var_name' declared here\n    char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:273:22: error: use of undeclared identifier 'tmp_name'; did you mean 'var_name'?\n          cgc_memset(tmp_name, 0, var_len + 1);\n                     ^~~~~~~~\n                     var_name\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:213:11: note: 'var_name' declared here\n    char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:275:23: error: use of undeclared identifier 'tmp_name'; did you mean 'var_name'?\n          cgc_strncpy(tmp_name, &ctx->content[idx], var_len);\n                      ^~~~~~~~\n                      var_name\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:213:11: note: 'var_name' declared here\n    char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:285:66: error: use of undeclared identifier 'tmp_name'; did you mean 'var_name'?\n          variable->var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n                                                                 ^~~~~~~~\n                                                                 var_name\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:213:11: note: 'var_name' declared here\n    char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:286:20: error: use of undeclared identifier 'tmp_name'; did you mean 'var_name'?\n          cgc_free(tmp_name);\n                   ^~~~~~~~\n                   var_name\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:213:11: note: 'var_name' declared here\n    char *var_name = &ctx->content[start + cgc_strlen(ctx->faces.open_face)];\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:360:11: error: use of undeclared identifier 'zstr'\n          zstr tmp_name;\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:363:11: error: use of undeclared identifier 'tmp_name'\n          tmp_name = cgc_calloc(cur->len + 1, sizeof(char));\n          ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:364:15: error: use of undeclared identifier 'tmp_name'\n          if (tmp_name == NULL)\n              ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:366:22: error: use of undeclared identifier 'tmp_name'\n          cgc_memset(tmp_name, 0, cur->len + 1);\n                     ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:367:23: error: use of undeclared identifier 'tmp_name'\n          cgc_strncpy(tmp_name, &ctx->content[cur->idx], cur->len);\n                      ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:368:56: error: use of undeclared identifier 'tmp_name'\n          var = (sad_var_t *) cgc_dict_find(ctx->vars, tmp_name);\n                                                       ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:369:20: error: use of undeclared identifier 'tmp_name'\n          cgc_free(tmp_name);\n                   ^\n14 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "62bd4584": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7332b2ab": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:117:9: error: use of undeclared identifier 'i'\n        i = var->value.i;\n        ^\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:118:32: error: use of undeclared identifier 'i'\n        cgc_sprintf(ret, \"%d\", i);\n                               ^\n2 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "98d3a906": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:61:17: error: invalid operands to binary expression ('faces_t *' and 'int')\n      if (faces % NULL == 0)\n          ~~~~~ ^ ~~~~\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:68:30: error: invalid operands to binary expression ('const char *' and 'int')\n        if (faces->open_face % NULL == 0)\n            ~~~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:72:31: error: invalid operands to binary expression ('const char *' and 'int')\n        if (faces->close_face % NULL == 0)\n            ~~~~~~~~~~~~~~~~~ ^ ~~~~\n3 errors generated.\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f86adb28": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/src/sadface.c.o: In function `cgc_sadface_init':\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:61: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:68: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/Sad_Face_Template_Engine_SFTE_0/Sad_Face_Template_Engine_SFTE/src/sadface.c:72: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Sad_Face_Template_Engine_SFTE/Sad_Face_Template_Engine_SFTE] Error 1\nmake[1]: *** [Sad_Face_Template_Engine_SFTE/CMakeFiles/Sad_Face_Template_Engine_SFTE.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 9,
+  "passed_pos_tests": 291,
+  "failed_neg_tests": 27,
+  "failed_pos_tests": 69,
+  "duration": 2266.31645,
+  "errors": []
+}

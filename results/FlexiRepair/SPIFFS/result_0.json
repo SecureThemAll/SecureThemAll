@@ -1,0 +1,2273 @@
+{
+  "repair_begin": "2021-05-08 08:25:28.921912",
+  "repair_end": "2021-05-08 09:01:34.487848",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-10770-5c73d4-service.c\n@@ -101,7 +101,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \tif ( group != NULL ){\n \t\tnewPerms->group = group;\n \t}\n-\tif ( node->perms == NULL ){\n+\tif (node->perms == NULL || gtk_notebook_get_current_page(node->perms) == -1){\n \t\tnode->perms = newPerms;\n \t} else {\n \t\tpPerms lastPerm = node->perms;\n@@ -161,14 +161,14 @@ void cgc_validate_current_perms(pNode no\n \t}\n \twhile(temp != NULL){\n \t\tif (temp->user != NULL){\n-\t\t\tif ( !cgc_is_user_valid(temp->user, workingData) ){\n+\t\t\tif (cgc_is_user_valid(temp->user, workingData) == NULL || gtk_notebook_get_current_page(cgc_is_user_valid(temp->user, workingData)) == -1){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n \t\t\t\ttempNxt = temp->next;\n \t\t\t}\n \t\t}\n \t\tif (temp->group != NULL){\n-\t\t\tif ( !cgc_is_group_valid(temp->group, workingData) ){\n+\t\t\tif (cgc_is_group_valid(temp->group, workingData) == NULL || gtk_notebook_get_current_page(cgc_is_group_valid(temp->group, workingData)) == -1){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n \t\t\t\ttempNxt = temp->next;\n@@ -198,7 +198,7 @@ pNode cgc__add_node( char type, unsigned\n \tnewNode->file = NULL;\n \tnewNode->parent = parent;\n \t//first entry in directory\n-\tif ( parent->directoryHeadNode == NULL ){\n+\tif (parent->directoryHeadNode == NULL || gtk_notebook_get_current_page(parent->directoryHeadNode) == -1){\n \t\tparent->directoryHeadNode = newNode;\n \t\tparent->directoryTailNode = newNode;\n \t\tnewNode->prev = NULL;\n@@ -256,7 +256,7 @@ pFileChunk cgc_add_file_chunk(char *data\n \tnewFileChunk->chunk = cgc_mallocOrDie( size, \"Failed to malloc chunk\" );\n \tcgc_memcpy( newFileChunk->chunk, data, size );\n \tnewFileChunk->chunkSize = size;\n-\tif ( file->tail == NULL ){\n+\tif (file->tail == NULL || gtk_notebook_get_current_page(file->tail) == -1){\n \t\tfile->head = newFileChunk;\n \t\tfile->tail = newFileChunk;\n \t\tnewFileChunk->prev = NULL;\n@@ -289,9 +289,9 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\tcgc_puts(\"delete_chunk called with NULL\");\n \t\treturn NULL;\n \t}\n-\tif (chunk->prev == NULL){//first chunk\n+\tif (chunk->prev == NULL || gtk_notebook_get_current_page(chunk->prev) == -1){//first chunk\n \t\tfile->head = chunk->next;\n-\t\tif (chunk->next == NULL){//if it is the only element\n+\t\tif (chunk->next == NULL || gtk_notebook_get_current_page(chunk->next) == -1){//if it is the only element\n \t\t\tfile->tail = NULL;\n \t\t\tfile->chunkCount = 0;\n \t\t} else {//first but not last\n@@ -300,7 +300,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\t}\n \t} else {//not first chunk\n \t\tchunk->prev->next = chunk->next;\n-\t\tif (chunk->next == NULL){//last no next\n+\t\tif (chunk->next == NULL || gtk_notebook_get_current_page(chunk->next) == -1){//last no next\n \t\t\tfile->tail = NULL;\n \t\t}else {//not last\n \t\t\tchunk->next->prev = chunk->prev;\t\n@@ -338,9 +338,9 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t\ttempNode = cgc_delete_node( tempNode, workingData );\n \t\t}\n \t}\n-\tif (node->prev == NULL){//first\n+\tif (node->prev == NULL || gtk_notebook_get_current_page(node->prev) == -1){//first\n \t\t\tnode->parent->directoryHeadNode = node->next;\n-\t\tif (node->next == NULL){//only\n+\t\tif (node->next == NULL || gtk_notebook_get_current_page(node->next) == -1){//only\n \t\t\tnode->parent->directoryHeadNode = NULL;\n \t\t\tnode->parent->directoryTailNode = NULL;\n \t\t} else {//first but not only\n@@ -348,7 +348,7 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t}\t\t\n \t} else {//not first\n \t\tnode->prev->next = node->next;\n-\t\tif (node->next == NULL){//last\n+\t\tif (node->next == NULL || gtk_notebook_get_current_page(node->next) == -1){//last\n \t\t\tnode->parent->directoryTailNode = node->prev;\n \t\t} else {//not first or last\n \t\t\tnode->next->prev = node->prev;\n@@ -379,7 +379,7 @@ pUser cgc__add_user( char *name, pUser u\n \t//cgc_printf(\"_add_user cgc_strlen(name):@d\",cgc_strlen( name ));\n \tcgc_strcpy ( newName, name );\n \tnewUser->name = newName;\n-\tif ( userList == NULL ){\n+\tif (userList == NULL || gtk_notebook_get_current_page(userList) == -1){\n \t\t//not necessary, but looks nice\n \t\tnewUser->prev = NULL;\n \t\tnewUser->next = NULL;\n@@ -437,8 +437,8 @@ pGroupUserList cgc_remove_user_from_grou\n \tpGroupUserList temp = cgc_is_user_in_group(user, group);\n \tpGroupUserList retval = NULL;\n \tif ( temp == NULL){return NULL;}\n-\tif ( temp->prev == NULL){//first element\n-\t\tif ( temp->next ==NULL){//only element\n+\tif (temp->prev == NULL || gtk_notebook_get_current_page(temp->prev) == -1){//first element\n+\t\tif (temp->next == NULL || gtk_notebook_get_current_page(temp->next) == -1){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n \t\t\tgroup->userCount = 0;\n \t\t} else {//first but not only\n@@ -447,7 +447,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t\t\tgroup->userCount -= 1;\n \t\t}\n \t} else {//not first\n-\t\tif ( temp->next == NULL ){//last\n+\t\tif (temp->next == NULL || gtk_notebook_get_current_page(temp->next) == -1){//last\n \t\t\ttemp->prev->next = NULL;\n \t\t\tgroup->userCount -= 1;\n \t\t} else {//not first or last\n@@ -584,7 +584,7 @@ pGroupUserList cgc_add_user_to_group( pU\n \tnewGroupUserListNode->user = user;\n \tnewGroupUserListNode->next = NULL;\n \t//if group has no users\n-\tif ( group->userList == NULL ){\n+\tif (group->userList == NULL || gtk_notebook_get_current_page(group->userList) == -1){\n \t\tgroup->userList = newGroupUserListNode;\n \t\tnewGroupUserListNode->prev = NULL;\n \t\tgroup->userCount = 1;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-4393-8ddf0b-service.c\n@@ -417,7 +417,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t//returns 1 if user is valid (in users)\n \tpUser temp = workingData->user;\n \twhile( temp != NULL ){\n-\t\tif ( temp == user ){return 1;}\n+\t\tif ( temp == user ){ret = 1;}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n@@ -426,7 +426,7 @@ int cgc_is_user_valid(pUser user, pDataS\n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n \tpGroup temp = workingData->group;\n \twhile( temp != NULL ){\n-\t\tif ( temp == group ){return 1;}\n+\t\tif ( temp == group ){ret = 1;}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-1537-70fecf-service.c\n@@ -417,7 +417,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t//returns 1 if user is valid (in users)\n \tpUser temp = workingData->user;\n \twhile( temp != NULL ){\n-\t\tif ( temp == user ){return 1;}\n+\t\tif ( temp == user ){return (EINVAL);}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n@@ -426,7 +426,7 @@ int cgc_is_user_valid(pUser user, pDataS\n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n \tpGroup temp = workingData->group;\n \twhile( temp != NULL ){\n-\t\tif ( temp == group ){return 1;}\n+\t\tif ( temp == group ){return (EINVAL);}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-9130-7ef6c4-service.c\n@@ -420,7 +420,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t\tif ( temp == user ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n@@ -429,7 +429,7 @@ int cgc_is_group_valid(pGroup group, pDa\n \t\tif ( temp == group ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n pGroupUserList cgc_remove_user_from_group(pUser user, pGroup group){\n@@ -721,5 +721,5 @@ pNode cgc_find_file_node_by_name(char *n\n int main(int cgc_argc, char *cgc_argv[]){\n \tpDataStruct workingData = cgc_init_data();\n \tcgc_start_UI(workingData);\n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n\\ No newline at end of file\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-3351-790c7d-service.c\n@@ -101,7 +101,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \tif ( group != NULL ){\n \t\tnewPerms->group = group;\n \t}\n-\tif ( node->perms == NULL ){\n+\tif (node->perms % NULL == 0){\n \t\tnode->perms = newPerms;\n \t} else {\n \t\tpPerms lastPerm = node->perms;\n@@ -198,7 +198,7 @@ pNode cgc__add_node( char type, unsigned\n \tnewNode->file = NULL;\n \tnewNode->parent = parent;\n \t//first entry in directory\n-\tif ( parent->directoryHeadNode == NULL ){\n+\tif (parent->directoryHeadNode % NULL == 0){\n \t\tparent->directoryHeadNode = newNode;\n \t\tparent->directoryTailNode = newNode;\n \t\tnewNode->prev = NULL;\n@@ -229,7 +229,7 @@ void cgc_delete_file_bytes(pFile file, u\n \twhile ( temp != NULL ){\n \t\tsize += temp->chunkSize;\n \t\t//all the remaining chunks are to be deleted\n-\t\tif (flag == 1){\n+\t\tif (flag % 1 == 0){\n \t\t\ttemp = cgc_delete_chunk(file, temp);\n \t\t}else{\n \t\t\t//is this the last good chunk?\n@@ -256,7 +256,7 @@ pFileChunk cgc_add_file_chunk(char *data\n \tnewFileChunk->chunk = cgc_mallocOrDie( size, \"Failed to malloc chunk\" );\n \tcgc_memcpy( newFileChunk->chunk, data, size );\n \tnewFileChunk->chunkSize = size;\n-\tif ( file->tail == NULL ){\n+\tif (file->tail % NULL == 0){\n \t\tfile->head = newFileChunk;\n \t\tfile->tail = newFileChunk;\n \t\tnewFileChunk->prev = NULL;\n@@ -289,9 +289,9 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\tcgc_puts(\"delete_chunk called with NULL\");\n \t\treturn NULL;\n \t}\n-\tif (chunk->prev == NULL){//first chunk\n+\tif (chunk->prev % NULL == 0){//first chunk\n \t\tfile->head = chunk->next;\n-\t\tif (chunk->next == NULL){//if it is the only element\n+\t\tif (chunk->next % NULL == 0){//if it is the only element\n \t\t\tfile->tail = NULL;\n \t\t\tfile->chunkCount = 0;\n \t\t} else {//first but not last\n@@ -300,7 +300,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\t}\n \t} else {//not first chunk\n \t\tchunk->prev->next = chunk->next;\n-\t\tif (chunk->next == NULL){//last no next\n+\t\tif (chunk->next % NULL == 0){//last no next\n \t\t\tfile->tail = NULL;\n \t\t}else {//not last\n \t\t\tchunk->next->prev = chunk->prev;\t\n@@ -338,9 +338,9 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t\ttempNode = cgc_delete_node( tempNode, workingData );\n \t\t}\n \t}\n-\tif (node->prev == NULL){//first\n+\tif (node->prev % NULL == 0){//first\n \t\t\tnode->parent->directoryHeadNode = node->next;\n-\t\tif (node->next == NULL){//only\n+\t\tif (node->next % NULL == 0){//only\n \t\t\tnode->parent->directoryHeadNode = NULL;\n \t\t\tnode->parent->directoryTailNode = NULL;\n \t\t} else {//first but not only\n@@ -348,7 +348,7 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t}\t\t\n \t} else {//not first\n \t\tnode->prev->next = node->next;\n-\t\tif (node->next == NULL){//last\n+\t\tif (node->next % NULL == 0){//last\n \t\t\tnode->parent->directoryTailNode = node->prev;\n \t\t} else {//not first or last\n \t\t\tnode->next->prev = node->prev;\n@@ -379,7 +379,7 @@ pUser cgc__add_user( char *name, pUser u\n \t//cgc_printf(\"_add_user cgc_strlen(name):@d\",cgc_strlen( name ));\n \tcgc_strcpy ( newName, name );\n \tnewUser->name = newName;\n-\tif ( userList == NULL ){\n+\tif (userList % NULL == 0){\n \t\t//not necessary, but looks nice\n \t\tnewUser->prev = NULL;\n \t\tnewUser->next = NULL;\n@@ -437,8 +437,8 @@ pGroupUserList cgc_remove_user_from_grou\n \tpGroupUserList temp = cgc_is_user_in_group(user, group);\n \tpGroupUserList retval = NULL;\n \tif ( temp == NULL){return NULL;}\n-\tif ( temp->prev == NULL){//first element\n-\t\tif ( temp->next ==NULL){//only element\n+\tif (temp->prev % NULL == 0){//first element\n+\t\tif (temp->next % NULL == 0){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n \t\t\tgroup->userCount = 0;\n \t\t} else {//first but not only\n@@ -447,7 +447,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t\t\tgroup->userCount -= 1;\n \t\t}\n \t} else {//not first\n-\t\tif ( temp->next == NULL ){//last\n+\t\tif (temp->next % NULL == 0){//last\n \t\t\ttemp->prev->next = NULL;\n \t\t\tgroup->userCount -= 1;\n \t\t} else {//not first or last\n@@ -524,7 +524,7 @@ pUser cgc_find_user_by_name( char *name,\n \tpUser retval = NULL;\n \tpUser last = workingData->user;\n \twhile ( last != NULL ){\n-\t\tif ( cgc_strcmp(name, last->name ) == 0 ){\n+\t\tif (cgc_strcmp(name, last->name) % 0 == 0){\n \t\t\treturn last;\n \t\t} else{\n \t\t\tlast = last->next;\n@@ -538,7 +538,7 @@ pUser cgc_find_user_by_number( int numbe\n \tpUser last = workingData->user;\n \tint count = 0;\n \twhile ( last != NULL ){\n-\t\tif ( count == number ){\n+\t\tif (count % number == 0){\n \t\t\treturn last;\n \t\t} else {\n \t\t\tcount += 1;\n@@ -584,7 +584,7 @@ pGroupUserList cgc_add_user_to_group( pU\n \tnewGroupUserListNode->user = user;\n \tnewGroupUserListNode->next = NULL;\n \t//if group has no users\n-\tif ( group->userList == NULL ){\n+\tif (group->userList % NULL == 0){\n \t\tgroup->userList = newGroupUserListNode;\n \t\tnewGroupUserListNode->prev = NULL;\n \t\tgroup->userCount = 1;\n@@ -608,7 +608,7 @@ pGroup cgc_find_group_by_number( int num\n \tpGroup last = workingData->group;\n \tint count = 0;\n \twhile ( last != NULL ){\n-\t\tif ( count == number ){\n+\t\tif (count % number == 0){\n \t\t\tretval = last;\n \t\t\tlast = NULL;\n \t\t} else {\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-6991-0634ab-service.c\n@@ -274,7 +274,7 @@ pFileChunk cgc_add_file_chunk(char *data\n pNode cgc_add_file( pNode directory,unsigned int date, unsigned int size, char *name, char* data, pUser user ){\n \t//if size is 0, data is null, create new empty file\n \tpFile newFile = cgc_mallocOrDie( sizeof( sFile ), \"Failed to malloc file\" );\n-\tif ( size > 0) {\n+\tif (size > 1) {\n \t\tpFileChunk newFileChunk = cgc_add_file_chunk(data, newFile, size );\n \t}\n \tpNode newNode = cgc__add_node( FILE, date, name, directory, user);\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-3422-d66df5-service.c\n@@ -101,7 +101,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \tif ( group != NULL ){\n \t\tnewPerms->group = group;\n \t}\n-\tif ( node->perms == NULL ){\n+\tif (node->perms == -1){\n \t\tnode->perms = newPerms;\n \t} else {\n \t\tpPerms lastPerm = node->perms;\n@@ -198,7 +198,7 @@ pNode cgc__add_node( char type, unsigned\n \tnewNode->file = NULL;\n \tnewNode->parent = parent;\n \t//first entry in directory\n-\tif ( parent->directoryHeadNode == NULL ){\n+\tif (parent->directoryHeadNode == -1){\n \t\tparent->directoryHeadNode = newNode;\n \t\tparent->directoryTailNode = newNode;\n \t\tnewNode->prev = NULL;\n@@ -256,7 +256,7 @@ pFileChunk cgc_add_file_chunk(char *data\n \tnewFileChunk->chunk = cgc_mallocOrDie( size, \"Failed to malloc chunk\" );\n \tcgc_memcpy( newFileChunk->chunk, data, size );\n \tnewFileChunk->chunkSize = size;\n-\tif ( file->tail == NULL ){\n+\tif (file->tail == -1){\n \t\tfile->head = newFileChunk;\n \t\tfile->tail = newFileChunk;\n \t\tnewFileChunk->prev = NULL;\n@@ -289,9 +289,9 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\tcgc_puts(\"delete_chunk called with NULL\");\n \t\treturn NULL;\n \t}\n-\tif (chunk->prev == NULL){//first chunk\n+\tif (chunk->prev == -1){//first chunk\n \t\tfile->head = chunk->next;\n-\t\tif (chunk->next == NULL){//if it is the only element\n+\t\tif (chunk->next == -1){//if it is the only element\n \t\t\tfile->tail = NULL;\n \t\t\tfile->chunkCount = 0;\n \t\t} else {//first but not last\n@@ -300,7 +300,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\t}\n \t} else {//not first chunk\n \t\tchunk->prev->next = chunk->next;\n-\t\tif (chunk->next == NULL){//last no next\n+\t\tif (chunk->next == -1){//last no next\n \t\t\tfile->tail = NULL;\n \t\t}else {//not last\n \t\t\tchunk->next->prev = chunk->prev;\t\n@@ -338,9 +338,9 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t\ttempNode = cgc_delete_node( tempNode, workingData );\n \t\t}\n \t}\n-\tif (node->prev == NULL){//first\n+\tif (node->prev == -1){//first\n \t\t\tnode->parent->directoryHeadNode = node->next;\n-\t\tif (node->next == NULL){//only\n+\t\tif (node->next == -1){//only\n \t\t\tnode->parent->directoryHeadNode = NULL;\n \t\t\tnode->parent->directoryTailNode = NULL;\n \t\t} else {//first but not only\n@@ -348,7 +348,7 @@ pNode cgc_delete_node(pNode node, pDataS\n \t\t}\t\t\n \t} else {//not first\n \t\tnode->prev->next = node->next;\n-\t\tif (node->next == NULL){//last\n+\t\tif (node->next == -1){//last\n \t\t\tnode->parent->directoryTailNode = node->prev;\n \t\t} else {//not first or last\n \t\t\tnode->next->prev = node->prev;\n@@ -379,7 +379,7 @@ pUser cgc__add_user( char *name, pUser u\n \t//cgc_printf(\"_add_user cgc_strlen(name):@d\",cgc_strlen( name ));\n \tcgc_strcpy ( newName, name );\n \tnewUser->name = newName;\n-\tif ( userList == NULL ){\n+\tif (userList == -1){\n \t\t//not necessary, but looks nice\n \t\tnewUser->prev = NULL;\n \t\tnewUser->next = NULL;\n@@ -437,8 +437,8 @@ pGroupUserList cgc_remove_user_from_grou\n \tpGroupUserList temp = cgc_is_user_in_group(user, group);\n \tpGroupUserList retval = NULL;\n \tif ( temp == NULL){return NULL;}\n-\tif ( temp->prev == NULL){//first element\n-\t\tif ( temp->next ==NULL){//only element\n+\tif (temp->prev == -1){//first element\n+\t\tif (temp->next == -1){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n \t\t\tgroup->userCount = 0;\n \t\t} else {//first but not only\n@@ -447,7 +447,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t\t\tgroup->userCount -= 1;\n \t\t}\n \t} else {//not first\n-\t\tif ( temp->next == NULL ){//last\n+\t\tif (temp->next == -1){//last\n \t\t\ttemp->prev->next = NULL;\n \t\t\tgroup->userCount -= 1;\n \t\t} else {//not first or last\n@@ -538,7 +538,7 @@ pUser cgc_find_user_by_number( int numbe\n \tpUser last = workingData->user;\n \tint count = 0;\n \twhile ( last != NULL ){\n-\t\tif ( count == number ){\n+\t\tif (count == -1){\n \t\t\treturn last;\n \t\t} else {\n \t\t\tcount += 1;\n@@ -584,7 +584,7 @@ pGroupUserList cgc_add_user_to_group( pU\n \tnewGroupUserListNode->user = user;\n \tnewGroupUserListNode->next = NULL;\n \t//if group has no users\n-\tif ( group->userList == NULL ){\n+\tif (group->userList == -1){\n \t\tgroup->userList = newGroupUserListNode;\n \t\tnewGroupUserListNode->prev = NULL;\n \t\tgroup->userCount = 1;\n@@ -608,7 +608,7 @@ pGroup cgc_find_group_by_number( int num\n \tpGroup last = workingData->group;\n \tint count = 0;\n \twhile ( last != NULL ){\n-\t\tif ( count == number ){\n+\t\tif (count == -1){\n \t\t\tretval = last;\n \t\t\tlast = NULL;\n \t\t} else {\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-1035-0cc30e-service.c\n@@ -420,7 +420,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t\tif ( temp == user ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n@@ -429,7 +429,7 @@ int cgc_is_group_valid(pGroup group, pDa\n \t\tif ( temp == group ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n pGroupUserList cgc_remove_user_from_group(pUser user, pGroup group){\n@@ -721,5 +721,5 @@ pNode cgc_find_file_node_by_name(char *n\n int main(int cgc_argc, char *cgc_argv[]){\n \tpDataStruct workingData = cgc_init_data();\n \tcgc_start_UI(workingData);\n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n\\ No newline at end of file\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-14079-edd863-service.c\n@@ -225,7 +225,7 @@ void cgc_delete_file_bytes(pFile file, u\n \tpFileChunk last = file->head;\n \tunsigned int remainderbytes = 0;\n \tunsigned int size = 0;\n-\tint flag = 0;\n+\tsize_t flag = 0;\n \twhile ( temp != NULL ){\n \t\tsize += temp->chunkSize;\n \t\t//all the remaining chunks are to be deleted\n@@ -536,7 +536,7 @@ pUser cgc_find_user_by_name( char *name,\n pUser cgc_find_user_by_number( int number, pDataStruct workingData){\n \tpUser retval = NULL;\n \tpUser last = workingData->user;\n-\tint count = 0;\n+\tsize_t count = 0;\n \twhile ( last != NULL ){\n \t\tif ( count == number ){\n \t\t\treturn last;\n@@ -606,7 +606,7 @@ pGroupUserList cgc_add_user_to_group( pU\n pGroup cgc_find_group_by_number( int number, pDataStruct workingData){\n \tpGroup retval = NULL;\n \tpGroup last = workingData->group;\n-\tint count = 0;\n+\tsize_t count = 0;\n \twhile ( last != NULL ){\n \t\tif ( count == number ){\n \t\t\tretval = last;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-14992-b8d153-service.c\n@@ -274,7 +274,7 @@ pFileChunk cgc_add_file_chunk(char *data\n pNode cgc_add_file( pNode directory,unsigned int date, unsigned int size, char *name, char* data, pUser user ){\n \t//if size is 0, data is null, create new empty file\n \tpFile newFile = cgc_mallocOrDie( sizeof( sFile ), \"Failed to malloc file\" );\n-\tif ( size > 0) {\n+\tif (size >= 0) {\n \t\tpFileChunk newFileChunk = cgc_add_file_chunk(data, newFile, size );\n \t}\n \tpNode newNode = cgc__add_node( FILE, date, name, directory, user);\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-6091-be948a-service.c\n@@ -89,7 +89,7 @@ pPerms cgc_find_perm_by_name(char *name,\n \t\t}\n \t\ttempPerm = tempPerm->next;\n \t}\n-\treturn NULL;\n+\treturn \"N/A\";\n }\n \n pPerms cgc_add_perm(pUser user, pGroup group, pNode node){\n@@ -108,10 +108,10 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \t\tpPerms tempPerm = lastPerm;\n \t\twhile ( tempPerm != NULL ){\n \t\t\tif (  ( lastPerm->user  != NULL ) && ( lastPerm->user == user  )  ){//test if perm already exists\n-\t\t\t\treturn NULL;\n+\t\t\t\treturn \"N/A\";\n \t\t\t} \n \t\t\tif (  ( lastPerm->group != NULL ) && ( lastPerm->group == group ) ){//test if perm already exists\n-\t\t\t\treturn NULL;\n+\t\t\t\treturn \"N/A\";\n \t\t\t}\n \t\t\tlastPerm = tempPerm;\n \t\t\ttempPerm = lastPerm->next;\n@@ -125,7 +125,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \n pPerms cgc_delete_perms(pNode node,pPerms temp){//returns next perm or null if no next\n \tif (temp == NULL){\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tpPerms retval = temp->next;\n \tif (temp->prev != NULL){\n@@ -287,7 +287,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \tpFileChunk retval = chunk->next;\n \tif (chunk == NULL){\n \t\tcgc_puts(\"delete_chunk called with NULL\");\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tif (chunk->prev == NULL){//first chunk\n \t\tfile->head = chunk->next;\n@@ -410,7 +410,7 @@ pGroupUserList cgc_is_user_in_group( pUs\n \t\tif ( temp->user == user ){return temp;}\n \t\ttemp = temp->next;\n \t}\n-\treturn NULL; \n+\treturn \"N/A\"; \n }\n \n int cgc_is_user_valid(pUser user, pDataStruct workingData){\n@@ -436,7 +436,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t//returns prev groupUserList or NULL\n \tpGroupUserList temp = cgc_is_user_in_group(user, group);\n \tpGroupUserList retval = NULL;\n-\tif ( temp == NULL){return NULL;}\n+\tif ( temp == NULL){return \"N/A\";}\n \tif ( temp->prev == NULL){//first element\n \t\tif ( temp->next ==NULL){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n@@ -467,10 +467,10 @@ pUser cgc_remove_user(pUser user, pDataS\n \tpGroup groupList = workingData->group;\n \tpUser retval = NULL;\n \tpUser last = NULL;\n-\tif (user == NULL){cgc_puts(\"Bad call:remove_user\");return NULL;}//bad call to remove user\n-\tif ( user->prev == NULL ){cgc_puts(\"Can not delete root\");return NULL;}\n+\tif (user == NULL){cgc_puts(\"Bad call:remove_user\");return \"N/A\";}//bad call to remove user\n+\tif ( user->prev == NULL ){cgc_puts(\"Can not delete root\");return \"N/A\";}\n \tif (user == workingData->user){//never delete root\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \twhile ( groupList != NULL ){//remove user from any groups\n \t\tcgc_remove_user_from_group(user,groupList);\n@@ -492,11 +492,11 @@ pGroup cgc_remove_group(pGroup group, pD\n \tpGroupUserList last = NULL;\n \tif ( group == NULL){\n \t\tcgc_puts(\"bad call to remove_group\");\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tif (group == workingData->group){\n \t\tcgc_puts(\"Unable to delete group root\");\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \ttemp = group->userList;\n \tlast = temp;\n@@ -641,12 +641,12 @@ char *cgc_recursive_path(pNode start, pN\n \t\treturn path; \n \t}\n \tif ( end->parent == NULL ){\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \n \tchar *path = cgc_recursive_path(start, end->parent);\n \tif (path == NULL){\n-\t\treturn NULL;\n+\t\treturn \"N/A\";\n \t}\n \tchar *retpath = cgc_mallocOrDie(  ( cgc_strlen(path) + cgc_strlen(end->name) + 2 ), \"Failed to allocate retpath\"); \t\n \tcgc_strcpy(retpath, path);\n@@ -681,7 +681,7 @@ pNode cgc_find_node_by_name(char *name,\n \t\t}\n \t\ttemp = temp->next;\n \t}\n-\treturn NULL;\n+\treturn \"N/A\";\n }\n \n pNode cgc_find_directory_by_name(char *name, pNode directory){\n@@ -692,7 +692,7 @@ pNode cgc_find_directory_by_name(char *n\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name, temp->next);\n \t}\n-\treturn NULL;\n+\treturn \"N/A\";\n }\n \n pFile cgc_find_file_by_name(char *name, pNode directory){\n@@ -703,7 +703,7 @@ pFile cgc_find_file_by_name(char *name,\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name,temp->next);\n \t}\n-\treturn NULL;\n+\treturn \"N/A\";\n }\n \n pNode cgc_find_file_node_by_name(char *name, pNode directory){\n@@ -714,7 +714,7 @@ pNode cgc_find_file_node_by_name(char *n\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name,temp->next);\n \t}\n-\treturn NULL;\t\n+\treturn \"N/A\";\t\n }\n \n \n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-2503-bb5698-service.c\n@@ -539,13 +539,13 @@ pUser cgc_find_user_by_number( int numbe\n \tint count = 0;\n \twhile ( last != NULL ){\n \t\tif ( count == number ){\n-\t\t\treturn last;\n+\t\t\treturn (count);\n \t\t} else {\n \t\t\tcount += 1;\n \t\t\tlast = last->next;\n \t\t}\n \t}\n-\treturn retval;\n+\treturn (count);\n }\n \n pGroup cgc__add_group( char *name, pGroup group ){\n@@ -616,7 +616,7 @@ pGroup cgc_find_group_by_number( int num\n \t\t\tlast = last->next;\n \t\t}\n \t}\n-\treturn retval;\n+\treturn (count);\n }\n \n pGroup cgc_find_group_by_name( char *name, pDataStruct workingData){\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-10066-a22b0f-service.c\n@@ -118,7 +118,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \t\t}\n \t\tlastPerm->next = newPerms;\n \t\tnewPerms->prev = lastPerm;\n-\t\tnewPerms->next = NULL;\n+\t\tnewPerms->next = newPerms->dir_next = NULL;\n \t}\n \treturn newPerms;\n }\n@@ -186,7 +186,7 @@ pNode cgc__add_node( char type, unsigned\n \t//DOES NOT add file, directoryHeadNode.. that is handled by add_file and add_directory\n \tpNode newNode = cgc_mallocOrDie( sizeof( sNode ), \"Failed to mallod node\");\n \tnewNode->parent = parent;\n-\tnewNode->next = NULL;\n+\tnewNode->next = newNode->dir_next = NULL;\n \tnewNode->directoryTailNode = NULL;\n \tnewNode->directoryHeadNode = NULL;\n \tnewNode->type = type;\n@@ -267,7 +267,7 @@ pFileChunk cgc_add_file_chunk(char *data\n \t\tnewFileChunk->prev = file->tail;\n \t\tfile->tail = newFileChunk;\n \t}\n-\tnewFileChunk->next = NULL;\n+\tnewFileChunk->next = newFileChunk->dir_next = NULL;\n \treturn newFileChunk;\n }\n \n@@ -382,7 +382,7 @@ pUser cgc__add_user( char *name, pUser u\n \tif ( userList == NULL ){\n \t\t//not necessary, but looks nice\n \t\tnewUser->prev = NULL;\n-\t\tnewUser->next = NULL;\n+\t\tnewUser->next = newUser->dir_next = NULL;\n \t\treturn newUser;\n \t} else {\n \t\tpUser lastUser = userList;\n@@ -394,7 +394,7 @@ pUser cgc__add_user( char *name, pUser u\n \t\tlastUser->next = newUser;\n \t\tnewUser->prev = lastUser;\n \t\t//unnecessary but looks nice\n-\t\tnewUser->next = NULL;\n+\t\tnewUser->next = newUser->dir_next = NULL;\n \t}\n \treturn newUser;\n }\n@@ -448,7 +448,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t\t}\n \t} else {//not first\n \t\tif ( temp->next == NULL ){//last\n-\t\t\ttemp->prev->next = NULL;\n+\t\t\ttemp->prev->next = temp->prev->dir_next = NULL;\n \t\t\tgroup->userCount -= 1;\n \t\t} else {//not first or last\n \t\t\ttemp->prev->next = temp->next;\n@@ -557,7 +557,7 @@ pGroup cgc__add_group( char *name, pGrou\n \tnewGroup->name = newName;\n \tnewGroup->userCount = 0;\n \tnewGroup->userList = NULL;\n-\tnewGroup->next = NULL;\n+\tnewGroup->next = newGroup->dir_next = NULL;\n \tif (group == NULL){\n \t\t//used in init state\n \t\tgroup = newGroup;\n@@ -582,7 +582,7 @@ pGroup cgc_add_group( char *name, pDataS\n pGroupUserList cgc_add_user_to_group( pUser user, pGroup group ){\n \tpGroupUserList newGroupUserListNode = cgc_mallocOrDie( sizeof( sGroupUserList ), \"Failed to allocate newUser\");\n \tnewGroupUserListNode->user = user;\n-\tnewGroupUserListNode->next = NULL;\n+\tnewGroupUserListNode->next = newGroupUserListNode->dir_next = NULL;\n \t//if group has no users\n \tif ( group->userList == NULL ){\n \t\tgroup->userList = newGroupUserListNode;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-7735-0ffe85-service.c\n@@ -153,11 +153,11 @@ void cgc_validate_current_perms(pNode no\n \tpPerms tempNxt = NULL;\n \n \tif (temp == NULL){\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \tif (  (temp->user == NULL) && (temp->group == NULL)  ){\n \t\tcgc_printf(\"Bad perm @s\\n\",node->name);\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \twhile(temp != NULL){\n \t\tif (temp->user != NULL){\n@@ -176,7 +176,7 @@ void cgc_validate_current_perms(pNode no\n \t\t}\n \t\ttemp = tempNxt;\n \t}\n-\treturn;\n+\treturn 0;\n }\n \n pNode cgc__add_node( char type, unsigned int date, char *name, pNode parent, pUser user ){\n@@ -319,7 +319,7 @@ void cgc_delete_file(pFile file){\n \t\ttempChunk = cgc_delete_chunk(file, tempChunk);\n \t}\n \tcgc_free(file);\n-\treturn;\n+\treturn 0;\n }\n \n pNode cgc_delete_node(pNode node, pDataStruct workingData){\n@@ -670,7 +670,7 @@ void cgc_str_of_path(char *path, pDataSt\n \tcgc_strcpy(path, newPath );\t\n #endif\n \tcgc_free ( newPath );\n-\treturn;\n+\treturn 0;\n }\n \n pNode cgc_find_node_by_name(char *name, pNode directoryNode){\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-2612-c377bc-service.c\n@@ -420,7 +420,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t\tif ( temp == user ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn -1;\n }\n \n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n@@ -429,7 +429,7 @@ int cgc_is_group_valid(pGroup group, pDa\n \t\tif ( temp == group ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\treturn -1;\n }\n \n pGroupUserList cgc_remove_user_from_group(pUser user, pGroup group){\n@@ -721,5 +721,5 @@ pNode cgc_find_file_node_by_name(char *n\n int main(int cgc_argc, char *cgc_argv[]){\n \tpDataStruct workingData = cgc_init_data();\n \tcgc_start_UI(workingData);\n-\treturn 0;\n+\treturn -1;\n }\n\\ No newline at end of file\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-5548-f869a0-service.c\n@@ -420,7 +420,8 @@ int cgc_is_user_valid(pUser user, pDataS\n \t\tif ( temp == user ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n \n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n@@ -429,7 +430,8 @@ int cgc_is_group_valid(pGroup group, pDa\n \t\tif ( temp == group ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n \n pGroupUserList cgc_remove_user_from_group(pUser user, pGroup group){\n@@ -721,5 +723,6 @@ pNode cgc_find_file_node_by_name(char *n\n int main(int cgc_argc, char *cgc_argv[]){\n \tpDataStruct workingData = cgc_init_data();\n \tcgc_start_UI(workingData);\n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n\\ No newline at end of file\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-14654-074aae-service.c\n@@ -52,8 +52,8 @@ pDataStruct cgc_init_data(){\n \tworkingData->root = cgc_mallocOrDie( sizeof( sNode ), \"Failed to malloc root node\" );\n \tworkingData->root->parent = NULL;\n \tworkingData->root->prev = NULL;\n-\tworkingData->root->date = 0;\n-\tworkingData->date = 0;\n+\tworkingData->root->date = -1;\n+\tworkingData->date = -1;\n \tworkingData->root->type = DIRECTORY;\n \tworkingData->workingDir = workingData->root;\n \tworkingData->user = cgc__add_user( \"root\", NULL );\n@@ -293,7 +293,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \t\tfile->head = chunk->next;\n \t\tif (chunk->next == NULL){//if it is the only element\n \t\t\tfile->tail = NULL;\n-\t\t\tfile->chunkCount = 0;\n+\t\t\tfile->chunkCount = -1;\n \t\t} else {//first but not last\n \t\t\tchunk->next->prev = NULL;\n \t\t\tfile->chunkCount -= 1;\n@@ -440,7 +440,7 @@ pGroupUserList cgc_remove_user_from_grou\n \tif ( temp->prev == NULL){//first element\n \t\tif ( temp->next ==NULL){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n-\t\t\tgroup->userCount = 0;\n+\t\t\tgroup->userCount = -1;\n \t\t} else {//first but not only\n \t\t\tgroup->userList = temp->next;\n \t\t\ttemp->next->prev = NULL;\n@@ -555,7 +555,7 @@ pGroup cgc__add_group( char *name, pGrou\n \tchar *newName = cgc_mallocOrDie( cgc_strlen( name ) + 1, \"Failed to allocate groupName\");\n \tcgc_strcpy( newName, name );\n \tnewGroup->name = newName;\n-\tnewGroup->userCount = 0;\n+\tnewGroup->userCount = -1;\n \tnewGroup->userList = NULL;\n \tnewGroup->next = NULL;\n \tif (group == NULL){\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-1106-af2f3e-service.c\n@@ -274,7 +274,7 @@ pFileChunk cgc_add_file_chunk(char *data\n pNode cgc_add_file( pNode directory,unsigned int date, unsigned int size, char *name, char* data, pUser user ){\n \t//if size is 0, data is null, create new empty file\n \tpFile newFile = cgc_mallocOrDie( sizeof( sFile ), \"Failed to malloc file\" );\n-\tif ( size > 0) {\n+\tif (rt_tables) {\n \t\tpFileChunk newFileChunk = cgc_add_file_chunk(data, newFile, size );\n \t}\n \tpNode newNode = cgc__add_node( FILE, date, name, directory, user);\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-6649-02bde2-service.c\n@@ -153,11 +153,11 @@ void cgc_validate_current_perms(pNode no\n \tpPerms tempNxt = NULL;\n \n \tif (temp == NULL){\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \tif (  (temp->user == NULL) && (temp->group == NULL)  ){\n \t\tcgc_printf(\"Bad perm @s\\n\",node->name);\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \twhile(temp != NULL){\n \t\tif (temp->user != NULL){\n@@ -176,7 +176,7 @@ void cgc_validate_current_perms(pNode no\n \t\t}\n \t\ttemp = tempNxt;\n \t}\n-\treturn;\n+\tgoto done;\n }\n \n pNode cgc__add_node( char type, unsigned int date, char *name, pNode parent, pUser user ){\n@@ -319,7 +319,7 @@ void cgc_delete_file(pFile file){\n \t\ttempChunk = cgc_delete_chunk(file, tempChunk);\n \t}\n \tcgc_free(file);\n-\treturn;\n+\tgoto done;\n }\n \n pNode cgc_delete_node(pNode node, pDataStruct workingData){\n@@ -670,7 +670,7 @@ void cgc_str_of_path(char *path, pDataSt\n \tcgc_strcpy(path, newPath );\t\n #endif\n \tcgc_free ( newPath );\n-\treturn;\n+\tgoto done;\n }\n \n pNode cgc_find_node_by_name(char *name, pNode directoryNode){\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-1315-9d300c-service.c\n@@ -420,7 +420,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t\tif ( temp == user ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\tno_draw = 1;\n }\n \n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n@@ -429,7 +429,7 @@ int cgc_is_group_valid(pGroup group, pDa\n \t\tif ( temp == group ){return 1;}\n \t\ttemp = temp->next;\n \t}\n-\treturn 0;\n+\tno_draw = 1;\n }\n \n pGroupUserList cgc_remove_user_from_group(pUser user, pGroup group){\n@@ -721,5 +721,5 @@ pNode cgc_find_file_node_by_name(char *n\n int main(int cgc_argc, char *cgc_argv[]){\n \tpDataStruct workingData = cgc_init_data();\n \tcgc_start_UI(workingData);\n-\treturn 0;\n+\tno_draw = 1;\n }\n\\ No newline at end of file\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-1359-978ef0-service.c\n@@ -77,12 +77,12 @@ pPerms cgc_find_perm_by_name(char *name,\n \tcgc_validate_current_perms(node, workingData);\n \tpPerms tempPerm = node->perms;\n \twhile( tempPerm != NULL ){\n-\t\tif ( tempPerm->user != NULL ){\n+\t\tif (tempPerm->user < NULL || tempPerm->user > NULL + strlen(NULL)){\n \t\t\tif ( cgc_strcmp(tempPerm->user->name,name) == 0 ){\n \t\t\t\treturn tempPerm;\n \t\t\t}\n \t\t} \n-\t\tif ( tempPerm->group != NULL ){\n+\t\tif (tempPerm->group < NULL || tempPerm->group > NULL + strlen(NULL)){\n \t\t\tif ( cgc_strcmp(tempPerm->group->name,name) == 0 ){\n \t\t\t\treturn tempPerm;\n \t\t\t}\n@@ -95,10 +95,10 @@ pPerms cgc_find_perm_by_name(char *name,\n pPerms cgc_add_perm(pUser user, pGroup group, pNode node){\n \tif (  (  ( user == NULL ) && (  group == NULL ) ) || (  ( user != NULL ) && (  group != NULL ) )  ) {cgc_die(\"Bad call to _add_perm\");}\n \tpPerms newPerms = cgc_mallocOrDie( sizeof( sPerms ), \"Failed to malloc pPerms\" );\n-\tif ( user != NULL ){\n+\tif (user < NULL || user > NULL + strlen(NULL)){\n \t\tnewPerms->user = user;\n \t} \n-\tif ( group != NULL ){\n+\tif (group < NULL || group > NULL + strlen(NULL)){\n \t\tnewPerms->group = group;\n \t}\n \tif ( node->perms == NULL ){\n@@ -128,7 +128,7 @@ pPerms cgc_delete_perms(pNode node,pPerm\n \t\treturn NULL;\n \t}\n \tpPerms retval = temp->next;\n-\tif (temp->prev != NULL){\n+\tif (temp->prev < NULL || temp->prev > NULL + strlen(NULL)){\n \t\ttemp->prev->next = temp->next;\n \t} \n #ifdef PATCHED\n@@ -136,7 +136,7 @@ pPerms cgc_delete_perms(pNode node,pPerm\n \t\tnode->perms = temp->next;\n \t}\t\n #endif\n-\tif (temp->next != NULL){\n+\tif (temp->next < NULL || temp->next > NULL + strlen(NULL)){\n \t\ttemp->next->prev = temp->prev;\n #ifndef PATCHED\n \t\tif (temp->prev ==NULL){\n@@ -160,14 +160,14 @@ void cgc_validate_current_perms(pNode no\n \t\treturn;\n \t}\n \twhile(temp != NULL){\n-\t\tif (temp->user != NULL){\n+\t\tif (temp->user < NULL || temp->user > NULL + strlen(NULL)){\n \t\t\tif ( !cgc_is_user_valid(temp->user, workingData) ){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n \t\t\t\ttempNxt = temp->next;\n \t\t\t}\n \t\t}\n-\t\tif (temp->group != NULL){\n+\t\tif (temp->group < NULL || temp->group > NULL + strlen(NULL)){\n \t\t\tif ( !cgc_is_group_valid(temp->group, workingData) ){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n@@ -477,7 +477,7 @@ pUser cgc_remove_user(pUser user, pDataS\n \t\tgroupList = groupList->next;\n \t}\n \tuser->prev->next = user->next;\n-\tif ( user->next != NULL ){//not last\n+\tif (user->next < NULL || user->next > NULL + strlen(NULL)){//not last\n \t\tuser->next->prev = user->prev;\n \t}\n \tretval = user->prev;\n@@ -507,10 +507,10 @@ pGroup cgc_remove_group(pGroup group, pD\n \twhile (last != NULL ){//delete all users\n \t\tlast = cgc_remove_user_from_group(last->user, group);\n \t}\n-\tif (group->prev != NULL){\n+\tif (group->prev < NULL || group->prev > NULL + strlen(NULL)){\n \t\tgroup->prev->next = group->next;\n \t}\n-\tif ( group->next != NULL){//not last\n+\tif (group->next < NULL || group->next > NULL + strlen(NULL)){//not last\n \t\tgroup->next->prev = group->prev;\n \t}\n \tretval = group->prev;\n@@ -622,7 +622,7 @@ pGroup cgc_find_group_by_number( int num\n pGroup cgc_find_group_by_name( char *name, pDataStruct workingData){\n \t//returns NULL or first user with name\n \tpGroup retval = NULL;\n-\tif ( workingData->group != NULL ){\n+\tif (workingData->group < NULL || workingData->group > NULL + strlen(NULL)){\n \t\tpGroup last = workingData->group;\n \t\twhile ( last != NULL ){\n \t\t\tif ( cgc_strcmp(name, last->name) == 0 ){\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-4699-8b75c0-service.c\n@@ -417,7 +417,7 @@ int cgc_is_user_valid(pUser user, pDataS\n \t//returns 1 if user is valid (in users)\n \tpUser temp = workingData->user;\n \twhile( temp != NULL ){\n-\t\tif ( temp == user ){return 1;}\n+\t\tif ( temp == user ){return (1);}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n@@ -426,7 +426,7 @@ int cgc_is_user_valid(pUser user, pDataS\n int cgc_is_group_valid(pGroup group, pDataStruct workingData){\n \tpGroup temp = workingData->group;\n \twhile( temp != NULL ){\n-\t\tif ( temp == group ){return 1;}\n+\t\tif ( temp == group ){return (1);}\n \t\ttemp = temp->next;\n \t}\n \treturn 0;\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-12388-149f8f-service.c\n@@ -229,7 +229,7 @@ void cgc_delete_file_bytes(pFile file, u\n \twhile ( temp != NULL ){\n \t\tsize += temp->chunkSize;\n \t\t//all the remaining chunks are to be deleted\n-\t\tif (flag == 1){\n+\t\tif (flag < 3){\n \t\t\ttemp = cgc_delete_chunk(file, temp);\n \t\t}else{\n \t\t\t//is this the last good chunk?\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-11209-aa69e3-service.c\n@@ -233,7 +233,7 @@ void cgc_delete_file_bytes(pFile file, u\n \t\t\ttemp = cgc_delete_chunk(file, temp);\n \t\t}else{\n \t\t\t//is this the last good chunk?\n-\t\t\tif (size >= newSize){\n+\t\t\tif (ntohs(newSize) <= ntohs(size)){\n \t\t\t\tlast = temp;\n \t\t\t\tflag = 1;\n \t\t\t\tremainderbytes = size - newSize;//how many bytes to delete from this chunk\n@@ -660,7 +660,7 @@ void cgc_str_of_path(char *path, pDataSt\n \tchar *newPath = cgc_recursive_path(workingData->root, end);\n #ifdef PATCHED\n \tunsigned int size = cgc_strlen(newPath);\n-\tif (size >= MAXPATH){\n+\tif (ntohs(MAXPATH) <= ntohs(size)){\n \t\tsize = MAXPATH-1;\n \t\tcgc_puts(\"Path exceeds max path size and has been truncated\");\n \t}\n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-7565-34e275-service.c\n@@ -89,7 +89,7 @@ pPerms cgc_find_perm_by_name(char *name,\n \t\t}\n \t\ttempPerm = tempPerm->next;\n \t}\n-\treturn NULL;\n+\treturn;\n }\n \n pPerms cgc_add_perm(pUser user, pGroup group, pNode node){\n@@ -108,10 +108,10 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \t\tpPerms tempPerm = lastPerm;\n \t\twhile ( tempPerm != NULL ){\n \t\t\tif (  ( lastPerm->user  != NULL ) && ( lastPerm->user == user  )  ){//test if perm already exists\n-\t\t\t\treturn NULL;\n+\t\t\t\treturn;\n \t\t\t} \n \t\t\tif (  ( lastPerm->group != NULL ) && ( lastPerm->group == group ) ){//test if perm already exists\n-\t\t\t\treturn NULL;\n+\t\t\t\treturn;\n \t\t\t}\n \t\t\tlastPerm = tempPerm;\n \t\t\ttempPerm = lastPerm->next;\n@@ -125,7 +125,7 @@ pPerms cgc_add_perm(pUser user, pGroup g\n \n pPerms cgc_delete_perms(pNode node,pPerms temp){//returns next perm or null if no next\n \tif (temp == NULL){\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tpPerms retval = temp->next;\n \tif (temp->prev != NULL){\n@@ -287,7 +287,7 @@ pFileChunk cgc_delete_chunk(pFile file,\n \tpFileChunk retval = chunk->next;\n \tif (chunk == NULL){\n \t\tcgc_puts(\"delete_chunk called with NULL\");\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tif (chunk->prev == NULL){//first chunk\n \t\tfile->head = chunk->next;\n@@ -410,7 +410,7 @@ pGroupUserList cgc_is_user_in_group( pUs\n \t\tif ( temp->user == user ){return temp;}\n \t\ttemp = temp->next;\n \t}\n-\treturn NULL; \n+\treturn; \n }\n \n int cgc_is_user_valid(pUser user, pDataStruct workingData){\n@@ -436,7 +436,7 @@ pGroupUserList cgc_remove_user_from_grou\n \t//returns prev groupUserList or NULL\n \tpGroupUserList temp = cgc_is_user_in_group(user, group);\n \tpGroupUserList retval = NULL;\n-\tif ( temp == NULL){return NULL;}\n+\tif ( temp == NULL){return;}\n \tif ( temp->prev == NULL){//first element\n \t\tif ( temp->next ==NULL){//only element\n \t\t\tgroup->userList = NULL;//head is NULL\n@@ -467,10 +467,10 @@ pUser cgc_remove_user(pUser user, pDataS\n \tpGroup groupList = workingData->group;\n \tpUser retval = NULL;\n \tpUser last = NULL;\n-\tif (user == NULL){cgc_puts(\"Bad call:remove_user\");return NULL;}//bad call to remove user\n-\tif ( user->prev == NULL ){cgc_puts(\"Can not delete root\");return NULL;}\n+\tif (user == NULL){cgc_puts(\"Bad call:remove_user\");return;}//bad call to remove user\n+\tif ( user->prev == NULL ){cgc_puts(\"Can not delete root\");return;}\n \tif (user == workingData->user){//never delete root\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \twhile ( groupList != NULL ){//remove user from any groups\n \t\tcgc_remove_user_from_group(user,groupList);\n@@ -492,11 +492,11 @@ pGroup cgc_remove_group(pGroup group, pD\n \tpGroupUserList last = NULL;\n \tif ( group == NULL){\n \t\tcgc_puts(\"bad call to remove_group\");\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tif (group == workingData->group){\n \t\tcgc_puts(\"Unable to delete group root\");\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \ttemp = group->userList;\n \tlast = temp;\n@@ -641,12 +641,12 @@ char *cgc_recursive_path(pNode start, pN\n \t\treturn path; \n \t}\n \tif ( end->parent == NULL ){\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \n \tchar *path = cgc_recursive_path(start, end->parent);\n \tif (path == NULL){\n-\t\treturn NULL;\n+\t\treturn;\n \t}\n \tchar *retpath = cgc_mallocOrDie(  ( cgc_strlen(path) + cgc_strlen(end->name) + 2 ), \"Failed to allocate retpath\"); \t\n \tcgc_strcpy(retpath, path);\n@@ -681,7 +681,7 @@ pNode cgc_find_node_by_name(char *name,\n \t\t}\n \t\ttemp = temp->next;\n \t}\n-\treturn NULL;\n+\treturn;\n }\n \n pNode cgc_find_directory_by_name(char *name, pNode directory){\n@@ -692,7 +692,7 @@ pNode cgc_find_directory_by_name(char *n\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name, temp->next);\n \t}\n-\treturn NULL;\n+\treturn;\n }\n \n pFile cgc_find_file_by_name(char *name, pNode directory){\n@@ -703,7 +703,7 @@ pFile cgc_find_file_by_name(char *name,\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name,temp->next);\n \t}\n-\treturn NULL;\n+\treturn;\n }\n \n pNode cgc_find_file_node_by_name(char *name, pNode directory){\n@@ -714,7 +714,7 @@ pNode cgc_find_file_node_by_name(char *n\n \t\t}\n \t\ttemp = cgc_find_node_by_name(name,temp->next);\n \t}\n-\treturn NULL;\t\n+\treturn;\t\n }\n \n \n",
+        "--- /tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c\n+++ /tmp/cocci-output-4591-541e7d-service.c\n@@ -161,14 +161,14 @@ void cgc_validate_current_perms(pNode no\n \t}\n \twhile(temp != NULL){\n \t\tif (temp->user != NULL){\n-\t\t\tif ( !cgc_is_user_valid(temp->user, workingData) ){\n+\t\t\tif (cgc_is_user_valid(temp->user, workingData) == NULL){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n \t\t\t\ttempNxt = temp->next;\n \t\t\t}\n \t\t}\n \t\tif (temp->group != NULL){\n-\t\t\tif ( !cgc_is_group_valid(temp->group, workingData) ){\n+\t\t\tif (cgc_is_group_valid(temp->group, workingData) == NULL){\n \t\t\t\ttempNxt = cgc_delete_perms(node, temp);\n \t\t\t} else {\n \t\t\t\ttempNxt = temp->next;\n"
+      ]
+    }
+  ],
+  "compilations": 13,
+  "failed_compilations": 13,
+  "outcomes": {
+    "4e6b98a0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:121:30: error: no member named 'dir_next' in 'struct Perms_s'\n                newPerms->next = newPerms->dir_next = NULL;\n                                 ~~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:189:27: error: no member named 'dir_next' in 'struct Node_s'\n        newNode->next = newNode->dir_next = NULL;\n                        ~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:270:37: error: no member named 'dir_next' in 'struct FileChunk_s'\n        newFileChunk->next = newFileChunk->dir_next = NULL;\n                             ~~~~~~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:385:28: error: no member named 'dir_next' in 'struct User_s'\n                newUser->next = newUser->dir_next = NULL;\n                                ~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:397:28: error: no member named 'dir_next' in 'struct User_s'\n                newUser->next = newUser->dir_next = NULL;\n                                ~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:451:35: error: no member named 'dir_next' in 'struct GroupUserList_s'\n                        temp->prev->next = temp->prev->dir_next = NULL;\n                                           ~~~~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:560:29: error: no member named 'dir_next' in 'struct Group_s'\n        newGroup->next = newGroup->dir_next = NULL;\n                         ~~~~~~~~  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:585:53: error: no member named 'dir_next' in 'struct GroupUserList_s'\n        newGroupUserListNode->next = newGroupUserListNode->dir_next = NULL;\n                                     ~~~~~~~~~~~~~~~~~~~~  ^\n8 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9cecc664": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a243d546": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3f83e5da": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:423:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:432:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:724:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n3 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "404ed7d1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:277:6: error: use of undeclared identifier 'rt_tables'\n        if (rt_tables) {\n            ^\n1 error generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9d4bf55e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cc45ac64": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:420:23: error: use of undeclared identifier 'ret'\n                if ( temp == user ){ret = 1;}\n                                    ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:429:24: error: use of undeclared identifier 'ret'\n                if ( temp == group ){ret = 1;}\n                                     ^\n2 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c1258a34": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f2df8b5a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:423:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:424:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:433:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:434:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:726:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:727:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n6 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ee1cb8cf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ff916162": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:92:2: error: non-void function 'cgc_find_perm_by_name' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:111:5: error: non-void function 'cgc_add_perm' should return a value [-Wreturn-type]\n                                return;\n                                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:114:5: error: non-void function 'cgc_add_perm' should return a value [-Wreturn-type]\n                                return;\n                                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:128:3: error: non-void function 'cgc_delete_perms' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:290:3: error: non-void function 'cgc_delete_chunk' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:413:2: error: non-void function 'cgc_is_user_in_group' should return a value [-Wreturn-type]\n        return; \n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:439:21: error: non-void function 'cgc_remove_user_from_group' should return a value [-Wreturn-type]\n        if ( temp == NULL){return;}\n                           ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:470:53: error: non-void function 'cgc_remove_user' should return a value [-Wreturn-type]\n        if (user == NULL){cgc_puts(\"Bad call:remove_user\");return;}//bad call to remove user\n                                                           ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:471:60: error: non-void function 'cgc_remove_user' should return a value [-Wreturn-type]\n        if ( user->prev == NULL ){cgc_puts(\"Can not delete root\");return;}\n                                                                  ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:473:3: error: non-void function 'cgc_remove_user' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:495:3: error: non-void function 'cgc_remove_group' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:499:3: error: non-void function 'cgc_remove_group' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:644:3: error: non-void function 'cgc_recursive_path' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:649:3: error: non-void function 'cgc_recursive_path' should return a value [-Wreturn-type]\n                return;\n                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:684:2: error: non-void function 'cgc_find_node_by_name' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:695:2: error: non-void function 'cgc_find_directory_by_name' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:706:2: error: non-void function 'cgc_find_file_by_name' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:717:2: error: non-void function 'cgc_find_file_node_by_name' should return a value [-Wreturn-type]\n        return; \n        ^\n18 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e9444d9d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:156:3: error: void function 'cgc_validate_current_perms' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:160:3: error: void function 'cgc_validate_current_perms' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:179:2: error: void function 'cgc_validate_current_perms' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:322:2: error: void function 'cgc_delete_file' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:673:2: error: void function 'cgc_str_of_path' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n5 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7a5cee5c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:423:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:432:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:724:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n3 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ac90a5fb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:228:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t flag = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:228:9: error: use of undeclared identifier 'flag'\n        size_t flag = 0;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:232:7: error: use of undeclared identifier 'flag'\n                if (flag == 1){\n                    ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:238:5: error: use of undeclared identifier 'flag'\n                                flag = 1;\n                                ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:539:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t count = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:539:9: error: use of undeclared identifier 'count'\n        size_t count = 0;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:541:8: error: use of undeclared identifier 'count'\n                if ( count == number ){\n                     ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:544:4: error: use of undeclared identifier 'count'\n                        count += 1;\n                        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:609:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t count = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:609:9: error: use of undeclared identifier 'count'\n        size_t count = 0;\n               ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:611:8: error: use of undeclared identifier 'count'\n                if ( count == number ){\n                     ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:615:4: error: use of undeclared identifier 'count'\n                        count += 1;\n                        ^\n12 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1dfaa922": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "35cb678d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:423:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:432:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:724:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n3 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c0a8864c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9daa4151": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87157fc9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:156:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:322:7: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:673:7: error: use of undeclared label 'done'\n        goto done;\n             ^\n3 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "76aa4e58": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e372c8f4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87ef44d7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:104:18: error: invalid operands to binary expression ('pPerms' (aka 'struct Perms_s *') and 'int')\n        if (node->perms % NULL == 0){\n            ~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:201:32: error: invalid operands to binary expression ('struct Node_s *' and 'int')\n        if (parent->directoryHeadNode % NULL == 0){\n            ~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:259:17: error: invalid operands to binary expression ('pFileChunk' (aka 'struct FileChunk_s *') and 'int')\n        if (file->tail % NULL == 0){\n            ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:292:18: error: invalid operands to binary expression ('struct FileChunk_s *' and 'int')\n        if (chunk->prev % NULL == 0){//first chunk\n            ~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:294:19: error: invalid operands to binary expression ('struct FileChunk_s *' and 'int')\n                if (chunk->next % NULL == 0){//if it is the only element\n                    ~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:303:19: error: invalid operands to binary expression ('struct FileChunk_s *' and 'int')\n                if (chunk->next % NULL == 0){//last no next\n                    ~~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:341:17: error: invalid operands to binary expression ('struct Node_s *' and 'int')\n        if (node->prev % NULL == 0){//first\n            ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:343:18: error: invalid operands to binary expression ('struct Node_s *' and 'int')\n                if (node->next % NULL == 0){//only\n                    ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:351:18: error: invalid operands to binary expression ('struct Node_s *' and 'int')\n                if (node->next % NULL == 0){//last\n                    ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:382:15: error: invalid operands to binary expression ('pUser' (aka 'struct User_s *') and 'int')\n        if (userList % NULL == 0){\n            ~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:440:17: error: invalid operands to binary expression ('struct GroupUserList_s *' and 'int')\n        if (temp->prev % NULL == 0){//first element\n            ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:441:18: error: invalid operands to binary expression ('struct GroupUserList_s *' and 'int')\n                if (temp->next % NULL == 0){//only element\n                    ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:450:18: error: invalid operands to binary expression ('struct GroupUserList_s *' and 'int')\n                if (temp->next % NULL == 0){//last\n                    ~~~~~~~~~~ ^ ~~~~\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:587:22: error: invalid operands to binary expression ('pGroupUserList' (aka 'struct GroupUserList_s *') and 'int')\n        if (group->userList % NULL == 0){\n            ~~~~~~~~~~~~~~~ ^ ~~~~\n14 errors generated.\nmake[2]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/src/service.c.o] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d6c7fec3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "809ff6bb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "91a1f07e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5fdaf395": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/SPIFFS.dir/src/service.c.o: In function `cgc__add_user':\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:382: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/SPIFFS.dir/src/service.c.o: In function `cgc_add_user_to_group':\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:587: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/SPIFFS.dir/src/service.c.o: In function `cgc_add_perm':\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:104: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/SPIFFS.dir/src/service.c.o: In function `cgc_validate_current_perms':\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:164: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:171: undefined reference to `gtk_notebook_get_current_page'\nCMakeFiles/SPIFFS.dir/src/service.c.o:/tmp/FlexiRepair/SPIFFS_0/SPIFFS/src/service.c:201: more undefined references to `gtk_notebook_get_current_page' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [SPIFFS/SPIFFS] Error 1\nmake[1]: *** [SPIFFS/CMakeFiles/SPIFFS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 195,
+  "failed_neg_tests": 26,
+  "failed_pos_tests": 65,
+  "duration": 2165.565936,
+  "errors": []
+}

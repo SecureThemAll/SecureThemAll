@@ -1,0 +1,2357 @@
+{
+  "repair_begin": "2021-05-08 05:02:07.025010",
+  "repair_end": "2021-05-08 05:29:58.448275",
+  "patches": [
+    {
+      "target_file": "src/cmdb_backend.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-24256-a69f72-cmdb_backend.c\n@@ -108,15 +108,15 @@ cgc_size_t cgc_get_num_rented()\n int cgc_add_movie(char *name, char *desc, short year, char score, char *type, char *mpaa) {\n     char *genre = cgc_check_genre(type), *rating = cgc_check_rating(mpaa);\n     if (!genre || !rating)\n-        return -1;\n+        return 0;\n     if (year < 1800 || year > 2015)\n-        return -1;\n+        return 0;\n     if (score < 0 || score > 100)\n-        return -1;\n+        return 0;\n \n     cmdb_entry_t *row = cgc_malloc(sizeof(cmdb_entry_t));\n     if (!row)\n-        return -1;\n+        return 0;\n \n     row->name = cgc_strdup(name);\n     row->desc = cgc_strdup(desc);\n@@ -128,7 +128,7 @@ int cgc_add_movie(char *name, char *desc\n \n     if (cgc_add_entry(row) != 0) {\n         cgc_free(row);\n-        return -1;\n+        return 0;\n     }\n \n     return 0;\n@@ -139,7 +139,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     if (g_list_size == 0) {\n         g_cmdb = cgc_malloc(sizeof(cmdb_entry_t) * 16);\n         if (!g_cmdb) {\n-            return -1;\n+            return 0;\n         }\n         g_list_size = 16;\n     } else if(g_list_size == g_list_length) {\n@@ -148,7 +148,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n         g_cmdb = cgc_malloc(sizeof(cmdb_entry_t) * g_list_size<<1);\n         if (!g_cmdb) {\n             g_cmdb = temp_db;\n-            return -1;\n+            return 0;\n         }\n         cgc_memcpy(g_cmdb, temp_db, (sizeof(cmdb_entry_t) * g_list_size));\n \n@@ -166,7 +166,7 @@ int cgc_delete_entry(int id)\n         return 1;\n \n     if (id < 1 || id > g_list_length)\n-        return -1;\n+        return 0;\n     id--;\n \n     cgc_free(g_cmdb[id].name);\n@@ -183,7 +183,7 @@ int cgc_delete_entry(int id)\n int cgc_rent_entry(int id)\n {\n     if (id < 1 || id > g_list_length)\n-        return -1;\n+        return 0;\n     id--;\n \n     if (g_cmdb[id].is_checked_out) {\n@@ -201,7 +201,7 @@ int cgc_rent_entry(int id)\n int cgc_return_entry(int id)\n {\n     if (id < 1 || id > g_num_rented)\n-        return -1;\n+        return 0;\n \n     int i = 0, j = 0;\n     for (i = 0; i < g_list_length; i++) {\n@@ -218,7 +218,7 @@ int cgc_return_entry(int id)\n         }\n     }\n \n-    return -1;\n+    return 0;\n }\n \n cmdb_entry_t *cgc_find_entry(char *name)\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21396-74f514-cmdb_backend.c\n@@ -126,7 +126,7 @@ int cgc_add_movie(char *name, char *desc\n     row->mpaa = rating;\n     row->is_checked_out = 0;\n \n-    if (cgc_add_entry(row) != 0) {\n+    if (cgc_add_entry(row) < 0 || cgc_add_entry(row) > 0 + strlen(0)) {\n         cgc_free(row);\n         return -1;\n     }\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21357-2f0cab-cmdb_backend.c\n@@ -131,7 +131,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_add_entry(cmdb_entry_t *entry)\n@@ -157,7 +157,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     }\n \n     cgc_memcpy(&g_cmdb[g_list_length++], entry, sizeof(cmdb_entry_t));\n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_delete_entry(int id)\n@@ -177,7 +177,7 @@ int cgc_delete_entry(int id)\n \n     g_list_length--;\n     cgc_printf(\"Successfully removed the movie!\\n\");\n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_rent_entry(int id)\n@@ -195,7 +195,7 @@ int cgc_rent_entry(int id)\n     g_num_rented++;\n \n     cgc_printf(\"Successfully rented [%s]! Enjoy!\\n\", g_cmdb[id].name);\n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_return_entry(int id)\n@@ -214,7 +214,7 @@ int cgc_return_entry(int id)\n             g_cmdb[i].is_checked_out = 0;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n-            return 0;\n+            no_draw = 1;\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-24667-746c10-cmdb_backend.c\n@@ -131,7 +131,8 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_add_entry(cmdb_entry_t *entry)\n@@ -157,7 +158,8 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     }\n \n     cgc_memcpy(&g_cmdb[g_list_length++], entry, sizeof(cmdb_entry_t));\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_delete_entry(int id)\n@@ -177,7 +179,8 @@ int cgc_delete_entry(int id)\n \n     g_list_length--;\n     cgc_printf(\"Successfully removed the movie!\\n\");\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_rent_entry(int id)\n@@ -195,7 +198,8 @@ int cgc_rent_entry(int id)\n     g_num_rented++;\n \n     cgc_printf(\"Successfully rented [%s]! Enjoy!\\n\", g_cmdb[id].name);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_return_entry(int id)\n@@ -214,7 +218,8 @@ int cgc_return_entry(int id)\n             g_cmdb[i].is_checked_out = 0;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n-            return 0;\n+            restorescr(old);\n+            return ret;\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-20566-c95996-cmdb_backend.c\n@@ -81,7 +81,7 @@ static char *cgc_check_rating(char *rati\n \n char *cgc_get_genre(int id)\n {\n-    if(id < 1 || id > g_num_genres)\n+    if (id > g_num_genres)\n         return NULL;\n \n     return g_all_genres[id-1];\n@@ -89,7 +89,7 @@ char *cgc_get_genre(int id)\n \n char *cgc_get_rating(int id)\n {\n-    if(id < 1 || id > g_num_mpaa_ratings)\n+    if (id > g_num_mpaa_ratings)\n         return NULL;\n \n     return g_all_mpaa_ratings[id-1];\n@@ -109,9 +109,9 @@ int cgc_add_movie(char *name, char *desc\n     char *genre = cgc_check_genre(type), *rating = cgc_check_rating(mpaa);\n     if (!genre || !rating)\n         return -1;\n-    if (year < 1800 || year > 2015)\n+    if (year > 2015)\n         return -1;\n-    if (score < 0 || score > 100)\n+    if (score > 100)\n         return -1;\n \n     cmdb_entry_t *row = cgc_malloc(sizeof(cmdb_entry_t));\n@@ -165,7 +165,7 @@ int cgc_delete_entry(int id)\n     if (!g_list_length)\n         return 1;\n \n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return -1;\n     id--;\n \n@@ -182,7 +182,7 @@ int cgc_delete_entry(int id)\n \n int cgc_rent_entry(int id)\n {\n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return -1;\n     id--;\n \n@@ -200,7 +200,7 @@ int cgc_rent_entry(int id)\n \n int cgc_return_entry(int id)\n {\n-    if (id < 1 || id > g_num_rented)\n+    if (id > g_num_rented)\n         return -1;\n \n     int i = 0, j = 0;\n@@ -234,7 +234,7 @@ cmdb_entry_t *cgc_find_entry(char *name)\n \n cmdb_entry_t *cgc_get_entry(int id)\n {\n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return NULL;\n \n     return &g_cmdb[--id];\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-25525-1ab0ea-cmdb_backend.c\n@@ -305,19 +305,21 @@ void cgc_print_ratings()\n void cgc_dag(char *new_genre)\n {\n     if (!new_genre)\n-        return;\n+        goto done;\n \n     if (g_num_genres < 10)\n         g_all_genres[g_num_genres++] = cgc_strdup(new_genre);\n+    goto done;\n }\n \n //Debug add rating\n void cgc_dar(char *new_rating)\n {\n     if (!new_rating)\n-        return;\n+        goto done;\n \n     if (g_num_mpaa_ratings < 10)\n         g_all_mpaa_ratings[g_num_mpaa_ratings++] = cgc_strdup(new_rating);\n+    goto done;\n }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-29854-a97e89-cmdb_backend.c\n@@ -115,7 +115,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n \n     cmdb_entry_t *row = cgc_malloc(sizeof(cmdb_entry_t));\n-    if (!row)\n+    if (row == MAP_FAILED)\n         return -1;\n \n     row->name = cgc_strdup(name);\n@@ -138,7 +138,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n {\n     if (g_list_size == 0) {\n         g_cmdb = cgc_malloc(sizeof(cmdb_entry_t) * 16);\n-        if (!g_cmdb) {\n+        if (g_cmdb == MAP_FAILED) {\n             return -1;\n         }\n         g_list_size = 16;\n@@ -146,7 +146,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n         cgc_size_t i;\n         cmdb_entry_t *temp_db = g_cmdb;\n         g_cmdb = cgc_malloc(sizeof(cmdb_entry_t) * g_list_size<<1);\n-        if (!g_cmdb) {\n+        if (g_cmdb == MAP_FAILED) {\n             g_cmdb = temp_db;\n             return -1;\n         }\n@@ -162,7 +162,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n \n int cgc_delete_entry(int id)\n {\n-    if (!g_list_length)\n+    if (g_list_length == MAP_FAILED)\n         return 1;\n \n     if (id < 1 || id > g_list_length)\n@@ -304,7 +304,7 @@ void cgc_print_ratings()\n //Debug add genre\n void cgc_dag(char *new_genre)\n {\n-    if (!new_genre)\n+    if (new_genre == MAP_FAILED)\n         return;\n \n     if (g_num_genres < 10)\n@@ -314,7 +314,7 @@ void cgc_dag(char *new_genre)\n //Debug add rating\n void cgc_dar(char *new_rating)\n {\n-    if (!new_rating)\n+    if (new_rating == MAP_FAILED)\n         return;\n \n     if (g_num_mpaa_ratings < 10)\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-26398-087e13-cmdb_backend.c\n@@ -305,19 +305,21 @@ void cgc_print_ratings()\n void cgc_dag(char *new_genre)\n {\n     if (!new_genre)\n-        return;\n+        return 0;\n \n     if (g_num_genres < 10)\n         g_all_genres[g_num_genres++] = cgc_strdup(new_genre);\n+    return 0;\n }\n \n //Debug add rating\n void cgc_dar(char *new_rating)\n {\n     if (!new_rating)\n-        return;\n+        return 0;\n \n     if (g_num_mpaa_ratings < 10)\n         g_all_mpaa_ratings[g_num_mpaa_ratings++] = cgc_strdup(new_rating);\n+    return 0;\n }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-27832-25616e-cmdb_backend.c\n@@ -205,7 +205,7 @@ int cgc_return_entry(int id)\n \n     int i = 0, j = 0;\n     for (i = 0; i < g_list_length; i++) {\n-        if (g_cmdb[i].is_checked_out)\n+        if (g_cmdb->is_checked_out[0])\n             j++;\n         else\n             continue;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-25097-c035c0-cmdb_backend.c\n@@ -65,7 +65,7 @@ static char *cgc_check_genre(char *genre\n             return g_all_genres[i];\n     }\n \n-    return NULL;\n+    return \"N/A\";\n }\n \n static char *cgc_check_rating(char *rating)\n@@ -76,13 +76,13 @@ static char *cgc_check_rating(char *rati\n             return g_all_mpaa_ratings[i];\n     }\n \n-    return NULL;\n+    return \"N/A\";\n }\n \n char *cgc_get_genre(int id)\n {\n     if(id < 1 || id > g_num_genres)\n-        return NULL;\n+        return \"N/A\";\n \n     return g_all_genres[id-1];\n }\n@@ -90,7 +90,7 @@ char *cgc_get_genre(int id)\n char *cgc_get_rating(int id)\n {\n     if(id < 1 || id > g_num_mpaa_ratings)\n-        return NULL;\n+        return \"N/A\";\n \n     return g_all_mpaa_ratings[id-1];\n }\n@@ -229,13 +229,13 @@ cmdb_entry_t *cgc_find_entry(char *name)\n             return &g_cmdb[i];\n     }\n \n-    return NULL;\n+    return \"N/A\";\n }\n \n cmdb_entry_t *cgc_get_entry(int id)\n {\n     if (id < 1 || id > g_list_length)\n-        return NULL;\n+        return \"N/A\";\n \n     return &g_cmdb[--id];\n }\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-24365-3d8838-cmdb_backend.c\n@@ -208,7 +208,7 @@ int cgc_return_entry(int id)\n         if (g_cmdb[i].is_checked_out)\n             j++;\n         else\n-            continue;\n+            goto NEXT;\n \n         if (j == id) {\n             g_cmdb[i].is_checked_out = 0;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-27475-9d33db-cmdb_backend.c\n@@ -131,7 +131,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_add_entry(cmdb_entry_t *entry)\n@@ -157,7 +157,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     }\n \n     cgc_memcpy(&g_cmdb[g_list_length++], entry, sizeof(cmdb_entry_t));\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_delete_entry(int id)\n@@ -177,7 +177,7 @@ int cgc_delete_entry(int id)\n \n     g_list_length--;\n     cgc_printf(\"Successfully removed the movie!\\n\");\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_rent_entry(int id)\n@@ -195,7 +195,7 @@ int cgc_rent_entry(int id)\n     g_num_rented++;\n \n     cgc_printf(\"Successfully rented [%s]! Enjoy!\\n\", g_cmdb[id].name);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_return_entry(int id)\n@@ -214,7 +214,7 @@ int cgc_return_entry(int id)\n             g_cmdb[i].is_checked_out = 0;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n-            return 0;\n+            return ZEND_HASH_APPLY_KEEP;\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-20312-6e7c66-cmdb_backend.c\n@@ -111,7 +111,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     if (year < 1800 || year > 2015)\n         return -1;\n-    if (score < 0 || score > 100)\n+    if (score < 0 || score > (zend_long)100)\n         return -1;\n \n     cmdb_entry_t *row = cgc_malloc(sizeof(cmdb_entry_t));\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-31701-518efc-cmdb_backend.c\n@@ -124,7 +124,7 @@ int cgc_add_movie(char *name, char *desc\n     row->score = score;\n     row->type = genre;\n     row->mpaa = rating;\n-    row->is_checked_out = 0;\n+    row->is_checked_out = -1;\n \n     if (cgc_add_entry(row) != 0) {\n         cgc_free(row);\n@@ -211,7 +211,7 @@ int cgc_return_entry(int id)\n             continue;\n \n         if (j == id) {\n-            g_cmdb[i].is_checked_out = 0;\n+            g_cmdb[i].is_checked_out = -1;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n             return 0;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21546-f9250c-cmdb_backend.c\n@@ -163,7 +163,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n int cgc_delete_entry(int id)\n {\n     if (!g_list_length)\n-        return 1;\n+        return (EINVAL);\n \n     if (id < 1 || id > g_list_length)\n         return -1;\n@@ -188,7 +188,7 @@ int cgc_rent_entry(int id)\n \n     if (g_cmdb[id].is_checked_out) {\n         cgc_printf(\"Sorry, [%s] is already rented at this time. Please try again later.\\n\", g_cmdb[id].name);\n-        return 1;\n+        return (EINVAL);\n     }\n \n     g_cmdb[id].is_checked_out = 1;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-22963-79c116-cmdb_backend.c\n@@ -136,7 +136,7 @@ int cgc_add_movie(char *name, char *desc\n \n int cgc_add_entry(cmdb_entry_t *entry)\n {\n-    if (g_list_size == 0) {\n+    if (g_list_size % 0 == 0) {\n         g_cmdb = cgc_malloc(sizeof(cmdb_entry_t) * 16);\n         if (!g_cmdb) {\n             return -1;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-32658-c12bbd-cmdb_backend.c\n@@ -60,7 +60,7 @@ static cmdb_entry_t *g_cmdb = NULL;\n static char *cgc_check_genre(char *genre)\n {\n     cgc_size_t i = 0;\n-    for (i = 0; i < g_num_genres; i++) {\n+    for (i = 1; i <= g_num_genres; i++) {\n         if(cgc_strcmp(genre, g_all_genres[i]) == 0)\n             return g_all_genres[i];\n     }\n@@ -71,7 +71,7 @@ static char *cgc_check_genre(char *genre\n static char *cgc_check_rating(char *rating)\n {\n     cgc_size_t i = 0;\n-    for (i = 0; i < g_num_mpaa_ratings; i++) {\n+    for (i = 1; i <= g_num_mpaa_ratings; i++) {\n         if(cgc_strcmp(rating, g_all_mpaa_ratings[i]) == 0)\n             return g_all_mpaa_ratings[i];\n     }\n@@ -204,7 +204,7 @@ int cgc_return_entry(int id)\n         return -1;\n \n     int i = 0, j = 0;\n-    for (i = 0; i < g_list_length; i++) {\n+    for (i = 1; i <= g_list_length; i++) {\n         if (g_cmdb[i].is_checked_out)\n             j++;\n         else\n@@ -224,7 +224,7 @@ int cgc_return_entry(int id)\n cmdb_entry_t *cgc_find_entry(char *name)\n {\n     int i;\n-    for (i = 0; i < g_list_length; i++) {\n+    for (i = 1; i <= g_list_length; i++) {\n         if (cgc_strcmp(g_cmdb[i].name, name) == 0)\n             return &g_cmdb[i];\n     }\n@@ -254,7 +254,7 @@ void cgc_print_movies(filter_e filter)\n         cgc_printf(\"\\nMovies (Full)\\n\");\n         cgc_printf(\"--------------\\n\");\n \n-        for (i = 0; i < g_list_length; i++) {\n+        for (i = 1; i <= g_list_length; i++) {\n             cgc_printf(\"[%d] \", i+1);\n             cgc_print_entry(&g_cmdb[i]);\n         }\n@@ -282,7 +282,7 @@ void cgc_print_movies(filter_e filter)\n void cgc_print_genres()\n {\n     int i;\n-    for (i = 0; i < g_num_genres; i++) {\n+    for (i = 1; i <= g_num_genres; i++) {\n #ifndef PATCHED\n         cgc_printf(\"\\n %d. \", i+1);\n         cgc_printf(g_all_genres[i]);\n@@ -296,7 +296,7 @@ void cgc_print_genres()\n void cgc_print_ratings()\n {\n     int i;\n-    for (i = 0; i < g_num_mpaa_ratings; i++)\n+    for (i = 1; i <= g_num_mpaa_ratings; i++)\n         cgc_printf(\"\\n %d. %s\", i+1, g_all_mpaa_ratings[i]);\n     cgc_printf(\"\\n\");\n }\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-22365-dd4b7e-cmdb_backend.c\n@@ -131,7 +131,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n int cgc_add_entry(cmdb_entry_t *entry)\n@@ -157,7 +157,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     }\n \n     cgc_memcpy(&g_cmdb[g_list_length++], entry, sizeof(cmdb_entry_t));\n-    return 0;\n+    return -1;\n }\n \n int cgc_delete_entry(int id)\n@@ -177,7 +177,7 @@ int cgc_delete_entry(int id)\n \n     g_list_length--;\n     cgc_printf(\"Successfully removed the movie!\\n\");\n-    return 0;\n+    return -1;\n }\n \n int cgc_rent_entry(int id)\n@@ -195,7 +195,7 @@ int cgc_rent_entry(int id)\n     g_num_rented++;\n \n     cgc_printf(\"Successfully rented [%s]! Enjoy!\\n\", g_cmdb[id].name);\n-    return 0;\n+    return -1;\n }\n \n int cgc_return_entry(int id)\n@@ -214,7 +214,7 @@ int cgc_return_entry(int id)\n             g_cmdb[i].is_checked_out = 0;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n-            return 0;\n+            return -1;\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-23994-48c2c5-cmdb_backend.c\n@@ -163,7 +163,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n int cgc_delete_entry(int id)\n {\n     if (!g_list_length)\n-        return 1;\n+        return (1);\n \n     if (id < 1 || id > g_list_length)\n         return -1;\n@@ -188,7 +188,7 @@ int cgc_rent_entry(int id)\n \n     if (g_cmdb[id].is_checked_out) {\n         cgc_printf(\"Sorry, [%s] is already rented at this time. Please try again later.\\n\", g_cmdb[id].name);\n-        return 1;\n+        return (1);\n     }\n \n     g_cmdb[id].is_checked_out = 1;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-26304-6bd02b-cmdb_backend.c\n@@ -81,7 +81,7 @@ static char *cgc_check_rating(char *rati\n \n char *cgc_get_genre(int id)\n {\n-    if(id < 1 || id > g_num_genres)\n+    if (id > g_num_genres)\n         return NULL;\n \n     return g_all_genres[id-1];\n@@ -89,7 +89,7 @@ char *cgc_get_genre(int id)\n \n char *cgc_get_rating(int id)\n {\n-    if(id < 1 || id > g_num_mpaa_ratings)\n+    if (id > g_num_mpaa_ratings)\n         return NULL;\n \n     return g_all_mpaa_ratings[id-1];\n@@ -109,9 +109,9 @@ int cgc_add_movie(char *name, char *desc\n     char *genre = cgc_check_genre(type), *rating = cgc_check_rating(mpaa);\n     if (!genre || !rating)\n         return -1;\n-    if (year < 1800 || year > 2015)\n+    if (year > 2015)\n         return -1;\n-    if (score < 0 || score > 100)\n+    if (score > 100)\n         return -1;\n \n     cmdb_entry_t *row = cgc_malloc(sizeof(cmdb_entry_t));\n@@ -165,7 +165,7 @@ int cgc_delete_entry(int id)\n     if (!g_list_length)\n         return 1;\n \n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return -1;\n     id--;\n \n@@ -182,7 +182,7 @@ int cgc_delete_entry(int id)\n \n int cgc_rent_entry(int id)\n {\n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return -1;\n     id--;\n \n@@ -200,7 +200,7 @@ int cgc_rent_entry(int id)\n \n int cgc_return_entry(int id)\n {\n-    if (id < 1 || id > g_num_rented)\n+    if (id > g_num_rented)\n         return -1;\n \n     int i = 0, j = 0;\n@@ -234,7 +234,7 @@ cmdb_entry_t *cgc_find_entry(char *name)\n \n cmdb_entry_t *cgc_get_entry(int id)\n {\n-    if (id < 1 || id > g_list_length)\n+    if (id > g_list_length)\n         return NULL;\n \n     return &g_cmdb[--id];\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-26256-bf0b99-cmdb_backend.c\n@@ -65,7 +65,7 @@ static char *cgc_check_genre(char *genre\n             return g_all_genres[i];\n     }\n \n-    return NULL;\n+    return;\n }\n \n static char *cgc_check_rating(char *rating)\n@@ -76,13 +76,13 @@ static char *cgc_check_rating(char *rati\n             return g_all_mpaa_ratings[i];\n     }\n \n-    return NULL;\n+    return;\n }\n \n char *cgc_get_genre(int id)\n {\n     if(id < 1 || id > g_num_genres)\n-        return NULL;\n+        return;\n \n     return g_all_genres[id-1];\n }\n@@ -90,7 +90,7 @@ char *cgc_get_genre(int id)\n char *cgc_get_rating(int id)\n {\n     if(id < 1 || id > g_num_mpaa_ratings)\n-        return NULL;\n+        return;\n \n     return g_all_mpaa_ratings[id-1];\n }\n@@ -229,13 +229,13 @@ cmdb_entry_t *cgc_find_entry(char *name)\n             return &g_cmdb[i];\n     }\n \n-    return NULL;\n+    return;\n }\n \n cmdb_entry_t *cgc_get_entry(int id)\n {\n     if (id < 1 || id > g_list_length)\n-        return NULL;\n+        return;\n \n     return &g_cmdb[--id];\n }\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-30829-0a61ea-cmdb_backend.c\n@@ -223,7 +223,7 @@ int cgc_return_entry(int id)\n \n cmdb_entry_t *cgc_find_entry(char *name)\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     for (i = 0; i < g_list_length; i++) {\n         if (cgc_strcmp(g_cmdb[i].name, name) == 0)\n             return &g_cmdb[i];\n@@ -248,7 +248,7 @@ void cgc_print_entry(cmdb_entry_t *entry\n \n void cgc_print_movies(filter_e filter)\n {\n-    int i;\n+    const struct options_table_entry *oe;\n \n     if (filter == ALL || filter == OWNED) {\n         cgc_printf(\"\\nMovies (Full)\\n\");\n@@ -281,7 +281,7 @@ void cgc_print_movies(filter_e filter)\n \n void cgc_print_genres()\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     for (i = 0; i < g_num_genres; i++) {\n #ifndef PATCHED\n         cgc_printf(\"\\n %d. \", i+1);\n@@ -295,7 +295,7 @@ void cgc_print_genres()\n \n void cgc_print_ratings()\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     for (i = 0; i < g_num_mpaa_ratings; i++)\n         cgc_printf(\"\\n %d. %s\", i+1, g_all_mpaa_ratings[i]);\n     cgc_printf(\"\\n\");\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21147-26a976-cmdb_backend.c\n@@ -172,7 +172,7 @@ int cgc_delete_entry(int id)\n     cgc_free(g_cmdb[id].name);\n     cgc_free(g_cmdb[id].desc);\n \n-    if (id+1 < g_list_length)\n+    if (g_list_length + 1 > id)\n         cgc_memcpy(&g_cmdb[id], &g_cmdb[id+1], sizeof(cmdb_entry_t) * (g_list_length - (id+1)));\n \n     g_list_length--;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-31237-8198ea-cmdb_backend.c\n@@ -263,7 +263,7 @@ void cgc_print_movies(filter_e filter)\n         cgc_printf(\"%d movie(s)\\n\", g_list_length);\n     }\n     if (filter == ALL || filter == RENTED) {\n-        int j = 0;\n+        size_t j = 0;\n         cgc_printf(\"\\nMovies (Rented)\\n\");\n         cgc_printf(\"--------------\\n\");\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21036-552548-cmdb_backend.c\n@@ -152,7 +152,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n         }\n         cgc_memcpy(g_cmdb, temp_db, (sizeof(cmdb_entry_t) * g_list_size));\n \n-        g_list_size <<= 1;\n+        g_list_size *= 1 << 1;\n         cgc_free(temp_db);\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-23769-a598f5-cmdb_backend.c\n@@ -163,7 +163,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n int cgc_delete_entry(int id)\n {\n     if (!g_list_length)\n-        return 1;\n+        ret = 1;\n \n     if (id < 1 || id > g_list_length)\n         return -1;\n@@ -188,7 +188,7 @@ int cgc_rent_entry(int id)\n \n     if (g_cmdb[id].is_checked_out) {\n         cgc_printf(\"Sorry, [%s] is already rented at this time. Please try again later.\\n\", g_cmdb[id].name);\n-        return 1;\n+        ret = 1;\n     }\n \n     g_cmdb[id].is_checked_out = 1;\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-21142-489de8-cmdb_backend.c\n@@ -131,7 +131,7 @@ int cgc_add_movie(char *name, char *desc\n         return -1;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_add_entry(cmdb_entry_t *entry)\n@@ -157,7 +157,7 @@ int cgc_add_entry(cmdb_entry_t *entry)\n     }\n \n     cgc_memcpy(&g_cmdb[g_list_length++], entry, sizeof(cmdb_entry_t));\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_delete_entry(int id)\n@@ -177,7 +177,7 @@ int cgc_delete_entry(int id)\n \n     g_list_length--;\n     cgc_printf(\"Successfully removed the movie!\\n\");\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_rent_entry(int id)\n@@ -195,7 +195,7 @@ int cgc_rent_entry(int id)\n     g_num_rented++;\n \n     cgc_printf(\"Successfully rented [%s]! Enjoy!\\n\", g_cmdb[id].name);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_return_entry(int id)\n@@ -214,7 +214,7 @@ int cgc_return_entry(int id)\n             g_cmdb[i].is_checked_out = 0;\n             g_num_rented--;\n             cgc_printf(\"Successfully returned [%s]! Thank you!\\n\", g_cmdb[i].name);\n-            return 0;\n+            return (BUS_PROBE_NOWILDCARD);\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-22720-867a02-cmdb_backend.c\n@@ -250,7 +250,7 @@ void cgc_print_movies(filter_e filter)\n {\n     int i;\n \n-    if (filter == ALL || filter == OWNED) {\n+    if (filter == OWNED) {\n         cgc_printf(\"\\nMovies (Full)\\n\");\n         cgc_printf(\"--------------\\n\");\n \n@@ -262,7 +262,7 @@ void cgc_print_movies(filter_e filter)\n         cgc_printf(\"--------------\\n\");\n         cgc_printf(\"%d movie(s)\\n\", g_list_length);\n     }\n-    if (filter == ALL || filter == RENTED) {\n+    if (filter == RENTED) {\n         int j = 0;\n         cgc_printf(\"\\nMovies (Rented)\\n\");\n         cgc_printf(\"--------------\\n\");\n",
+        "--- /tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c\n+++ /tmp/cocci-output-30412-3fab64-cmdb_backend.c\n@@ -60,7 +60,7 @@ static cmdb_entry_t *g_cmdb = NULL;\n static char *cgc_check_genre(char *genre)\n {\n     cgc_size_t i = 0;\n-    for (i = 0; i < g_num_genres; i++) {\n+    for (i = 0; i < devcnt; i++) {\n         if(cgc_strcmp(genre, g_all_genres[i]) == 0)\n             return g_all_genres[i];\n     }\n@@ -71,7 +71,7 @@ static char *cgc_check_genre(char *genre\n static char *cgc_check_rating(char *rating)\n {\n     cgc_size_t i = 0;\n-    for (i = 0; i < g_num_mpaa_ratings; i++) {\n+    for (i = 0; i < devcnt; i++) {\n         if(cgc_strcmp(rating, g_all_mpaa_ratings[i]) == 0)\n             return g_all_mpaa_ratings[i];\n     }\n@@ -204,7 +204,7 @@ int cgc_return_entry(int id)\n         return -1;\n \n     int i = 0, j = 0;\n-    for (i = 0; i < g_list_length; i++) {\n+    for (i = 0; i < devcnt; i++) {\n         if (g_cmdb[i].is_checked_out)\n             j++;\n         else\n@@ -224,7 +224,7 @@ int cgc_return_entry(int id)\n cmdb_entry_t *cgc_find_entry(char *name)\n {\n     int i;\n-    for (i = 0; i < g_list_length; i++) {\n+    for (i = 0; i < devcnt; i++) {\n         if (cgc_strcmp(g_cmdb[i].name, name) == 0)\n             return &g_cmdb[i];\n     }\n@@ -254,7 +254,7 @@ void cgc_print_movies(filter_e filter)\n         cgc_printf(\"\\nMovies (Full)\\n\");\n         cgc_printf(\"--------------\\n\");\n \n-        for (i = 0; i < g_list_length; i++) {\n+        for (i = 0; i < devcnt; i++) {\n             cgc_printf(\"[%d] \", i+1);\n             cgc_print_entry(&g_cmdb[i]);\n         }\n@@ -282,7 +282,7 @@ void cgc_print_movies(filter_e filter)\n void cgc_print_genres()\n {\n     int i;\n-    for (i = 0; i < g_num_genres; i++) {\n+    for (i = 0; i < devcnt; i++) {\n #ifndef PATCHED\n         cgc_printf(\"\\n %d. \", i+1);\n         cgc_printf(g_all_genres[i]);\n@@ -296,7 +296,7 @@ void cgc_print_genres()\n void cgc_print_ratings()\n {\n     int i;\n-    for (i = 0; i < g_num_mpaa_ratings; i++)\n+    for (i = 0; i < devcnt; i++)\n         cgc_printf(\"\\n %d. %s\", i+1, g_all_mpaa_ratings[i]);\n     cgc_printf(\"\\n\");\n }\n"
+      ]
+    }
+  ],
+  "compilations": 14,
+  "failed_compilations": 15,
+  "outcomes": {
+    "a8e57952": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ce3a3fe4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3cda3188": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:118:16: error: use of undeclared identifier 'MAP_FAILED'\n    if (row == MAP_FAILED)\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:141:23: error: use of undeclared identifier 'MAP_FAILED'\n        if (g_cmdb == MAP_FAILED) {\n                      ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:149:23: error: use of undeclared identifier 'MAP_FAILED'\n        if (g_cmdb == MAP_FAILED) {\n                      ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:165:26: error: use of undeclared identifier 'MAP_FAILED'\n    if (g_list_length == MAP_FAILED)\n                         ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:307:22: error: use of undeclared identifier 'MAP_FAILED'\n    if (new_genre == MAP_FAILED)\n                     ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:317:23: error: use of undeclared identifier 'MAP_FAILED'\n    if (new_rating == MAP_FAILED)\n                      ^\n6 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b3bf3e03": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ddc18f6e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1ea2cbe0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:134:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:160:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:180:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:198:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:217:21: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n            return (BUS_PROBE_NOWILDCARD);\n                    ^\n5 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "198ef243": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "74098814": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7bf673a7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:166:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:191:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n2 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2905e3f8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a057de2b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:211:18: error: use of undeclared label 'NEXT'\n            goto NEXT;\n                 ^\n1 error generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "da22cc9d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:134:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:135:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:161:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:162:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:182:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:183:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:201:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:202:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:221:24: error: use of undeclared identifier 'old'\n            restorescr(old);\n                       ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:222:20: error: use of undeclared identifier 'ret'\n            return ret;\n                   ^\n10 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "25f4ff49": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0540bee4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:308:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:319:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n2 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "36fd8cf7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:68:5: error: non-void function 'cgc_check_genre' should return a value [-Wreturn-type]\n    return;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:79:5: error: non-void function 'cgc_check_rating' should return a value [-Wreturn-type]\n    return;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:85:9: error: non-void function 'cgc_get_genre' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:93:9: error: non-void function 'cgc_get_rating' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:232:5: error: non-void function 'cgc_find_entry' should return a value [-Wreturn-type]\n    return;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:238:9: error: non-void function 'cgc_get_entry' should return a value [-Wreturn-type]\n        return;\n        ^\n6 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8f9c518c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "841cc112": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:308:9: error: void function 'cgc_dag' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:312:5: error: void function 'cgc_dag' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:319:9: error: void function 'cgc_dar' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:323:5: error: void function 'cgc_dar' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n4 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "de82ac14": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:134:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:160:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:180:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:198:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:217:20: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n            return ZEND_HASH_APPLY_KEEP;\n                   ^\n5 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "edd9c99a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:63:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:74:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:207:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:227:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:257:25: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++) {\n                        ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:285:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:299:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++)\n                    ^\n7 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a8dc06d1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:266:9: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t j = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:266:16: error: use of undeclared identifier 'j'\n        size_t j = 0;\n               ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:272:39: error: use of undeclared identifier 'j'\n                cgc_printf(\"[%d] \", ++j);\n                                      ^\n3 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f172fa4a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:134:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:160:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:180:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:198:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:217:13: error: use of undeclared identifier 'no_draw'\n            no_draw = 1;\n            ^\n5 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8c80801c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "169ffc99": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "500d08fd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "17aed41f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:227:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_list_length; i++) {\n         ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:227:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_list_length; i++) {\n                ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:227:36: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_list_length; i++) {\n                                   ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:228:31: error: use of undeclared identifier 'i'\n        if (cgc_strcmp(g_cmdb[i].name, name) == 0)\n                              ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:229:28: error: use of undeclared identifier 'i'\n            return &g_cmdb[i];\n                           ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:257:14: error: use of undeclared identifier 'i'\n        for (i = 0; i < g_list_length; i++) {\n             ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:257:21: error: use of undeclared identifier 'i'\n        for (i = 0; i < g_list_length; i++) {\n                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:257:40: error: use of undeclared identifier 'i'\n        for (i = 0; i < g_list_length; i++) {\n                                       ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:258:33: error: use of undeclared identifier 'i'\n            cgc_printf(\"[%d] \", i+1);\n                                ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:259:37: error: use of undeclared identifier 'i'\n            cgc_print_entry(&g_cmdb[i]);\n                                    ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:270:14: error: use of undeclared identifier 'i'\n        for (i = 0; (i < g_list_length) && g_num_rented; i++) {\n             ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:270:22: error: use of undeclared identifier 'i'\n        for (i = 0; (i < g_list_length) && g_num_rented; i++) {\n                     ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:270:58: error: use of undeclared identifier 'i'\n        for (i = 0; (i < g_list_length) && g_num_rented; i++) {\n                                                         ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:271:24: error: use of undeclared identifier 'i'\n            if (g_cmdb[i].is_checked_out) {\n                       ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:273:41: error: use of undeclared identifier 'i'\n                cgc_print_entry(&g_cmdb[i]);\n                                        ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:285:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_num_genres; i++) {\n         ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:285:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_num_genres; i++) {\n                ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:285:35: error: use of undeclared identifier 'i'\n    for (i = 0; i < g_num_genres; i++) {\n                                  ^\n/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:287:31: error: use of undeclared identifier 'i'\n        cgc_printf(\"\\n %d. \", i+1);\n                              ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c894abc9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3b361d0c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:114:31: error: use of undeclared identifier 'zend_long'\n    if (score < 0 || score > (zend_long)100)\n                              ^\n1 error generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b60fb24b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d0b61488": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Movie_Rental_Service_Redux_0/Movie_Rental_Service_Redux/src/cmdb_backend.c:208:35: error: subscripted value is not an array, pointer, or vector\n        if (g_cmdb->is_checked_out[0])\n            ~~~~~~~~~~~~~~~~~~~~~~^~\n1 error generated.\nmake[2]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/src/cmdb_backend.c.o] Error 1\nmake[1]: *** [Movie_Rental_Service_Redux/CMakeFiles/Movie_Rental_Service_Redux.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 202,
+  "failed_neg_tests": 14,
+  "failed_pos_tests": 78,
+  "duration": 1671.423265,
+  "errors": []
+}

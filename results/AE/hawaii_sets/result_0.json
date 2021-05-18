@@ -1,0 +1,897 @@
+{
+  "repair_begin": "2021-05-06 23:28:02.571520",
+  "repair_end": "2021-05-06 23:35:58.501293",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "350,368d349\n<   while (ei < r->varCount) {\n<     if ((r->sElems[ei])->type == 1) {\n<       tmp___1 = index;\n<       index ++;\n<       data[tmp___1] = (char )'\\\"';\n<       t = (r->sElems[ei])->value;\n<       tmp___2 = cgc_strlen(t);\n<       index = cgc_copymem(data, t, index, (int )tmp___2);\n<       tmp___3 = index;\n<       index ++;\n<       data[tmp___3] = (char )'\\\"';\n<     } else {\n<       tmp___4 = cgc_retrieve_set((r->sElems[ei])->value);\n<       tp = tmp___4;\n<       t = cgc_print_subsets(tp, 0);\n<       if ((unsigned long )t == (unsigned long )((char *)0)) {\n<         outbuff = (char *)0;\n<         goto end;\n<       } else {\n370,380d350\n<       }\n<       tmp___5 = cgc_strlen(t);\n<       index = cgc_copymem(data, t, index, (int )tmp___5);\n<       tmp___6 = cgc_strlen(t);\n<       cgc_deallocate((void *)t, tmp___6 + 1UL);\n<     }\n<     tmp___7 = index;\n<     index ++;\n<     data[tmp___7] = (char )',';\n<     ei ++;\n<   }\n",
+      "edits": [
+        "342c342\n<     index = cgc_copymem(data, (char *)\" = \", index, 3);\n---\n> \n",
+        "347c347\n<   index ++;\n---\n> \n",
+        "350,368d349\n<   while (ei < r->varCount) {\n<     if ((r->sElems[ei])->type == 1) {\n<       tmp___1 = index;\n<       index ++;\n<       data[tmp___1] = (char )'\\\"';\n<       t = (r->sElems[ei])->value;\n<       tmp___2 = cgc_strlen(t);\n<       index = cgc_copymem(data, t, index, (int )tmp___2);\n<       tmp___3 = index;\n<       index ++;\n<       data[tmp___3] = (char )'\\\"';\n<     } else {\n<       tmp___4 = cgc_retrieve_set((r->sElems[ei])->value);\n<       tp = tmp___4;\n<       t = cgc_print_subsets(tp, 0);\n<       if ((unsigned long )t == (unsigned long )((char *)0)) {\n<         outbuff = (char *)0;\n<         goto end;\n<       } else {\n370,380d350\n<       }\n<       tmp___5 = cgc_strlen(t);\n<       index = cgc_copymem(data, t, index, (int )tmp___5);\n<       tmp___6 = cgc_strlen(t);\n<       cgc_deallocate((void *)t, tmp___6 + 1UL);\n<     }\n<     tmp___7 = index;\n<     index ++;\n<     data[tmp___7] = (char )',';\n<     ei ++;\n<   }\n",
+        "301c301\n<     index ++;\n---\n> \n",
+        "299c299\n<     *(dest + start___0) = *(src + index);\n---\n> \n",
+        "349c349\n<   ei = 0;\n---\n> \n",
+        "298,302c298\n<   while (index < len) {\n<     *(dest + start___0) = *(src + index);\n<     start___0 ++;\n<     index ++;\n<   }\n---\n> \n",
+        "332c332\n<   ei = 0;\n---\n> \n",
+        "333,335d332\n<   if ((unsigned long )r == (unsigned long )((psetArray )0)) {\n<     return ((char *)0);\n<   } else {\n337d333\n<   }\n",
+        "339,343d338\n<   if (addName != 0) {\n<     tmp = cgc_strlen(r->varName);\n<     index = cgc_copymem(data, r->varName, index, (int )tmp);\n<     index = cgc_copymem(data, (char *)\" = \", index, 3);\n<   } else {\n345d339\n<   }\n",
+        "331c331\n<   index = 0;\n---\n> \n",
+        "300c300\n<     start___0 ++;\n---\n> \n",
+        "338c338\n<   cgc_bzero((void *)(data), (cgc_size_t )3200);\n---\n> \n",
+        "298c298,299\n<   while (index < len) {\n---\n>   while (1) {\n> \n",
+        "346c346\n<   tmp___0 = index;\n---\n> \n",
+        "303c303\n<   return (start___0);\n---\n> \n",
+        "329c329\n<   outbuff = (char *)0;\n---\n> \n",
+        "340c340\n<     tmp = cgc_strlen(r->varName);\n---\n> \n",
+        "297c297\n<   index = 0;\n---\n> \n",
+        "341c341\n<     index = cgc_copymem(data, r->varName, index, (int )tmp);\n---\n> \n",
+        "330c330\n<   t = (char *)0;\n---\n> \n",
+        "",
+        "348c348\n<   data[tmp___0] = (char )'|';\n---\n> \n"
+      ]
+    }
+  ],
+  "compilations": 25,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a1474f65": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4604e169": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2fd20330": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "85b551ee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "249f6569": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e1f71ad3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "344cd2f5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "405a45a6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fd101ca4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "157d24ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cd661545": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "828229ed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3a042e3b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "89b7e066": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "64c097a4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "81b11360": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6f3e3627": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "158cc41d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "62a8028a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "f0f6be89": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3e320f75": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "578c7599": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e079de14": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 3,
+  "passed_pos_tests": 60,
+  "failed_neg_tests": 26,
+  "failed_pos_tests": 0,
+  "duration": 475.929773,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

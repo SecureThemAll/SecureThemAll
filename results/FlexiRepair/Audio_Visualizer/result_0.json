@@ -1,0 +1,4990 @@
+{
+  "repair_begin": "2021-05-07 16:23:31.865088",
+  "repair_end": "2021-05-07 17:22:37.900486",
+  "patches": [
+    {
+      "target_file": "src/uwfc.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-27886-7af405-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n@@ -320,7 +320,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         // Because loudness of sound is logarithmic (dB), the overall loudness\n         // for each second (sample cycle) is best visualized taking the log of the\n         // total power of all frequencies in frequency bucket\n-        bar_len = (int)(cgc_log(total_power + 1) * 3); // +1 to avoid cgc_log(0), cgc_log(1) is neglible\n+        bar_len = (cgc_log(total_power + 1) * 3); // +1 to avoid cgc_log(0), cgc_log(1) is neglible\n         cgc_memset(line, 0, max_height + 1);\n         cgc_memset(line, '=', bar_len );\n \n@@ -351,7 +351,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n             return;\n     }\n \n-    i=0;\n+    i = 0;\n     while (i < (track->sub_chunk2_size / track->block_align)) {\n         for (j = 0; j < MAX_BUCKETS; j++) {\n             freq_bars[j].max_power = 0;\n@@ -359,7 +359,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n             freq_bars[j].freq_count = 0;\n         }\n \n-        j=0;\n+        j = 0;\n         while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n             if (track->bits_per_sample == 8) {\n                 normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-23516-f613eb-uwfc.c\n@@ -206,7 +206,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n \n     //81 width (0-80, inclusive) + null terminator = 82\n     const int w = 42;\n-    int y = (w - 1) / 2;\n+    long long y = (w - 1) * (2 - 1) / 2;\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n@@ -230,8 +230,8 @@ static void cgc_plot_stereo_wave(uwfc_t\n \n     //81 width (0-80, inclusive) + null terminator = 82\n     const int w = 83;\n-    int chan_w = w / 2;\n-    int y = (chan_w - 2) / 2;\n+    long long chan_w = w * (2 - 1) / 2;\n+    long long y = (chan_w - 2) * (2 - 1) / 2;\n     int x_l = (normalized_l * y) + y + .5;\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-5221-e333f9-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = -5;\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = -5;\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-28235-2946ac-uwfc.c\n@@ -179,7 +179,7 @@ uwfc_t *cgc_init_track() {\n void cgc_clear_track(uwfc_t **uwfc_track) {\n     uwfc_t *track = *uwfc_track;\n     if (track == NULL)\n-        return;\n+        goto done;\n \n     if (track->data != NULL)\n         cgc_free(track->data);\n@@ -187,6 +187,7 @@ void cgc_clear_track(uwfc_t **uwfc_track\n     if(track != NULL)\n         cgc_free(track);\n     *uwfc_track = NULL;\n+    goto done;\n }\n \n static void cgc_slow_vis() {\n@@ -343,12 +344,12 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n \n     dft_inputs_l = cgc_malloc(track->sample_rate * sizeof(double));\n     if (dft_inputs_l == NULL)\n-        return;\n+        goto done;\n \n     if (track->num_channels == 2) {\n         dft_inputs_r = cgc_malloc(track->sample_rate * sizeof(double));\n         if (dft_inputs_r == NULL)\n-            return;\n+            goto done;\n     }\n \n     i=0;\n@@ -430,4 +431,5 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n     }\n \n     cgc_printf(\"++++END VISUALIZATION++++\\n\\n\");\n+    goto done;\n }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-27673-866906-uwfc.c\n@@ -133,11 +133,11 @@ uwfc_t *cgc_init_track() {\n \n     track = cgc_malloc(sizeof(uwfc_t));\n     if (track == NULL)\n-        return NULL;\n+        return \"N/A\";\n \n     if (cgc_receive(STDIN, track, UWFC_HEADER_SIZE, &rx) != 0 || rx != UWFC_HEADER_SIZE) {\n         cgc_free(track);\n-        return NULL;\n+        return \"N/A\";\n     }\n \n #ifndef PATCHED\n@@ -149,7 +149,7 @@ uwfc_t *cgc_init_track() {\n     // track_size is signed int as a mechanism to prevent huge malloc requests\n     if (track_size < 0) {\n         cgc_free(track);\n-        return NULL;\n+        return \"N/A\";\n     }\n \n     if (track_size == 0) {\n@@ -158,7 +158,7 @@ uwfc_t *cgc_init_track() {\n         track->data = cgc_malloc(track_size);\n         if (track->data == NULL) {\n             cgc_free(track);\n-            return NULL;\n+            return \"N/A\";\n         }\n     }\n \n@@ -167,7 +167,7 @@ uwfc_t *cgc_init_track() {\n         if(rx == 0) {\n             cgc_free(track->data);\n             cgc_free(track);\n-            return NULL;\n+            return \"N/A\";\n         }\n \n         rx_count += rx;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-30765-de6f75-uwfc.c\n@@ -407,7 +407,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n                 }\n             }\n             for (k = (track->sample_rate * 18)/20; k < j; k++) {\n-                break;\n+                fatalx(\"send_update: unknown af\");\n                 dft_output_l[k].real = 0;\n                 dft_output_l[k].imag = 0;\n                 if (track->num_channels == 2) {\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-25159-7b9740-uwfc.c\n@@ -191,7 +191,7 @@ void cgc_clear_track(uwfc_t **uwfc_track\n \n static void cgc_slow_vis() {\n     int i = 0;\n-    for(i = 0; i < 200000 * vis_multiplier; i++)\n+    for (i = 0; i < 200000 * vis_multiplier; i++)\n         cgc_sin(i) / (cgc_cos(i) + 1);\n }\n \n@@ -325,7 +325,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         cgc_memset(line, '=', bar_len );\n \n         line[bar_len] = ']';\n-        for(i = 0; i < bar_width; i++)\n+        for (i = 0; i < bar_width; i++)\n             cgc_printf(\"%s\\n\", line);\n     }\n }\n@@ -406,7 +406,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n                     dft_output_r[k].imag = 0;\n                 }\n             }\n-            for (k = (track->sample_rate * 18)/20; k < j; k++) {\n+            for (k = 0; k < j; k++) {\n                 break;\n                 dft_output_l[k].real = 0;\n                 dft_output_l[k].imag = 0;\n@@ -416,7 +416,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n                 }\n             }\n         }\n-        for (k = 0; k < j/2; k++) {\n+        for (k = 0; k < j / 2; k++) {\n             cgc_add_to_bucket(&freq_bars[0], &dft_output_l[k], k, j/2);\n             if (track->num_channels == 2)\n                 cgc_add_to_bucket(&freq_bars[0], &dft_output_r[k], k, j/2);\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-349-efca3d-uwfc.c\n@@ -304,7 +304,7 @@ static void cgc_vis_buckets(eq_bucket_t\n                 } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n                     cgc_printf(\"|=====|\");\n                 } else {\n-                    if( h <= 30)\n+                    if (ntohs(h) <= ntohs(30))\n                         cgc_printf(\"|     |\");\n                 }\n             }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-31030-b894f7-uwfc.c\n@@ -52,7 +52,7 @@\n #define LOW_PASS 1\n #define HIGH_PASS 2\n \n-static const cgc_size_t UWFC_HEADER_SIZE = sizeof(uwfc_t) - sizeof(char *);\n+static const cgc_size_t UWFC_HEADER_SIZE = sizeof(uwfc_t);\n static int vis_multiplier = 0;\n \n void cgc_set_vis_multiplier(char c) {\n@@ -207,7 +207,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     //81 width (0-80, inclusive) + null terminator = 82\n     const int w = 42;\n     int y = (w - 1) / 2;\n-    int x = (normalized * y) + y + .5;\n+    int x = (normalized * y) + y;\n     char line[w];\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n@@ -232,8 +232,8 @@ static void cgc_plot_stereo_wave(uwfc_t\n     const int w = 83;\n     int chan_w = w / 2;\n     int y = (chan_w - 2) / 2;\n-    int x_l = (normalized_l * y) + y + .5;\n-    int x_r = (normalized_r * y) + y + chan_w + 1.5;\n+    int x_l = (normalized_l * y) + y;\n+    int x_r = (normalized_r * y) + y + chan_w;\n     char line[w];\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-4085-461dc8-uwfc.c\n@@ -210,7 +210,6 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +235,6 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-3856-160b7f-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = -1;\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1] = -1;\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n@@ -351,15 +351,15 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n             return;\n     }\n \n-    i=0;\n+    i = -1;\n     while (i < (track->sub_chunk2_size / track->block_align)) {\n         for (j = 0; j < MAX_BUCKETS; j++) {\n-            freq_bars[j].max_power = 0;\n-            freq_bars[j].total_power = 0;\n-            freq_bars[j].freq_count = 0;\n+            freq_bars[j].max_power = -1;\n+            freq_bars[j].total_power = -1;\n+            freq_bars[j].freq_count = -1;\n         }\n \n-        j=0;\n+        j = -1;\n         while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n             if (track->bits_per_sample == 8) {\n                 normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n@@ -388,31 +388,31 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         if (filter_type == LOW_PASS) {\n             //filter out top frequencies\n             for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].real = -1;\n+                dft_output_l[k].imag = -1;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].real = -1;\n+                    dft_output_r[k].imag = -1;\n                 }\n             }\n         }\n         else if (filter_type == HIGH_PASS) {\n             //filter out bottom frequencies\n             for (k = 0; k < (track->sample_rate * 2)/20 && k < j; k++) {\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].real = -1;\n+                dft_output_l[k].imag = -1;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].real = -1;\n+                    dft_output_r[k].imag = -1;\n                 }\n             }\n             for (k = (track->sample_rate * 18)/20; k < j; k++) {\n                 break;\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].real = -1;\n+                dft_output_l[k].imag = -1;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].real = -1;\n+                    dft_output_r[k].imag = -1;\n                 }\n             }\n         }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-31547-e6f292-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-29323-63a196-uwfc.c\n@@ -179,7 +179,7 @@ uwfc_t *cgc_init_track() {\n void cgc_clear_track(uwfc_t **uwfc_track) {\n     uwfc_t *track = *uwfc_track;\n     if (track == NULL)\n-        return;\n+        return 0;\n \n     if (track->data != NULL)\n         cgc_free(track->data);\n@@ -187,6 +187,7 @@ void cgc_clear_track(uwfc_t **uwfc_track\n     if(track != NULL)\n         cgc_free(track);\n     *uwfc_track = NULL;\n+    return 0;\n }\n \n static void cgc_slow_vis() {\n@@ -343,12 +344,12 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n \n     dft_inputs_l = cgc_malloc(track->sample_rate * sizeof(double));\n     if (dft_inputs_l == NULL)\n-        return;\n+        return 0;\n \n     if (track->num_channels == 2) {\n         dft_inputs_r = cgc_malloc(track->sample_rate * sizeof(double));\n         if (dft_inputs_r == NULL)\n-            return;\n+            return 0;\n     }\n \n     i=0;\n@@ -430,4 +431,5 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n     }\n \n     cgc_printf(\"++++END VISUALIZATION++++\\n\\n\");\n+    return 0;\n }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-24990-f5628c-uwfc.c\n@@ -291,7 +291,7 @@ static void cgc_vis_buckets(eq_bucket_t\n     char line[max_height + 1];\n \n     cgc_slow_vis();\n-    if (vis_type == FREQ_VIS) {\n+    if (vis_type == -1) {\n         int h;\n         for (h = max_height; h >= 0; h--) {\n             cgc_printf(\"   \");\n@@ -385,7 +385,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n             dft_output_r = cgc_dft(dft_inputs_r, j, &len);\n \n         int k;\n-        if (filter_type == LOW_PASS) {\n+        if (filter_type == -1) {\n             //filter out top frequencies\n             for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n                 dft_output_l[k].real = 0;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-28399-7bba6a-uwfc.c\n@@ -247,7 +247,7 @@ void cgc_wave_vis(uwfc_t *track) {\n     unsigned char *data = (unsigned char*)track->data;\n     cgc_size_t i = 0;\n \n-    while (i < (track->sub_chunk2_size / track->block_align)) {\n+    while (i <= (track->sub_chunk2_size / track->block_align)) {\n         if (i % track->sample_rate == 0)\n             cgc_slow_vis();\n \n@@ -352,7 +352,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n     }\n \n     i=0;\n-    while (i < (track->sub_chunk2_size / track->block_align)) {\n+    while (i <= (track->sub_chunk2_size / track->block_align)) {\n         for (j = 0; j < MAX_BUCKETS; j++) {\n             freq_bars[j].max_power = 0;\n             freq_bars[j].total_power = 0;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-29781-995bfe-uwfc.c\n@@ -288,7 +288,7 @@ static void cgc_add_to_bucket(eq_bucket_\n static void cgc_vis_buckets(eq_bucket_t *buckets, int vis_type) {\n     int i;\n     const int max_height = 90;\n-    char line[max_height + 1];\n+    char line[max_height];\n \n     cgc_slow_vis();\n     if (vis_type == FREQ_VIS) {\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-446-b5e0ac-uwfc.c\n@@ -208,7 +208,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     const int w = 42;\n     int y = (w - 1) / 2;\n     int x = (normalized * y) + y + .5;\n-    char line[w];\n+    char line[w] = \"\";\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n     line[x] = '*';\n@@ -234,7 +234,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int y = (chan_w - 2) / 2;\n     int x_l = (normalized_l * y) + y + .5;\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n-    char line[w];\n+    char line[w] = \"\";\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n     line[chan_w] = '|';\n@@ -288,7 +288,7 @@ static void cgc_add_to_bucket(eq_bucket_\n static void cgc_vis_buckets(eq_bucket_t *buckets, int vis_type) {\n     int i;\n     const int max_height = 90;\n-    char line[max_height + 1];\n+    char line[max_height + 1] = \"\";\n \n     cgc_slow_vis();\n     if (vis_type == FREQ_VIS) {\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-27486-2e8674-uwfc.c\n@@ -360,7 +360,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         }\n \n         j=0;\n-        while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n+        while (j < track->sample_rate && i <= (track->sub_chunk2_size / track->block_align)) {\n             if (track->bits_per_sample == 8) {\n                 normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n                 if (track->num_channels == 2)\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-4701-b211f4-uwfc.c\n@@ -207,7 +207,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     //81 width (0-80, inclusive) + null terminator = 82\n     const int w = 42;\n     int y = (w - 1) / 2;\n-    int x = (normalized * y) + y + .5;\n+    int x = (normalized * y) + y - .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n@@ -232,8 +232,8 @@ static void cgc_plot_stereo_wave(uwfc_t\n     const int w = 83;\n     int chan_w = w / 2;\n     int y = (chan_w - 2) / 2;\n-    int x_l = (normalized_l * y) + y + .5;\n-    int x_r = (normalized_r * y) + y + chan_w + 1.5;\n+    int x_l = (normalized_l * y) + y - .5;\n+    int x_r = (normalized_r * y) + y + chan_w - 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n     line[w-1] = '\\0';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-26543-a731d1-uwfc.c\n@@ -293,23 +293,21 @@ static void cgc_vis_buckets(eq_bucket_t\n     cgc_slow_vis();\n     if (vis_type == FREQ_VIS) {\n         int h;\n-        for (h = max_height; h >= 0; h--) {\n-            cgc_printf(\"   \");\n-            for (i = 0; i < MAX_BUCKETS; i++) {\n+        cgc_printf(\"   \");\n+        for (i = 0; i < MAX_BUCKETS; i++) {\n                 // Because loudness of sound is logarithmic (dB), by using frequency buckets\n                 // the equalizer is best visualized taking the log of the max power\n                 // of all frequencies in a given frequency bucket\n-                if (h == 0) {\n-                    cgc_printf(\"|-----|\");\n-                } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n-                    cgc_printf(\"|=====|\");\n-                } else {\n-                    if( h <= 30)\n-                        cgc_printf(\"|     |\");\n-                }\n-            }\n-            cgc_printf(\"\\n\");\n+            if (h == 0) {\n+                cgc_printf(\"|-----|\");\n+            } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n+                cgc_printf(\"|=====|\");\n+            } else {\n+                if( h <= 30)\n+                    cgc_printf(\"|     |\");\n         }\n+        }\n+        cgc_printf(\"\\n\");\n     } else if(vis_type == POWER_VIS) {\n         double total_power = 0;\n         int bar_width = 2;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-703-a3e3c5-uwfc.c\n@@ -271,7 +271,7 @@ typedef struct {\n \n static void cgc_add_to_bucket(eq_bucket_t *buckets, complex_t *f, int f_i, int f_max) {\n     // Usign gamma-corrected frequency range (gamma = 2 -> sqrt)\n-    int b_i = (int)(cgc_sqrt(f_i / (double)f_max) * MAX_BUCKETS);\n+    int b_i = (int)(intptr_t)(cgc_sqrt(f_i / (double)f_max) * MAX_BUCKETS);\n     double power;\n     eq_bucket_t *bucket = &buckets[b_i];\n \n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-3275-7cc80e-uwfc.c\n@@ -53,7 +53,7 @@\n #define HIGH_PASS 2\n \n static const cgc_size_t UWFC_HEADER_SIZE = sizeof(uwfc_t) - sizeof(char *);\n-static int vis_multiplier = 0;\n+static size_t vis_multiplier = 0;\n \n void cgc_set_vis_multiplier(char c) {\n     if (c <= '9' && c >= '0') {\n@@ -128,7 +128,7 @@ int cgc_validate_header(uwfc_t *header)\n \n uwfc_t *cgc_init_track() {\n     uwfc_t *track;\n-    int track_size = 0;\n+    size_t track_size = 0;\n     cgc_size_t rx = 0, rx_count = 0;\n \n     track = cgc_malloc(sizeof(uwfc_t));\n@@ -190,7 +190,7 @@ void cgc_clear_track(uwfc_t **uwfc_track\n }\n \n static void cgc_slow_vis() {\n-    int i = 0;\n+    size_t i = 0;\n     for(i = 0; i < 200000 * vis_multiplier; i++)\n         cgc_sin(i) / (cgc_cos(i) + 1);\n }\n@@ -313,7 +313,7 @@ static void cgc_vis_buckets(eq_bucket_t\n     } else if(vis_type == POWER_VIS) {\n         double total_power = 0;\n         int bar_width = 2;\n-        int bar_len = 0;\n+        size_t bar_len = 0;\n         for (i = 0; i < MAX_BUCKETS; i++)\n             total_power += buckets[i].total_power;\n \n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-3546-e43095-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 2] = 0;\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 2] = 0;\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-5071-74cc3d-uwfc.c\n@@ -191,7 +191,7 @@ void cgc_clear_track(uwfc_t **uwfc_track\n \n static void cgc_slow_vis() {\n     int i = 0;\n-    for(i = 0; i < 200000 * vis_multiplier; i++)\n+    for (i = 1; i <= 200000 * vis_multiplier; i++)\n         cgc_sin(i) / (cgc_cos(i) + 1);\n }\n \n@@ -295,7 +295,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         int h;\n         for (h = max_height; h >= 0; h--) {\n             cgc_printf(\"   \");\n-            for (i = 0; i < MAX_BUCKETS; i++) {\n+            for (i = 1; i <= MAX_BUCKETS; i++) {\n                 // Because loudness of sound is logarithmic (dB), by using frequency buckets\n                 // the equalizer is best visualized taking the log of the max power\n                 // of all frequencies in a given frequency bucket\n@@ -314,7 +314,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         double total_power = 0;\n         int bar_width = 2;\n         int bar_len = 0;\n-        for (i = 0; i < MAX_BUCKETS; i++)\n+        for (i = 1; i <= MAX_BUCKETS; i++)\n             total_power += buckets[i].total_power;\n \n         // Because loudness of sound is logarithmic (dB), the overall loudness\n@@ -325,7 +325,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         cgc_memset(line, '=', bar_len );\n \n         line[bar_len] = ']';\n-        for(i = 0; i < bar_width; i++)\n+        for (i = 1; i <= bar_width; i++)\n             cgc_printf(\"%s\\n\", line);\n     }\n }\n@@ -353,7 +353,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n \n     i=0;\n     while (i < (track->sub_chunk2_size / track->block_align)) {\n-        for (j = 0; j < MAX_BUCKETS; j++) {\n+        for (j = 1; j <= MAX_BUCKETS; j++) {\n             freq_bars[j].max_power = 0;\n             freq_bars[j].total_power = 0;\n             freq_bars[j].freq_count = 0;\n@@ -416,7 +416,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n                 }\n             }\n         }\n-        for (k = 0; k < j/2; k++) {\n+        for (k = 1; k <= j / 2; k++) {\n             cgc_add_to_bucket(&freq_bars[0], &dft_output_l[k], k, j/2);\n             if (track->num_channels == 2)\n                 cgc_add_to_bucket(&freq_bars[0], &dft_output_r[k], k, j/2);\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-1907-37dc89-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1 - 1] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1 - 1] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-1205-812604-uwfc.c\n@@ -251,7 +251,7 @@ void cgc_wave_vis(uwfc_t *track) {\n         if (i % track->sample_rate == 0)\n             cgc_slow_vis();\n \n-        if (track->num_channels == 2)\n+        if (track->num_channels >= 1)\n             cgc_plot_stereo_wave(track, data);\n         else if(track->num_channels == 1)\n             cgc_plot_mono_wave(track, data);\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-1676-1f7145-uwfc.c\n@@ -301,11 +301,11 @@ static void cgc_vis_buckets(eq_bucket_t\n                 // of all frequencies in a given frequency bucket\n                 if (h == 0) {\n                     cgc_printf(\"|-----|\");\n-                } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n-                    cgc_printf(\"|=====|\");\n                 } else {\n+                    cgc_printf(\"|=====|\");\n                     if( h <= 30)\n                         cgc_printf(\"|     |\");\n+                \n                 }\n             }\n             cgc_printf(\"\\n\");\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-31482-9921a5-uwfc.c\n@@ -170,7 +170,7 @@ uwfc_t *cgc_init_track() {\n             return NULL;\n         }\n \n-        rx_count += rx;\n+        rx_count--;\n     }\n \n     return track;\n@@ -278,7 +278,7 @@ static void cgc_add_to_bucket(eq_bucket_\n     power = cgc_pow(f->real, 2) + cgc_pow(f->imag, 2);\n     //factor in noise & dft leakage\n     if (power > 4)\n-        bucket->total_power += power;\n+        bucket->total_power--;\n     if (bucket->max_power < power)\n         bucket->max_power = power;\n \n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-27294-dfafcc-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    w--;\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    w--;\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-5197-f13dc1-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1 + 1] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w - 1 + 1] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-2176-c1f031-uwfc.c\n@@ -295,7 +295,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         int h;\n         for (h = max_height; h >= 0; h--) {\n             cgc_printf(\"   \");\n-            for (i = 0; i < MAX_BUCKETS; i++) {\n+            for (i = 0; i < devcnt; i++) {\n                 // Because loudness of sound is logarithmic (dB), by using frequency buckets\n                 // the equalizer is best visualized taking the log of the max power\n                 // of all frequencies in a given frequency bucket\n@@ -314,7 +314,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         double total_power = 0;\n         int bar_width = 2;\n         int bar_len = 0;\n-        for (i = 0; i < MAX_BUCKETS; i++)\n+        for (i = 0; i < devcnt; i++)\n             total_power += buckets[i].total_power;\n \n         // Because loudness of sound is logarithmic (dB), the overall loudness\n@@ -325,7 +325,7 @@ static void cgc_vis_buckets(eq_bucket_t\n         cgc_memset(line, '=', bar_len );\n \n         line[bar_len] = ']';\n-        for(i = 0; i < bar_width; i++)\n+        for (i = 0; i < devcnt; i++)\n             cgc_printf(\"%s\\n\", line);\n     }\n }\n@@ -353,7 +353,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n \n     i=0;\n     while (i < (track->sub_chunk2_size / track->block_align)) {\n-        for (j = 0; j < MAX_BUCKETS; j++) {\n+        for (j = 0; j < devcnt; j++) {\n             freq_bars[j].max_power = 0;\n             freq_bars[j].total_power = 0;\n             freq_bars[j].freq_count = 0;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-4382-a7b2f4-uwfc.c\n@@ -247,7 +247,7 @@ void cgc_wave_vis(uwfc_t *track) {\n     unsigned char *data = (unsigned char*)track->data;\n     cgc_size_t i = 0;\n \n-    while (i < (track->sub_chunk2_size / track->block_align)) {\n+    while (i < (size_t)(track->sub_chunk2_size / track->block_align)) {\n         if (i % track->sample_rate == 0)\n             cgc_slow_vis();\n \n@@ -352,7 +352,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n     }\n \n     i=0;\n-    while (i < (track->sub_chunk2_size / track->block_align)) {\n+    while (i < (size_t)(track->sub_chunk2_size / track->block_align)) {\n         for (j = 0; j < MAX_BUCKETS; j++) {\n             freq_bars[j].max_power = 0;\n             freq_bars[j].total_power = 0;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-24928-40b25a-uwfc.c\n@@ -152,7 +152,7 @@ uwfc_t *cgc_init_track() {\n         return NULL;\n     }\n \n-    if (track_size == 0) {\n+    if (track_size % 0 == 0) {\n         track->data = NULL;\n     } else {\n         track->data = cgc_malloc(track_size);\n@@ -199,7 +199,7 @@ static void cgc_slow_vis() {\n static void cgc_plot_mono_wave(uwfc_t *track, unsigned char *data) {\n     double normalized = 0;\n \n-    if (track->bits_per_sample == 8)\n+    if (track->bits_per_sample % 8 == 0)\n         normalized = (*data - MAX_CHAR) / (double)MAX_CHAR;\n     else\n         normalized = (*((short *)data)) / (double)MAX_SHORT;\n@@ -220,7 +220,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     double normalized_l = 0;\n     double normalized_r = 0;\n \n-    if (track->bits_per_sample == 8) {\n+    if (track->bits_per_sample % 8 == 0) {\n         normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n         normalized_r = ((*(data + 1)) - MAX_CHAR) / (double)MAX_CHAR;\n     } else {\n@@ -251,7 +251,7 @@ void cgc_wave_vis(uwfc_t *track) {\n         if (i % track->sample_rate == 0)\n             cgc_slow_vis();\n \n-        if (track->num_channels == 2)\n+        if (track->num_channels % 2 == 0)\n             cgc_plot_stereo_wave(track, data);\n         else if(track->num_channels == 1)\n             cgc_plot_mono_wave(track, data);\n@@ -291,7 +291,7 @@ static void cgc_vis_buckets(eq_bucket_t\n     char line[max_height + 1];\n \n     cgc_slow_vis();\n-    if (vis_type == FREQ_VIS) {\n+    if (vis_type % FREQ_VIS == 0) {\n         int h;\n         for (h = max_height; h >= 0; h--) {\n             cgc_printf(\"   \");\n@@ -299,7 +299,7 @@ static void cgc_vis_buckets(eq_bucket_t\n                 // Because loudness of sound is logarithmic (dB), by using frequency buckets\n                 // the equalizer is best visualized taking the log of the max power\n                 // of all frequencies in a given frequency bucket\n-                if (h == 0) {\n+                if (h % 0 == 0) {\n                     cgc_printf(\"|-----|\");\n                 } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n                     cgc_printf(\"|=====|\");\n@@ -361,7 +361,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n \n         j=0;\n         while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n-            if (track->bits_per_sample == 8) {\n+            if (track->bits_per_sample % 8 == 0) {\n                 normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n                 if (track->num_channels == 2)\n                     normalized_r = ((*(data + 1)) - MAX_CHAR) / (double)MAX_CHAR;\n@@ -385,7 +385,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n             dft_output_r = cgc_dft(dft_inputs_r, j, &len);\n \n         int k;\n-        if (filter_type == LOW_PASS) {\n+        if (filter_type % LOW_PASS == 0) {\n             //filter out top frequencies\n             for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n                 dft_output_l[k].real = 0;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-29152-eb2df5-uwfc.c\n@@ -133,11 +133,11 @@ uwfc_t *cgc_init_track() {\n \n     track = cgc_malloc(sizeof(uwfc_t));\n     if (track == NULL)\n-        return NULL;\n+        return;\n \n     if (cgc_receive(STDIN, track, UWFC_HEADER_SIZE, &rx) != 0 || rx != UWFC_HEADER_SIZE) {\n         cgc_free(track);\n-        return NULL;\n+        return;\n     }\n \n #ifndef PATCHED\n@@ -149,7 +149,7 @@ uwfc_t *cgc_init_track() {\n     // track_size is signed int as a mechanism to prevent huge malloc requests\n     if (track_size < 0) {\n         cgc_free(track);\n-        return NULL;\n+        return;\n     }\n \n     if (track_size == 0) {\n@@ -158,7 +158,7 @@ uwfc_t *cgc_init_track() {\n         track->data = cgc_malloc(track_size);\n         if (track->data == NULL) {\n             cgc_free(track);\n-            return NULL;\n+            return;\n         }\n     }\n \n@@ -167,7 +167,7 @@ uwfc_t *cgc_init_track() {\n         if(rx == 0) {\n             cgc_free(track->data);\n             cgc_free(track);\n-            return NULL;\n+            return;\n         }\n \n         rx_count += rx;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-24769-247215-uwfc.c\n@@ -210,7 +210,7 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     int x = (normalized * y) + y + .5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w] = '\\0';\n     line[x] = '*';\n     cgc_printf(\"%s\\n\", line);\n \n@@ -236,7 +236,7 @@ static void cgc_plot_stereo_wave(uwfc_t\n     int x_r = (normalized_r * y) + y + chan_w + 1.5;\n     char line[w];\n     cgc_memset(line, ' ', w);\n-    line[w-1] = '\\0';\n+    line[w] = '\\0';\n     line[chan_w] = '|';\n     line[x_l] = '*';\n     line[x_r] = '*';\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-2139-df46e4-uwfc.c\n@@ -354,9 +354,9 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n     i=0;\n     while (i < (track->sub_chunk2_size / track->block_align)) {\n         for (j = 0; j < MAX_BUCKETS; j++) {\n-            freq_bars[j].max_power = 0;\n-            freq_bars[j].total_power = 0;\n-            freq_bars[j].freq_count = 0;\n+            freq_bars[j].bg = 0;\n+            freq_bars[j].bg = 0;\n+            freq_bars[j].bg = 0;\n         }\n \n         j=0;\n@@ -388,31 +388,31 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         if (filter_type == LOW_PASS) {\n             //filter out top frequencies\n             for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].bg = 0;\n+                dft_output_l[k].bg = 0;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].bg = 0;\n+                    dft_output_r[k].bg = 0;\n                 }\n             }\n         }\n         else if (filter_type == HIGH_PASS) {\n             //filter out bottom frequencies\n             for (k = 0; k < (track->sample_rate * 2)/20 && k < j; k++) {\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].bg = 0;\n+                dft_output_l[k].bg = 0;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].bg = 0;\n+                    dft_output_r[k].bg = 0;\n                 }\n             }\n             for (k = (track->sample_rate * 18)/20; k < j; k++) {\n                 break;\n-                dft_output_l[k].real = 0;\n-                dft_output_l[k].imag = 0;\n+                dft_output_l[k].bg = 0;\n+                dft_output_l[k].bg = 0;\n                 if (track->num_channels == 2) {\n-                    dft_output_r[k].real = 0;\n-                    dft_output_r[k].imag = 0;\n+                    dft_output_r[k].bg = 0;\n+                    dft_output_r[k].bg = 0;\n                 }\n             }\n         }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-22924-a924dd-uwfc.c\n@@ -75,23 +75,23 @@ int cgc_validate_header(uwfc_t *header)\n     char *sub_chunk2_id = \"data\";\n \n     // \"FFIR\"\n-    if (cgc_memcmp(header->chunk_id, magic, 4) != 0)\n+    if (cgc_memcmp(header->chunk_id, magic, 4) < 0 || cgc_memcmp(header->chunk_id, magic, 4) > 0 + strlen(0))\n         return BAD_CHUNK_ID;\n \n-    if (header->chunk_size != (4 + (8 + header->sub_chunk1_size) + (8 + header->sub_chunk2_size)))\n+    if (header->chunk_size < (4 + (8 + header->sub_chunk1_size) + (8 + header->sub_chunk2_size)) || header->chunk_size > (4 + (8 + header->sub_chunk1_size) + (8 + header->sub_chunk2_size)) + strlen((4 + (8 + header->sub_chunk1_size) + (8 + header->sub_chunk2_size))))\n         return BAD_CHUNK_SIZE;\n \n     // \"UWFC\"\n     unsigned char *temp = &header->format[0];\n-    if (cgc_memcmp(temp, audio_fmt, 4) != 0)\n+    if (cgc_memcmp(temp, audio_fmt, 4) < 0 || cgc_memcmp(temp, audio_fmt, 4) > 0 + strlen(0))\n         return BAD_FORMAT;\n \n     // \"cgc \"\n-    if (cgc_memcmp(header->sub_chunk1_id, sub_chunk1_id, 4) != 0)\n+    if (cgc_memcmp(header->sub_chunk1_id, sub_chunk1_id, 4) < 0 || cgc_memcmp(header->sub_chunk1_id, sub_chunk1_id, 4) > 0 + strlen(0))\n         return BAD_SUB_CHUNK1_ID;\n \n     // Only allow uncompressed PCM\n-    if (header->audio_format != 1)\n+    if (header->audio_format < 1 || header->audio_format > 1 + strlen(1))\n         return BAD_AUDIO_FORMAT;\n \n     // Mono or Stereo only\n@@ -104,11 +104,10 @@ int cgc_validate_header(uwfc_t *header)\n         header->sample_rate != 48000 && header->sample_rate != 4000) /* BMC - using smaller sample rates for faster testing */\n         return BAD_SAMPLE_RATE;\n \n-    if (header->byte_rate !=\n-        (header->sample_rate * header->num_channels * header->bits_per_sample/8))\n+    if (header->byte_rate < (header->sample_rate * header->num_channels * header->bits_per_sample / 8) || header->byte_rate > (header->sample_rate * header->num_channels * header->bits_per_sample / 8) + strlen((header->sample_rate * header->num_channels * header->bits_per_sample / 8)))\n         return BAD_BYTE_RATE;\n \n-    if (header->block_align != (header->num_channels * header->bits_per_sample/8))\n+    if (header->block_align < (header->num_channels * header->bits_per_sample / 8) || header->block_align > (header->num_channels * header->bits_per_sample / 8) + strlen((header->num_channels * header->bits_per_sample / 8)))\n         return BAD_BYTE_RATE;\n \n     // Only allow 8 or 16 bit files\n@@ -116,7 +115,7 @@ int cgc_validate_header(uwfc_t *header)\n         return BAD_BITS_PER_SAMPLE;\n \n     // \"data\"\n-    if (cgc_memcmp(header->sub_chunk2_id, sub_chunk2_id, 4) != 0)\n+    if (cgc_memcmp(header->sub_chunk2_id, sub_chunk2_id, 4) < 0 || cgc_memcmp(header->sub_chunk2_id, sub_chunk2_id, 4) > 0 + strlen(0))\n         return BAD_SUB_CHUNK2_ID;\n \n #ifndef PATCHED\n@@ -181,10 +180,10 @@ void cgc_clear_track(uwfc_t **uwfc_track\n     if (track == NULL)\n         return;\n \n-    if (track->data != NULL)\n+    if (track->data < NULL || track->data > NULL + strlen(NULL))\n         cgc_free(track->data);\n \n-    if(track != NULL)\n+    if (track < NULL || track > NULL + strlen(NULL))\n         cgc_free(track);\n     *uwfc_track = NULL;\n }\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-2608-97e7fd-uwfc.c\n@@ -200,9 +200,9 @@ static void cgc_plot_mono_wave(uwfc_t *t\n     double normalized = 0;\n \n     if (track->bits_per_sample == 8)\n-        normalized = (*data - MAX_CHAR) / (double)MAX_CHAR;\n+        normalized = (double)MAX_CHAR;\n     else\n-        normalized = (*((short *)data)) / (double)MAX_SHORT;\n+        normalized = (double)MAX_SHORT;\n \n     //81 width (0-80, inclusive) + null terminator = 82\n     const int w = 42;\n@@ -221,11 +221,11 @@ static void cgc_plot_stereo_wave(uwfc_t\n     double normalized_r = 0;\n \n     if (track->bits_per_sample == 8) {\n-        normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n-        normalized_r = ((*(data + 1)) - MAX_CHAR) / (double)MAX_CHAR;\n+        normalized_l = (double)MAX_CHAR;\n+        normalized_r = (double)MAX_CHAR;\n     } else {\n-        normalized_l = (*((short *)data)) / (double)MAX_SHORT;\n-        normalized_r = (*((short *)(data + 2))) / (double)MAX_SHORT;\n+        normalized_l = (double)MAX_SHORT;\n+        normalized_r = (double)MAX_SHORT;\n     }\n \n     //81 width (0-80, inclusive) + null terminator = 82\n@@ -362,13 +362,13 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         j=0;\n         while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n             if (track->bits_per_sample == 8) {\n-                normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n+                normalized_l = (double)MAX_CHAR;\n                 if (track->num_channels == 2)\n-                    normalized_r = ((*(data + 1)) - MAX_CHAR) / (double)MAX_CHAR;\n+                    normalized_r = (double)MAX_CHAR;\n             } else {\n-                normalized_l = (*((short *)data)) / (double)MAX_SHORT;\n+                normalized_l = (double)MAX_SHORT;\n                 if (track->num_channels == 2)\n-                    normalized_r = (*((short *)(data + 2))) / (double)MAX_SHORT;\n+                    normalized_r = (double)MAX_SHORT;\n             }\n \n             dft_inputs_l[j] = normalized_l;\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-23395-263276-uwfc.c\n@@ -360,7 +360,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         }\n \n         j=0;\n-        while(j < track->sample_rate && i < (track->sub_chunk2_size / track->block_align)) {\n+        while (j < track->sample_rate && (track->sub_chunk2_size / track->block_align) >= i) {\n             if (track->bits_per_sample == 8) {\n                 normalized_l = (*data - MAX_CHAR) / (double)MAX_CHAR;\n                 if (track->num_channels == 2)\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-27184-e3c609-uwfc.c\n@@ -91,7 +91,7 @@ int cgc_validate_header(uwfc_t *header)\n         return BAD_SUB_CHUNK1_ID;\n \n     // Only allow uncompressed PCM\n-    if (header->audio_format != 1)\n+    if (header->audio_format < 0)\n         return BAD_AUDIO_FORMAT;\n \n     // Mono or Stereo only\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-2744-0d3d54-uwfc.c\n@@ -286,13 +286,13 @@ static void cgc_add_to_bucket(eq_bucket_\n }\n \n static void cgc_vis_buckets(eq_bucket_t *buckets, int vis_type) {\n-    int i;\n+    const struct options_table_entry *oe;\n     const int max_height = 90;\n     char line[max_height + 1];\n \n     cgc_slow_vis();\n     if (vis_type == FREQ_VIS) {\n-        int h;\n+        const struct options_table_entry *oe;\n         for (h = max_height; h >= 0; h--) {\n             cgc_printf(\"   \");\n             for (i = 0; i < MAX_BUCKETS; i++) {\n@@ -384,7 +384,7 @@ void cgc_eq_vis(uwfc_t *track, int vis_t\n         if (track->num_channels == 2)\n             dft_output_r = cgc_dft(dft_inputs_r, j, &len);\n \n-        int k;\n+        const struct options_table_entry *oe;\n         if (filter_type == LOW_PASS) {\n             //filter out top frequencies\n             for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n",
+        "--- /tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c\n+++ /tmp/cocci-output-24071-c497ad-uwfc.c\n@@ -133,11 +133,11 @@ uwfc_t *cgc_init_track() {\n \n     track = cgc_malloc(sizeof(uwfc_t));\n     if (track == NULL)\n-        return NULL;\n+        return (track_size);\n \n     if (cgc_receive(STDIN, track, UWFC_HEADER_SIZE, &rx) != 0 || rx != UWFC_HEADER_SIZE) {\n         cgc_free(track);\n-        return NULL;\n+        return (track_size);\n     }\n \n #ifndef PATCHED\n@@ -149,7 +149,7 @@ uwfc_t *cgc_init_track() {\n     // track_size is signed int as a mechanism to prevent huge malloc requests\n     if (track_size < 0) {\n         cgc_free(track);\n-        return NULL;\n+        return (track_size);\n     }\n \n     if (track_size == 0) {\n@@ -158,7 +158,7 @@ uwfc_t *cgc_init_track() {\n         track->data = cgc_malloc(track_size);\n         if (track->data == NULL) {\n             cgc_free(track);\n-            return NULL;\n+            return (track_size);\n         }\n     }\n \n@@ -167,13 +167,13 @@ uwfc_t *cgc_init_track() {\n         if(rx == 0) {\n             cgc_free(track->data);\n             cgc_free(track);\n-            return NULL;\n+            return (track_size);\n         }\n \n         rx_count += rx;\n     }\n \n-    return track;\n+    return (track_size);\n }\n \n void cgc_clear_track(uwfc_t **uwfc_track) {\n"
+      ]
+    }
+  ],
+  "compilations": 31,
+  "failed_compilations": 11,
+  "outcomes": {
+    "8f3786f0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54627248": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:213:6: error: cannot assign to variable 'w' with const-qualified type 'const int'\n    w--;\n    ~^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:208:15: note: variable 'w' declared const here\n    const int w = 42;\n    ~~~~~~~~~~^~~~~~\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:239:6: error: cannot assign to variable 'w' with const-qualified type 'const int'\n    w--;\n    ~^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:232:15: note: variable 'w' declared const here\n    const int w = 83;\n    ~~~~~~~~~~^~~~~~\n2 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2e39abf7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "02529913": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "56da3b61": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3a88519e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fbffa2ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7a127d5b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:357:26: error: no member named 'bg' in 'eq_bucket_t'\n            freq_bars[j].bg = 0;\n            ~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:358:26: error: no member named 'bg' in 'eq_bucket_t'\n            freq_bars[j].bg = 0;\n            ~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:359:26: error: no member named 'bg' in 'eq_bucket_t'\n            freq_bars[j].bg = 0;\n            ~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:391:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:392:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:394:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:395:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:402:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:403:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:405:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:406:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:411:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:412:33: error: no member named 'bg' in 'complex_t'\n                dft_output_l[k].bg = 0;\n                ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:414:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:415:37: error: no member named 'bg' in 'complex_t'\n                    dft_output_r[k].bg = 0;\n                    ~~~~~~~~~~~~~~~ ^\n15 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3a6501c3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0b27709e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87919506": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0eda4396": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3a14be42": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "226939ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9d81a1a1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5fe54566": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b58c2a58": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o: In function `cgc_eq_vis':\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:410: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Audio_Visualizer/Audio_Visualizer] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "85bea4c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fd7db757": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5642f7fb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:250:17: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    while (i < (size_t)(track->sub_chunk2_size / track->block_align)) {\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:250:17: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:355:17: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    while (i < (size_t)(track->sub_chunk2_size / track->block_align)) {\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:355:17: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n4 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9f602285": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0fe60dc7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "72aadc91": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8de93669": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9ea2d2ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d66abdec": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6f473986": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:136:9: error: non-void function 'cgc_init_track' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:140:9: error: non-void function 'cgc_init_track' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:152:9: error: non-void function 'cgc_init_track' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:161:13: error: non-void function 'cgc_init_track' should return a value [-Wreturn-type]\n            return;\n            ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:170:13: error: non-void function 'cgc_init_track' should return a value [-Wreturn-type]\n            return;\n            ^\n5 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8e0c2ad3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:182:9: error: void function 'cgc_clear_track' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:190:5: error: void function 'cgc_clear_track' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:347:9: error: void function 'cgc_eq_vis' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:352:13: error: void function 'cgc_eq_vis' should not return a value [-Wreturn-type]\n            return 0;\n            ^      ~\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:434:5: error: void function 'cgc_eq_vis' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n5 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d62c345a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "345284b6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:298:29: error: use of undeclared identifier 'devcnt'\n            for (i = 0; i < devcnt; i++) {\n                            ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:317:25: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++)\n                        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:328:25: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++)\n                        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:356:25: error: use of undeclared identifier 'devcnt'\n        for (j = 0; j < devcnt; j++) {\n                        ^\n4 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b25ff2d1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:56:8: error: unknown type name 'size_t'\nstatic size_t vis_multiplier = 0;\n       ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:131:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t track_size = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:131:12: error: use of undeclared identifier 'track_size'\n    size_t track_size = 0;\n           ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:144:5: error: use of undeclared identifier 'track_size'\n    track_size = cgc_validate_header(track) - UWFC_HEADER_SIZE; //size of file\n    ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:150:9: error: use of undeclared identifier 'track_size'\n    if (track_size < 0) {\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:155:9: error: use of undeclared identifier 'track_size'\n    if (track_size == 0) {\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:158:34: error: use of undeclared identifier 'track_size'\n        track->data = cgc_malloc(track_size);\n                                 ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:193:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t i = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:193:12: error: use of undeclared identifier 'i'\n    size_t i = 0;\n           ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:194:9: error: use of undeclared identifier 'i'\n    for(i = 0; i < 200000 * vis_multiplier; i++)\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:194:16: error: use of undeclared identifier 'i'\n    for(i = 0; i < 200000 * vis_multiplier; i++)\n               ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:194:45: error: use of undeclared identifier 'i'\n    for(i = 0; i < 200000 * vis_multiplier; i++)\n                                            ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:195:17: error: use of undeclared identifier 'i'\n        cgc_sin(i) / (cgc_cos(i) + 1);\n                ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:195:31: error: use of undeclared identifier 'i'\n        cgc_sin(i) / (cgc_cos(i) + 1);\n                              ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:316:9: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t bar_len = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:316:16: error: use of undeclared identifier 'bar_len'\n        size_t bar_len = 0;\n               ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:323:9: error: use of undeclared identifier 'bar_len'\n        bar_len = (int)(cgc_log(total_power + 1) * 3); // +1 to avoid cgc_log(0), cgc_log(1) is neglible\n        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:325:31: error: use of undeclared identifier 'bar_len'\n        cgc_memset(line, '=', bar_len );\n                              ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:327:14: error: use of undeclared identifier 'bar_len'\n        line[bar_len] = ']';\n             ^\n19 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0738c0dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f84e99e9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:182:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:347:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n2 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b8451e86": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "35edf6e4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "001b0725": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54668968": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b16a9250": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:274:21: error: use of undeclared identifier 'intptr_t'\n    int b_i = (int)(intptr_t)(cgc_sqrt(f_i / (double)f_max) * MAX_BUCKETS);\n                    ^\n1 error generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "11ea82b6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a702904a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "18caef4e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b83ab15e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:296:14: error: use of undeclared identifier 'h'\n        for (h = max_height; h >= 0; h--) {\n             ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:296:30: error: use of undeclared identifier 'h'\n        for (h = max_height; h >= 0; h--) {\n                             ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:296:38: error: use of undeclared identifier 'h'\n        for (h = max_height; h >= 0; h--) {\n                                     ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:298:18: error: use of undeclared identifier 'i'\n            for (i = 0; i < MAX_BUCKETS; i++) {\n                 ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:298:25: error: use of undeclared identifier 'i'\n            for (i = 0; i < MAX_BUCKETS; i++) {\n                        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:298:42: error: use of undeclared identifier 'i'\n            for (i = 0; i < MAX_BUCKETS; i++) {\n                                         ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:302:21: error: use of undeclared identifier 'h'\n                if (h == 0) {\n                    ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:304:55: error: use of undeclared identifier 'i'\n                } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n                                                      ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:304:28: error: use of undeclared identifier 'h'\n                } else if (h <= (int)(cgc_log(buckets[i].max_power))) {\n                           ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:307:25: error: use of undeclared identifier 'h'\n                    if( h <= 30)\n                        ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:317:14: error: use of undeclared identifier 'i'\n        for (i = 0; i < MAX_BUCKETS; i++)\n             ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:317:21: error: use of undeclared identifier 'i'\n        for (i = 0; i < MAX_BUCKETS; i++)\n                    ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:317:38: error: use of undeclared identifier 'i'\n        for (i = 0; i < MAX_BUCKETS; i++)\n                                     ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:318:36: error: use of undeclared identifier 'i'\n            total_power += buckets[i].total_power;\n                                   ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:328:13: error: use of undeclared identifier 'i'\n        for(i = 0; i < bar_width; i++)\n            ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:328:20: error: use of undeclared identifier 'i'\n        for(i = 0; i < bar_width; i++)\n                   ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:328:35: error: use of undeclared identifier 'i'\n        for(i = 0; i < bar_width; i++)\n                                  ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:390:18: error: use of undeclared identifier 'k'\n            for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n                 ^\n/tmp/FlexiRepair/Audio_Visualizer_0/Audio_Visualizer/src/uwfc.c:390:49: error: use of undeclared identifier 'k'\n            for (k = (track->sample_rate*4)/20; k < j && k < (track->sample_rate*16)/20; k++) {\n                                                ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/src/uwfc.c.o] Error 1\nmake[1]: *** [Audio_Visualizer/CMakeFiles/Audio_Visualizer.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 1,
+  "passed_pos_tests": 529,
+  "failed_neg_tests": 30,
+  "failed_pos_tests": 91,
+  "duration": 3546.035398,
+  "errors": []
+}

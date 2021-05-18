@@ -1,0 +1,1065 @@
+{
+  "repair_begin": "2021-05-07 06:18:23.202247",
+  "repair_end": "2021-05-07 06:31:59.381147",
+  "patches": [
+    {
+      "target_file": "src/session.c",
+      "fix": "0a1\n> #include <string.h>\n281,287c282,290\n<         else if ((type & 0x80) == 0)\n<         {\n<             resp->result = 3;\n<             resp->config[resp_offset] = type;\n<             resp->config[resp_offset+1] = length;\n<             cgc_memcpy(&resp->config[resp_offset+2], &req->config[req_offset+2], length);\n<         }\n---\n>         else //prophet generated patch\n> {\n>     if (((type & 128) == 0) && !1) {\n>         resp->result = 3;\n>         resp->config[resp_offset] = type;\n>         resp->config[resp_offset + 1] = length;\n>         cgc_memcpy(&resp->config[resp_offset + 2], &req->config[req_offset + 2], length);\n>     }\n> }\n",
+      "edits": [
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n311,312c312,313\n<     if (ch == NULL || ch->state != CONFIG || ch->config_state != WAIT_CONFIG_RSP)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch == (0) || ch->state != 1 || ch->config_state != 1) && !1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n474c475,476\n<     if (g_current_packet.hdr.channel == 1)\n---\n>     //prophet generated patch\n>     if ((g_current_packet.hdr.channel == 1) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n221,222c222,223\n<     if (ch == NULL || ch->state == CLOSED)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch == (0) || ch->state == 0) || 1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n82,83c83,87\n<         if (psm->id == id)\n<             return psm;\n---\n>         //prophet generated patch\n>         {\n>             if ((psm->id == id) && !1)\n>                 return psm;\n>         }\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n474c475,476\n<     if (g_current_packet.hdr.channel == 1)\n---\n>     //prophet generated patch\n>     if ((g_current_packet.hdr.channel == 1) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n214,215c215,216\n<     if (cmd->hdr.length < sizeof(struct configuration_request))\n<     {\n---\n>     //prophet generated patch\n>     if ((cmd->hdr.length < sizeof(struct configuration_request)) || 1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n227,228c228,229\n<     if (ch->state == CONFIG && ch->config_state != WAIT_CONFIG)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch->state == 1 && ch->config_state != 0) || 1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n281,287c282,290\n<         else if ((type & 0x80) == 0)\n<         {\n<             resp->result = 3;\n<             resp->config[resp_offset] = type;\n<             resp->config[resp_offset+1] = length;\n<             cgc_memcpy(&resp->config[resp_offset+2], &req->config[req_offset+2], length);\n<         }\n---\n>         else //prophet generated patch\n> {\n>     if (((type & 128) == 0) && !1) {\n>         resp->result = 3;\n>         resp->config[resp_offset] = type;\n>         resp->config[resp_offset + 1] = length;\n>         cgc_memcpy(&resp->config[resp_offset + 2], &req->config[req_offset + 2], length);\n>     }\n> }\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n181c182,183\n<         if (psm->handler)\n---\n>         //prophet generated patch\n>         if ((psm->handler) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n311,312c312,313\n<     if (ch == NULL || ch->state != CONFIG || ch->config_state != WAIT_CONFIG_RSP)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch == (0) || ch->state != 1 || ch->config_state != 1) || 1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n181c182,183\n<         if (psm->handler)\n---\n>         //prophet generated patch\n>         if ((psm->handler) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n463c464,465\n<         if (offset + cmd->hdr.length > g_current_packet.hdr.length)\n---\n>         //prophet generated patch\n>         if ((offset + cmd->hdr.length > g_current_packet.hdr.length) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n296,297c297,299\n<     if (resp->result == 0)\n<         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n---\n>     //prophet generated patch\n>     if ((resp->result == 0) && !1)\n>         if ((resp->flags & 1) == 0 && ch->state != 2)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n227,228c228,229\n<     if (ch->state == CONFIG && ch->config_state != WAIT_CONFIG)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch->state == 1 && ch->config_state != 0) && !1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n71,72c72,74\n<         if (payload_length > LINK_PAYLOAD_SIZE)\n<             payload_length = LINK_PAYLOAD_SIZE;\n---\n>         //prophet generated patch\n>         if ((payload_length > 339) || 1)\n>             payload_length = 339;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n71,72c72,74\n<         if (payload_length > LINK_PAYLOAD_SIZE)\n<             payload_length = LINK_PAYLOAD_SIZE;\n---\n>         //prophet generated patch\n>         if ((payload_length > 339) && !1)\n>             payload_length = 339;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n296,297c297,299\n<     if (resp->result == 0)\n<         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n---\n>     //prophet generated patch\n>     if ((resp->result == 0) || 1)\n>         if ((resp->flags & 1) == 0 && ch->state != 2)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n297,298c298,302\n<         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n<             cgc_session_send_config(ch);\n---\n>         //prophet generated patch\n>         {\n>             if (((resp->flags & 1) == 0 && ch->state != 2) || 1)\n>                 cgc_session_send_config(ch);\n>         }\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n297,298c298,302\n<         if ((resp->flags & 1) == 0 && ch->state != OPEN)\n<             cgc_session_send_config(ch);\n---\n>         //prophet generated patch\n>         {\n>             if (((resp->flags & 1) == 0 && ch->state != 2) && !1)\n>                 cgc_session_send_config(ch);\n>         }\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n92,93c93,95\n<         if (id > 0xFFFF)\n<             return NULL;\n---\n>         //prophet generated patch\n>         if ((id > 65535) && !1)\n>             return (0);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n162,163c163,164\n<     if (psm == NULL)\n<     {\n---\n>     //prophet generated patch\n>     if ((psm == (0)) || 1) {\n168,170c169\n<     }\n<     else\n<     {\n---\n>     } else {\n172,173c171\n<         if (ch == NULL)\n<         {\n---\n>         if (ch == (0)) {\n178,180c176,177\n<         ch->state = CONFIG;\n<         ch->config_state = WAIT_CONFIG;\n< \n---\n>         ch->state = 1;\n>         ch->config_state = 0;\n183d179\n< \n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n463c464,465\n<         if (offset + cmd->hdr.length > g_current_packet.hdr.length)\n---\n>         //prophet generated patch\n>         if ((offset + cmd->hdr.length > g_current_packet.hdr.length) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n214,215c215,216\n<     if (cmd->hdr.length < sizeof(struct configuration_request))\n<     {\n---\n>     //prophet generated patch\n>     if ((cmd->hdr.length < sizeof(struct configuration_request)) && !1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n221,222c222,223\n<     if (ch == NULL || ch->state == CLOSED)\n<     {\n---\n>     //prophet generated patch\n>     if ((ch == (0) || ch->state == 0) && !1) {\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n162,163c163,164\n<     if (psm == NULL)\n<     {\n---\n>     //prophet generated patch\n>     if ((psm == (0)) && !1) {\n168,170c169\n<     }\n<     else\n<     {\n---\n>     } else {\n172,173c171\n<         if (ch == NULL)\n<         {\n---\n>         if (ch == (0)) {\n178,180c176,177\n<         ch->state = CONFIG;\n<         ch->config_state = WAIT_CONFIG;\n< \n---\n>         ch->state = 1;\n>         ch->config_state = 0;\n183d179\n< \n"
+      ]
+    }
+  ],
+  "compilations": 28,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      }
+    },
+    "65f04ed5": {
+      "compiles": [
+        0
+      ]
+    },
+    "5af3fc8b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e279e7ba": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ff5d5977": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "20c9c4ca": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "e91824b6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "04ce8b20": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0aa4c5a9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "58028528": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "8b4b9202": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "8a64b1cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "91d668ca": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "83ef2d7a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "2bb9275c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "bebc11e3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1348098c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "79e405ee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "14fad605": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "828f431d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "71aa5fb2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "a2fa950a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "789b9d6c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "f2859f45": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73586884": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "04e1dbce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4e123842": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 20,
+  "passed_pos_tests": 40,
+  "failed_neg_tests": 19,
+  "failed_pos_tests": 29,
+  "duration": 816.1789,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

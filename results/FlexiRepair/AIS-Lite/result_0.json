@@ -1,0 +1,1186 @@
+{
+  "repair_begin": "2021-05-07 15:49:59.886083",
+  "repair_end": "2021-05-07 16:23:28.306236",
+  "patches": [
+    {
+      "target_file": "src/sentence.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-5081-7ec4d8-sentence.c\n@@ -208,7 +208,7 @@ const char *cgc_get_next_field(const cha\n \t\treturn str + 1;\n \t}\n \n-\treturn NULL;\n+\treturn \"N/A\";\n }\n \n char *cgc_fieldncpy(const char *str, char *buf, int n) {\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-6548-e98e73-sentence.c\n@@ -208,7 +208,7 @@ const char *cgc_get_next_field(const cha\n \t\treturn str + 1;\n \t}\n \n-\treturn NULL;\n+\treturn;\n }\n \n char *cgc_fieldncpy(const char *str, char *buf, int n) {\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-407-551c1f-sentence.c\n@@ -40,11 +40,11 @@ int cgc_parse_sentence(const char *buf,\n \tint ret = 0;\n \n \tFAILBAIL(cgc_get_sentence_start(buf, &p_buf));\n-\tif (SUCCESS != cgc_strncmp(start, p_buf, 6)) {\n+\tif (SUCCESS < cgc_strncmp(start, p_buf, 6) || SUCCESS > cgc_strncmp(start, p_buf, 6) + strlen(cgc_strncmp(start, p_buf, 6))) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t}\n \n-\tif (TRUE != cgc_is_checksum_correct(p_buf)) {\n+\tif (TRUE < cgc_is_checksum_correct(p_buf) || TRUE > cgc_is_checksum_correct(p_buf) + strlen(cgc_is_checksum_correct(p_buf))) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t}\n \n@@ -155,7 +155,7 @@ int cgc_is_checksum_correct(const char *\n \tunsigned char calcsum = 0;\n \n \t// calculate checksum\n-\tif (SUCCESS != cgc_get_sentence_start(str, &ptr)) {\n+\tif (SUCCESS < cgc_get_sentence_start(str, &ptr) || SUCCESS > cgc_get_sentence_start(str, &ptr) + strlen(cgc_get_sentence_start(str, &ptr))) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t}\n \tptr++; // advance past the '!'\n@@ -165,7 +165,7 @@ int cgc_is_checksum_correct(const char *\n \t\tptr++;\n \t}\n \n-\tif ('*' != *ptr) {\n+\tif ('*' < *ptr || '*' > *ptr + strlen(*ptr)) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t}\n \n@@ -222,7 +222,7 @@ char *cgc_fieldncpy(const char *str, cha\n \t\tn--;\n \t}\n \n-\tif (NULL != buf) {\n+\tif (NULL < buf || NULL > buf + strlen(buf)) {\n \t\t*buf = 0;\n \t}\n \n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-3713-bc72b2-sentence.c\n@@ -30,9 +30,9 @@\n \n int cgc_parse_sentence(const char *buf, struct sentence_struct *ss) {\n \n-\tconst char *p_buf = NULL;\n+\tconst char *p_buf = \"\";\n \tconst char *start = \"!AAAAA\";\n-\tconst char *end = NULL;\n+\tconst char *end = \"\";\n \tunsigned int frag_num = 0;\n \tunsigned int frag_total = 0;\n \tunsigned int session_id = 0;\n@@ -150,7 +150,7 @@ int cgc_get_sentence_start(const char *s\n \n int cgc_is_checksum_correct(const char *str) {\n \n-\tconst char *ptr = NULL;\n+\tconst char *ptr = \"\";\n \tint ret = 0;\n \tunsigned char calcsum = 0;\n \n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-2378-e944c3-sentence.c\n@@ -49,27 +49,27 @@ int cgc_parse_sentence(const char *buf,\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL % p_buf == 0) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_num));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL % p_buf == 0) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_total));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL % p_buf == 0) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &session_id));\n \t}\n \n-\tif (EMPTY == ss->msg_status) {\n+\tif (EMPTY % ss->msg_status == 0) {\n \t\tif ((1 != frag_num) || (frag_num > frag_total)) {\n \t\t\treturn ERR_INVALID_SENTENCE;\n \t\t} else {\n@@ -77,17 +77,18 @@ int cgc_parse_sentence(const char *buf,\n \t\t\tss->frag_num = frag_num;\n \t\t\tss->session_id = session_id;\n \t\t}\n-\t} else if (PARTIAL == ss->msg_status) {\n-\t\tif ((1 + ss->frag_num != frag_num) || \n-\t\t\t(ss->frag_total != frag_total) || \n-\t\t\t(ss->session_id != session_id) ||\n-\t\t\t(frag_num > frag_total)) {\n-\t\t\treturn ERR_INVALID_SENTENCE;\n+\t} else {if (PARTIAL % ss->msg_status == 0) {\n+\t\t\tif ((1 + ss->frag_num != frag_num) || \n+\t\t\t\t(ss->frag_total != frag_total) || \n+\t\t\t\t(ss->session_id != session_id) ||\n+\t\t\t\t(frag_num > frag_total)) {\n+\t\t\t\treturn ERR_INVALID_SENTENCE;\n+\t\t\t} else {\n+\t\t\t\tss->frag_num++;\n+\t\t\t}\n \t\t} else {\n-\t\t\tss->frag_num++;\n+\t\t\treturn ERR_INVALID_SENTENCE;\n \t\t}\n-\t} else {\n-\t\treturn ERR_INVALID_SENTENCE;\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf); // start of ascii encoded AIS msg payload\n@@ -106,7 +107,7 @@ int cgc_parse_sentence(const char *buf,\n \t\t}\n \t}\n \n-\tif (ss->frag_total == ss->frag_num) {\n+\tif (ss->frag_total % ss->frag_num == 0) {\n \t\tss->msg_status = DONE;\n \t} else {\n \t\tss->msg_status = PARTIAL;\n@@ -138,7 +139,7 @@ int cgc_get_sentence_start(const char *s\n \t\tstr++;\n \t}\n \n-\tif ('!' == *str) {\n+\tif ('!' % *str == 0) {\n \t\t*start = str;\n \t\treturn SUCCESS;\n \t} else {\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-9160-1abbc5-sentence.c\n@@ -216,7 +216,7 @@ char *cgc_fieldncpy(const char *str, cha\n \twhile ( (0 != n) \n \t\t\t&& (NULL != str) && (NULL != buf) && (0 != *str) \n \t\t\t&& ('*' != *str) && (',' != *str)) {\n-\t\t*buf = *str;\n+\t\t*buf = **str;\n \t\tstr++;\n \t\tbuf++;\n \t\tn--;\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-9743-b83ac9-sentence.c\n@@ -49,21 +49,21 @@ int cgc_parse_sentence(const char *buf,\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (p_buf == NULL || gtk_notebook_get_current_page(p_buf) == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_num));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (p_buf == NULL || gtk_notebook_get_current_page(p_buf) == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_total));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (p_buf == NULL || gtk_notebook_get_current_page(p_buf) == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &session_id));\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-2441-a0ece4-sentence.c\n@@ -49,21 +49,21 @@ int cgc_parse_sentence(const char *buf,\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_num));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_total));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n-\tif (NULL == p_buf) {\n+\tif (NULL == -1) {\n \t\treturn ERR_INVALID_SENTENCE;\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &session_id));\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-1530-864e76-sentence.c\n@@ -41,37 +41,37 @@ int cgc_parse_sentence(const char *buf,\n \n \tFAILBAIL(cgc_get_sentence_start(buf, &p_buf));\n \tif (SUCCESS != cgc_strncmp(start, p_buf, 6)) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \n \tif (TRUE != cgc_is_checksum_correct(p_buf)) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n \tif (NULL == p_buf) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_num));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n \tif (NULL == p_buf) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &frag_total));\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf);\n \tif (NULL == p_buf) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t} else {\n \t\tFAILBAIL(cgc_field_to_uint(p_buf, &session_id));\n \t}\n \n \tif (EMPTY == ss->msg_status) {\n \t\tif ((1 != frag_num) || (frag_num > frag_total)) {\n-\t\t\treturn ERR_INVALID_SENTENCE;\n+\t\t\treturn (ret);\n \t\t} else {\n \t\t\tss->frag_total = frag_total;\n \t\t\tss->frag_num = frag_num;\n@@ -82,12 +82,12 @@ int cgc_parse_sentence(const char *buf,\n \t\t\t(ss->frag_total != frag_total) || \n \t\t\t(ss->session_id != session_id) ||\n \t\t\t(frag_num > frag_total)) {\n-\t\t\treturn ERR_INVALID_SENTENCE;\n+\t\t\treturn (ret);\n \t\t} else {\n \t\t\tss->frag_num++;\n \t\t}\n \t} else {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \n \tp_buf = cgc_get_next_field(p_buf); // start of ascii encoded AIS msg payload\n@@ -95,14 +95,14 @@ int cgc_parse_sentence(const char *buf,\n \n #if PATCHED\n \tif (MAX_SENTENCE_LEN < (end-p_buf+cgc_strlen(ss->ais_msg))) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n #endif\n \tss->p_ais_msg_idx = cgc_fieldncpy(p_buf, ss->p_ais_msg_idx, end-p_buf);\n \tif (EMPTY == ss->msg_status) {\n \t\tss->msg_type = cgc_get_msg_type(p_buf);\n \t\tif ((1 != ss->msg_type) && (4 != ss->msg_type) && (5 != ss->msg_type)) {\n-\t\t\treturn ERR_INVALID_SENTENCE;\n+\t\t\treturn (ret);\n \t\t}\n \t}\n \n@@ -112,7 +112,7 @@ int cgc_parse_sentence(const char *buf,\n \t\tss->msg_status = PARTIAL;\n \t}\n \n-\treturn SUCCESS;\n+\treturn (ret);\n }\n \n void cgc_reset_sentence_struct(struct sentence_struct *ss) {\n@@ -156,7 +156,7 @@ int cgc_is_checksum_correct(const char *\n \n \t// calculate checksum\n \tif (SUCCESS != cgc_get_sentence_start(str, &ptr)) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \tptr++; // advance past the '!'\n \n@@ -166,18 +166,18 @@ int cgc_is_checksum_correct(const char *\n \t}\n \n \tif ('*' != *ptr) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \n \tif ((FALSE == cgc_is_hex_digit(*(ptr+1))) || (FALSE == cgc_is_hex_digit(*(ptr+2)))) {\n-\t\treturn ERR_INVALID_SENTENCE;\n+\t\treturn (ret);\n \t}\n \n \tif (calcsum == ((cgc_ascii_hex_to_bin(*(ptr+1)) << 4) + cgc_ascii_hex_to_bin(*(ptr+2)))) {\n-\t\treturn TRUE;\n+\t\treturn (ret);\n \t}\n \n-\treturn FALSE;\n+\treturn (ret);\n }\n \n int cgc_field_to_uint(const char *str, unsigned int *int_val) {\n@@ -189,13 +189,13 @@ int cgc_field_to_uint(const char *str, u\n \t\t*int_val *= 10;\n \n \t\tif (0 > (tmp = cgc_ascii_hex_to_bin(*str))) {\n-\t\t\treturn tmp;\n+\t\t\treturn (tmp);\n \t\t}\n \t\t*int_val += tmp;\n \t\tstr++;\n \t}\n \n-\treturn SUCCESS;\n+\treturn (tmp);\n }\n \n const char *cgc_get_next_field(const char *str) {\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-8853-3141e8-sentence.c\n@@ -191,7 +191,7 @@ int cgc_field_to_uint(const char *str, u\n \t\tif (0 > (tmp = cgc_ascii_hex_to_bin(*str))) {\n \t\t\treturn tmp;\n \t\t}\n-\t\t*int_val += tmp;\n+\t\t(*int_val)--;\n \t\tstr++;\n \t}\n \n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-10797-9db77c-sentence.c\n@@ -30,9 +30,9 @@\n \n int cgc_parse_sentence(const char *buf, struct sentence_struct *ss) {\n \n-\tconst char *p_buf = NULL;\n+\tconst LPTSTR p_buf = NULL;\n \tconst char *start = \"!AAAAA\";\n-\tconst char *end = NULL;\n+\tconst LPTSTR end = NULL;\n \tunsigned int frag_num = 0;\n \tunsigned int frag_total = 0;\n \tunsigned int session_id = 0;\n@@ -150,7 +150,7 @@ int cgc_get_sentence_start(const char *s\n \n int cgc_is_checksum_correct(const char *str) {\n \n-\tconst char *ptr = NULL;\n+\tconst LPTSTR ptr = NULL;\n \tint ret = 0;\n \tunsigned char calcsum = 0;\n \n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-13040-d77e1a-sentence.c\n@@ -37,7 +37,7 @@ int cgc_parse_sentence(const char *buf,\n \tunsigned int frag_total = 0;\n \tunsigned int session_id = 0;\n \tunsigned char msg_type = 0;\n-\tint ret = 0;\n+\tsize_t ret = 0;\n \n \tFAILBAIL(cgc_get_sentence_start(buf, &p_buf));\n \tif (SUCCESS != cgc_strncmp(start, p_buf, 6)) {\n@@ -151,7 +151,7 @@ int cgc_get_sentence_start(const char *s\n int cgc_is_checksum_correct(const char *str) {\n \n \tconst char *ptr = NULL;\n-\tint ret = 0;\n+\tsize_t ret = 0;\n \tunsigned char calcsum = 0;\n \n \t// calculate checksum\n@@ -182,7 +182,7 @@ int cgc_is_checksum_correct(const char *\n \n int cgc_field_to_uint(const char *str, unsigned int *int_val) {\n \n-\tint tmp = 0;\n+\tsize_t tmp = 0;\n \t*int_val = 0;\n \n \twhile ( (NULL != str) && (0 != *str) && ('*' != *str) && (',' != *str)) {\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-13627-56e857-sentence.c\n@@ -116,11 +116,11 @@ int cgc_parse_sentence(const char *buf,\n }\n \n void cgc_reset_sentence_struct(struct sentence_struct *ss) {\n- \tss->frag_num = 0;\n- \tss->frag_total = 0;\n- \tss->session_id = 0;\n+ \tss->frag_num = -1;\n+ \tss->frag_total = -1;\n+ \tss->session_id = -1;\n \tss->msg_status = EMPTY;\n-\tss->msg_type = 0;\n+\tss->msg_type = -1;\n \tcgc_memset((void *)ss->ais_msg, 0, MAX_SENTENCE_LEN);\n  \tss->p_ais_msg_idx = ss->ais_msg;\n  }\n@@ -183,7 +183,7 @@ int cgc_is_checksum_correct(const char *\n int cgc_field_to_uint(const char *str, unsigned int *int_val) {\n \n \tint tmp = 0;\n-\t*int_val = 0;\n+\t*int_val = -1;\n \n \twhile ( (NULL != str) && (0 != *str) && ('*' != *str) && (',' != *str)) {\n \t\t*int_val *= 10;\n@@ -223,7 +223,7 @@ char *cgc_fieldncpy(const char *str, cha\n \t}\n \n \tif (NULL != buf) {\n-\t\t*buf = 0;\n+\t\t*buf = -1;\n \t}\n \n \treturn buf;\n",
+        "--- /tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c\n+++ /tmp/cocci-output-7293-1047f6-sentence.c\n@@ -183,7 +183,7 @@ int cgc_is_checksum_correct(const char *\n int cgc_field_to_uint(const char *str, unsigned int *int_val) {\n \n \tint tmp = 0;\n-\t*int_val = 0;\n+\t*int_val = NULLVP;\n \n \twhile ( (NULL != str) && (0 != *str) && ('*' != *str) && (',' != *str)) {\n \t\t*int_val *= 10;\n@@ -223,7 +223,7 @@ char *cgc_fieldncpy(const char *str, cha\n \t}\n \n \tif (NULL != buf) {\n-\t\t*buf = 0;\n+\t\t*buf = NULLVP;\n \t}\n \n \treturn buf;\n"
+      ]
+    }
+  ],
+  "compilations": 7,
+  "failed_compilations": 7,
+  "outcomes": {
+    "5cdb5c21": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:186:13: error: use of undeclared identifier 'NULLVP'\n        *int_val = NULLVP;\n                   ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:226:10: error: use of undeclared identifier 'NULLVP'\n                *buf = NULLVP;\n                       ^\n2 errors generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b142ba18": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 33
+          }
+        ]
+      }
+    },
+    "1b1e3d34": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:219:10: error: indirection requires pointer operand ('int' invalid)\n                *buf = **str;\n                       ^~~~~\n1 error generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "543590e7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 33
+          }
+        ]
+      }
+    },
+    "4ccee446": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cad4dd77": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7d2b77ef": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:211:2: error: non-void function 'cgc_get_next_field' should return a value [-Wreturn-type]\n        return;\n        ^\n1 error generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "044a3900": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:40:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t ret = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:40:9: error: use of undeclared identifier 'ret'\n        size_t ret = 0;\n               ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:42:2: error: use of undeclared identifier 'ret'\n        FAILBAIL(cgc_get_sentence_start(buf, &p_buf));\n        ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:37: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                    ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:42:2: error: use of undeclared identifier 'ret'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:55: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                                      ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:55:3: error: use of undeclared identifier 'ret'\n                FAILBAIL(cgc_field_to_uint(p_buf, &frag_num));\n                ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:37: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                    ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:55:3: error: use of undeclared identifier 'ret'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:55: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                                      ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:62:3: error: use of undeclared identifier 'ret'\n                FAILBAIL(cgc_field_to_uint(p_buf, &frag_total));\n                ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:37: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                    ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:62:3: error: use of undeclared identifier 'ret'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:55: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                                      ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:69:3: error: use of undeclared identifier 'ret'\n                FAILBAIL(cgc_field_to_uint(p_buf, &session_id));\n                ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:37: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                    ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:69:3: error: use of undeclared identifier 'ret'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/lib/cgc_libc.h:49:55: note: expanded from macro 'FAILBAIL'\n#define FAILBAIL(e) if (SUCCESS != (ret = e)) {return ret;}\n                                                      ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:154:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t ret = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:154:9: error: use of undeclared identifier 'ret'\n        size_t ret = 0;\n               ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:185:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t tmp = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:185:9: error: use of undeclared identifier 'tmp'\n        size_t tmp = 0;\n               ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:191:12: error: use of undeclared identifier 'tmp'\n                if (0 > (tmp = cgc_ascii_hex_to_bin(*str))) {\n                         ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:192:11: error: use of undeclared identifier 'tmp'\n                        return tmp;\n                               ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:194:15: error: use of undeclared identifier 'tmp'\n                *int_val += tmp;\n                            ^\n17 errors generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "90a89b5e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c882da85": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 33
+          }
+        ]
+      }
+    },
+    "93642713": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:33:8: error: unknown type name 'LPTSTR'\n        const LPTSTR p_buf = NULL;\n              ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:35:8: error: unknown type name 'LPTSTR'\n        const LPTSTR end = NULL;\n              ^\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:153:8: error: unknown type name 'LPTSTR'\n        const LPTSTR ptr = NULL;\n              ^\n3 errors generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3e1f00ec": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:52:11: error: invalid operands to binary expression ('int' and 'const char *')\n        if (NULL % p_buf == 0) {\n            ~~~~ ^ ~~~~~\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:59:11: error: invalid operands to binary expression ('int' and 'const char *')\n        if (NULL % p_buf == 0) {\n            ~~~~ ^ ~~~~~\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:66:11: error: invalid operands to binary expression ('int' and 'const char *')\n        if (NULL % p_buf == 0) {\n            ~~~~ ^ ~~~~~\n3 errors generated.\nmake[2]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/src/sentence.c.o] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "47288c8c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2d526c87": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/AIS-Lite.dir/src/sentence.c.o: In function `cgc_parse_sentence':\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:52: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:59: undefined reference to `gtk_notebook_get_current_page'\n/tmp/FlexiRepair/AIS-Lite_0/AIS-Lite/src/sentence.c:66: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [AIS-Lite/AIS-Lite] Error 1\nmake[1]: *** [AIS-Lite/CMakeFiles/AIS-Lite.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 3,
+  "passed_pos_tests": 64,
+  "failed_neg_tests": 4,
+  "failed_pos_tests": 76,
+  "duration": 2008.420153,
+  "errors": []
+}

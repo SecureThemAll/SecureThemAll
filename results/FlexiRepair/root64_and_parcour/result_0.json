@@ -1,0 +1,3976 @@
+{
+  "repair_begin": "2021-05-08 21:22:34.687312",
+  "repair_end": "2021-05-08 22:00:34.999994",
+  "patches": [
+    {
+      "target_file": "src/main.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-4655-e56e3c-main.c\n@@ -126,8 +126,10 @@ static int output_transmit()\n         return 1;\n \n     cgc_size_t tx;\n-    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n-        return 0;\n+    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len) {\n+        restorescr(old);\n+        return ret;\n+    }\n     else\n         return 1;\n }\n@@ -136,7 +138,8 @@ static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n         return 1;\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n@@ -172,7 +175,8 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_handle_hello(char *input)\n@@ -183,7 +187,8 @@ static int cgc_handle_hello(char *input)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n         return 1;\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_handle_auth(char *input)\n@@ -197,7 +202,8 @@ static int cgc_handle_auth(char *input)\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_handle_set(char *input)\n@@ -221,7 +227,8 @@ static int cgc_handle_set(char *input)\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_handle_call(char *input)\n@@ -262,7 +269,8 @@ static int cgc_page_home(char *input)\n     for (hm = functions; hm->name != NULL; hm++)\n         cgc_output_append(\"\\t%s (called %d times)\\t\\t%s\\n\", hm->name, hm->stats_count, hm->desc);\n     cgc_output_append(\"\\n\");\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_page_root64(char *input)\n@@ -312,7 +320,8 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n static int cgc_page_parcour(char *input)\n@@ -336,5 +345,6 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-5082-a482bf-main.c\n@@ -214,7 +214,7 @@ static int cgc_handle_set(char *input)\n     char *data = var->data;\n     cgc_strcpy(data, arg_name);\n     var->name = data;\n-    data += cgc_strlen(var->name) + 1;\n+    data = cgc_strlen(var->name) + 1;\n     cgc_strcpy(data, arg_value);\n     var->value = data;\n     var->next = variables;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-10445-04c1f5-main.c\n@@ -141,7 +141,7 @@ static int send_error(int code)\n \n int main(int cgc_argc, char *cgc_argv[])\n {\n-    char buf[1024];\n+    char buf[1024] = \"\";\n     g_output_buf = cgc_malloc(MAX_OUTPUT);\n     while (cgc_readuntil(STDIN, buf, sizeof(buf), '\\n') == 0)\n     {\n@@ -267,7 +267,7 @@ static int cgc_page_home(char *input)\n \n static int cgc_page_root64(char *input)\n {\n-    char buf[256];\n+    char buf[256] = \"\";\n     const char *mode = cgc_variable_get(\"mode\");\n     const char *data = cgc_variable_get(\"data\");\n     if (mode == NULL || data == NULL)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-15053-e405d0-main.c\n@@ -329,12 +329,12 @@ static int cgc_page_parcour(char *input)\n         keylen = 2;\n     cgc_parcour_init(key, keylen);\n     cgc_size_t i, n = cgc_strlen(data);\n-    for (i = 0; i < n; i++)\n+    for (i = 1; i <= n; i++)\n         data[i] ^= cgc_parcour_byte();\n     cgc_output_write(data, n);\n \n     cgc_parcour_init(key, keylen);\n-    for (i = 0; i < n; i++)\n+    for (i = 1; i <= n; i++)\n         data[i] ^= cgc_parcour_byte();\n     return 0;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-13535-46dd5d-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf) - 2] = 0; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-458-474728-main.c\n@@ -162,12 +162,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \n         if (hm->name == NULL)\n         {\n-            if (send_error(400) != 0)\n+            if (send_error(400) < 0 || send_error(400) > 0 + strlen(0))\n                 break;\n         }\n         else\n         {\n-            if (hm->handler(input) != 0)\n+            if (hm->handler(input) < 0 || hm->handler(input) > 0 + strlen(0))\n                 break;\n         }\n     }\n@@ -177,7 +177,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n static int cgc_handle_hello(char *input)\n {\n-    if (input != NULL)\n+    if (input < NULL || input > NULL + strlen(NULL))\n         return send_error(500);\n     while (g_token == INVALID_TOKEN)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n@@ -192,7 +192,7 @@ static int cgc_handle_auth(char *input)\n     if (arg == NULL)\n         return send_error(500);\n     unsigned int token = cgc_strtoul(arg, NULL, 16);\n-    if (token != g_token)\n+    if (token < g_token || token > g_token + strlen(g_token))\n         return send_error(403);\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-8255-d05871-main.c\n@@ -127,7 +127,7 @@ static int output_transmit()\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n     else\n         return 1;\n }\n@@ -136,7 +136,7 @@ static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n         return 1;\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n@@ -172,7 +172,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_handle_hello(char *input)\n@@ -183,7 +183,7 @@ static int cgc_handle_hello(char *input)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n         return 1;\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_handle_auth(char *input)\n@@ -197,7 +197,7 @@ static int cgc_handle_auth(char *input)\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_handle_set(char *input)\n@@ -221,7 +221,7 @@ static int cgc_handle_set(char *input)\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_handle_call(char *input)\n@@ -262,7 +262,7 @@ static int cgc_page_home(char *input)\n     for (hm = functions; hm->name != NULL; hm++)\n         cgc_output_append(\"\\t%s (called %d times)\\t\\t%s\\n\", hm->name, hm->stats_count, hm->desc);\n     cgc_output_append(\"\\n\");\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_page_root64(char *input)\n@@ -312,7 +312,7 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n static int cgc_page_parcour(char *input)\n@@ -336,5 +336,5 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-6758-889dec-main.c\n@@ -141,7 +141,7 @@ static int send_error(int code)\n \n int main(int cgc_argc, char *cgc_argv[])\n {\n-    char buf[1024];\n+    char buf[MAX_URL_SIZE];\n     g_output_buf = cgc_malloc(MAX_OUTPUT);\n     while (cgc_readuntil(STDIN, buf, sizeof(buf), '\\n') == 0)\n     {\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-630-93ab0c-main.c\n@@ -123,19 +123,19 @@ static void cgc_output_append(const char\n static int output_transmit()\n {\n     if (cgc_fdprintf(STDOUT, \"OK %u\\n\", g_output_len) < 4)\n-        return 1;\n+        return (EINVAL);\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n         return 0;\n     else\n-        return 1;\n+        return (EINVAL);\n }\n \n static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n-        return 1;\n+        return (EINVAL);\n     return 0;\n }\n \n@@ -182,7 +182,7 @@ static int cgc_handle_hello(char *input)\n     while (g_token == INVALID_TOKEN)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n-        return 1;\n+        return (EINVAL);\n     return 0;\n }\n \n@@ -196,7 +196,7 @@ static int cgc_handle_auth(char *input)\n         return send_error(403);\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        return (EINVAL);\n     return 0;\n }\n \n@@ -220,7 +220,7 @@ static int cgc_handle_set(char *input)\n     var->next = variables;\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        return (EINVAL);\n     return 0;\n }\n \n@@ -273,7 +273,7 @@ static int cgc_page_root64(char *input)\n     if (mode == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        return (EINVAL);\n     }\n \n     if (cgc_strcmp(mode, \"encode\") == 0)\n@@ -290,7 +290,7 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            return (EINVAL);\n         }\n     }\n     else if (cgc_strcmp(mode, \"decode\") == 0)\n@@ -303,13 +303,13 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            return (EINVAL);\n         }\n     }\n     else\n     {\n         send_error(500);\n-        return 1;\n+        return (EINVAL);\n     }\n \n     return 0;\n@@ -322,7 +322,7 @@ static int cgc_page_parcour(char *input)\n     if (key == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        return (EINVAL);\n     }\n     int keylen = cgc_strlen(key);\n     if (keylen > 2)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-11413-a08899-main.c\n@@ -202,7 +202,7 @@ static int cgc_handle_auth(char *input)\n \n static int cgc_handle_set(char *input)\n {\n-    if (!g_auth)\n+    if (g_auth == MAP_FAILED)\n         return send_error(403);\n     char *arg_name = cgc_strsep(&input, \" \");\n     char *arg_value = input;\n@@ -226,7 +226,7 @@ static int cgc_handle_set(char *input)\n \n static int cgc_handle_call(char *input)\n {\n-    if (!g_auth)\n+    if (g_auth == MAP_FAILED)\n         return send_error(403);\n     input = cgc_strsep(&input, \" \");\n     if (input == NULL)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-6487-acc3de-main.c\n@@ -329,12 +329,12 @@ static int cgc_page_parcour(char *input)\n         keylen = 2;\n     cgc_parcour_init(key, keylen);\n     cgc_size_t i, n = cgc_strlen(data);\n-    for (i = 0; i < n; i++)\n+    for (i = 0; i < m; i++)\n         data[i] ^= cgc_parcour_byte();\n     cgc_output_write(data, n);\n \n     cgc_parcour_init(key, keylen);\n-    for (i = 0; i < n; i++)\n+    for (i = 0; i < m; i++)\n         data[i] ^= cgc_parcour_byte();\n     return 0;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-4836-9cbfbd-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        cgc_strlen(buf)--; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-6695-ed6817-main.c\n@@ -252,7 +252,7 @@ static char *cgc_variable_get(const char\n     for (var = variables; var != NULL; var = var->next)\n         if (cgc_strcmp(name, var->name) == 0)\n             return var->value;\n-    return NULL;\n+    return;\n }\n \n static int cgc_page_home(char *input)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-399-118a61-main.c\n@@ -127,7 +127,7 @@ static int output_transmit()\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n-        return 0;\n+        no_draw = 1;\n     else\n         return 1;\n }\n@@ -136,7 +136,7 @@ static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n         return 1;\n-    return 0;\n+    no_draw = 1;\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n@@ -172,7 +172,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_handle_hello(char *input)\n@@ -183,7 +183,7 @@ static int cgc_handle_hello(char *input)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n         return 1;\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_handle_auth(char *input)\n@@ -197,7 +197,7 @@ static int cgc_handle_auth(char *input)\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_handle_set(char *input)\n@@ -221,7 +221,7 @@ static int cgc_handle_set(char *input)\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_handle_call(char *input)\n@@ -262,7 +262,7 @@ static int cgc_page_home(char *input)\n     for (hm = functions; hm->name != NULL; hm++)\n         cgc_output_append(\"\\t%s (called %d times)\\t\\t%s\\n\", hm->name, hm->stats_count, hm->desc);\n     cgc_output_append(\"\\n\");\n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_page_root64(char *input)\n@@ -312,7 +312,7 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n static int cgc_page_parcour(char *input)\n@@ -336,5 +336,5 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    no_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-14068-bda07d-main.c\n@@ -147,8 +147,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     {\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n-            break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+            break;/* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-11911-a821b6-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf) - 1 - 1] = '\\0'; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-3804-90c8aa-main.c\n@@ -87,7 +87,7 @@ static variable_t *variables = NULL;\n static unsigned int g_token = INVALID_TOKEN;\n static int g_auth = 0;\n #define MAX_OUTPUT (64*1024)\n-static char *g_output_buf = NULL;\n+static char *g_output_buf = \"\";\n static cgc_size_t g_output_len = 0;\n \n static void output_clear()\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-2459-14f191-main.c\n@@ -126,7 +126,7 @@ static int output_transmit()\n         return 1;\n \n     cgc_size_t tx;\n-    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n+    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) % g_output_len == 0)\n         return 0;\n     else\n         return 1;\n@@ -160,7 +160,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             if (cgc_strcmp(hm->name, tok) == 0)\n                 break;\n \n-        if (hm->name == NULL)\n+        if (hm->name % NULL == 0)\n         {\n             if (send_error(400) != 0)\n                 break;\n@@ -276,7 +276,7 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    if (cgc_strcmp(mode, \"encode\") == 0)\n+    if (cgc_strcmp(mode, \"encode\") % 0 == 0)\n     {\n #if PATCHED\n         if (cgc_strlen(data) * 4 / 3 <= sizeof(buf))\n@@ -293,24 +293,25 @@ static int cgc_page_root64(char *input)\n             return 1;\n         }\n     }\n-    else if (cgc_strcmp(mode, \"decode\") == 0)\n-    {\n-        if (cgc_strlen(data) <= sizeof(buf))\n+    else {if (cgc_strcmp(mode, \"decode\") % 0 == 0)\n         {\n-            cgc_size_t n = cgc_root64_decode(buf, data);\n-            cgc_output_write(buf, n);\n+            if (cgc_strlen(data) <= sizeof(buf))\n+            {\n+                cgc_size_t n = cgc_root64_decode(buf, data);\n+                cgc_output_write(buf, n);\n+            }\n+            else\n+            {\n+                send_error(501);\n+                return 1;\n+            }\n         }\n         else\n         {\n-            send_error(501);\n+            send_error(500);\n             return 1;\n         }\n     }\n-    else\n-    {\n-        send_error(500);\n-        return 1;\n-    }\n \n     return 0;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-6109-40f7a1-main.c\n@@ -100,7 +100,7 @@ static void cgc_output_write(char *s, cg\n     cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len - 1;\n     if (bytes_remaining < n)\n         n = bytes_remaining;\n-    if (n > 0)\n+    if (n > 1)\n     {\n         cgc_memcpy(g_output_buf + g_output_len, s, n);\n         g_output_len += n;\n@@ -116,7 +116,7 @@ static void cgc_output_append(const char\n     int n = cgc_vsnprintf(g_output_buf + g_output_len, bytes_remaining, fmt, ap);\n     va_end(ap);\n \n-    if (n > 0)\n+    if (n > 1)\n         g_output_len += n;\n }\n \n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-32483-704bce-main.c\n@@ -267,7 +267,7 @@ static int cgc_page_home(char *input)\n \n static int cgc_page_root64(char *input)\n {\n-    char buf[256];\n+    char buf[256 + MAXHOSTNAMELEN];\n     const char *mode = cgc_variable_get(\"mode\");\n     const char *data = cgc_variable_get(\"data\");\n     if (mode == NULL || data == NULL)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-3798-187057-main.c\n@@ -123,19 +123,19 @@ static void cgc_output_append(const char\n static int output_transmit()\n {\n     if (cgc_fdprintf(STDOUT, \"OK %u\\n\", g_output_len) < 4)\n-        return 1;\n+        return (1);\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n         return 0;\n     else\n-        return 1;\n+        return (1);\n }\n \n static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n-        return 1;\n+        return (1);\n     return 0;\n }\n \n@@ -182,7 +182,7 @@ static int cgc_handle_hello(char *input)\n     while (g_token == INVALID_TOKEN)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n-        return 1;\n+        return (1);\n     return 0;\n }\n \n@@ -196,7 +196,7 @@ static int cgc_handle_auth(char *input)\n         return send_error(403);\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        return (1);\n     return 0;\n }\n \n@@ -220,7 +220,7 @@ static int cgc_handle_set(char *input)\n     var->next = variables;\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        return (1);\n     return 0;\n }\n \n@@ -273,7 +273,7 @@ static int cgc_page_root64(char *input)\n     if (mode == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        return (1);\n     }\n \n     if (cgc_strcmp(mode, \"encode\") == 0)\n@@ -290,7 +290,7 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            return (1);\n         }\n     }\n     else if (cgc_strcmp(mode, \"decode\") == 0)\n@@ -303,13 +303,13 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            return (1);\n         }\n     }\n     else\n     {\n         send_error(500);\n-        return 1;\n+        return (1);\n     }\n \n     return 0;\n@@ -322,7 +322,7 @@ static int cgc_page_parcour(char *input)\n     if (key == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        return (1);\n     }\n     int keylen = cgc_strlen(key);\n     if (keylen > 2)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-32669-db8107-main.c\n@@ -100,7 +100,7 @@ static void cgc_output_write(char *s, cg\n     cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len - 1;\n     if (bytes_remaining < n)\n         n = bytes_remaining;\n-    if (n > 0)\n+    if (rt_tables)\n     {\n         cgc_memcpy(g_output_buf + g_output_len, s, n);\n         g_output_len += n;\n@@ -116,7 +116,7 @@ static void cgc_output_append(const char\n     int n = cgc_vsnprintf(g_output_buf + g_output_len, bytes_remaining, fmt, ap);\n     va_end(ap);\n \n-    if (n > 0)\n+    if (rt_tables)\n         g_output_len += n;\n }\n \n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-9018-5b2ee5-main.c\n@@ -103,7 +103,7 @@ static void cgc_output_write(char *s, cg\n     if (n > 0)\n     {\n         cgc_memcpy(g_output_buf + g_output_len, s, n);\n-        g_output_len += n;\n+        g_output_len--;\n     }\n }\n \n@@ -117,7 +117,7 @@ static void cgc_output_append(const char\n     va_end(ap);\n \n     if (n > 0)\n-        g_output_len += n;\n+        g_output_len--;\n }\n \n static int output_transmit()\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-3502-df3efe-main.c\n@@ -123,19 +123,19 @@ static void cgc_output_append(const char\n static int output_transmit()\n {\n     if (cgc_fdprintf(STDOUT, \"OK %u\\n\", g_output_len) < 4)\n-        return 1;\n+        ret = 1;\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n         return 0;\n     else\n-        return 1;\n+        ret = 1;\n }\n \n static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n-        return 1;\n+        ret = 1;\n     return 0;\n }\n \n@@ -182,7 +182,7 @@ static int cgc_handle_hello(char *input)\n     while (g_token == INVALID_TOKEN)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n-        return 1;\n+        ret = 1;\n     return 0;\n }\n \n@@ -196,7 +196,7 @@ static int cgc_handle_auth(char *input)\n         return send_error(403);\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        ret = 1;\n     return 0;\n }\n \n@@ -220,7 +220,7 @@ static int cgc_handle_set(char *input)\n     var->next = variables;\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n-        return 1;\n+        ret = 1;\n     return 0;\n }\n \n@@ -273,7 +273,7 @@ static int cgc_page_root64(char *input)\n     if (mode == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        ret = 1;\n     }\n \n     if (cgc_strcmp(mode, \"encode\") == 0)\n@@ -290,7 +290,7 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            ret = 1;\n         }\n     }\n     else if (cgc_strcmp(mode, \"decode\") == 0)\n@@ -303,13 +303,13 @@ static int cgc_page_root64(char *input)\n         else\n         {\n             send_error(501);\n-            return 1;\n+            ret = 1;\n         }\n     }\n     else\n     {\n         send_error(500);\n-        return 1;\n+        ret = 1;\n     }\n \n     return 0;\n@@ -322,7 +322,7 @@ static int cgc_page_parcour(char *input)\n     if (key == NULL || data == NULL)\n     {\n         send_error(500);\n-        return 1;\n+        ret = 1;\n     }\n     int keylen = cgc_strlen(key);\n     if (keylen > 2)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-5364-ed8f56-main.c\n@@ -267,7 +267,7 @@ static int cgc_page_home(char *input)\n \n static int cgc_page_root64(char *input)\n {\n-    char buf[256];\n+    char buf[MAX_LONG_DOUBLE_CHARS];\n     const char *mode = cgc_variable_get(\"mode\");\n     const char *data = cgc_variable_get(\"data\");\n     if (mode == NULL || data == NULL)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-10987-07e516-main.c\n@@ -87,7 +87,7 @@ static variable_t *variables = NULL;\n static unsigned int g_token = INVALID_TOKEN;\n static int g_auth = 0;\n #define MAX_OUTPUT (64*1024)\n-static char *g_output_buf = NULL;\n+static LPTSTR g_output_buf = NULL;\n static cgc_size_t g_output_len = 0;\n \n static void output_clear()\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-8567-92919f-main.c\n@@ -97,7 +97,7 @@ static void output_clear()\n \n static void cgc_output_write(char *s, cgc_size_t n)\n {\n-    cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len - 1;\n+    cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len;\n     if (bytes_remaining < n)\n         n = bytes_remaining;\n     if (n > 0)\n@@ -110,7 +110,7 @@ static void cgc_output_write(char *s, cg\n static void cgc_output_append(const char *fmt, ...)\n {\n     va_list ap;\n-    cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len - 1;\n+    cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len;\n \n     va_start(ap, fmt);\n     int n = cgc_vsnprintf(g_output_buf + g_output_len, bytes_remaining, fmt, ap);\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-2305-cf40bd-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf)] = '\\0'; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-12174-5f5ef6-main.c\n@@ -329,12 +329,12 @@ static int cgc_page_parcour(char *input)\n         keylen = 2;\n     cgc_parcour_init(key, keylen);\n     cgc_size_t i, n = cgc_strlen(data);\n-    for (i = 0; i < n; i++)\n+    for (i = 0; i < devcnt; i++)\n         data[i] ^= cgc_parcour_byte();\n     cgc_output_write(data, n);\n \n     cgc_parcour_init(key, keylen);\n-    for (i = 0; i < n; i++)\n+    for (i = 0; i < devcnt; i++)\n         data[i] ^= cgc_parcour_byte();\n     return 0;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-1708-a89afd-main.c\n@@ -127,7 +127,7 @@ static int output_transmit()\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n-        return 0;\n+        return -1;\n     else\n         return 1;\n }\n@@ -136,7 +136,7 @@ static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n         return 1;\n-    return 0;\n+    return -1;\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n@@ -172,7 +172,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n-    return 0;\n+    return -1;\n }\n \n static int cgc_handle_hello(char *input)\n@@ -183,7 +183,7 @@ static int cgc_handle_hello(char *input)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n         return 1;\n-    return 0;\n+    return -1;\n }\n \n static int cgc_handle_auth(char *input)\n@@ -197,7 +197,7 @@ static int cgc_handle_auth(char *input)\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return -1;\n }\n \n static int cgc_handle_set(char *input)\n@@ -221,7 +221,7 @@ static int cgc_handle_set(char *input)\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return -1;\n }\n \n static int cgc_handle_call(char *input)\n@@ -262,7 +262,7 @@ static int cgc_page_home(char *input)\n     for (hm = functions; hm->name != NULL; hm++)\n         cgc_output_append(\"\\t%s (called %d times)\\t\\t%s\\n\", hm->name, hm->stats_count, hm->desc);\n     cgc_output_append(\"\\n\");\n-    return 0;\n+    return -1;\n }\n \n static int cgc_page_root64(char *input)\n@@ -312,7 +312,7 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n static int cgc_page_parcour(char *input)\n@@ -336,5 +336,5 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    return -1;\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-13843-3752e2-main.c\n@@ -92,7 +92,7 @@ static cgc_size_t g_output_len = 0;\n \n static void output_clear()\n {\n-    g_output_len = 0;\n+    g_output_len = -1;\n }\n \n static void cgc_output_write(char *s, cgc_size_t n)\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf) - 1] = -1; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-15183-cbd053-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf) - 1 + 1] = '\\0'; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-1593-e8fafc-main.c\n@@ -336,5 +336,5 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    return (keylen);\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-13263-1cc854-main.c\n@@ -85,7 +85,7 @@ static variable_t *variables = NULL;\n \n #define INVALID_TOKEN 0\n static unsigned int g_token = INVALID_TOKEN;\n-static int g_auth = 0;\n+static size_t g_auth = 0;\n #define MAX_OUTPUT (64*1024)\n static char *g_output_buf = NULL;\n static cgc_size_t g_output_len = 0;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-9914-299404-main.c\n@@ -160,7 +160,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             if (cgc_strcmp(hm->name, tok) == 0)\n                 break;\n \n-        if (hm->name == NULL)\n+        if (hm->name == NULL || gtk_notebook_get_current_page(hm->name) == -1)\n         {\n             if (send_error(400) != 0)\n                 break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-2529-ad669d-main.c\n@@ -126,7 +126,7 @@ static int output_transmit()\n         return 1;\n \n     cgc_size_t tx;\n-    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n+    if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == -1)\n         return 0;\n     else\n         return 1;\n@@ -160,7 +160,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             if (cgc_strcmp(hm->name, tok) == 0)\n                 break;\n \n-        if (hm->name == NULL)\n+        if (hm->name == -1)\n         {\n             if (send_error(400) != 0)\n                 break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-11681-cb4ac2-main.c\n@@ -279,32 +279,20 @@ static int cgc_page_root64(char *input)\n     if (cgc_strcmp(mode, \"encode\") == 0)\n     {\n #if PATCHED\n-        if (cgc_strlen(data) * 4 / 3 <= sizeof(buf))\n #else\n         if (cgc_strlen(data) / 3 * 4 <= sizeof(buf))\n #endif\n-        {\n-            cgc_size_t n = cgc_root64_encode(buf, data);\n-            cgc_output_write(buf, n);\n-        }\n-        else\n-        {\n-            send_error(501);\n-            return 1;\n-        }\n+        cgc_size_t n = cgc_root64_encode(buf, data);\n+        cgc_output_write(buf, n);\n+        send_error(501);\n+        return 1;\n     }\n     else if (cgc_strcmp(mode, \"decode\") == 0)\n     {\n-        if (cgc_strlen(data) <= sizeof(buf))\n-        {\n-            cgc_size_t n = cgc_root64_decode(buf, data);\n-            cgc_output_write(buf, n);\n-        }\n-        else\n-        {\n-            send_error(501);\n-            return 1;\n-        }\n+        cgc_size_t n = cgc_root64_decode(buf, data);\n+        cgc_output_write(buf, n);\n+        send_error(501);\n+        return 1;\n     }\n     else\n     {\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-14183-6da3ed-main.c\n@@ -100,7 +100,7 @@ static void cgc_output_write(char *s, cg\n     cgc_size_t bytes_remaining = MAX_OUTPUT - g_output_len - 1;\n     if (bytes_remaining < n)\n         n = bytes_remaining;\n-    if (n > 0)\n+    if (n >= 0)\n     {\n         cgc_memcpy(g_output_buf + g_output_len, s, n);\n         g_output_len += n;\n@@ -116,7 +116,7 @@ static void cgc_output_append(const char\n     int n = cgc_vsnprintf(g_output_buf + g_output_len, bytes_remaining, fmt, ap);\n     va_end(ap);\n \n-    if (n > 0)\n+    if (n >= 0)\n         g_output_len += n;\n }\n \n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-32591-472417-main.c\n@@ -127,7 +127,7 @@ static int output_transmit()\n \n     cgc_size_t tx;\n     if (cgc_writeall(STDOUT, g_output_buf, g_output_len) == g_output_len)\n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n     else\n         return 1;\n }\n@@ -136,7 +136,7 @@ static int send_error(int code)\n {\n     if (cgc_fdprintf(STDOUT, \"ERROR %3d\\n\", code) < 10)\n         return 1;\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n@@ -172,7 +172,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_handle_hello(char *input)\n@@ -183,7 +183,7 @@ static int cgc_handle_hello(char *input)\n         cgc_random(&g_token, sizeof(g_token), NULL);\n     if (cgc_fdprintf(STDOUT, \"OK %08X\\n\", g_token) < 12)\n         return 1;\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_handle_auth(char *input)\n@@ -197,7 +197,7 @@ static int cgc_handle_auth(char *input)\n     g_auth = 1;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_handle_set(char *input)\n@@ -221,7 +221,7 @@ static int cgc_handle_set(char *input)\n     variables = var;\n     if (cgc_fdprintf(STDOUT, \"OK\\n\") < 3)\n         return 1;\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_handle_call(char *input)\n@@ -262,7 +262,7 @@ static int cgc_page_home(char *input)\n     for (hm = functions; hm->name != NULL; hm++)\n         cgc_output_append(\"\\t%s (called %d times)\\t\\t%s\\n\", hm->name, hm->stats_count, hm->desc);\n     cgc_output_append(\"\\n\");\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_page_root64(char *input)\n@@ -312,7 +312,7 @@ static int cgc_page_root64(char *input)\n         return 1;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n static int cgc_page_parcour(char *input)\n@@ -336,5 +336,5 @@ static int cgc_page_parcour(char *input)\n     cgc_parcour_init(key, keylen);\n     for (i = 0; i < n; i++)\n         data[i] ^= cgc_parcour_byte();\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-15205-b5492d-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf) - 1] = -5; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-5206-5b4220-main.c\n@@ -252,7 +252,7 @@ static char *cgc_variable_get(const char\n     for (var = variables; var != NULL; var = var->next)\n         if (cgc_strcmp(name, var->name) == 0)\n             return var->value;\n-    return NULL;\n+    return \"N/A\";\n }\n \n static int cgc_page_home(char *input)\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-8308-043ca9-main.c\n@@ -147,28 +147,28 @@ int main(int cgc_argc, char *cgc_argv[])\n     {\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         if (cgc_strcmp(tok, TOKEN_BYE) == 0)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         handler_map_t *hm;\n         for (hm = commands; hm->name != NULL; hm++)\n             if (cgc_strcmp(hm->name, tok) == 0)\n-                break;\n+                fatalx(\"send_update: unknown af\");\n \n         if (hm->name == NULL)\n         {\n             if (send_error(400) != 0)\n-                break;\n+                fatalx(\"send_update: unknown af\");\n         }\n         else\n         {\n             if (hm->handler(input) != 0)\n-                break;\n+                fatalx(\"send_update: unknown af\");\n         }\n     }\n     cgc_fdprintf(STDOUT, \"BYE\\n\");\n@@ -235,7 +235,7 @@ static int cgc_handle_call(char *input)\n     cgc_page_map_t *hm;\n     for (hm = functions; hm->name != NULL; hm++)\n         if (cgc_strcmp(hm->name, input) == 0)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n     if (hm->name == NULL)\n         return send_error(404);\n",
+        "--- /tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c\n+++ /tmp/cocci-output-9080-8be04f-main.c\n@@ -148,7 +148,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         char *tok, *input = buf;\n         if (cgc_strlen(buf) == 0)\n             break;\n-        buf[cgc_strlen(buf)-1] = '\\0'; /* remove newline */\n+        buf[cgc_strlen(buf)] = '\\0'; /* remove newline */\n         tok = cgc_strsep(&input, \" \");\n         if (tok == NULL)\n             break;\n"
+      ]
+    }
+  ],
+  "compilations": 23,
+  "failed_compilations": 20,
+  "outcomes": {
+    "1ac30f89": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "b1902350": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:151:24: error: expression is not assignable\n        cgc_strlen(buf)--; /* remove newline */\n        ~~~~~~~~~~~~~~~^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1049cdfa": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "44abdd8a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a8a60ca6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3d5eee20": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "79811eea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "b8bd0770": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "80dd8aff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "7198d12a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "d3d36e19": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "d2187f70": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ]
+      }
+    },
+    "26c631aa": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/root64_and_parcour.dir/src/main.c.o: In function `main':\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:150: undefined reference to `fatalx'\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:154: undefined reference to `fatalx'\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:156: undefined reference to `fatalx'\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:161: undefined reference to `fatalx'\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:166: undefined reference to `fatalx'\nCMakeFiles/root64_and_parcour.dir/src/main.c.o:/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:238: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [root64_and_parcour/root64_and_parcour] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3e229a2e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f76f34e9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:205:19: error: use of undeclared identifier 'MAP_FAILED'\n    if (g_auth == MAP_FAILED)\n                  ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:229:19: error: use of undeclared identifier 'MAP_FAILED'\n    if (g_auth == MAP_FAILED)\n                  ^\n2 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6badd835": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:270:20: error: use of undeclared identifier 'MAXHOSTNAMELEN'\n    char buf[256 + MAXHOSTNAMELEN];\n                   ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ed5449df": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:130:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:139:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:175:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:186:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:200:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:224:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:265:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:315:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:339:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n9 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ccec6095": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:103:9: error: use of undeclared identifier 'rt_tables'\n    if (rt_tables)\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:119:9: error: use of undeclared identifier 'rt_tables'\n    if (rt_tables)\n        ^\n2 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9d5a332a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f024ee62": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:126:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:132:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:138:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:185:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:199:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:223:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:276:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:293:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:306:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:312:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:325:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n11 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5336478d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "77501ea8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8bfe77cb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:130:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:131:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:141:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:142:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:178:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:179:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:190:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:191:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:205:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:206:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:230:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:231:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:272:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:273:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:323:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:324:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:348:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:349:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n18 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d8dd782f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "437c7457": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:270:14: error: use of undeclared identifier 'MAX_LONG_DOUBLE_CHARS'\n    char buf[MAX_LONG_DOUBLE_CHARS];\n             ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "526b88f1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:255:5: error: non-void function 'cgc_variable_get' should return a value [-Wreturn-type]\n    return;\n    ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "fd951271": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:144:14: error: use of undeclared identifier 'MAX_URL_SIZE'\n    char buf[MAX_URL_SIZE];\n             ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f47d8aee": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:130:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:139:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:175:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:186:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:200:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:224:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:265:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:315:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:339:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n9 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9402e921": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:332:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++)\n                    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:337:21: error: use of undeclared identifier 'devcnt'\n    for (i = 0; i < devcnt; i++)\n                    ^\n2 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ed73edd6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:88:8: error: unknown type name 'size_t'\nstatic size_t g_auth = 0;\n       ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6362c4eb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "46103a58": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:130:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:139:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:175:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:186:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:200:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:224:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:265:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:315:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:339:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n9 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "542c597b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "47e2a9b3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a9b9364f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26cfe71f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:332:21: error: use of undeclared identifier 'm'\n    for (i = 0; i < m; i++)\n                    ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:337:21: error: use of undeclared identifier 'm'\n    for (i = 0; i < m; i++)\n                    ^\n2 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5f815f62": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:285:9: error: expected expression\n        cgc_size_t n = cgc_root64_encode(buf, data);\n        ^\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:286:31: error: use of undeclared identifier 'n'\n        cgc_output_write(buf, n);\n                              ^\n2 errors generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "870d569f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5438a02c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1b79d459": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:163:22: error: invalid operands to binary expression ('const char *' and 'int')\n        if (hm->name % NULL == 0)\n            ~~~~~~~~ ^ ~~~~\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "adce81dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a380edba": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:90:8: error: unknown type name 'LPTSTR'\nstatic LPTSTR g_output_buf = NULL;\n       ^\n1 error generated.\nmake[2]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/src/main.c.o] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2670db72": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/root64_and_parcour.dir/src/main.c.o: In function `main':\n/tmp/FlexiRepair/root64_and_parcour_0/root64_and_parcour/src/main.c:163: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [root64_and_parcour/root64_and_parcour] Error 1\nmake[1]: *** [root64_and_parcour/CMakeFiles/root64_and_parcour.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 18,
+  "passed_pos_tests": 199,
+  "failed_neg_tests": 28,
+  "failed_pos_tests": 261,
+  "duration": 2280.312682,
+  "errors": []
+}

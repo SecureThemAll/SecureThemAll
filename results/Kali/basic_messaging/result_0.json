@@ -1,0 +1,1383 @@
+{
+  "repair_begin": "2021-05-07 04:46:59.040413",
+  "repair_end": "2021-05-07 05:00:18.035120",
+  "patches": [
+    {
+      "target_file": "src/service.c",
+      "fix": "",
+      "edits": [
+        " \n436c437,440\n< \tcgc_bzero( data, size );\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n> \tcgc_bzero(data, size);\n",
+        " \n441,450c442,450\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t//prophet generated patch\n> \t\tif ((walker->cgc_read == 0) || 1) {\n> \t\t    walker->cgc_read = 1;\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n> \t\t    cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t\t    cgc_strcat(data, \":  \");\n> \t\t    cgc_strcat(data, walker->message);\n> \t\t    cgc_strcat(data, \"\\n\");\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n",
+        " \n450c451,454\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_strcat(data, \"***********************************\\n\");\n",
+        " \n448c449,452\n< \t\t\tcgc_strcat( data, walker->message );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_strcat(data, walker->message);\n",
+        " \n591c592,594\n< \t\t\tcgc_puts(\"Logging out...\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_puts(\"Logging out...\\n\");\n",
+        " \n446c447,449\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n",
+        " \n591a593,595\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n",
+        " \n592c593,595\n< \t\t\tgoto end;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    goto end;\n",
+        " \n437a439,441\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n",
+        " \n445c446,449\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_strcat(data, \"***********************************\\n\");\n",
+        " \n676c677,680\n< \t\t\t\tcurrent_user = NULL;\n---\n> \t\t\t\t//prophet generated patch\n> \t\t\t\tif (1)\n> \t\t\t\t    return;\n> \t\t\t\tcurrent_user = (0);\n",
+        " \n590,616c591,619\n< \t\t} else if ( choice == 5 ) {\n< \t\t\tcgc_puts(\"Logging out...\\n\");\n< \t\t\tgoto end;\n< \t\t} else if ( choice == 4 ) {\n< \t\t\tcgc_puts(\"ID: \");\n< \t\t\tcgc_bzero( message, MESSAGE_LENGTH);\n< \t\t\tcgc_receive_until( message, '\\n', 4 );\n< \t\t\tchoice = cgc_atoi( message );\n< \t\t\tcgc_delete_message( pu->pmm, choice );\n< \t\t} else if ( choice == 3 ) {\n< \t\t\tcgc_list_messages( pu->pmm );\n< \t\t} else if ( choice == 2 ) {\n< \t\t\tcgc_puts(\"ID: \");\n< \t\t\tcgc_bzero( message, MESSAGE_LENGTH );\n< \t\t\tcgc_receive_until( message, '\\n', 4 );\n< \t\t\tchoice = cgc_atoi( message );\n< \t\t\tcgc_read_message( pu->pmm, choice );\n< \t\t} else if ( choice == 1 ) {\n< \t\t\tcgc_bzero( message, MESSAGE_LENGTH );\n< \t\t\tcgc_bzero( username, USERNAME_LENGTH );\n< \n< \t\t\tcgc_puts(\"To: \");\n< \t\t\tcgc_receive_until( username, '\\n', USERNAME_LENGTH-1);\n< \t\t\tcgc_puts(\"Message: \");\n< \t\t\tcgc_receive_until( message, '\\n', MESSAGE_LENGTH-1);\n< \t\t\tcgc_send_user_message( pum, username, message );\n< \t\t}\n---\n> \t\t} else //prophet generated patch\n> {\n>     if ((choice == 5) && !1) {\n>         cgc_puts(\"Logging out...\\n\");\n>         goto end;\n>     } else if (choice == 4) {\n>         cgc_puts(\"ID: \");\n>         cgc_bzero(message, 32);\n>         cgc_receive_until(message, '\\n', 4);\n>         choice = cgc_atoi(message);\n>         cgc_delete_message(pu->pmm, choice);\n>     } else if (choice == 3) {\n>         cgc_list_messages(pu->pmm);\n>     } else if (choice == 2) {\n>         cgc_puts(\"ID: \");\n>         cgc_bzero(message, 32);\n>         cgc_receive_until(message, '\\n', 4);\n>         choice = cgc_atoi(message);\n>         cgc_read_message(pu->pmm, choice);\n>     } else if (choice == 1) {\n>         cgc_bzero(message, 32);\n>         cgc_bzero(username, 16);\n>         cgc_puts(\"To: \");\n>         cgc_receive_until(username, '\\n', 16 - 1);\n>         cgc_puts(\"Message: \");\n>         cgc_receive_until(message, '\\n', 32 - 1);\n>         cgc_send_user_message(pum, username, message);\n>     }\n> }\n",
+        " \n455a457,459\n> //prophet generated patch\n> if (1)\n>     return;\n457c461\n< \treturn;\n---\n> return;\n",
+        " \n451a453,455\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return;\n",
+        " \n436c437,439\n< \tcgc_bzero( data, size );\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    cgc_bzero(data, size);\n",
+        " \n676c677,679\n< \t\t\t\tcurrent_user = NULL;\n---\n> \t\t\t\t//prophet generated patch\n> \t\t\t\tif (!1)\n> \t\t\t\t    current_user = (0);\n",
+        " \n443a445,447\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n",
+        " \n438c439,441\n< \twalker = pmm->root;\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    walker = pmm->root;\n",
+        " \n431a433,435\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n",
+        " \n444c445,447\n< \t\t\twalker->cgc_read = 1;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    walker->cgc_read = 1;\n",
+        " \n447c448,450\n< \t\t\tcgc_strcat( data, \":  \" );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_strcat(data, \":  \");\n",
+        " \n441,450c442,452\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return;\n> \t\tif (walker->cgc_read == 0) {\n> \t\t    walker->cgc_read = 1;\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n> \t\t    cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t\t    cgc_strcat(data, \":  \");\n> \t\t    cgc_strcat(data, walker->message);\n> \t\t    cgc_strcat(data, \"\\n\");\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n",
+        " \n449c450,452\n< \t\t\tcgc_strcat( data, \"\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_strcat(data, \"\\n\");\n",
+        " \n432c433,435\n< \tsize += count * 8;\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    size += count * 8;\n",
+        " \n450c451,453\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_strcat(data, \"***********************************\\n\");\n",
+        " \n590a592,594\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n",
+        " \n441,451c442,452\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t}\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    if (walker->cgc_read == 0) {\n> \t\t        walker->cgc_read = 1;\n> \t\t        cgc_strcat(data, \"***********************************\\n\");\n> \t\t        cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t\t        cgc_strcat(data, \":  \");\n> \t\t        cgc_strcat(data, walker->message);\n> \t\t        cgc_strcat(data, \"\\n\");\n> \t\t        cgc_strcat(data, \"***********************************\\n\");\n> \t\t    }\n",
+        " \n440,453c441,456\n< \twhile ( walker ) {\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t}\n< \t\twalker = walker->next;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n> \twhile (walker)\n> \t    {\n> \t        if (walker->cgc_read == 0) {\n> \t            walker->cgc_read = 1;\n> \t            cgc_strcat(data, \"***********************************\\n\");\n> \t            cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t            cgc_strcat(data, \":  \");\n> \t            cgc_strcat(data, walker->message);\n> \t            cgc_strcat(data, \"\\n\");\n> \t            cgc_strcat(data, \"***********************************\\n\");\n> \t        }\n> \t        walker = walker->next;\n> \t    }\n",
+        " \n433a435,437\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n",
+        " \n455c456,459\n< \tcgc_puts( data );\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n> \tcgc_puts(data);\n",
+        " \n440,453c441,455\n< \twhile ( walker ) {\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t}\n< \t\twalker = walker->next;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    while (walker)\n> \t        {\n> \t            if (walker->cgc_read == 0) {\n> \t                walker->cgc_read = 1;\n> \t                cgc_strcat(data, \"***********************************\\n\");\n> \t                cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t                cgc_strcat(data, \":  \");\n> \t                cgc_strcat(data, walker->message);\n> \t                cgc_strcat(data, \"\\n\");\n> \t                cgc_strcat(data, \"***********************************\\n\");\n> \t            }\n> \t            walker = walker->next;\n> \t        }\n",
+        " \n429c430,432\n< \tsize += count * (72);\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    size += count * (72);\n",
+        " \n441,450c442,450\n< \t\tif ( walker->cgc_read == 0 ) {\n< \n< \t\t\t// Mark the message as cgc_read\n< \t\t\twalker->cgc_read = 1;\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n< \t\t\tcgc_strcat( data, \":  \" );\n< \t\t\tcgc_strcat( data, walker->message );\n< \t\t\tcgc_strcat( data, \"\\n\");\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t//prophet generated patch\n> \t\tif ((walker->cgc_read == 0) && !1) {\n> \t\t    walker->cgc_read = 1;\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n> \t\t    cgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n> \t\t    cgc_strcat(data, \":  \");\n> \t\t    cgc_strcat(data, walker->message);\n> \t\t    cgc_strcat(data, \"\\n\");\n> \t\t    cgc_strcat(data, \"***********************************\\n\");\n",
+        " \n455c456,458\n< \tcgc_puts( data );\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    cgc_puts(data);\n",
+        " \n428a430,432\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n",
+        " \n452c453,455\n< \t\twalker = walker->next;\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    walker = walker->next;\n",
+        " \n447c448,451\n< \t\t\tcgc_strcat( data, \":  \" );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_strcat(data, \":  \");\n",
+        " \n448c449,451\n< \t\t\tcgc_strcat( data, walker->message );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_strcat(data, walker->message);\n",
+        " \n446c447,450\n< \t\t\tcgc_itoa( data + cgc_strlen(data), walker->message_id, 4 );\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_itoa(data + cgc_strlen(data), walker->message_id, 4);\n",
+        " \n445c446,448\n< \t\t\tcgc_strcat( data, \"***********************************\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (!1)\n> \t\t\t    cgc_strcat(data, \"***********************************\\n\");\n",
+        " \n449c450,453\n< \t\t\tcgc_strcat( data, \"\\n\");\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (1)\n> \t\t\t    return;\n> \t\t\tcgc_strcat(data, \"\\n\");\n"
+      ]
+    }
+  ],
+  "compilations": 44,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 9
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 4
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 5
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a0c4834a": {
+      "compiles": [
+        0
+      ]
+    },
+    "71412aa3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "310f85e5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "d927cb5f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ff1a5046": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "7812ccae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "35d24d11": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "35e0924f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4f825771": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "59140217": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 26
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7f9301b9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e49629cf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2e673ac0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "09a5ff43": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "82fefd37": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bb16ae47": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 26
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "7fc668e6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8ff03448": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2202b262": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "39f76ecf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2804fe3f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "853e2ff8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8e696ff5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "63823e50": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26707d3c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d885f8e7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0e52c21c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "29a31f35": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b7d0fe27": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "46981466": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8b52d32b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7b83e0a6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "99305df3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5e00192c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "00cebd1d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "31a56aa6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e5279c03": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "659a9a13": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0b0274c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9aacd37f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8106adf9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "137913f2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 26,
+  "passed_pos_tests": 32,
+  "failed_neg_tests": 17,
+  "failed_pos_tests": 33,
+  "duration": 798.994707,
+  "errors": [
+    "Neg Processing: 21",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "Processing: 0 : 1",
+    "Processing: 1 : 2",
+    "Processing: 2 : 3",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 3 : 4",
+    "Processing: 4 : 5",
+    "Processing: 5 : 6",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 6 : 7",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 7 : 8",
+    "Processing: 8 : 9",
+    "Processing: 9 : 10",
+    "Processing: 10 : 11",
+    "Processing: 11 : 12",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 12 : 13",
+    "Processing: 13 : 14",
+    "Processing: 14 : 15",
+    "Processing: 15 : 16",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 16 : 17",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 17 : 18",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 18 : 19",
+    "Processing: 19 : 20",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "going to directory /tmp/Kali/basic_messaging_0/workdir/src",
+    "warning: /tmp/Kali/basic_messaging_0/workdir/src: 'linker' input unused",
+    "warning: /tmp/Kali/basic_messaging_0/workdir/src: 'linker' input unused",
+    "warning: /tmp/Kali/basic_messaging_0/workdir/src: 'linker' input unused",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

@@ -1,0 +1,1666 @@
+{
+  "repair_begin": "2021-05-07 23:41:30.427618",
+  "repair_end": "2021-05-08 00:24:39.271977",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-16761-aee7a9-service.c\n@@ -222,7 +222,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 1;\n+\t\tret = 1;\n \t} else if(cgc_startswith(record->data, \"SORT\")) {\n \t\tunsigned short field_index;\n \t\tField* key;\n@@ -241,7 +241,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\tret = 1;\n \t} else if(cgc_startswith(record->data, \"FREPORT\")) {\n \t\tReport filteredReport = {NULL, 0, 0};\n \t\tfilteredReport.record_size = report->record_size;\n@@ -250,7 +250,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\tret = 1;\n \t} else {\n \t\tchar* command;\n \t\tcommand = &record->data[report->fields->start];\n@@ -262,14 +262,14 @@ int cgc_newRecord(Report *report) {\n \t\t\tcgc_free(command);\n #endif\n \t\t\tcgc_free(record);\n-\t\t\treturn 1;\n+\t\t\tret = 1;\n \t\t}\n \t}\n \n \trecord->next = report->head;\n \treport->head = record;\n \n-\treturn 1;\n+\tret = 1;\n \n }\n \n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-24852-defcff-service.c\n@@ -126,13 +126,10 @@ Record* cgc_mergeReport(Record* a, Recor\n \n \tcompare = cgc_strncmp(&a->data[field->start], &b->data[field->start], field->size);\n \n-\tif(compare <= 0) {\n-\t\tresult = a;\n-\t\tresult->next = cgc_mergeReport(a->next, b, field);\n-\t} else {\n-\t\tresult = b;\n-\t\tresult->next = cgc_mergeReport(a, b->next, field);\n-\t}\n+\tresult = a;\n+\tresult->next = cgc_mergeReport(a->next, b, field);\n+\tresult = b;\n+\tresult->next = cgc_mergeReport(a, b->next, field);\n \n \treturn result;\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-22935-103660-service.c\n@@ -252,7 +252,7 @@ int cgc_newRecord(Report *report) {\n \n \t\treturn 1;\n \t} else {\n-\t\tchar* command;\n+\t\tzstr command;\n \t\tcommand = &record->data[report->fields->start];\n \n \t\tif(cgc_startswith(command, \"ERROR\")) {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-13912-08f8f7-service.c\n@@ -222,7 +222,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t} else if(cgc_startswith(record->data, \"SORT\")) {\n \t\tunsigned short field_index;\n \t\tField* key;\n@@ -241,7 +241,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t} else if(cgc_startswith(record->data, \"FREPORT\")) {\n \t\tReport filteredReport = {NULL, 0, 0};\n \t\tfilteredReport.record_size = report->record_size;\n@@ -250,7 +250,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t} else {\n \t\tchar* command;\n \t\tcommand = &record->data[report->fields->start];\n@@ -262,14 +262,14 @@ int cgc_newRecord(Report *report) {\n \t\t\tcgc_free(command);\n #endif\n \t\t\tcgc_free(record);\n-\t\t\treturn 1;\n+\t\t\treturn (EINVAL);\n \t\t}\n \t}\n \n \trecord->next = report->head;\n \treport->head = record;\n \n-\treturn 1;\n+\treturn (EINVAL);\n \n }\n \n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-21469-e21bb3-service.c\n@@ -217,7 +217,7 @@ int cgc_newRecord(Report *report) {\n \tif(cgc_startswith(record->data, \"END\")) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \t} else if(cgc_startswith(record->data, \"REPORT\")) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n@@ -280,5 +280,5 @@ int main(int cgc_argc, char *cgc_argv[])\n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-24584-2349e0-service.c\n@@ -118,10 +118,10 @@ Record* cgc_mergeReport(Record* a, Recor\n \tRecord* result = NULL;\n \tint compare;\n \n-\tif(!a)\n+\tif (a == MAP_FAILED)\n \t\treturn b;\n \n-\tif(!b)\n+\tif (b == MAP_FAILED)\n \t\treturn a;\n \n \tcompare = cgc_strncmp(&a->data[field->start], &b->data[field->start], field->size);\n@@ -160,7 +160,7 @@ void cgc_filterReport(Report *report, Re\n \tfor(nextRecord = report->head; nextRecord != NULL; nextRecord = nextRecord->next) {\n \t\tfor(nextField = report->fields; nextField->next != NULL; nextField = nextField->next) {\n \t\t\tcompare = cgc_strncmp(&nextRecord->data[nextField->start], &filterString[nextField->start], nextField->size);\n-\t\t\tif(!compare) {\n+\t\t\tif (compare == MAP_FAILED) {\n \t\t\t\tRecord* record;\n \t\t\t\trecord = cgc_malloc(sizeof(Record));\n #ifdef PATCHED\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-13410-777280-service.c\n@@ -217,7 +217,7 @@ int cgc_newRecord(Report *report) {\n \tif(cgc_startswith(record->data, \"END\")) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \t} else if(cgc_startswith(record->data, \"REPORT\")) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n@@ -280,5 +280,5 @@ int main(int cgc_argc, char *cgc_argv[])\n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-16352-d68a21-service.c\n@@ -253,7 +253,7 @@ int cgc_newRecord(Report *report) {\n \t\treturn 1;\n \t} else {\n \t\tchar* command;\n-\t\tcommand = &record->data[report->fields->start];\n+\t\tcommand = record->data[report->fields->start];\n \n \t\tif(cgc_startswith(command, \"ERROR\")) {\n #ifdef PATCHED\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-26437-7c3b82-service.c\n@@ -80,7 +80,7 @@ void cgc_newReport(Report *report) {\n \n void cgc_sendReport(Report *report) {\n \tRecord* nextRecord = NULL;\n-\tint ret=0;\n+\tsize_t ret = 0;\n \n \tfor(nextRecord=report->head; nextRecord != NULL; nextRecord = nextRecord->next) {\n \t\tif(cgc_transmit_all(STDOUT, nextRecord->data, report->record_size)) \n@@ -155,7 +155,7 @@ void cgc_sortReport(Record **headRef, Fi\n void cgc_filterReport(Report *report, Report* filteredReport, char* filterString) {\n \tRecord* nextRecord = NULL;\n \tField* nextField = NULL;\n-\tint compare = 0;\n+\tsize_t compare = 0;\n \n \tfor(nextRecord = report->head; nextRecord != NULL; nextRecord = nextRecord->next) {\n \t\tfor(nextField = report->fields; nextField->next != NULL; nextField = nextField->next) {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-21519-c28a7f-service.c\n@@ -170,7 +170,7 @@ void cgc_filterReport(Report *report, Re\n \t\t\t\trecord->next = filteredReport->head;\n \t\t\t\trecord->data = nextRecord->data;\n \t\t\t\tfilteredReport->head = record;\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\t}\n \t\t}\n \t}\n@@ -230,7 +230,7 @@ int cgc_newRecord(Report *report) {\n \t\tfield_index = record->data[sizeof(\"SORT\")-1];\n \t\tfor(key = report->fields; key != NULL; key=key->next) {\n \t\t\tif(field_index == 0) {\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\t}\n \t\t\tfield_index--;\n \t\t}\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-16570-cce038-service.c\n@@ -92,7 +92,7 @@ void cgc_splitReport(Record *source, Rec\n \tRecord *fast;\n \tRecord *slow;\n \n-\tif(!source || !source->next) {\n+\tif (!*source || !*source->next) {\n \t\t*front = source;\n \t\t*back = NULL;\n \t} else {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-25300-4320ac-service.c\n@@ -244,7 +244,7 @@ int cgc_newRecord(Report *report) {\n \t\treturn 1;\n \t} else if(cgc_startswith(record->data, \"FREPORT\")) {\n \t\tReport filteredReport = {NULL, 0, 0};\n-\t\tfilteredReport.record_size = report->record_size;\n+\t\tfilteredReport.bg = report->record_size;\n \t\tcgc_filterReport(report, &filteredReport, record->data);\n \t\tcgc_sendReport(&filteredReport);\n \t\tcgc_free(record->data);\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-21241-2c9e0a-service.c\n@@ -235,7 +235,7 @@ int cgc_newRecord(Report *report) {\n \t\t\tfield_index--;\n \t\t}\n \n-\t\tif(key)\n+\t\tif (key || no_draw)\n \t\t\tcgc_sortReport(&report->head, key);\n \n \t\tcgc_free(record->data);\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-25900-567e24-service.c\n@@ -116,7 +116,7 @@ void cgc_splitReport(Record *source, Rec\n \n Record* cgc_mergeReport(Record* a, Record* b, Field* field) {\n \tRecord* result = NULL;\n-\tint compare;\n+\tconst struct options_table_entry *oe;\n \n \tif(!a)\n \t\treturn b;\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-14872-79c39d-service.c\n@@ -119,10 +119,10 @@ Record* cgc_mergeReport(Record* a, Recor\n \tint compare;\n \n \tif(!a)\n-\t\treturn b;\n+\t\treturn (compare);\n \n \tif(!b)\n-\t\treturn a;\n+\t\treturn (compare);\n \n \tcompare = cgc_strncmp(&a->data[field->start], &b->data[field->start], field->size);\n \n@@ -134,7 +134,7 @@ Record* cgc_mergeReport(Record* a, Recor\n \t\tresult->next = cgc_mergeReport(a, b->next, field);\n \t}\n \n-\treturn result;\n+\treturn (compare);\n }\n \n void cgc_sortReport(Record **headRef, Field* field) {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-22414-0f750f-service.c\n@@ -109,7 +109,7 @@ void cgc_splitReport(Record *source, Rec\n \n \t\t*front = source;\n \t\t*back = slow->next;\n-\t\tslow->next = NULL;\n+\t\tslow->next = slow->dir_next = NULL;\n \t}\n \n }\n@@ -190,7 +190,7 @@ int cgc_newRecord(Report *report) {\n \tif(record == NULL)\n \t\tcgc__terminate(ALLOCATE_ERROR);\n #endif\n-\trecord->next = NULL;\n+\trecord->next = record->dir_next = NULL;\n \trecord->data = cgc_malloc(report->record_size*2); \n #ifdef PATCHED\n \tif(record->data == NULL)\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-20079-a88900-service.c\n@@ -142,7 +142,7 @@ void cgc_sortReport(Record **headRef, Fi\n \tRecord *a=NULL, *b=NULL;\n \n \tif(!head || !head->next)\n-\t\treturn;\n+\t\treturn 0;\n \n \tcgc_splitReport(head, &a, &b);\n \tcgc_sortReport(&a, field);\n@@ -150,6 +150,7 @@ void cgc_sortReport(Record **headRef, Fi\n \n \t*headRef = cgc_mergeReport(a, b, field);\n \n+\treturn 0;\n }\n \n void cgc_filterReport(Report *report, Report* filteredReport, char* filterString) {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-14991-de5324-service.c\n@@ -217,7 +217,7 @@ int cgc_newRecord(Report *report) {\n \tif(cgc_startswith(record->data, \"END\")) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 0;\n+\t\treturn -1;\n \t} else if(cgc_startswith(record->data, \"REPORT\")) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n@@ -280,5 +280,5 @@ int main(int cgc_argc, char *cgc_argv[])\n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n \n-\treturn 0;\n+\treturn -1;\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-17909-80b710-service.c\n@@ -217,7 +217,8 @@ int cgc_newRecord(Report *report) {\n \tif(cgc_startswith(record->data, \"END\")) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 0;\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t} else if(cgc_startswith(record->data, \"REPORT\")) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n@@ -280,5 +281,6 @@ int main(int cgc_argc, char *cgc_argv[])\n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-19005-8a0e39-service.c\n@@ -142,7 +142,7 @@ void cgc_sortReport(Record **headRef, Fi\n \tRecord *a=NULL, *b=NULL;\n \n \tif(!head || !head->next)\n-\t\treturn;\n+\t\tgoto done;\n \n \tcgc_splitReport(head, &a, &b);\n \tcgc_sortReport(&a, field);\n@@ -150,6 +150,7 @@ void cgc_sortReport(Record **headRef, Fi\n \n \t*headRef = cgc_mergeReport(a, b, field);\n \n+\tgoto done;\n }\n \n void cgc_filterReport(Report *report, Report* filteredReport, char* filterString) {\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-12042-7c9f0c-service.c\n@@ -253,7 +253,7 @@ int cgc_newRecord(Report *report) {\n \t\treturn 1;\n \t} else {\n \t\tchar* command;\n-\t\tcommand = &record->data[report->fields->start];\n+\t\tcommand = &record->data[report->fields->start % VMWPVS_REQ_COUNT];\n \n \t\tif(cgc_startswith(command, \"ERROR\")) {\n #ifdef PATCHED\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-13682-0d4490-service.c\n@@ -217,7 +217,7 @@ int cgc_newRecord(Report *report) {\n \tif(cgc_startswith(record->data, \"END\")) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \t} else if(cgc_startswith(record->data, \"REPORT\")) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n@@ -280,5 +280,5 @@ int main(int cgc_argc, char *cgc_argv[])\n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n \n-\treturn 0;\n+\tno_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-13737-d43aa2-service.c\n@@ -101,7 +101,7 @@ void cgc_splitReport(Record *source, Rec\n \n \t\twhile (fast != NULL) {\n \t\t\tfast = fast->next;\n-\t\t\tif(fast != NULL) {\n+\t\t\tif (fast < NULL || fast > NULL + strlen(NULL)) {\n \t\t\t\tslow = slow->next;\n \t\t\t\tfast = fast->next;\n \t\t\t}\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-17054-9b13f6-service.c\n@@ -222,7 +222,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_sendReport(report);\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n-\t\treturn 1;\n+\t\treturn (1);\n \t} else if(cgc_startswith(record->data, \"SORT\")) {\n \t\tunsigned short field_index;\n \t\tField* key;\n@@ -241,7 +241,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\treturn (1);\n \t} else if(cgc_startswith(record->data, \"FREPORT\")) {\n \t\tReport filteredReport = {NULL, 0, 0};\n \t\tfilteredReport.record_size = report->record_size;\n@@ -250,7 +250,7 @@ int cgc_newRecord(Report *report) {\n \t\tcgc_free(record->data);\n \t\tcgc_free(record);\n \n-\t\treturn 1;\n+\t\treturn (1);\n \t} else {\n \t\tchar* command;\n \t\tcommand = &record->data[report->fields->start];\n@@ -262,14 +262,14 @@ int cgc_newRecord(Report *report) {\n \t\t\tcgc_free(command);\n #endif\n \t\t\tcgc_free(record);\n-\t\t\treturn 1;\n+\t\t\treturn (1);\n \t\t}\n \t}\n \n \trecord->next = report->head;\n \treport->head = record;\n \n-\treturn 1;\n+\treturn (1);\n \n }\n \n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-17060-68eb4a-service.c\n@@ -25,7 +25,7 @@\n \n void cgc_newReport(Report *report) {\n \tchar character = 0;\n-\tchar* string = NULL;\n+\tchar *string = \"\";\n \tshort pos = 0, prev_pos=0;\n \tshort num_fields = 0;\n \tField* new_field = NULL;\n@@ -181,7 +181,7 @@ void cgc_filterReport(Report *report, Re\n int cgc_newRecord(Report *report) {\n \tRecord* record = NULL;\n \tshort second_field_size = 0;\n-\tchar* receive_buf = NULL;\n+\tchar *receive_buf = \"\";\n \tField* nextField = NULL;\n \tshort field_index = 0;\n \n@@ -275,7 +275,7 @@ int cgc_newRecord(Report *report) {\n \n int main(int cgc_argc, char *cgc_argv[]) {\n \tReport report = {NULL, 0, 0};\n-\tchar* field = NULL;\n+\tchar *field = \"\";\n \n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n",
+        "--- /tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c\n+++ /tmp/cocci-output-24166-13877d-service.c\n@@ -25,7 +25,7 @@\n \n void cgc_newReport(Report *report) {\n \tchar character = 0;\n-\tchar* string = NULL;\n+\tLPTSTR string = NULL;\n \tshort pos = 0, prev_pos=0;\n \tshort num_fields = 0;\n \tField* new_field = NULL;\n@@ -181,7 +181,7 @@ void cgc_filterReport(Report *report, Re\n int cgc_newRecord(Report *report) {\n \tRecord* record = NULL;\n \tshort second_field_size = 0;\n-\tchar* receive_buf = NULL;\n+\tLPTSTR receive_buf = NULL;\n \tField* nextField = NULL;\n \tshort field_index = 0;\n \n@@ -275,7 +275,7 @@ int cgc_newRecord(Report *report) {\n \n int main(int cgc_argc, char *cgc_argv[]) {\n \tReport report = {NULL, 0, 0};\n-\tchar* field = NULL;\n+\tLPTSTR field = NULL;\n \n \tcgc_newReport(&report);\n  \twhile(cgc_newRecord(&report));\n"
+      ]
+    }
+  ],
+  "compilations": 8,
+  "failed_compilations": 18,
+  "outcomes": {
+    "84c468ec": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:256:51: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n                command = &record->data[report->fields->start % VMWPVS_REQ_COUNT];\n                                                                ^\n1 error generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "79e9b762": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 52
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4f135988": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:112:22: error: no member named 'dir_next' in 'struct record_t'\n                slow->next = slow->dir_next = NULL;\n                             ~~~~  ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:193:25: error: no member named 'dir_next' in 'struct record_t'\n        record->next = record->dir_next = NULL;\n                       ~~~~~~  ^\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b60f7619": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:247:18: error: no member named 'bg' in 'struct report_t'\n                filteredReport.bg = report->record_size;\n                ~~~~~~~~~~~~~~ ^\n1 error generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1aca2f91": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/FablesReport_patched.dir/src/service.c.o: In function `cgc_filterReport':\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:173: undefined reference to `fatalx'\nCMakeFiles/FablesReport_patched.dir/src/service.c.o: In function `cgc_newRecord':\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:233: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [FablesReport/FablesReport_patched] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "42f71bcd": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:121:11: error: use of undeclared identifier 'MAP_FAILED'\n        if (a == MAP_FAILED)\n                 ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:124:11: error: use of undeclared identifier 'MAP_FAILED'\n        if (b == MAP_FAILED)\n                 ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:163:19: error: use of undeclared identifier 'MAP_FAILED'\n                        if (compare == MAP_FAILED) {\n                                       ^\n3 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e5023a95": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:220:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:283:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0b19d87c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c9b06f2c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "34313288": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 35
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3390a8a7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:145:3: error: void function 'cgc_sortReport' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:153:2: error: void function 'cgc_sortReport' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "508dc442": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:238:14: error: use of undeclared identifier 'no_draw'\n                if (key || no_draw)\n                           ^\n1 error generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0725c34b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:220:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:283:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b1d00f42": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:83:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t ret = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:83:9: error: use of undeclared identifier 'ret'\n        size_t ret = 0;\n               ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:158:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t compare = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:158:9: error: use of undeclared identifier 'compare'\n        size_t compare = 0;\n               ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:162:4: error: use of undeclared identifier 'compare'\n                        compare = cgc_strncmp(&nextRecord->data[nextField->start], &filterString[nextField->start], nextField->size);\n                        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:163:8: error: use of undeclared identifier 'compare'\n                        if(!compare) {\n                            ^\n6 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "eb6a4f2b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:220:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:283:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5ea4ef48": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 52
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2c897e4b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 41
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 13
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dd0fcc53": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:225:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:244:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:253:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:265:4: error: use of undeclared identifier 'ret'\n                        ret = 1;\n                        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:272:2: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n5 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7e817c50": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:220:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:221:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:284:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:285:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n4 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1415af4e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:145:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n1 error generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7ef15bd0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:255:3: error: use of undeclared identifier 'zstr'\n                zstr command;\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:256:3: error: use of undeclared identifier 'command'\n                command = &record->data[report->fields->start];\n                ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:258:21: error: use of undeclared identifier 'command'\n                if(cgc_startswith(command, \"ERROR\")) {\n                                  ^\n3 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "38cc8483": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 52
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9d9b5667": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 28
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 25
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 52
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n5": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a5f50f2d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:28:2: error: use of undeclared identifier 'LPTSTR'\n        LPTSTR string = NULL;\n        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:184:2: error: use of undeclared identifier 'LPTSTR'\n        LPTSTR receive_buf = NULL;\n        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:199:2: error: use of undeclared identifier 'receive_buf'\n        receive_buf = cgc_malloc(report->record_size*2);\n        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:201:5: error: use of undeclared identifier 'receive_buf'\n        if(receive_buf == NULL)\n           ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:208:17: error: use of undeclared identifier 'receive_buf'\n        cgc_memset(receive_buf, 0, report->record_size);\n                   ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:209:22: error: use of undeclared identifier 'receive_buf'\n        cgc_recv(STDIN, receive_buf, nextField->size);\n                        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:211:45: error: use of undeclared identifier 'receive_buf'\n        cgc_strcpy(&record->data[field_index], receive_buf);\n                                               ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:215:11: error: use of undeclared identifier 'receive_buf'\n        cgc_free(receive_buf);\n                 ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:278:2: error: use of undeclared identifier 'LPTSTR'\n        LPTSTR field = NULL;\n        ^\n9 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "bb91b0db": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:127:2: error: use of undeclared identifier 'compare'\n        compare = cgc_strncmp(&a->data[field->start], &b->data[field->start], field->size);\n        ^\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:129:5: error: use of undeclared identifier 'compare'\n        if(compare <= 0) {\n           ^\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2ad04c7a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:95:6: error: invalid argument type 'Record' (aka 'struct record_t') to unary expression\n        if (!*source || !*source->next) {\n            ^~~~~~~~\n/tmp/FlexiRepair/FablesReport_0/FablesReport/src/service.c:95:18: error: invalid argument type 'struct record_t' to unary expression\n        if (!*source || !*source->next) {\n                        ^~~~~~~~~~~~~~\n2 errors generated.\nmake[2]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [FablesReport/CMakeFiles/FablesReport_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 5,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 83,
+  "failed_neg_tests": 40,
+  "failed_pos_tests": 77,
+  "duration": 2588.844359,
+  "errors": []
+}

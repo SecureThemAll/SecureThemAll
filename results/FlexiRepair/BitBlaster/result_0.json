@@ -1,0 +1,2276 @@
+{
+  "repair_begin": "2021-05-07 17:22:41.665846",
+  "repair_end": "2021-05-07 17:47:30.452052",
+  "patches": [
+    {
+      "target_file": "src/main.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-8615-8c9d2d-main.c\n@@ -113,7 +113,7 @@ void cgc_printBoard()\n   int i = 0;\n   int j = 0; \n   int k = 0;\n-  char buf[32 * 34]; //big string buffer\n+  char buf[32 * 34] = \"\"; //big string buffer\n \n   for (i = 0; i < BOARD_SIZE; i++)\n   {\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-13174-eee04d-main.c\n@@ -115,9 +115,9 @@ void cgc_printBoard()\n   int k = 0;\n   char buf[32 * 34]; //big string buffer\n \n-  for (i = 0; i < BOARD_SIZE; i++)\n+  for (i = 1; i <= BOARD_SIZE; i++)\n   {\n-    for (j = 0; j < BOARD_SIZE; j++)\n+    for (j = 1; j <= BOARD_SIZE; j++)\n     {\n       if (gBoard[i] & mask[j])\n       {\n@@ -171,7 +171,7 @@ void cgc_makeMove(uint8_t move)\n int cgc_isWinner()\n {\n   int i = 0; \n-  for (i = 0; i < BOARD_SIZE; i++)\n+  for (i = 1; i <= BOARD_SIZE; i++)\n   {\n     if (gBoard[i] != 0)\n     {\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-5076-e7ed5c-main.c\n@@ -73,11 +73,12 @@ void cgc_rotate_right(int row)\n \n   if ( (row < 0) || (row >= BOARD_SIZE) )\n   {\n-    return;\n+    return 0;\n   }\n   \n   temp = gBoard[row] >> 31; //temp now has msb at the lsb\n   gBoard[row] = (gBoard[row] << 1) | temp;\n+  return 0;\n }\n \n uint32_t mask[32] = { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80,\n@@ -96,7 +97,7 @@ void cgc_rotate_down(int col)\n   uint32_t temp = 0;\n   if ( (col < 0) || (col >= BOARD_SIZE) )\n   {\n-    return;\n+    return 0;\n   }\n \n   temp = gBoard[31];\n@@ -106,6 +107,7 @@ void cgc_rotate_down(int col)\n   }\n   \n   gBoard[0] = (gBoard[0] & neg_mask[col]) | (temp & mask[col]);    \n+  return 0;\n }\n \n void cgc_printBoard()\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-31216-6395cc-main.c\n@@ -173,7 +173,7 @@ int cgc_isWinner()\n   int i = 0; \n   for (i = 0; i < BOARD_SIZE; i++)\n   {\n-    if (gBoard[i] != 0)\n+    if (gBoard[i] < 0 || gBoard[i] > 0 + strlen(0))\n     {\n       return (0);\n     }\n@@ -189,7 +189,7 @@ int main(int cgc_argc, char *cgc_argv[])\n   \n   while (!cgc_isWinner())\n   {\n-    if (cgc_receive_all(0, &temp, 1) != 1)\n+    if (cgc_receive_all(0, &temp, 1) < 1 || cgc_receive_all(0, &temp, 1) > 1 + strlen(1))\n     {\n       cgc_printBoard();\n       return (0);\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-31396-51d2b3-main.c\n@@ -178,7 +178,7 @@ int cgc_isWinner()\n       return (0);\n     }\n   }\n-  return (1);\n+  return (EINVAL);\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-4000-f32e36-main.c\n@@ -73,11 +73,12 @@ void cgc_rotate_right(int row)\n \n   if ( (row < 0) || (row >= BOARD_SIZE) )\n   {\n-    return;\n+    goto done;\n   }\n   \n   temp = gBoard[row] >> 31; //temp now has msb at the lsb\n   gBoard[row] = (gBoard[row] << 1) | temp;\n+  goto done;\n }\n \n uint32_t mask[32] = { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80,\n@@ -96,7 +97,7 @@ void cgc_rotate_down(int col)\n   uint32_t temp = 0;\n   if ( (col < 0) || (col >= BOARD_SIZE) )\n   {\n-    return;\n+    goto done;\n   }\n \n   temp = gBoard[31];\n@@ -106,6 +107,7 @@ void cgc_rotate_down(int col)\n   }\n   \n   gBoard[0] = (gBoard[0] & neg_mask[col]) | (temp & mask[col]);    \n+  goto done;\n }\n \n void cgc_printBoard()\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-31166-0e6d93-main.c\n@@ -24,7 +24,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    no_draw = 1;\n   }\n   \n   do\n@@ -32,7 +32,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n     ret = cgc_transmit(fd, buf, size - total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      no_draw = 1;\n     }\n     total += rx_bytes;\n   }\n@@ -48,7 +48,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    no_draw = 1;\n   }\n   \n   do\n@@ -56,7 +56,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n     ret = cgc_receive(fd, buf, size-total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      no_draw = 1;\n     }\n     total += rx_bytes;\n   }\n@@ -175,7 +175,7 @@ int cgc_isWinner()\n   {\n     if (gBoard[i] != 0)\n     {\n-      return (0);\n+      no_draw = 1;\n     }\n   }\n   return (1);\n@@ -192,12 +192,12 @@ int main(int cgc_argc, char *cgc_argv[])\n     if (cgc_receive_all(0, &temp, 1) != 1)\n     {\n       cgc_printBoard();\n-      return (0);\n+      no_draw = 1;\n     }    \n     if (temp == END_CHAR)\n     {\n       cgc_printBoard();\n-      return (0);\n+      no_draw = 1;\n     } \n     cgc_makeMove(temp);\n   }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-12198-03abbe-main.c\n@@ -130,7 +130,6 @@ void cgc_printBoard()\n     } \n     buf[k++] = '\\n';\n   }\n-  buf[k] = '\\0';\n   \n   cgc_transmit_all(1, buf, k);\n }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-7979-2429c5-main.c\n@@ -100,7 +100,7 @@ void cgc_rotate_down(int col)\n   }\n \n   temp = gBoard[31];\n-  for (i = 31; i > 0; i--)\n+  for (i = 31 - 1; i > 0; i--)\n   {\n     gBoard[i] = (gBoard[i] & neg_mask[col]) | (gBoard[i-1] & mask[col]);    \n   }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-7201-d6e570-main.c\n@@ -34,7 +34,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n     {\n       return (0);\n     }\n-    total += rx_bytes;\n+    total--;\n   }\n   while (total < size);\n \n@@ -58,7 +58,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n     {\n       return (0);\n     }\n-    total += rx_bytes;\n+    total--;\n   }\n   while (total < size);\n   \n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-10317-94fd17-main.c\n@@ -115,9 +115,9 @@ void cgc_printBoard()\n   int k = 0;\n   char buf[32 * 34]; //big string buffer\n \n-  for (i = 0; i < BOARD_SIZE; i++)\n+  for (i = 0; i < devcnt; i++)\n   {\n-    for (j = 0; j < BOARD_SIZE; j++)\n+    for (j = 0; j < devcnt; j++)\n     {\n       if (gBoard[i] & mask[j])\n       {\n@@ -171,7 +171,7 @@ void cgc_makeMove(uint8_t move)\n int cgc_isWinner()\n {\n   int i = 0; \n-  for (i = 0; i < BOARD_SIZE; i++)\n+  for (i = 0; i < devcnt; i++)\n   {\n     if (gBoard[i] != 0)\n     {\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-32465-1ef963-main.c\n@@ -24,7 +24,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    return -1;\n   }\n   \n   do\n@@ -32,7 +32,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n     ret = cgc_transmit(fd, buf, size - total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      return -1;\n     }\n     total += rx_bytes;\n   }\n@@ -48,7 +48,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    return -1;\n   }\n   \n   do\n@@ -56,7 +56,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n     ret = cgc_receive(fd, buf, size-total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      return -1;\n     }\n     total += rx_bytes;\n   }\n@@ -175,7 +175,7 @@ int cgc_isWinner()\n   {\n     if (gBoard[i] != 0)\n     {\n-      return (0);\n+      return -1;\n     }\n   }\n   return (1);\n@@ -192,12 +192,12 @@ int main(int cgc_argc, char *cgc_argv[])\n     if (cgc_receive_all(0, &temp, 1) != 1)\n     {\n       cgc_printBoard();\n-      return (0);\n+      return -1;\n     }    \n     if (temp == END_CHAR)\n     {\n       cgc_printBoard();\n-      return (0);\n+      return -1;\n     } \n     cgc_makeMove(temp);\n   }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-9188-a07fb8-main.c\n@@ -93,7 +93,7 @@ uint32_t neg_mask[32] = { ~0x1, ~0x2, ~0\n void cgc_rotate_down(int col)\n {\n   int i = 0; \n-  uint32_t temp = 0;\n+  uint32_t temp = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n   if ( (col < 0) || (col >= BOARD_SIZE) )\n   {\n     return;\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-11979-27a9ef-main.c\n@@ -130,7 +130,7 @@ void cgc_printBoard()\n     } \n     buf[k++] = '\\n';\n   }\n-  buf[k] = '\\0';\n+  buf[k] = -1;\n   \n   cgc_transmit_all(1, buf, k);\n }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-2968-7014cf-main.c\n@@ -189,7 +189,7 @@ int main(int cgc_argc, char *cgc_argv[])\n   \n   while (!cgc_isWinner())\n   {\n-    if (cgc_receive_all(0, &temp, 1) != 1)\n+    if (cgc_receive_all(0, &temp, 1) < 0)\n     {\n       cgc_printBoard();\n       return (0);\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-3591-06d6f5-main.c\n@@ -77,7 +77,7 @@ void cgc_rotate_right(int row)\n   }\n   \n   temp = gBoard[row] >> 31; //temp now has msb at the lsb\n-  gBoard[row] = (gBoard[row] << 1) | temp;\n+  gBoard[row] = (gBoard[row] << 1);\n }\n \n uint32_t mask[32] = { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80,\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-13306-f29ac0-main.c\n@@ -130,7 +130,7 @@ void cgc_printBoard()\n     } \n     buf[k++] = '\\n';\n   }\n-  buf[k] = '\\0';\n+  buf[k + 1] = '\\0';\n   \n   cgc_transmit_all(1, buf, k);\n }\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-32352-f80670-main.c\n@@ -24,7 +24,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    return (ret);\n   }\n   \n   do\n@@ -32,13 +32,13 @@ cgc_size_t cgc_transmit_all(int fd, char\n     ret = cgc_transmit(fd, buf, size - total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      return (ret);\n     }\n     total += rx_bytes;\n   }\n   while (total < size);\n \n-  return (size);\n+  return (ret);\n }\n \n cgc_size_t cgc_receive_all(int fd, char* buf, cgc_size_t size)\n@@ -48,7 +48,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    return (ret);\n   }\n   \n   do\n@@ -56,13 +56,13 @@ cgc_size_t cgc_receive_all(int fd, char*\n     ret = cgc_receive(fd, buf, size-total, &rx_bytes);\n     if ( (ret != 0) || (rx_bytes == 0) )\n     {\n-      return (0);\n+      return (ret);\n     }\n     total += rx_bytes;\n   }\n   while (total < size);\n   \n-  return (size);\n+  return (ret);\n }\n \n uint32_t gBoard[32];\n@@ -175,10 +175,10 @@ int cgc_isWinner()\n   {\n     if (gBoard[i] != 0)\n     {\n-      return (0);\n+      return (i);\n     }\n   }\n-  return (1);\n+  return (i);\n }\n \n int main(int cgc_argc, char *cgc_argv[])\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-11398-ffdefb-main.c\n@@ -21,7 +21,7 @@ cgc_size_t cgc_transmit_all(int fd, char\n {\n   cgc_size_t rx_bytes = 0;\n   cgc_size_t total = 0;\n-  int ret = 0;\n+  size_t ret = 0;\n   if (buf == NULL)\n   {\n     return (0);\n@@ -45,7 +45,7 @@ cgc_size_t cgc_receive_all(int fd, char*\n {\n   cgc_size_t rx_bytes = 0;\n   cgc_size_t total = 0;\n-  int ret = 0;\n+  size_t ret = 0;\n   if (buf == NULL)\n   {\n     return (0);\n@@ -92,7 +92,7 @@ uint32_t neg_mask[32] = { ~0x1, ~0x2, ~0\n \n void cgc_rotate_down(int col)\n {\n-  int i = 0; \n+  size_t i = 0; \n   uint32_t temp = 0;\n   if ( (col < 0) || (col >= BOARD_SIZE) )\n   {\n@@ -110,9 +110,9 @@ void cgc_rotate_down(int col)\n \n void cgc_printBoard()\n {\n-  int i = 0;\n-  int j = 0; \n-  int k = 0;\n+  size_t i = 0;\n+  size_t j = 0; \n+  size_t k = 0;\n   char buf[32 * 34]; //big string buffer\n \n   for (i = 0; i < BOARD_SIZE; i++)\n@@ -153,7 +153,7 @@ void cgc_remove_bits()\n \n void cgc_makeMove(uint8_t move)\n {\n-  int i = 0;\n+  size_t i = 0;\n   i = ROW_COL_MASK(move);\n \n   if (IS_RIGHT(move))\n@@ -170,7 +170,7 @@ void cgc_makeMove(uint8_t move)\n \n int cgc_isWinner()\n {\n-  int i = 0; \n+  size_t i = 0; \n   for (i = 0; i < BOARD_SIZE; i++)\n   {\n     if (gBoard[i] != 0)\n",
+        "--- /tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c\n+++ /tmp/cocci-output-13329-a7d268-main.c\n@@ -130,7 +130,7 @@ void cgc_printBoard()\n     } \n     buf[k++] = '\\n';\n   }\n-  buf[k] = '\\0';\n+  buf[k] = -5;\n   \n   cgc_transmit_all(1, buf, k);\n }\n"
+      ]
+    }
+  ],
+  "compilations": 14,
+  "failed_compilations": 6,
+  "outcomes": {
+    "4e66178a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87f172ce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "09c7824a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8ebc94ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b1dbee5e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4ae7c53c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fcfdebad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e3f1484a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "969b6757": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:76:5: error: void function 'cgc_rotate_right' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:81:3: error: void function 'cgc_rotate_right' should not return a value [-Wreturn-type]\n  return 0;\n  ^      ~\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:100:5: error: void function 'cgc_rotate_down' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:110:3: error: void function 'cgc_rotate_down' should not return a value [-Wreturn-type]\n  return 0;\n  ^      ~\n4 errors generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c0103e0d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:118:19: error: use of undeclared identifier 'devcnt'\n  for (i = 0; i < devcnt; i++)\n                  ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:120:21: error: use of undeclared identifier 'devcnt'\n    for (j = 0; j < devcnt; j++)\n                    ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:174:19: error: use of undeclared identifier 'devcnt'\n  for (i = 0; i < devcnt; i++)\n                  ^\n3 errors generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4662829c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:24:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t ret = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:24:10: error: use of undeclared identifier 'ret'\n  size_t ret = 0;\n         ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:32:5: error: use of undeclared identifier 'ret'\n    ret = cgc_transmit(fd, buf, size - total, &rx_bytes);\n    ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:33:11: error: use of undeclared identifier 'ret'\n    if ( (ret != 0) || (rx_bytes == 0) )\n          ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:48:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t ret = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:48:10: error: use of undeclared identifier 'ret'\n  size_t ret = 0;\n         ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:56:5: error: use of undeclared identifier 'ret'\n    ret = cgc_receive(fd, buf, size-total, &rx_bytes);\n    ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:57:11: error: use of undeclared identifier 'ret'\n    if ( (ret != 0) || (rx_bytes == 0) )\n          ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:95:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t i = 0; \n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:95:10: error: use of undeclared identifier 'i'\n  size_t i = 0; \n         ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:103:8: error: use of undeclared identifier 'i'\n  for (i = 31; i > 0; i--)\n       ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:103:16: error: use of undeclared identifier 'i'\n  for (i = 31; i > 0; i--)\n               ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:103:23: error: use of undeclared identifier 'i'\n  for (i = 31; i > 0; i--)\n                      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:105:25: error: use of undeclared identifier 'i'\n    gBoard[i] = (gBoard[i] & neg_mask[col]) | (gBoard[i-1] & mask[col]);    \n                        ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:105:12: error: use of undeclared identifier 'i'\n    gBoard[i] = (gBoard[i] & neg_mask[col]) | (gBoard[i-1] & mask[col]);    \n           ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:105:55: error: use of undeclared identifier 'i'\n    gBoard[i] = (gBoard[i] & neg_mask[col]) | (gBoard[i-1] & mask[col]);    \n                                                      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:113:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t i = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:113:10: error: use of undeclared identifier 'i'\n  size_t i = 0;\n         ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:114:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t j = 0; \n  ^~~~~~\n  sizeof\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "90bee6ae": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:27:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:35:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:51:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:59:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:178:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:195:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:200:7: error: use of undeclared identifier 'no_draw'\n      no_draw = 1;\n      ^\n7 errors generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "cf03f72b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4e6f1f27": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "53c799cd": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:76:10: error: use of undeclared label 'done'\n    goto done;\n         ^\n/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:100:10: error: use of undeclared label 'done'\n    goto done;\n         ^\n2 errors generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "67023f6a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dfeffb44": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/BitBlaster_0/BitBlaster/src/main.c:96:19: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n  uint32_t temp = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                  ^\n1 error generated.\nmake[2]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/src/main.c.o] Error 1\nmake[1]: *** [BitBlaster/CMakeFiles/BitBlaster.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5bc638bb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1166cbcb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "59f3546d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 169,
+  "failed_neg_tests": 14,
+  "failed_pos_tests": 111,
+  "duration": 1488.786206,
+  "errors": []
+}

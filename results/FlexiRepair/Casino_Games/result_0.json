@@ -1,0 +1,4787 @@
+{
+  "repair_begin": "2021-05-07 19:52:43.978921",
+  "repair_end": "2021-05-07 20:42:01.884120",
+  "patches": [
+    {
+      "target_file": "src/casino.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-23423-a51179-casino.c\n@@ -287,10 +287,10 @@ int main(int cgc_argc, char *cgc_argv[])\n     {\n         cgc__terminate(2);\n     }\n-    name[bytes_read] = 0;\n+    name[bytes_read] = -5;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name) - 1] = -5;\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-10703-cc3078-casino.c\n@@ -57,7 +57,7 @@ player_info *cgc_lookup_by_number(int nu\n     player_info *player = root_player;\n     while (player != 0)\n     {\n-        if (player->number == number)\n+        if (player->number % number == 0)\n         {\n             break;\n         }\n@@ -77,7 +77,7 @@ player_info *cgc_login_player_by_number(\n     cgc_receive_fixed_input(numbuf, '\\n', sizeof(numbuf) - 1);\n     int number = cgc_atoi(numbuf);\n     player_info *player = cgc_lookup_by_number(number, root_player);\n-    if (player == 0)\n+    if (player % 0 == 0)\n     {\n         cgc_printf(\"Player not found\\n\");\n     }\n@@ -200,7 +200,7 @@ void cgc_decode(char *encoded, char *dec\n     while(inp < encoded + size)\n     {\n         char byte;\n-        if ((*inp) == '`')\n+        if ((*inp) % '`' == 0)\n         {\n             inp++;\n             byte = 0;\n@@ -371,25 +371,27 @@ int main(int cgc_argc, char *cgc_argv[])\n                         cgc_printf(\"Goodbye, stranger\\n\");\n                         cgc__terminate(0);\n                     }\n-                    if (current_player->blackjack_score == 0)\n+                    if (current_player->blackjack_score % 0 == 0)\n                     {\n                         cgc_printf(\"But you didn't even play blackjack :(\\n\");\n                         cgc__terminate(0);\n                     }\n-                    else if (current_player->poker_score == 0)\n-                    {\n-                        cgc_printf(\"But you didn't even play poker :(\\n\");\n-                        cgc__terminate(0);\n-                    }\n-                    else if (current_player->slots_score == 0)\n-                    {\n-                        cgc_printf(\"But you didn't even play slots :(\\n\");\n-                        cgc__terminate(0);\n-                    }\n-                    else\n-                    {\n-                        cgc_printf(\"Okay, you've had enough ;)\\n\");\n-                        goto finish;\n+                    else {if (current_player->poker_score % 0 == 0)\n+                        {\n+                            cgc_printf(\"But you didn't even play poker :(\\n\");\n+                            cgc__terminate(0);\n+                        }\n+                        else {if (current_player->slots_score % 0 == 0)\n+                            {\n+                                cgc_printf(\"But you didn't even play slots :(\\n\");\n+                                cgc__terminate(0);\n+                            }\n+                            else\n+                            {\n+                                cgc_printf(\"Okay, you've had enough ;)\\n\");\n+                                goto finish;\n+                            }\n+                        }\n                     }\n                 }\n                 break;\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-12904-ef6aa8-casino.c\n@@ -154,7 +154,8 @@ int cgc_lookup(char byte)\n      switch(byte)\n     {\n         case '!':\n-            return 0;\n+            restorescr(old);\n+            return ret;\n         case '@':\n             return 1;\n         case '#':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-9935-f4ec0d-casino.c\n@@ -154,7 +154,7 @@ int cgc_lookup(char byte)\n      switch(byte)\n     {\n         case '!':\n-            return 0;\n+            return -1;\n         case '@':\n             return 1;\n         case '#':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-17459-fe1d7b-casino.c\n@@ -199,7 +199,7 @@ void cgc_decode(char *encoded, char *dec\n     char *outp = decoded;\n     while(inp < encoded + size)\n     {\n-        char byte;\n+        char byte = '\\0';\n         if ((*inp) == '`')\n         {\n             inp++;\n@@ -328,7 +328,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         cgc_printf(\"8. Exit\\n\");\n         cgc_printf(\"Select a number:\");\n \n-        char input;\n+        char input = '\\0';\n         cgc_receive_fixed_input(&input, '\\n', sizeof(input));\n \n         switch(input)\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-13080-b5da33-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        cgc_strlen(name)--;\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-22274-d72346-casino.c\n@@ -257,9 +257,9 @@ void cgc_programming_interface()\n     // Decode config\n #ifdef PATCHED\n     // Provide additional stack space for decoded data to overflow to\n-    int new_payouts[NUMBER_OF_PAYOUTS * 2];\n+    int new_payouts[32];\n #else\n-    int new_payouts[NUMBER_OF_PAYOUTS];\n+    int new_payouts[32];\n #endif\n \n     cgc_decode(config_data, (char *)new_payouts, config_size);\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-12151-4714ff-casino.c\n@@ -210,7 +210,7 @@ void cgc_decode(char *encoded, char *dec\n             byte = cgc_lookup(*inp++);\n             byte = cgc_lookup(*inp++) << 4 | byte;\n         }\n-        *outp++ = byte;\n+        *outp = byte;\n     }\n }\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-21476-c765bb-casino.c\n@@ -242,7 +242,7 @@ void cgc_programming_interface()\n     }\n \n     // Read entire config\n-    int bytes_received = 0;\n+    size_t bytes_received = 0;\n     char *input = config_data;\n     while (bytes_received < config_size) {\n         ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-14011-cf9cf8-casino.c\n@@ -94,7 +94,7 @@ void cgc_print_player_info(player_info *\n     if (player == 0)\n     {\n         cgc_printf(\"Player does not exist\\n\");\n-        return;\n+        goto done;\n     }\n     cgc_printf(\"Player Name: @s\\n\", player->name);\n     cgc_printf(\"Player Number: @d\\n\", player->number);\n@@ -103,6 +103,7 @@ void cgc_print_player_info(player_info *\n     cgc_printf(\"Slots Score: @d\\n\", player->slots_score);\n     cgc_printf(\"Player Wallet Balance: @d\\n\", player->wallet);\n     cgc_printf(\"\\n\");\n+    goto done;\n }\n \n // Registers a new player and adds new player to the beginning of the linked list of players.\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-12662-5e9e63-casino.c\n@@ -295,7 +295,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n     // Seed the PRNG\n-    uint64_t seed = 0;\n+    int64_t seed = 0;\n     for (int i = 0; i<cgc_strlen(name); i++)\n     {\n         seed = (seed << 8) | (((seed >> 56) ^ name[i]));\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-14176-de94a2-casino.c\n@@ -197,7 +197,7 @@ void cgc_decode(char *encoded, char *dec\n {\n     char *inp = encoded;\n     char *outp = decoded;\n-    while(inp < encoded + size)\n+    while (inp <= encoded + size)\n     {\n         char byte;\n         if ((*inp) == '`')\n@@ -244,7 +244,7 @@ void cgc_programming_interface()\n     // Read entire config\n     int bytes_received = 0;\n     char *input = config_data;\n-    while (bytes_received < config_size) {\n+    while (bytes_received <= config_size) {\n         ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n         if (ret != 0)\n         {\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-22057-e9484b-casino.c\n@@ -203,7 +203,7 @@ void cgc_decode(char *encoded, char *dec\n         if ((*inp) == '`')\n         {\n             inp++;\n-            byte = 0;\n+            byte = -1;\n         }\n         else\n         {\n@@ -287,10 +287,10 @@ int main(int cgc_argc, char *cgc_argv[])\n     {\n         cgc__terminate(2);\n     }\n-    name[bytes_read] = 0;\n+    name[bytes_read] = -1;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name) - 1] = -1;\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-21743-24d7df-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name) - 2] = 0;\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-8633-660772-casino.c\n@@ -154,7 +154,7 @@ int cgc_lookup(char byte)\n      switch(byte)\n     {\n         case '!':\n-            return 0;\n+            no_draw = 1;\n         case '@':\n             return 1;\n         case '#':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-12038-77097e-casino.c\n@@ -156,7 +156,7 @@ int cgc_lookup(char byte)\n         case '!':\n             return 0;\n         case '@':\n-            return 1;\n+            return (1);\n         case '#':\n             return 2;\n         case '$':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-17244-ee5ebb-casino.c\n@@ -250,8 +250,8 @@ void cgc_programming_interface()\n         {\n            cgc__terminate(2);\n         }\n-        bytes_received += bytes_read;\n-        input += bytes_read;\n+        bytes_received--;\n+        input--;\n     }\n \n     // Decode config\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-22278-d88301-casino.c\n@@ -287,10 +287,8 @@ int main(int cgc_argc, char *cgc_argv[])\n     {\n         cgc__terminate(2);\n     }\n-    name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-11934-d5a090-casino.c\n@@ -170,7 +170,7 @@ int cgc_lookup(char byte)\n         case '+':\n             return 7;\n         case '=':\n-            return 8;\n+            return 9;\n         case ':':\n             return 9;\n         case '>':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-20943-408812-casino.c\n@@ -217,9 +217,9 @@ void cgc_decode(char *encoded, char *dec\n // Runs the programming interface\n void cgc_programming_interface()\n {\n-    int ret;\n+    const struct options_table_entry *oe;\n     cgc_size_t bytes_read;\n-    int config_size;\n+    const struct options_table_entry *oe;\n     char *config_data;\n \n     // Read config size\n@@ -279,7 +279,7 @@ int main(int cgc_argc, char *cgc_argv[])\n #endif\n \n     // Get player name\n-    int ret;\n+    const struct options_table_entry *oe;\n     cgc_size_t bytes_read;\n     cgc_printf(\"Enter your name:\");\n     ret = cgc_receive(STDIN, name, 83, &bytes_read);\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-16482-1e7994-casino.c\n@@ -154,7 +154,7 @@ int cgc_lookup(char byte)\n      switch(byte)\n     {\n         case '!':\n-            return 0;\n+            return ZEND_HASH_APPLY_KEEP;\n         case '@':\n             return 1;\n         case '#':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-18823-eaaf83-casino.c\n@@ -219,7 +219,6 @@ void cgc_programming_interface()\n {\n     int ret;\n     cgc_size_t bytes_read;\n-    int config_size;\n     char *config_data;\n \n     // Read config size\n@@ -244,7 +243,9 @@ void cgc_programming_interface()\n     // Read entire config\n     int bytes_received = 0;\n     char *input = config_data;\n-    while (bytes_received < config_size) {\n+    quit = 0;\n+    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+    while (bytes_received < config_size && !quit) {\n         ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n         if (ret != 0)\n         {\n@@ -277,9 +278,6 @@ int main(int cgc_argc, char *cgc_argv[])\n #else\n     char name[64];\n #endif\n-\n-    // Get player name\n-    int ret;\n     cgc_size_t bytes_read;\n     cgc_printf(\"Enter your name:\");\n     ret = cgc_receive(STDIN, name, 83, &bytes_read);\n@@ -314,8 +312,9 @@ int main(int cgc_argc, char *cgc_argv[])\n     player_info *root_player = 0;\n \n     // Play the game\n-    while( (current_player == 0) ||\n-        (current_player->wallet <= BREAK_THE_BANK) )\n+    quit = 0;\n+    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+    while ((current_player == 0) || (current_player->wallet <= BREAK_THE_BANK) && !quit)\n     {\n         cgc_printf(\"\\n\");\n         cgc_printf(\"1. Play Blackjack\\n\");\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-20124-01ee52-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name) - 1 - 1] = '\\0';\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-23102-065ecb-casino.c\n@@ -275,7 +275,7 @@ int main(int cgc_argc, char *cgc_argv[])\n #ifdef PATCHED\n     char name[84];\n #else\n-    char name[64];\n+    char name[128];\n #endif\n \n     // Get player name\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-8362-bffeef-casino.c\n@@ -154,7 +154,7 @@ int cgc_lookup(char byte)\n      switch(byte)\n     {\n         case '!':\n-            return 0;\n+            return (BUS_PROBE_NOWILDCARD);\n         case '@':\n             return 1;\n         case '#':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-11357-39b66b-casino.c\n@@ -296,7 +296,8 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     // Seed the PRNG\n     uint64_t seed = 0;\n-    for (int i = 0; i<cgc_strlen(name); i++)\n+    int i;\n+    for (i = 0; i < cgc_strlen(name); i++)\n     {\n         seed = (seed << 8) | (((seed >> 56) ^ name[i]));\n     }\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-8692-e354bb-casino.c\n@@ -110,7 +110,7 @@ void cgc_print_player_info(player_info *\n player_info *cgc_register_player(player_info *root_player)\n {\n     player_info *new_player;\n-    if (cgc_allocate(sizeof(player_info), 0, (void **)&new_player) != 0)\n+    if (cgc_allocate(sizeof(player_info), 0, (void **)&new_player) < 0 || cgc_allocate(sizeof(player_info), 0, (void **)&new_player) > 0 + strlen(0))\n     {\n         cgc_printf(\"Error allocating memory for new player\\n\");\n         return root_player;\n@@ -246,7 +246,7 @@ void cgc_programming_interface()\n     char *input = config_data;\n     while (bytes_received < config_size) {\n         ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n-        if (ret != 0)\n+        if (ret < 0 || ret > 0 + strlen(0))\n         {\n            cgc__terminate(2);\n         }\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-15091-c1a65f-casino.c\n@@ -94,7 +94,7 @@ void cgc_print_player_info(player_info *\n     if (player == 0)\n     {\n         cgc_printf(\"Player does not exist\\n\");\n-        return;\n+        return 0;\n     }\n     cgc_printf(\"Player Name: @s\\n\", player->name);\n     cgc_printf(\"Player Number: @d\\n\", player->number);\n@@ -103,6 +103,7 @@ void cgc_print_player_info(player_info *\n     cgc_printf(\"Slots Score: @d\\n\", player->slots_score);\n     cgc_printf(\"Player Wallet Balance: @d\\n\", player->wallet);\n     cgc_printf(\"\\n\");\n+    return 0;\n }\n \n // Registers a new player and adds new player to the beginning of the linked list of players.\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-10536-05cab8-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name)] = '\\0';\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-10754-b9b864-casino.c\n@@ -57,7 +57,7 @@ player_info *cgc_lookup_by_number(int nu\n     player_info *player = root_player;\n     while (player != 0)\n     {\n-        if (player->number == number)\n+        if (player->number == -1)\n         {\n             break;\n         }\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-18673-43f18b-casino.c\n@@ -273,9 +273,9 @@ void cgc_programming_interface()\n \n int main(int cgc_argc, char *cgc_argv[]) {\n #ifdef PATCHED\n-    char name[84];\n+    char name[84] = \"\";\n #else\n-    char name[64];\n+    char name[64] = \"\";\n #endif\n \n     // Get player name\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-9827-62bda5-casino.c\n@@ -85,7 +85,7 @@ player_info *cgc_login_player_by_number(\n     {\n         cgc_printf(\"Hello, @s!\\n\", player->name);\n     }\n-    return player;\n+    return (number);\n }\n \n // Prints info about a player\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-23395-3d3a7b-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name) - 1 + 1] = '\\0';\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-11734-b338e3-casino.c\n@@ -156,7 +156,7 @@ int cgc_lookup(char byte)\n         case '!':\n             return 0;\n         case '@':\n-            return 1;\n+            ret = 1;\n         case '#':\n             return 2;\n         case '$':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-17302-72193b-casino.c\n@@ -290,7 +290,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     name[bytes_read] = 0;\n     if (name[cgc_strlen(name)-1] == '\\n')\n     {\n-        name[cgc_strlen(name)-1] = '\\0';\n+        name[cgc_strlen(name)] = '\\0';\n     }\n     cgc_printf(\"Hello, @s!\\n\", name);\n \n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-22583-0fbe33-casino.c\n@@ -197,7 +197,7 @@ void cgc_decode(char *encoded, char *dec\n {\n     char *inp = encoded;\n     char *outp = decoded;\n-    while(inp < encoded + size)\n+    while (inp < (size_t)(encoded + size))\n     {\n         char byte;\n         if ((*inp) == '`')\n@@ -244,7 +244,7 @@ void cgc_programming_interface()\n     // Read entire config\n     int bytes_received = 0;\n     char *input = config_data;\n-    while (bytes_received < config_size) {\n+    while (bytes_received < (size_t)config_size) {\n         ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n         if (ret != 0)\n         {\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-17967-8b9bd3-casino.c\n@@ -220,7 +220,7 @@ void cgc_programming_interface()\n     int ret;\n     cgc_size_t bytes_read;\n     int config_size;\n-    char *config_data;\n+    zstr config_data;\n \n     // Read config size\n     ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-8861-eb7e76-casino.c\n@@ -156,7 +156,7 @@ int cgc_lookup(char byte)\n         case '!':\n             return 0;\n         case '@':\n-            return 1;\n+            return (EINVAL);\n         case '#':\n             return 2;\n         case '$':\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-9991-d20aaa-casino.c\n@@ -197,7 +197,7 @@ void cgc_decode(char *encoded, char *dec\n {\n     char *inp = encoded;\n     char *outp = decoded;\n-    while(inp < encoded + size)\n+    while (inp < encoded + size)\n     {\n         char byte;\n         if ((*inp) == '`')\n@@ -211,6 +211,7 @@ void cgc_decode(char *encoded, char *dec\n             byte = cgc_lookup(*inp++) << 4 | byte;\n         }\n         *outp++ = byte;\n+        inp++;\n     }\n }\n \n@@ -252,6 +253,7 @@ void cgc_programming_interface()\n         }\n         bytes_received += bytes_read;\n         input += bytes_read;\n+        bytes_received++;\n     }\n \n     // Decode config\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-13607-2b2b1c-casino.c\n@@ -208,7 +208,7 @@ void cgc_decode(char *encoded, char *dec\n         else\n         {\n             byte = cgc_lookup(*inp++);\n-            byte = cgc_lookup(*inp++) << 4 | byte;\n+            byte = cgc_lookup(*inp++) << 4;\n         }\n         *outp++ = byte;\n     }\n",
+        "--- /tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c\n+++ /tmp/cocci-output-16537-d236b2-casino.c\n@@ -59,7 +59,7 @@ player_info *cgc_lookup_by_number(int nu\n     {\n         if (player->number == number)\n         {\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n         else\n         {\n@@ -336,31 +336,31 @@ int main(int cgc_argc, char *cgc_argv[])\n             case '1':\n                 cgc_printf(\"Play Blackjack\\n\");\n                 cgc_blackjack(current_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '2':\n                 cgc_printf(\"Play Poker\\n\");\n                 cgc_poker(current_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '3':\n                 cgc_printf(\"Play Slots\\n\");\n                 cgc_slots(current_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '4':\n                 // Enter Player Number\n                 current_player = cgc_login_player_by_number(root_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '5':\n                 cgc_printf(\"Register a new Player\\n\");\n                 root_player = cgc_register_player(root_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '6':\n                 // Check player_status\n                 cgc_print_player_info(current_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '7':\n                 cgc_printf(\"Show All Players\\n\");\n                 cgc_print_all_players(root_player);\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case '8':\n                 cgc_printf(\"you don't really want to leave do you?\\n\");\n                 cgc_receive_fixed_input(&input, '\\n', sizeof(input));\n@@ -392,9 +392,9 @@ int main(int cgc_argc, char *cgc_argv[])\n                         goto finish;\n                     }\n                 }\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             default:\n-                break;\n+                fatalx(\"send_update: unknown af\");\n         }\n \n     }\n"
+      ]
+    }
+  ],
+  "compilations": 26,
+  "failed_compilations": 15,
+  "outcomes": {
+    "51720ce9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "7d912d82": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "12dde143": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:293:25: error: expression is not assignable\n        cgc_strlen(name)--;\n        ~~~~~~~~~~~~~~~~^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ad85b1cc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b32bc8d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "12a67a2b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "73190225": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "87dca071": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "2e40d079": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "2faed0bc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "b4987252": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "e95afe7c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "15d49605": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "728897ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "9231f4b4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Casino_Games_patched.dir/src/casino.c.o: In function `cgc_lookup_by_number':\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:62: undefined reference to `fatalx'\nCMakeFiles/Casino_Games_patched.dir/src/casino.c.o: In function `main':\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:339: undefined reference to `fatalx'\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:343: undefined reference to `fatalx'\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:347: undefined reference to `fatalx'\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:351: undefined reference to `fatalx'\nCMakeFiles/Casino_Games_patched.dir/src/casino.c.o:/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:355: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Casino_Games/Casino_Games_patched] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "868253dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "44f9d839": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:200:19: error: use of undeclared identifier 'size_t'\n    while (inp < (size_t)(encoded + size))\n                  ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:30: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    while (bytes_received < (size_t)config_size) {\n                             ^~~~~~\n                             sizeof\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:29: error: reference to overloaded function could not be resolved; did you mean to call it?\n    while (bytes_received < (size_t)config_size) {\n                            ^~~~~~~~\n3 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b83060ba": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:157:21: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n            return (BUS_PROBE_NOWILDCARD);\n                    ^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "31642dc8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aa840677": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "81e3291c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "46edfd6e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:97:9: error: void function 'cgc_print_player_info' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:106:5: error: void function 'cgc_print_player_info' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n2 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "38cad889": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:157:20: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n            return ZEND_HASH_APPLY_KEEP;\n                   ^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "71f12bf8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "60e266b3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4830c613": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:245:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t bytes_received = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:245:12: error: use of undeclared identifier 'bytes_received'; did you mean 'bytes_read'?\n    size_t bytes_received = 0;\n           ^~~~~~~~~~~~~~\n           bytes_read\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:221:16: note: 'bytes_read' declared here\n    cgc_size_t bytes_read;\n               ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:245:27: error: expression is not assignable\n    size_t bytes_received = 0;\n    ~~~~~~~~~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:12: error: use of undeclared identifier 'bytes_received'; did you mean 'bytes_read'?\n    while (bytes_received < config_size) {\n           ^~~~~~~~~~~~~~\n           bytes_read\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:221:16: note: 'bytes_read' declared here\n    cgc_size_t bytes_read;\n               ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:248:55: error: use of undeclared identifier 'bytes_received'; did you mean 'bytes_read'?\n        ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n                                                      ^~~~~~~~~~~~~~\n                                                      bytes_read\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:221:16: note: 'bytes_read' declared here\n    cgc_size_t bytes_read;\n               ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:253:9: error: use of undeclared identifier 'bytes_received'\n        bytes_received += bytes_read;\n        ^\n6 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6872eaa3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f1a73a30": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:157:13: error: use of undeclared identifier 'no_draw'\n            no_draw = 1;\n            ^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3286079b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "406013e6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6d9a6d05": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:159:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ef386745": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7be727f6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:157:24: error: use of undeclared identifier 'old'\n            restorescr(old);\n                       ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:158:20: error: use of undeclared identifier 'ret'\n            return ret;\n                   ^\n2 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4f892a5e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:5: error: use of undeclared identifier 'zstr'\n    zstr config_data;\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:238:51: error: use of undeclared identifier 'config_data'; did you mean 'config_size'?\n    ret = cgc_allocate(config_size, 1, (void **) &config_data);\n                                                  ^~~~~~~~~~~\n                                                  config_size\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:9: note: 'config_size' declared here\n    int config_size;\n        ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:239:24: error: use of undeclared identifier 'config_data'; did you mean 'config_size'?\n    if ((ret != 0) || (config_data == 0))\n                       ^~~~~~~~~~~\n                       config_size\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:9: note: 'config_size' declared here\n    int config_size;\n        ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:246:19: error: use of undeclared identifier 'config_data'; did you mean 'config_size'?\n    char *input = config_data;\n                  ^~~~~~~~~~~\n                  config_size\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:9: note: 'config_size' declared here\n    int config_size;\n        ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:265:16: error: use of undeclared identifier 'config_data'; did you mean 'config_size'?\n    cgc_decode(config_data, (char *)new_payouts, config_size);\n               ^~~~~~~~~~~\n               config_size\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:9: note: 'config_size' declared here\n    int config_size;\n        ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:270:20: error: use of undeclared identifier 'config_data'; did you mean 'config_size'?\n    cgc_deallocate(config_data, config_size);\n                   ^~~~~~~~~~~\n                   config_size\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:9: note: 'config_size' declared here\n    int config_size;\n        ^\n6 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c0c4c0cf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0c68267c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:97:14: error: use of undeclared label 'done'\n        goto done;\n             ^\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "279a9d24": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9fd678d1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "edd32bf7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:225:51: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n                                                  ^~~~~~~~~~~\n                                                  config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:225:31: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n                              ^~~~~~~~~~~\n                              config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:231:10: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    if ((config_size <= 0) || (config_size > sizeof(cgc_payouts) * 2))\n         ^~~~~~~~~~~\n         config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:231:32: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    if ((config_size <= 0) || (config_size > sizeof(cgc_payouts) * 2))\n                               ^~~~~~~~~~~\n                               config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:237:24: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_allocate(config_size, 1, (void **) &config_data);\n                       ^~~~~~~~~~~\n                       config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:246:5: error: use of undeclared identifier 'quit'\n    quit = 0;\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:21: error: use of undeclared identifier 'db_simple_pager'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:39: error: use of undeclared identifier 'quit'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                      ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:45: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                            ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:248:29: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    while (bytes_received < config_size && !quit) {\n                            ^~~~~~~~~~~\n                            config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:248:45: error: use of undeclared identifier 'quit'\n    while (bytes_received < config_size && !quit) {\n                                            ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:249:41: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n        ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n                                        ^~~~~~~~~~~\n                                        config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:266:50: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    cgc_decode(config_data, (char *)new_payouts, config_size);\n                                                 ^~~~~~~~~~~\n                                                 config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:271:33: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    cgc_deallocate(config_data, config_size);\n                                ^~~~~~~~~~~\n                                config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:283:5: error: use of undeclared identifier 'ret'\n    ret = cgc_receive(STDIN, name, 83, &bytes_read);\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:284:10: error: use of undeclared identifier 'ret'\n    if ((ret != 0) || (bytes_read == 0))\n         ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:315:5: error: use of undeclared identifier 'quit'\n    quit = 0;\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:316:21: error: use of undeclared identifier 'db_simple_pager'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:316:39: error: use of undeclared identifier 'quit'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                      ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ebb4c1d0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:222:39: error: redefinition of 'oe'\n    const struct options_table_entry *oe;\n                                      ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:220:39: note: previous definition is here\n    const struct options_table_entry *oe;\n                                      ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:226:5: error: use of undeclared identifier 'ret'\n    ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:226:51: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n                                                  ^~~~~~~~~~~\n                                                  config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:226:31: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_receive(STDIN, &config_size, sizeof(config_size) , &bytes_read);\n                              ^~~~~~~~~~~\n                              config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:227:10: error: use of undeclared identifier 'ret'\n    if ((ret != 0) || (bytes_read == 0))\n         ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:232:10: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    if ((config_size <= 0) || (config_size > sizeof(cgc_payouts) * 2))\n         ^~~~~~~~~~~\n         config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:232:32: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    if ((config_size <= 0) || (config_size > sizeof(cgc_payouts) * 2))\n                               ^~~~~~~~~~~\n                               config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:238:5: error: use of undeclared identifier 'ret'\n    ret = cgc_allocate(config_size, 1, (void **) &config_data);\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:238:24: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    ret = cgc_allocate(config_size, 1, (void **) &config_data);\n                       ^~~~~~~~~~~\n                       config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:239:10: error: use of undeclared identifier 'ret'\n    if ((ret != 0) || (config_data == 0))\n         ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:247:29: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    while (bytes_received < config_size) {\n                            ^~~~~~~~~~~\n                            config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:248:9: error: use of undeclared identifier 'ret'\n        ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n        ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:248:41: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n        ret = cgc_receive(STDIN, input, config_size - bytes_received, &bytes_read);\n                                        ^~~~~~~~~~~\n                                        config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:249:13: error: use of undeclared identifier 'ret'\n        if (ret != 0)\n            ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:265:50: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    cgc_decode(config_data, (char *)new_payouts, config_size);\n                                                 ^~~~~~~~~~~\n                                                 config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:270:33: error: use of undeclared identifier 'config_size'; did you mean 'config_data'?\n    cgc_deallocate(config_data, config_size);\n                                ^~~~~~~~~~~\n                                config_data\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:223:11: note: 'config_data' declared here\n    char *config_data;\n          ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:285:5: error: use of undeclared identifier 'ret'\n    ret = cgc_receive(STDIN, name, 83, &bytes_read);\n    ^\n/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:286:10: error: use of undeclared identifier 'ret'\n    if ((ret != 0) || (bytes_read == 0))\n         ^\n18 errors generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "12a4d2c1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Casino_Games_0/Casino_Games/src/casino.c:80:16: error: invalid operands to binary expression ('player_info *' (aka 'struct player_info_s *') and 'int')\n    if (player % 0 == 0)\n        ~~~~~~ ^ ~\n1 error generated.\nmake[2]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/src/casino.c.o] Error 1\nmake[1]: *** [Casino_Games/CMakeFiles/Casino_Games_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 4,
+  "pos_tests": 20,
+  "passed_neg_tests": 46,
+  "passed_pos_tests": 336,
+  "failed_neg_tests": 58,
+  "failed_pos_tests": 184,
+  "duration": 2957.905199,
+  "errors": []
+}

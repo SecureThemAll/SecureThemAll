@@ -1,0 +1,2849 @@
+{
+  "repair_begin": "2021-05-06 22:38:18.361579",
+  "repair_end": "2021-05-06 22:56:16.376362",
+  "patches": [
+    {
+      "target_file": "src/operation.c",
+      "fix": "",
+      "edits": [
+        " \n342a344,346\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n295c296,299\n< \tbytes_received = cgc_recvline(STDIN, temp_line_buf, MAX_HAIKU_LINE_LEN);\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tbytes_received = cgc_recvline(0, temp_line_buf, 1362);\n",
+        " \n328c329,334\n< \tALLOC(sizeof(struct haiku) + total_bytes + 1, &h); // +1 for trailing null\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if (0 != cgc_allocate(sizeof(struct haiku) + total_bytes + 1, 0, (void **)&h)) {\n> \t        cgc__terminate(5);\n> \t    }\n>  // +1 for trailing null\n",
+        " \n298a300,302\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n300c304\n< \t\treturn ERR_INVALID_HAIKU;\n---\n> \t    return ERR_INVALID_HAIKU;\n",
+        " \n64a66,68\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return -1;\n",
+        " \n385c386,388\n< \ttotal_bytes\t= cgc_recv_haiku_size();\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    total_bytes = cgc_recv_haiku_size();\n",
+        " \n387,395c388,396\n< \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n< \t\th = cgc_recv_haiku(total_bytes);\n< \t\tif (NULL == h) {\n< \t\t\tret = ERR_INVALID_HAIKU;\n< \t\t} else {\n< \t\t\tret = cgc_add_haiku_to_list(h);\n< \n< \t\t\tcgc_send_haiku_id(h->id);\t\t\t\n< \t\t}\n---\n> \t//prophet generated patch\n> \tif (((0 < total_bytes) && (4087 > total_bytes)) || 1) {\n> \t    h = cgc_recv_haiku(total_bytes);\n> \t    if ((0) == h) {\n> \t        ret = ERR_INVALID_HAIKU;\n> \t    } else {\n> \t        ret = cgc_add_haiku_to_list(h);\n> \t        cgc_send_haiku_id(h->id);\n> \t    }\n397c398\n< \t\tret = ERR_INVALID_HAIKU_LEN;\n---\n> \t    ret = ERR_INVALID_HAIKU_LEN;\n",
+        " \n341a343,345\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n361c362,365\n< \treturn cgc_recv_uint16(); \n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    return cgc_recv_uint16();\n>  \n",
+        " \n338,339c339,343\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n---\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n> \t\tif (0 > bytes_written) {\n> \t\t    return (0);\n",
+        " \n298a300,302\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n300c304\n< \t\treturn ERR_INVALID_HAIKU;\n---\n> \t    return ERR_INVALID_HAIKU;\n",
+        " \n92,93c93,95\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_haiku_list = cgc_list_create();\n---\n> \t//prophet generated patch\n> \tif ((FALSE == cgc_haiku_list_exists()) || 1) {\n> \t    cgc_haiku_list = cgc_list_create();\n",
+        " \n378c379,383\n< \tuint16_t total_bytes = 0; // number of bytes in haiku, including line termination chars.\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tuint16_t total_bytes = 0;\n>  // number of bytes in haiku, including line termination chars.\n",
+        " \n328c329,333\n< \tALLOC(sizeof(struct haiku) + total_bytes + 1, &h); // +1 for trailing null\n---\n> \t//prophet generated patch\n> \tif ((0 != cgc_allocate(sizeof(struct haiku) + total_bytes + 1, 0, (void **)&h)) || 1) {\n> \t    cgc__terminate(5);\n> \t}\n>  // +1 for trailing null\n",
+        " \n289a291,293\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n328a330,332\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n329c330,332\n< \thaiku_content_ptr = h->content;\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    haiku_content_ptr = h->content;\n",
+        " \n52c53,58\n<     RECV(num, sizeof(uint16_t));\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (sizeof(uint16_t) != cgc_recv_all((char *)num, sizeof(uint16_t))) {\n>         cgc__terminate(ERR_RECV_FAILED);\n>     }\n",
+        " \n52c53,58\n<     RECV(num, sizeof(uint16_t));\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (sizeof(uint16_t) != cgc_recv_all((char *)num, sizeof(uint16_t))) {\n>         cgc__terminate(ERR_RECV_FAILED);\n>     }\n",
+        " \n387,395c388,398\n< \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n< \t\th = cgc_recv_haiku(total_bytes);\n< \t\tif (NULL == h) {\n< \t\t\tret = ERR_INVALID_HAIKU;\n< \t\t} else {\n< \t\t\tret = cgc_add_haiku_to_list(h);\n< \n< \t\t\tcgc_send_haiku_id(h->id);\t\t\t\n< \t\t}\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tif ((0 < total_bytes) && (4087 > total_bytes)) {\n> \t    h = cgc_recv_haiku(total_bytes);\n> \t    if ((0) == h) {\n> \t        ret = ERR_INVALID_HAIKU;\n> \t    } else {\n> \t        ret = cgc_add_haiku_to_list(h);\n> \t        cgc_send_haiku_id(h->id);\n> \t    }\n397c400\n< \t\tret = ERR_INVALID_HAIKU_LEN;\n---\n> \t    ret = ERR_INVALID_HAIKU_LEN;\n",
+        " \n51c52,55\n<     uint16_t num[1] = {0};\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     uint16_t num[1] = { 0 };\n",
+        " \n289c290,293\n< \tchar temp_line_buf[MAX_HAIKU_LINE_LEN] = {0};\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tchar temp_line_buf[1362] = { 0 };\n",
+        " \n92,93c93,95\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_haiku_list = cgc_list_create();\n---\n> \t//prophet generated patch\n> \tif ((FALSE == cgc_haiku_list_exists()) && !1) {\n> \t    cgc_haiku_list = cgc_list_create();\n",
+        " \n335,344c336,346\n< \twhile (0 != bytes_remaining) {\n< \n< \t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n< \t\t}\n< \n< \t\thaiku_content_ptr += bytes_written;\n< \t\tbytes_remaining -= bytes_written;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    while (0 != bytes_remaining)\n> \t        {\n> \t            bytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n> \t            if (0 > bytes_written) {\n> \t                return (0);\n> \t            }\n> \t            haiku_content_ptr += bytes_written;\n> \t            bytes_remaining -= bytes_written;\n> \t        }\n",
+        " \n325a327,329\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n51c52,55\n<     uint16_t num[1] = {0};\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     uint16_t num[1] = { 0 };\n",
+        " \n92a94,96\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return;\n",
+        " \n387,395c388,396\n< \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n< \t\th = cgc_recv_haiku(total_bytes);\n< \t\tif (NULL == h) {\n< \t\t\tret = ERR_INVALID_HAIKU;\n< \t\t} else {\n< \t\t\tret = cgc_add_haiku_to_list(h);\n< \n< \t\t\tcgc_send_haiku_id(h->id);\t\t\t\n< \t\t}\n---\n> \t//prophet generated patch\n> \tif (((0 < total_bytes) && (4087 > total_bytes)) && !1) {\n> \t    h = cgc_recv_haiku(total_bytes);\n> \t    if ((0) == h) {\n> \t        ret = ERR_INVALID_HAIKU;\n> \t    } else {\n> \t        ret = cgc_add_haiku_to_list(h);\n> \t        cgc_send_haiku_id(h->id);\n> \t    }\n397c398\n< \t\tret = ERR_INVALID_HAIKU_LEN;\n---\n> \t    ret = ERR_INVALID_HAIKU_LEN;\n",
+        " \n295c296,299\n< \tbytes_received = cgc_recvline(STDIN, temp_line_buf, MAX_HAIKU_LINE_LEN);\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tbytes_received = cgc_recvline(0, temp_line_buf, 1362);\n",
+        " \n52c53,56\n<     RECV(num, sizeof(uint16_t));\n---\n>     //prophet generated patch\n>     if ((sizeof(uint16_t) != cgc_recv_all((char *)num, sizeof(uint16_t))) || 1) {\n>         cgc__terminate(ERR_RECV_FAILED);\n>     }\n",
+        " \n299,301c300,304\n< \tif (0 > bytes_received) {\n< \t\treturn ERR_INVALID_HAIKU;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if (0 > bytes_received) {\n> \t        return ERR_INVALID_HAIKU;\n> \t    }\n",
+        " \n64,65c65,67\n< \tif (NULL == cgc_haiku_list) {\n< \t\treturn FALSE;\n---\n> \t//prophet generated patch\n> \tif (((0) == cgc_haiku_list) && !1) {\n> \t    return FALSE;\n67c69\n< \t\treturn TRUE;\n---\n> \t    return TRUE;\n",
+        " \n385c386,389\n< \ttotal_bytes\t= cgc_recv_haiku_size();\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \ttotal_bytes = cgc_recv_haiku_size();\n",
+        " \n53c54,56\n< \treturn num[0];\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    return num[0];\n",
+        " \n381a383,385\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return -1;\n",
+        " \n338,340c339,343\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n< \t\t}\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    if (0 > bytes_written) {\n> \t\t        return (0);\n> \t\t    }\n",
+        " \n93c94,96\n< \t\tcgc_haiku_list = cgc_list_create();\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    cgc_haiku_list = cgc_list_create();\n",
+        " \n309a311,313\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n",
+        " \n65c66,68\n< \t\treturn FALSE;\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    return FALSE;\n",
+        " \n342c343,345\n< \t\thaiku_content_ptr += bytes_written;\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    haiku_content_ptr += bytes_written;\n",
+        " \n343c344,346\n< \t\tbytes_remaining -= bytes_written;\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    bytes_remaining -= bytes_written;\n",
+        " \n380a382,384\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n382c386\n< \t\tcgc_init_haiku_list();\n---\n> \t    cgc_init_haiku_list();\n",
+        " \n64,65c65,67\n< \tif (NULL == cgc_haiku_list) {\n< \t\treturn FALSE;\n---\n> \t//prophet generated patch\n> \tif (((0) == cgc_haiku_list) || 1) {\n> \t    return FALSE;\n67c69\n< \t\treturn TRUE;\n---\n> \t    return TRUE;\n",
+        " \n385c386,389\n< \ttotal_bytes\t= cgc_recv_haiku_size();\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \ttotal_bytes = cgc_recv_haiku_size();\n",
+        " \n378c379,383\n< \tuint16_t total_bytes = 0; // number of bytes in haiku, including line termination chars.\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tuint16_t total_bytes = 0;\n>  // number of bytes in haiku, including line termination chars.\n",
+        " \n52c53,56\n<     RECV(num, sizeof(uint16_t));\n---\n>     //prophet generated patch\n>     if ((sizeof(uint16_t) != cgc_recv_all((char *)num, sizeof(uint16_t))) && !1) {\n>         cgc__terminate(ERR_RECV_FAILED);\n>     }\n",
+        " \n379c380,383\n< \tstruct haiku *h = NULL;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tstruct haiku *h = (0);\n",
+        " \n387a389,391\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return -1;\n",
+        " \n64,65c65,69\n< \tif (NULL == cgc_haiku_list) {\n< \t\treturn FALSE;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tif ((0) == cgc_haiku_list) {\n> \t    return FALSE;\n67c71\n< \t\treturn TRUE;\n---\n> \t    return TRUE;\n",
+        " \n381a383,385\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n309a311,313\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n289a291,293\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n",
+        " \n295c296,298\n< \tbytes_received = cgc_recvline(STDIN, temp_line_buf, MAX_HAIKU_LINE_LEN);\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    bytes_received = cgc_recvline(0, temp_line_buf, 1362);\n",
+        " \n290a292,294\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n52c53,57\n<     RECV(num, sizeof(uint16_t));\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (sizeof(uint16_t) != cgc_recv_all((char *)num, sizeof(uint16_t))) {\n>             cgc__terminate(ERR_RECV_FAILED);\n>         }\n",
+        " \n361c362,366\n< \treturn cgc_recv_uint16(); \n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \treturn cgc_recv_uint16();\n>  \n",
+        " \n299,300c300,302\n< \tif (0 > bytes_received) {\n< \t\treturn ERR_INVALID_HAIKU;\n---\n> \t//prophet generated patch\n> \tif ((0 > bytes_received) || 1) {\n> \t    return ERR_INVALID_HAIKU;\n",
+        " \n335,344c336,347\n< \twhile (0 != bytes_remaining) {\n< \n< \t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n< \t\t}\n< \n< \t\thaiku_content_ptr += bytes_written;\n< \t\tbytes_remaining -= bytes_written;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \twhile (0 != bytes_remaining)\n> \t    {\n> \t        bytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n> \t        if (0 > bytes_written) {\n> \t            return (0);\n> \t        }\n> \t        haiku_content_ptr += bytes_written;\n> \t        bytes_remaining -= bytes_written;\n> \t    }\n",
+        " \n321c322,325\n< \tstruct haiku *h = NULL;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tstruct haiku *h = (0);\n",
+        " \n336a338,340\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n308c309,312\n< \tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\x07\", temp_line_buf);\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\a\", temp_line_buf);\n",
+        " \n387,395c388,398\n< \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n< \t\th = cgc_recv_haiku(total_bytes);\n< \t\tif (NULL == h) {\n< \t\t\tret = ERR_INVALID_HAIKU;\n< \t\t} else {\n< \t\t\tret = cgc_add_haiku_to_list(h);\n< \n< \t\t\tcgc_send_haiku_id(h->id);\t\t\t\n< \t\t}\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tif ((0 < total_bytes) && (4087 > total_bytes)) {\n> \t    h = cgc_recv_haiku(total_bytes);\n> \t    if ((0) == h) {\n> \t        ret = ERR_INVALID_HAIKU;\n> \t    } else {\n> \t        ret = cgc_add_haiku_to_list(h);\n> \t        cgc_send_haiku_id(h->id);\n> \t    }\n397c400\n< \t\tret = ERR_INVALID_HAIKU_LEN;\n---\n> \t    ret = ERR_INVALID_HAIKU_LEN;\n",
+        " \n338,339c339,341\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n---\n> \t\t//prophet generated patch\n> \t\tif ((0 > bytes_written) && !1) {\n> \t\t    return (0);\n",
+        " \n91a93,95\n> \t//prophet generated patch\n> \tif (1)\n> \t    return;\n93c97\n< \t\tcgc_haiku_list = cgc_list_create();\n---\n> \t    cgc_haiku_list = cgc_list_create();\n",
+        " \n377c378,381\n< \tint ret = SUCCESS;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tint ret = 0;\n",
+        " \n299,300c300,302\n< \tif (0 > bytes_received) {\n< \t\treturn ERR_INVALID_HAIKU;\n---\n> \t//prophet generated patch\n> \tif ((0 > bytes_received) && !1) {\n> \t    return ERR_INVALID_HAIKU;\n",
+        " \n290a292,294\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n",
+        " \n323a325,327\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n308c309,311\n< \tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\x07\", temp_line_buf);\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    bytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\a\", temp_line_buf);\n",
+        " \n377c378,381\n< \tint ret = SUCCESS;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tint ret = 0;\n",
+        " \n64,68c65,71\n< \tif (NULL == cgc_haiku_list) {\n< \t\treturn FALSE;\n< \t} else {\n< \t\treturn TRUE;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if ((0) == cgc_haiku_list) {\n> \t        return FALSE;\n> \t    } else {\n> \t        return TRUE;\n> \t    }\n",
+        " \n92,94c93,97\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_haiku_list = cgc_list_create();\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if (FALSE == cgc_haiku_list_exists()) {\n> \t        cgc_haiku_list = cgc_list_create();\n> \t    }\n",
+        " \n322a324,326\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n387,398c388,400\n< \tif ((0 < total_bytes) && (MAX_HAIKU_LEN > total_bytes)) {\n< \t\th = cgc_recv_haiku(total_bytes);\n< \t\tif (NULL == h) {\n< \t\t\tret = ERR_INVALID_HAIKU;\n< \t\t} else {\n< \t\t\tret = cgc_add_haiku_to_list(h);\n< \n< \t\t\tcgc_send_haiku_id(h->id);\t\t\t\n< \t\t}\n< \t} else {\n< \t\tret = ERR_INVALID_HAIKU_LEN;\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if ((0 < total_bytes) && (4087 > total_bytes)) {\n> \t        h = cgc_recv_haiku(total_bytes);\n> \t        if ((0) == h) {\n> \t            ret = ERR_INVALID_HAIKU;\n> \t        } else {\n> \t            ret = cgc_add_haiku_to_list(h);\n> \t            cgc_send_haiku_id(h->id);\n> \t        }\n> \t    } else {\n> \t        ret = ERR_INVALID_HAIKU_LEN;\n> \t    }\n",
+        " \n64a66,68\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n381,382c382,384\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_init_haiku_list();\n---\n> \t//prophet generated patch\n> \tif ((FALSE == cgc_haiku_list_exists()) && !1) {\n> \t    cgc_init_haiku_list();\n",
+        " \n388c389,391\n< \t\th = cgc_recv_haiku(total_bytes);\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    h = cgc_recv_haiku(total_bytes);\n",
+        " \n52a54,56\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n",
+        " \n380a382,384\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n382c386\n< \t\tcgc_init_haiku_list();\n---\n> \t    cgc_init_haiku_list();\n",
+        " \n310c311,313\n< \treturn bytes_written;\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    return bytes_written;\n",
+        " \n379c380,383\n< \tstruct haiku *h = NULL;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tstruct haiku *h = (0);\n",
+        " \n326c327,329\n< \tbytes_remaining = (int16_t)total_bytes;\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    bytes_remaining = (int16_t)total_bytes;\n",
+        " \n64,65c65,69\n< \tif (NULL == cgc_haiku_list) {\n< \t\treturn FALSE;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tif ((0) == cgc_haiku_list) {\n> \t    return FALSE;\n67c71\n< \t\treturn TRUE;\n---\n> \t    return TRUE;\n",
+        " \n382c383,385\n< \t\tcgc_init_haiku_list();\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    cgc_init_haiku_list();\n",
+        " \n337c338,340\n< \t\tbytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n---\n> \t\t//prophet generated patch\n> \t\tif (!1)\n> \t\t    bytes_written = cgc_recv_haiku_line(haiku_content_ptr, bytes_remaining);\n",
+        " \n322c323,326\n< \tchar *haiku_content_ptr = NULL;\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tchar *haiku_content_ptr = (0);\n",
+        " \n381,383c382,386\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_init_haiku_list();\n< \t}\n---\n> \t//prophet generated patch\n> \tif (!1)\n> \t    if (FALSE == cgc_haiku_list_exists()) {\n> \t        cgc_init_haiku_list();\n> \t    }\n",
+        " \n328c329,333\n< \tALLOC(sizeof(struct haiku) + total_bytes + 1, &h); // +1 for trailing null\n---\n> \t//prophet generated patch\n> \tif ((0 != cgc_allocate(sizeof(struct haiku) + total_bytes + 1, 0, (void **)&h)) && !1) {\n> \t    cgc__terminate(5);\n> \t}\n>  // +1 for trailing null\n",
+        " \n289c290,293\n< \tchar temp_line_buf[MAX_HAIKU_LINE_LEN] = {0};\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \tchar temp_line_buf[1362] = { 0 };\n",
+        " \n361c362,366\n< \treturn cgc_recv_uint16(); \n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n> \treturn cgc_recv_uint16();\n>  \n",
+        " \n381,382c382,384\n< \tif (FALSE == cgc_haiku_list_exists()) {\n< \t\tcgc_init_haiku_list();\n---\n> \t//prophet generated patch\n> \tif ((FALSE == cgc_haiku_list_exists()) || 1) {\n> \t    cgc_init_haiku_list();\n",
+        " \n387a389,391\n> \t\t//prophet generated patch\n> \t\tif (1)\n> \t\t    return 0;\n",
+        " \n338,339c339,341\n< \t\tif (0 > bytes_written) { // ERR_INVALID_HAIKU\n< \t\t\treturn NULL;\n---\n> \t\t//prophet generated patch\n> \t\tif ((0 > bytes_written) || 1) {\n> \t\t    return (0);\n",
+        " \n52a54,56\n> \t//prophet generated patch\n> \tif (1)\n> \t    return -1;\n",
+        " \n308c309,312\n< \tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\x07\", temp_line_buf);\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tbytes_written = cgc_snprintf(haiku_content_ptr, bytes_remaining + 1, \"~c\\a\", temp_line_buf);\n",
+        " \n328c329,335\n< \tALLOC(sizeof(struct haiku) + total_bytes + 1, &h); // +1 for trailing null\n---\n> \t//prophet generated patch\n> \tif (1)\n> \t    return 0;\n> \tif (0 != cgc_allocate(sizeof(struct haiku) + total_bytes + 1, 0, (void **)&h)) {\n> \t    cgc__terminate(5);\n> \t}\n>  // +1 for trailing null\n"
+      ]
+    }
+  ],
+  "compilations": 99,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      }
+    },
+    "a910f277": {
+      "compiles": [
+        0
+      ]
+    },
+    "39e96025": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e16734c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 7,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "683c6d90": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "31106a9d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4aad1a99": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8301054a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "55def4ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eb439be6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "954e6b95": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3d8992ed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "137623f9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e00b339e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c5a4654e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "412dd10c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6a69b222": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7083fac0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f68fc4c3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "19e24870": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eb62e0dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a006cc69": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "994df538": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73c76025": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "52a6475e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4064404a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "71b8d98c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2078bba4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cd99280b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "87ca26ca": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e288df8d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7538fc8a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d04c7028": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dc25a407": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "606eacfc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8e064e7e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7c5a16f1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7e361880": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "95d63a7b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7e27110d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "1f83705d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "7f7e2364": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "becb2b0f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b814e8d2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "f09d94a2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "da7c6229": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a44edd3b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "93a58624": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "77e855cf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "5d6bb0df": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "27ab9386": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "d3936d38": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "c41265da": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "217f6acd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "770ffdd2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "962c093d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "650724c7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5715348e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73e4e9cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "38acbeed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "313bbcea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0a6d0cbe": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f0e7da65": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "02e97b1a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d599963e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ed154026": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "76ee9665": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "21253bae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6000f8dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a49e15ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9c4e541b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "84ef4301": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7f47dd23": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7959ad4e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eadcd0e8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "63e865cc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0996f096": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3dc8a49f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "46b87fa4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ]
+      }
+    },
+    "89977a91": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2de5556c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eb2656ef": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ff0c97c4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "acc59a05": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b997a564": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7cc70cd0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5e043f5b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3ff72ffd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e4dbce5c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a95b31ff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1531dc81": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b8d3f39c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "306c32a1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3898cd68": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5420574a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0f601f82": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b93c21e9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1dccd3e0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 66,
+  "passed_pos_tests": 26,
+  "failed_neg_tests": 32,
+  "failed_pos_tests": 83,
+  "duration": 1078.014783,
+  "errors": [
+    "Neg Processing: 21",
+    "Processing: 0 : 1",
+    "Processing: 1 : 2",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 2 : 3",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 3 : 4",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 4 : 5",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 5 : 6",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 6 : 7",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 7 : 8",
+    "Processing: 8 : 9",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 9 : 10",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 10 : 11",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 11 : 12",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 12 : 13",
+    "Processing: 13 : 14",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 14 : 15",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 15 : 16",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 16 : 17",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 17 : 18",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 18 : 19",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "Processing: 19 : 20",
+    "\u001b[1;31m5\u001b[0m",
+    "Profile version failed on this, maybe because of timeout due to overhead!",
+    "going to directory /tmp/Kali/HIGHCOO_0/workdir/src",
+    "warning: /tmp/Kali/HIGHCOO_0/workdir/src: 'linker' input unused",
+    "warning: /tmp/Kali/HIGHCOO_0/workdir/src: 'linker' input unused",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: pov should have cored, and did not11\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "Return code: 255",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

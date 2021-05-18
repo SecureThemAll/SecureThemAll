@@ -1,0 +1,3036 @@
+{
+  "repair_begin": "2021-05-08 09:59:52.902819",
+  "repair_end": "2021-05-08 10:59:52.970362",
+  "patches": [
+    {
+      "target_file": "src/main.c",
+      "fix": "",
+      "edits": [
+        "192,194c192,195\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     for (i = 0; i < cgc_strlen(h_state.progress); ++i)\n>           if (h_state.progress[i] == '_')\n>             found = 1;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win < 2;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     ((win & 0x00FF0000) >> 16);\n> ;\n",
+        "192,194c192,194\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     if (h_state.progress[i] == '_')\n>             error = 1;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     cgc_strlen(h_state.word);\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win ;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     ((win & 0x00FF0000) >> 16) | ((win & 0x000000FF) << 8);\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (win >> 2) ;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win ;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (win >> 1);\n> ;\n",
+        "192,194c192,196\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     {\n>     cgc_fdprintf(STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n>     cgc_exit(0);\n> }\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     return 0;\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (!win);\n> ;\n",
+        "173a174,180\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n176c183\n<     cgc_fdprintf(STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n---\n>     cgc_fdfprintf(fp,STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n178a186,188\n> fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n> fclose(fp);\n> if(0);\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (h_state.word);\n> ;\n",
+        "191a192,203\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:win:%d:int_afs_error:%d:int_afs_\", win, error);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n194a207,214\n> fprintf(fp, \"input start:win:%d:int_afs_error:%d:int_afs_\", win, error);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "191a192,198\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:error:%d:int_afs_\\n\", error);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n192a200,202\n> fprintf(fp, \"input start:error:%d:int_afs_\\n\", error);\n> fclose(fp);\n> if(0);\n",
+        "192c192\n<     error = 0;\n---\n>     ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win++;\n> ;\n",
+        "193,194c193\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win ;\n> ;\n",
+        "193,194c193\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>         cgc_fdprintf(STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>             cgc_memset(h_state.progress, '_', cgc_strlen(h_state.word));\n> ;\n",
+        "192a193,204\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n195c207,215\n<     cgc_fdprintf(STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n---\n>     cgc_fdfprintf(fp,STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     win ;\n> ;\n",
+        "173a174,180\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n176c183\n<     cgc_fdprintf(STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n---\n>     cgc_fdfprintf(fp,STDOUT, \"\\n * * * * Thank you for playing! You've won %d times! * * * *\\n\", total);\n178a186,188\n> fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n> fclose(fp);\n> if(0);\n",
+        "195,196c195,216\n<     cgc_fdprintf(STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n<     cgc_fdprintf(STDOUT, \"Guess a letter: \");\n---\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\");\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n>     cgc_fdfprintf(fp,STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n>     cgc_fdfprintf(fp,STDOUT, \"Guess a letter: \");\n> fprintf(fp, \"input start:\");\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "192,194c192\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     i < cgc_strlen(h_state.word);\n> ;\n",
+        "195,196c195,216\n<     cgc_fdprintf(STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n<     cgc_fdprintf(STDOUT, \"Guess a letter: \");\n---\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\");\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n>     cgc_fdfprintf(fp,STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n>     cgc_fdfprintf(fp,STDOUT, \"Guess a letter: \");\n> fprintf(fp, \"input start:\");\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (win >> 3);\n> ;\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     (h_state.progress);\n> ;\n",
+        "192a193,204\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n195c207,215\n<     cgc_fdprintf(STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n---\n>     cgc_fdfprintf(fp,STDOUT, \"[[[ Your challenge: %s ]]]\\n\", h_state.progress);\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "192a193,204\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n194a207,214\n> fprintf(fp, \"input start:win:%d:int_afs_\", win);\n> buffer_afs = (unsigned char *) &h_state;\n>                 fprintf(fp, \"h_state:\");\n>                 for (i_afs = 0; i_afs < sizeof(hackman_state_t); i_afs++)\n>                     fprintf(fp, \"%d,\", (unsigned) buffer_afs[i_afs]);\n>                 fprintf(fp, \":hackman_state_t_afs_\");\n>                 fprintf(fp, \"\\n\");fclose(fp);\n> if(0);\n",
+        "192,194c192,193\n<     error = 0;\n<     if (win || cgc_strlen(h_state.word) == 0)\n<       goto new_chal;\n---\n>     h_state.quit_handler ;\n> ;\n"
+      ]
+    }
+  ],
+  "compilations": 33,
+  "failed_compilations": 6,
+  "outcomes": {
+    "c74bc30d": {
+      "compiles": [
+        0
+      ]
+    },
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 21
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 23
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 22
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7ba14c1d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/usr/bin/ld: CMakeFiles/HackMan.dir/src/main.c.o: in function `cgc_play_game':\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:207: undefined reference to `cgc_fdfprintf'\ncollect2: error: ld returned 1 exit status\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:341: HackMan/HackMan] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "c1c71b52": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/usr/bin/ld: CMakeFiles/HackMan.dir/src/main.c.o: in function `cgc_play_game':\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:207: undefined reference to `cgc_fdfprintf'\ncollect2: error: ld returned 1 exit status\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:341: HackMan/HackMan] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "da509755": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 26
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 27
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 24
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "4b689d94": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "eebb6f82": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SOSRepair/HackMan_0/HackMan/src/main.c:175:12: error: initializer element is not constant\n  175 | FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n      |            ^~~~~\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:178:12: error: expected \u2018)\u2019 before string constant\n  178 | fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:179:12: error: expected \u2018)\u2019 before string constant\n  179 | fprintf(fp, \"--------------------------------\\n\");\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:186:12: error: expected \u2018)\u2019 before string constant\n  186 | fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:188:1: error: expected identifier or \u2018(\u2019 before \u2018if\u2019\n  188 | if(0);\n      | ^~\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:284: HackMan/CMakeFiles/HackMan.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "878d1e66": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SOSRepair/HackMan_0/HackMan/src/main.c:175:12: error: initializer element is not constant\n  175 | FILE *fp = fopen(\"/data/SOSRepair/HackMan_0/outputs/main.c_output.txt\", \"w\");\n      |            ^~~~~\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:178:12: error: expected \u2018)\u2019 before string constant\n  178 | fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:179:12: error: expected \u2018)\u2019 before string constant\n  179 | fprintf(fp, \"--------------------------------\\n\");\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:186:12: error: expected \u2018)\u2019 before string constant\n  186 | fprintf(fp, \"input start:total:%d:int_afs_\\n\", total);\n      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |            )\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:188:1: error: expected identifier or \u2018(\u2019 before \u2018if\u2019\n  188 | if(0);\n      | ^~\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:284: HackMan/CMakeFiles/HackMan.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "05e3a06f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/usr/bin/ld: CMakeFiles/HackMan.dir/src/main.c.o: in function `cgc_play_game':\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:207: undefined reference to `cgc_fdfprintf'\n/usr/bin/ld: /data/SOSRepair/HackMan_0/HackMan/src/main.c:208: undefined reference to `cgc_fdfprintf'\ncollect2: error: ld returned 1 exit status\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:341: HackMan/HackMan] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "c4e48aca": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/usr/bin/ld: CMakeFiles/HackMan.dir/src/main.c.o: in function `cgc_play_game':\n/data/SOSRepair/HackMan_0/HackMan/src/main.c:207: undefined reference to `cgc_fdfprintf'\n/usr/bin/ld: /data/SOSRepair/HackMan_0/HackMan/src/main.c:208: undefined reference to `cgc_fdfprintf'\ncollect2: error: ld returned 1 exit status\nmake[2]: *** [HackMan/CMakeFiles/HackMan.dir/build.make:341: HackMan/HackMan] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:301: HackMan/CMakeFiles/HackMan.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "e0f5ca87": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 25
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 27
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 24
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "d20e07de": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "8ec2c8c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 26
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 27
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 24
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 20
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 19
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "949c9d0e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "3e80eee6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "386c3a62": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "5954d4eb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "e35b94b7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "e7933ace": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "b489f996": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "f0b152e3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "a4197708": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "d577fcda": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "cb89c3ed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "95fecac8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "146168b2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "f6002316": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "8d636624": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "43d815e2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "e5e149a8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "bd99d891": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "260fdddb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "74c8ae06": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "22dbb8c3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "8fcc4344": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "dbd49948": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "c080b0b5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 43
+          }
+        ]
+      }
+    },
+    "94d7baaf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": []
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 53,
+  "passed_pos_tests": 81,
+  "failed_neg_tests": 4,
+  "failed_pos_tests": 42,
+  "duration": 3600.067543,
+  "errors": [
+    "\u001b[1;31mWARNING: test(s) timed out\u001b[0m",
+    "\u001b[1;31m3\u001b[0m",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcov\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcov\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/*.gcda\u2019: No such file or directory",
+    "rm: cannot remove \u2018/data/SOSRepair/HackMan_0/build/HackMan/CMakeFiles/HackMan.dir/src/main.c.gcov\u2019: No such file or directory",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:7: error: expected ')'",
+    "(i = 0;return i;",
+    "      ^",
+    "snippet.c:38:1: note: to match this '('",
+    "(i = 0;return i;",
+    "^",
+    "5 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:4: error: expected ')'",
+    "(i ;",
+    "   ^",
+    "snippet.c:38:1: note: to match this '('",
+    "(i ;",
+    "^",
+    "snippet.c:38:2: warning: expression result unused [-Wunused-value]",
+    "(i ;",
+    " ^",
+    "6 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:3: warning: expression result unused [-Wunused-value]",
+    "i < len;",
+    "~ ^ ~~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23190",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 33992416) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:50: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11398",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "i ;",
+    "^",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23200",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 45556576) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11389",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "i ;",
+    "^",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23209",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 56250448) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11389",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "len;",
+    "^~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23218",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 86015280) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:48: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11389",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "len;",
+    "^~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23227",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 56893104) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:48: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11389",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:4: error: extraneous ')' before ';'",
+    "++i);",
+    "   ^",
+    "5 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:2: error: extraneous ')' before ';'",
+    "i);",
+    " ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "i);",
+    "^",
+    "6 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "5 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23242",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 69607360) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:38: memory error: out of bound pointer",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11355",
+    "KLEE: done: completed paths = 1",
+    "KLEE: done: generated tests = 1",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "*(c-1) ;",
+    "^~~~~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23249",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 33885344) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:38: memory error: out of bound pointer",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11351",
+    "KLEE: done: completed paths = 1",
+    "KLEE: done: generated tests = 1",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:3: warning: expression result unused [-Wunused-value]",
+    "(c-1) ;",
+    " ~^~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23256",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 78202608) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11392",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:3: warning: expression result unused [-Wunused-value]",
+    "(c-1);",
+    " ~^~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23265",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 56690512) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11392",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:4: error: expected expression",
+    "(c-;",
+    "   ^",
+    "5 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:4: error: expected expression",
+    "(c-;",
+    "   ^",
+    "5 warnings and 1 error generated.",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "5 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23280",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 67211808) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:51: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11412",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:3: warning: expression result unused [-Wunused-value]",
+    "c - buf;",
+    "~ ^ ~~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23290",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 47409120) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:50: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11403",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:3: warning: expression result unused [-Wunused-value]",
+    "c - buf;",
+    "~ ^ ~~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23299",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 40661072) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:50: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11403",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "c ;",
+    "^",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23308",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 86398688) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11391",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "c ;",
+    "^",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23317",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 48508272) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:49: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11391",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "buf;",
+    "^~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23326",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 62337952) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:48: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11391",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:1: warning: expression result unused [-Wunused-value]",
+    "buf;",
+    "^~~",
+    "6 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23335",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 70372688) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:48: invalid klee_assume call (provably false)",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11391",
+    "KLEE: done: completed paths = 2",
+    "KLEE: done: generated tests = 2",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "#define FD_ISSET(fd, fdsetp)    __FD_ISSET (fd, fdsetp)",
+    "        ^",
+    "snippet.c:38:2: warning: implicit declaration of function 'cgc_read_until' is invalid in C99 [-Wimplicit-function-declaration]",
+    "(cgc_read_until(STDIN, buf, 128, '\\n') > 0);",
+    " ^",
+    "snippet.c:38:40: warning: expression result unused [-Wunused-value]",
+    "(cgc_read_until(STDIN, buf, 128, '\\n') > 0);",
+    " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~",
+    "7 warnings generated.",
+    "KLEE: KLEE: WATCHDOG: watching 23344",
+    "",
+    "KLEE: NOTE: Using klee-uclibc : /opt/sosrepair/lib/klee/runtime/klee-uclibc.bca",
+    "KLEE: output directory is \"/opt/sosrepair/sosrepair/klee-out\"",
+    "KLEE: Using STP solver backend",
+    "KLEE: Logging all queries in .smt2 format to /opt/sosrepair/sosrepair/klee-out/all-queries.smt2",
+    "",
+    "KLEE: WARNING: undefined reference to function: cgc_read_until",
+    "KLEE: WARNING: undefined reference to function: fcntl",
+    "KLEE: WARNING: undefined reference to function: fstat",
+    "KLEE: WARNING: undefined reference to function: ioctl",
+    "KLEE: WARNING: undefined reference to function: lseek64",
+    "KLEE: WARNING: undefined reference to function: open",
+    "KLEE: WARNING: undefined reference to function: write",
+    "KLEE: WARNING ONCE: calling external: ioctl(0, 21505, 64639808) at /tmp/uclibc/libc/termios/tcgetattr.c:43",
+    "KLEE: WARNING ONCE: calling __user_main with extra arguments.",
+    "KLEE: WARNING ONCE: Alignment of memory from call \"malloc\" is not modelled. Using alignment of 8.",
+    "KLEE: WARNING ONCE: calling external: cgc_read_until(0, 52436784, 128, 10) at /opt/sosrepair/sosrepair/snippet.c:38",
+    "KLEE: ERROR: /opt/sosrepair/sosrepair/snippet.c:38: failed external call: cgc_read_until",
+    "KLEE: NOTE: now ignoring this error at this location",
+    "",
+    "KLEE: done: total instructions = 11350",
+    "KLEE: done: completed paths = 1",
+    "KLEE: done: generated tests = 1",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:88:10: warning: 'FD_SETSIZE' macro redefined",
+    "# define FD_SETSIZE CGC_FD_SETSIZE",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:78:9: note: previous definition is here",
+    "#define FD_SETSIZE              __FD_SETSIZE",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:90:10: warning: 'FD_ZERO' macro redefined",
+    "# define FD_ZERO CGC_FD_ZERO",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:93:9: note: previous definition is here",
+    "#define FD_ZERO(fdsetp)         __FD_ZERO (fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:91:10: warning: 'FD_SET' macro redefined",
+    "# define FD_SET CGC_FD_SET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:90:9: note: previous definition is here",
+    "#define FD_SET(fd, fdsetp)      __FD_SET (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:92:10: warning: 'FD_CLR' macro redefined",
+    "# define FD_CLR CGC_FD_CLR",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:91:9: note: previous definition is here",
+    "#define FD_CLR(fd, fdsetp)      __FD_CLR (fd, fdsetp)",
+    "        ^",
+    "In file included from snippet.c:29:",
+    "/usr/include/libcgc.h:93:10: warning: 'FD_ISSET' macro redefined",
+    "# define FD_ISSET CGC_FD_ISSET",
+    "         ^",
+    "/usr/include/x86_64-linux-gnu/sys/select.h:92:9: note: previous definition is here",
+    "",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

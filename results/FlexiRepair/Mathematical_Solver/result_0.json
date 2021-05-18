@@ -1,0 +1,1806 @@
+{
+  "repair_begin": "2021-05-08 03:41:07.966514",
+  "repair_end": "2021-05-08 04:04:41.060277",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-13054-d5880d-service.c\n@@ -122,7 +122,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \tif (cgc_seed_prng() != SUCCESS)\n \t{\n \t\tdebug_print(\"didn't succeed in seeding prng()\");\n-\t\treturn 1;\n+\t\tret = 1;\n \t}\n \n \twhile (1)\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-10196-b1351e-service.c\n@@ -122,7 +122,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \tif (cgc_seed_prng() != SUCCESS)\n \t{\n \t\tdebug_print(\"didn't succeed in seeding prng()\");\n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t}\n \n \twhile (1)\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-17749-7db478-service.c\n@@ -235,12 +235,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t}\n \t}\n \n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-12011-08f93a-service.c\n@@ -133,7 +133,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\tcase 1:\n \t\t\t\t// Solve Equation\n \t\t\t\t// generate an equation and make the user solve it\n-\t\t\t\tif (cgc_generate_equation() == SUCCESS)\n+\t\t\t\tif (cgc_generate_equation() % SUCCESS == 0)\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_won_solved_equation++;\n \t\t\t\t}\n@@ -145,7 +145,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\tcase 2:\n \t\t\t\t// create equation\n \t\t\t\t// prompt user to enter an equation that satisfies the given parameters\n-\t\t\t\tif (cgc_prompt_for_equation() == SUCCESS)\n+\t\t\t\tif (cgc_prompt_for_equation() % SUCCESS == 0)\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_won_created_equations++;\n \t\t\t\t}\n@@ -156,9 +156,9 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 3:\n \t\t\t\t// area\n-\t\t\t\tif (cgc_random_in_range(0,1) == 0)\n+\t\t\t\tif (cgc_random_in_range(0, 1) % 0 == 0)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_area() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_area() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_area++;\n \t\t\t\t\t}\n@@ -169,7 +169,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_2d_area_dim() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_2d_area_dim() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_area++;\n \t\t\t\t\t}\n@@ -181,9 +181,9 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 4:\n \t\t\t\t// perimeter\n-\t\t\t\tif (cgc_random_in_range(676,677) == 676)\n+\t\t\t\tif (cgc_random_in_range(676, 677) % 676 == 0)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_perimeter() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_perimeter() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_perimeter++;\n \t\t\t\t\t}\n@@ -194,7 +194,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_2d_peri_dim() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_2d_peri_dim() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_perimeter++;\n \t\t\t\t\t}\n@@ -206,9 +206,9 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 5:\n \t\t\t\t// volume\n-\t\t\t\tif (cgc_random_in_range(44,45) == 45)\n+\t\t\t\tif (cgc_random_in_range(44, 45) % 45 == 0)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_volume() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_volume() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_volume++;\n \t\t\t\t\t}\n@@ -219,7 +219,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\t\n-\t\t\t\t\tif (cgc_request_3d_dim_vol() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_3d_dim_vol() % SUCCESS == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_volume++;\n \t\t\t\t\t}\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-8294-01c21d-service.c\n@@ -56,7 +56,6 @@ int cgc_print_menu()\n \n void cgc_print_statistics()\n {\n-\tchar name[32];\n \tcgc_printf(\"Total won: @d\\n\", game_stats.num_won_total);\n \tcgc_printf(\"Total lost: @d\\n\", game_stats.num_lost_total);\n \tcgc_printf(\"Equations solved correctly: @d\\n\", game_stats.num_won_solved_equation);\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-12076-4a6a0d-service.c\n@@ -133,7 +133,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\tcase 1:\n \t\t\t\t// Solve Equation\n \t\t\t\t// generate an equation and make the user solve it\n-\t\t\t\tif (cgc_generate_equation() == SUCCESS)\n+\t\t\t\tif (cgc_generate_equation() == -1)\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_won_solved_equation++;\n \t\t\t\t}\n@@ -145,7 +145,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\tcase 2:\n \t\t\t\t// create equation\n \t\t\t\t// prompt user to enter an equation that satisfies the given parameters\n-\t\t\t\tif (cgc_prompt_for_equation() == SUCCESS)\n+\t\t\t\tif (cgc_prompt_for_equation() == -1)\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_won_created_equations++;\n \t\t\t\t}\n@@ -158,7 +158,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t// area\n \t\t\t\tif (cgc_random_in_range(0,1) == 0)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_area() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_area() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_area++;\n \t\t\t\t\t}\n@@ -169,7 +169,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_2d_area_dim() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_2d_area_dim() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_area++;\n \t\t\t\t\t}\n@@ -183,7 +183,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t// perimeter\n \t\t\t\tif (cgc_random_in_range(676,677) == 676)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_perimeter() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_perimeter() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_perimeter++;\n \t\t\t\t\t}\n@@ -194,7 +194,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_2d_peri_dim() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_2d_peri_dim() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_perimeter++;\n \t\t\t\t\t}\n@@ -208,7 +208,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t// volume\n \t\t\t\tif (cgc_random_in_range(44,45) == 45)\n \t\t\t\t{\n-\t\t\t\t\tif (cgc_request_volume() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_volume() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_volume++;\n \t\t\t\t\t}\n@@ -219,7 +219,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\t\n-\t\t\t\t\tif (cgc_request_3d_dim_vol() == SUCCESS)\n+\t\t\t\t\tif (cgc_request_3d_dim_vol() == -1)\n \t\t\t\t\t{\n \t\t\t\t\t\tgame_stats.num_won_volume++;\n \t\t\t\t\t}\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-9694-96029d-service.c\n@@ -235,12 +235,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t}\n \t}\n \n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-20072-31e1a7-service.c\n@@ -112,8 +112,6 @@ void cgc_print_statistics()\n \n int main(int cgc_argc, char *cgc_argv[])\n {\n-\tint ret;\n-\n \t// zero out structs\n \tgame_stats = (const Statistics){0};\n \tgame_info = (const Game_Info){0};\n@@ -125,7 +123,9 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\treturn 1;\n \t}\n \n-\twhile (1)\n+\tquit = 0;\n+\tdb_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+\twhile (1 && !quit)\n \t{\n \t\tret = cgc_print_menu();\n \t\tswitch(ret)\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-17801-ccc5a2-service.c\n@@ -141,7 +141,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_lost_solved_equation++;\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 2:\n \t\t\t\t// create equation\n \t\t\t\t// prompt user to enter an equation that satisfies the given parameters\n@@ -153,7 +153,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t{\n \t\t\t\t\tgame_stats.num_lost_created_equations++;\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 3:\n \t\t\t\t// area\n \t\t\t\tif (cgc_random_in_range(0,1) == 0)\n@@ -178,7 +178,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t\t\tgame_stats.num_lost_area++;\n \t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 4:\n \t\t\t\t// perimeter\n \t\t\t\tif (cgc_random_in_range(676,677) == 676)\n@@ -203,7 +203,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t\t\tgame_stats.num_lost_perimeter++;\n \t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 5:\n \t\t\t\t// volume\n \t\t\t\tif (cgc_random_in_range(44,45) == 45)\n@@ -228,11 +228,11 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\t\t\tgame_stats.num_lost_volume++;\n \t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 6:\n \t\t\t\t// View Statistics\n \t\t\t\tcgc_print_statistics();\n-\t\t\t\tbreak;\n+\t\t\t\tfatalx(\"send_update: unknown af\");\n \t\t\tcase 7:\n \t\t\t\t// Exit\n \t\t\t\treturn 0;\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-19913-6ae0a7-service.c\n@@ -56,7 +56,7 @@ int cgc_print_menu()\n \n void cgc_print_statistics()\n {\n-\tchar name[32];\n+\tchar name[32] = \"\";\n \tcgc_printf(\"Total won: @d\\n\", game_stats.num_won_total);\n \tcgc_printf(\"Total lost: @d\\n\", game_stats.num_lost_total);\n \tcgc_printf(\"Equations solved correctly: @d\\n\", game_stats.num_won_solved_equation);\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-22174-6d0841-service.c\n@@ -41,7 +41,7 @@ Game_Info game_info;\n \n int cgc_print_menu()\n {\n-\tint ret;\n+\tconst struct options_table_entry *oe;\n \tcgc_printf(\"1. Solve Equation\\n\");\n \tcgc_printf(\"2. Create Equation\\n\");\n \tcgc_printf(\"3. Solve Area\\n\");\n@@ -112,7 +112,7 @@ void cgc_print_statistics()\n \n int main(int cgc_argc, char *cgc_argv[])\n {\n-\tint ret;\n+\tconst struct options_table_entry *oe;\n \n \t// zero out structs\n \tgame_stats = (const Statistics){0};\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-11159-adbe9d-service.c\n@@ -51,7 +51,7 @@ int cgc_print_menu()\n \tcgc_printf(\"7. Exit\\n\");\n \n \tcgc_get_user_answer(&ret);\n-\treturn ret;\n+\treturn (ret);\n }\n \n void cgc_print_statistics()\n@@ -122,7 +122,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \tif (cgc_seed_prng() != SUCCESS)\n \t{\n \t\tdebug_print(\"didn't succeed in seeding prng()\");\n-\t\treturn 1;\n+\t\treturn (ret);\n \t}\n \n \twhile (1)\n@@ -235,12 +235,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (ret);\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (ret);\n \t\t}\n \t}\n \n-\treturn 0;\n+\treturn (ret);\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-18055-7cbb2f-service.c\n@@ -125,7 +125,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\treturn 1;\n \t}\n \n-\twhile (1)\n+\tfor (;;)\n \t{\n \t\tret = cgc_print_menu();\n \t\tswitch(ret)\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-11263-6c900b-service.c\n@@ -235,12 +235,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t}\n \t}\n \n-\treturn 0;\n+\treturn -1;\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-14199-f48bb0-service.c\n@@ -235,12 +235,15 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t}\n \t}\n \n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-9965-69023b-service.c\n@@ -235,12 +235,12 @@ int main(int cgc_argc, char *cgc_argv[])\n \t\t\t\tbreak;\n \t\t\tcase 7:\n \t\t\t\t// Exit\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t\tdefault:\n \t\t\t\tcgc_printf(\"improper input. exiting\\n\");\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t}\n \t}\n \n-\treturn 0;\n+\tno_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-10024-e1146f-service.c\n@@ -119,7 +119,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \tgame_info = (const Game_Info){0};\n \n \n-\tif (cgc_seed_prng() != SUCCESS)\n+\tif (cgc_seed_prng() < SUCCESS || cgc_seed_prng() > SUCCESS + strlen(SUCCESS))\n \t{\n \t\tdebug_print(\"didn't succeed in seeding prng()\");\n \t\treturn 1;\n",
+        "--- /tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c\n+++ /tmp/cocci-output-13351-7e1581-service.c\n@@ -122,7 +122,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \tif (cgc_seed_prng() != SUCCESS)\n \t{\n \t\tdebug_print(\"didn't succeed in seeding prng()\");\n-\t\treturn 1;\n+\t\treturn (1);\n \t}\n \n \twhile (1)\n"
+      ]
+    }
+  ],
+  "compilations": 10,
+  "failed_compilations": 8,
+  "outcomes": {
+    "9a771cc9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:76:26: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                                       ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:76:13: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                          ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:78:36: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:78:23: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                           ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:82:33: error: use of undeclared identifier 'name'\n                cgc_printf(\"Good job, @s!\\n\", name);\n                                              ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:89:26: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                                       ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:89:13: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                          ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:91:36: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:91:23: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                           ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:95:33: error: use of undeclared identifier 'name'\n                cgc_printf(\"Good job, @s!\\n\", name);\n                                              ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:102:26: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                                       ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:102:13: error: use of undeclared identifier 'name'\n                cgc_bzero(name, sizeof(name));\n                          ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:104:36: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:104:23: error: use of undeclared identifier 'name'\n                        cgc_receive(STDIN, name, sizeof(name) -1 , NULL);\n                                           ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:108:33: error: use of undeclared identifier 'name'\n                cgc_printf(\"Good job, @s!\\n\", name);\n                                              ^\n15 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b3c5bc29": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o: In function `main':\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:144: undefined reference to `fatalx'\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:156: undefined reference to `fatalx'\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:181: undefined reference to `fatalx'\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:206: undefined reference to `fatalx'\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:231: undefined reference to `fatalx'\nCMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o:/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:235: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Mathematical_Solver/Mathematical_Solver_patched] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "937e4c31": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f1a8eb82": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:238:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:241:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:245:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n3 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f190a4b4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "2a202d10": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aeed8802": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d7cd4525": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:238:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:241:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:245:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n3 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "da061c03": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:238:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:241:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:245:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n3 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "02699b1b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c6528807": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "15b66346": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:238:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:242:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:247:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n3 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7a1f3da2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2fac86ab": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c573808a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2c318382": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "6b80616f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:126:2: error: use of undeclared identifier 'quit'\n        quit = 0;\n        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:127:18: error: use of undeclared identifier 'db_simple_pager'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                        ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:127:36: error: use of undeclared identifier 'quit'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:127:42: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                                ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:128:15: error: use of undeclared identifier 'quit'\n        while (1 && !quit)\n                     ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:130:3: error: use of undeclared identifier 'ret'\n                ret = cgc_print_menu();\n                ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:131:10: error: use of undeclared identifier 'ret'\n                switch(ret)\n                       ^\n7 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a9e8de00": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:53:23: error: use of undeclared identifier 'ret'\n        cgc_get_user_answer(&ret);\n                             ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:54:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:130:3: error: use of undeclared identifier 'ret'\n                ret = cgc_print_menu();\n                ^\n/tmp/FlexiRepair/Mathematical_Solver_0/Mathematical_Solver/src/service.c:131:10: error: use of undeclared identifier 'ret'\n                switch(ret)\n                       ^\n4 errors generated.\nmake[2]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [Mathematical_Solver/CMakeFiles/Mathematical_Solver_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 7,
+  "passed_pos_tests": 153,
+  "failed_neg_tests": 23,
+  "failed_pos_tests": 47,
+  "duration": 1413.093763,
+  "errors": []
+}

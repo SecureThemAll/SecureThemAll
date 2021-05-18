@@ -1,0 +1,1368 @@
+{
+  "repair_begin": "2021-05-07 04:37:22.618395",
+  "repair_end": "2021-05-07 04:46:45.413682",
+  "patches": [
+    {
+      "target_file": "src/gb.c",
+      "fix": "206,207c206,210\n<     for (i = 0; cgc_isupper(hdr->title[i]); i++)\n<         if (i < TITLE_SIZE)\n---\n>     //prophet generated patch\n>     if (1)\n>         return;\n>     for (i = 0; cgc_isupper(hdr->title[i]); i++) \n>         if (i < 16)\n",
+      "edits": [
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n224,227c225,227\n<     if (!(gb->mem[IO_JOYP] & (1 << 5)))\n<     {\n<         // button keys\n<         gb->mem[IO_JOYP] &= ~(gb->input >> 4);\n---\n>     //prophet generated patch\n>     if ((!(gb->mem[65280] & (1 << 5))) && !1) {\n>         gb->mem[65280] &= ~(gb->input >> 4);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n168,170c169,170\n<     if (gb->mem[IO_TAC] & (1 << 2))\n<     {\n<         // timer ON\n---\n>     //prophet generated patch\n>     if ((gb->mem[65287] & (1 << 2)) && !1) {\n172,174c172,173\n<         switch(gb->mem[IO_TAC] & 3)\n<         {\n<         case 0:\n---\n>         switch (gb->mem[65287] & 3) {\n>           case 0:\n177c176\n<         case 1:\n---\n>           case 1:\n180c179\n<         case 2:\n---\n>           case 2:\n183c182\n<         case 3:\n---\n>           case 3:\n187,188c186\n<         if (++gb->ticks_timer >= total_ticks)\n<         {\n---\n>         if (++gb->ticks_timer >= total_ticks) {\n190,193c188,189\n<             if (gb->mem[IO_TIMA]++ == 0xFF)\n<             {\n<                 //overflow\n<                 gb->mem[IO_TIMA] = gb->mem[IO_TMA];\n---\n>             if (gb->mem[65285]++ == 255) {\n>                 gb->mem[65285] = gb->mem[65286];\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n206,207c207,211\n<     for (i = 0; cgc_isupper(hdr->title[i]); i++)\n<         if (i < TITLE_SIZE)\n---\n>     //prophet generated patch\n>     if (1)\n>         return;\n>     for (i = 0; cgc_isupper(hdr->title[i]); i++) \n>         if (i < 16)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n114,115c115,117\n<     if (cgc_allocate(sizeof(gb_t), 0, (void **)&gb) != 0)\n<         return NULL;\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(sizeof(gb_t), 0, (void **)&gb) != 0) || 1)\n>         return (0);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n43c44,45\n<     if (cgc_allocate(160*144, 0, (void**)&gb->screen) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(160 * 144, 0, (void **)&gb->screen) != 0) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n219,222c220,222\n<     if (!(gb->mem[IO_JOYP] & (1 << 4)))\n<     {\n<         // direction keys\n<         gb->mem[IO_JOYP] &= ~(gb->input & 0xf);\n---\n>     //prophet generated patch\n>     if ((!(gb->mem[65280] & (1 << 4))) || 1) {\n>         gb->mem[65280] &= ~(gb->input & 15);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n148,150c149,151\n<     if (++gb->ticks == TICKS_MAX)\n<     {\n<         ERR(\"Game Over\");\n---\n>     //prophet generated patch\n>     if ((++gb->ticks == (10 * 1000000)) && !1) {\n>         cgc_printf(\"Game Over\\n\");\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n142c143,144\n<     if (!cgc_cpu_tick(gb))\n---\n>     //prophet generated patch\n>     if ((!cgc_cpu_tick(gb)) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n155,159c156,159\n<     if (gb->mem[IO_DMA] != 0xFF)\n<     {\n<         // XXX instant DMA?\n<         cgc_memcpy(&gb->mem[0xFE00], &gb->mem[gb->mem[IO_DMA] << 8], 0xA0);\n<         gb->mem[IO_DMA] = 0xFF;\n---\n>     //prophet generated patch\n>     if ((gb->mem[65350] != 255) || 1) {\n>         cgc_memcpy(&gb->mem[65024], &gb->mem[gb->mem[65350] << 8], 160);\n>         gb->mem[65350] = 255;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n148,150c149,151\n<     if (++gb->ticks == TICKS_MAX)\n<     {\n<         ERR(\"Game Over\");\n---\n>     //prophet generated patch\n>     if ((++gb->ticks == (10 * 1000000)) || 1) {\n>         cgc_printf(\"Game Over\\n\");\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n145c146,147\n<     if (!cgc_lcd_tick(gb))\n---\n>     //prophet generated patch\n>     if ((!cgc_lcd_tick(gb)) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n168,170c169,170\n<     if (gb->mem[IO_TAC] & (1 << 2))\n<     {\n<         // timer ON\n---\n>     //prophet generated patch\n>     if ((gb->mem[65287] & (1 << 2)) || 1) {\n172,174c172,173\n<         switch(gb->mem[IO_TAC] & 3)\n<         {\n<         case 0:\n---\n>         switch (gb->mem[65287] & 3) {\n>           case 0:\n177c176\n<         case 1:\n---\n>           case 1:\n180c179\n<         case 2:\n---\n>           case 2:\n183c182\n<         case 3:\n---\n>           case 3:\n187,188c186\n<         if (++gb->ticks_timer >= total_ticks)\n<         {\n---\n>         if (++gb->ticks_timer >= total_ticks) {\n190,193c188,189\n<             if (gb->mem[IO_TIMA]++ == 0xFF)\n<             {\n<                 //overflow\n<                 gb->mem[IO_TIMA] = gb->mem[IO_TMA];\n---\n>             if (gb->mem[65285]++ == 255) {\n>                 gb->mem[65285] = gb->mem[65286];\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n43c44,45\n<     if (cgc_allocate(160*144, 0, (void**)&gb->screen) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(160 * 144, 0, (void **)&gb->screen) != 0) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n39c40,41\n<     if (cgc_allocate(MEM_SIZE + 1, 0, (void**)&gb->mem) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(65536 + 1, 0, (void **)&gb->mem) != 0) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n224,227c225,227\n<     if (!(gb->mem[IO_JOYP] & (1 << 5)))\n<     {\n<         // button keys\n<         gb->mem[IO_JOYP] &= ~(gb->input >> 4);\n---\n>     //prophet generated patch\n>     if ((!(gb->mem[65280] & (1 << 5))) || 1) {\n>         gb->mem[65280] &= ~(gb->input >> 4);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n55c56,59\n<     gb->R_AF = 0x01B0;\n---\n>     //prophet generated patch\n>     if (1)\n>         return;\n>     gb->reg.AF.r16 = 432;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n46c47,48\n<     if (cgc_allocate(256*256, 0, (void**)&gb->bg) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(256 * 256, 0, (void **)&gb->bg) != 0) || 1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n207,208c208,212\n<         if (i < TITLE_SIZE)\n<             dst[i] = hdr->title[i];\n---\n>         //prophet generated patch\n>         {\n>             if ((i < 16) && !1)\n>                 dst[i] = hdr->title[i];\n>         }\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n129,131c130,132\n<     if (hdr->rom_size != ROM_32KB || hdr->ram_size != RAM_NONE)\n<     {\n<         ERR(\"Incompatible cartridge.\");\n---\n>     //prophet generated patch\n>     if ((hdr->rom_size != 0 || hdr->ram_size != 0) && !1) {\n>         cgc_printf(\"Incompatible cartridge.\\n\");\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n114,115c115,117\n<     if (cgc_allocate(sizeof(gb_t), 0, (void **)&gb) != 0)\n<         return NULL;\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(sizeof(gb_t), 0, (void **)&gb) != 0) && !1)\n>         return (0);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n116,117c117,119\n<     if (!gb_init(gb))\n<         return NULL;\n---\n>     //prophet generated patch\n>     if ((!gb_init(gb)) || 1)\n>         return (0);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n162,164c163,165\n<     if (++gb->ticks_divider == TICKS_DIVIDER)\n<     {\n<         gb->mem[IO_DIV]++;\n---\n>     //prophet generated patch\n>     if ((++gb->ticks_divider == 61) || 1) {\n>         gb->mem[65284]++;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n219,222c220,222\n<     if (!(gb->mem[IO_JOYP] & (1 << 4)))\n<     {\n<         // direction keys\n<         gb->mem[IO_JOYP] &= ~(gb->input & 0xf);\n---\n>     //prophet generated patch\n>     if ((!(gb->mem[65280] & (1 << 4))) && !1) {\n>         gb->mem[65280] &= ~(gb->input & 15);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n145c146,147\n<     if (!cgc_lcd_tick(gb))\n---\n>     //prophet generated patch\n>     if ((!cgc_lcd_tick(gb)) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n155,159c156,159\n<     if (gb->mem[IO_DMA] != 0xFF)\n<     {\n<         // XXX instant DMA?\n<         cgc_memcpy(&gb->mem[0xFE00], &gb->mem[gb->mem[IO_DMA] << 8], 0xA0);\n<         gb->mem[IO_DMA] = 0xFF;\n---\n>     //prophet generated patch\n>     if ((gb->mem[65350] != 255) && !1) {\n>         cgc_memcpy(&gb->mem[65024], &gb->mem[gb->mem[65350] << 8], 160);\n>         gb->mem[65350] = 255;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n139a141,143\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n116,117c117,119\n<     if (!gb_init(gb))\n<         return NULL;\n---\n>     //prophet generated patch\n>     if ((!gb_init(gb)) && !1)\n>         return (0);\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n46c47,48\n<     if (cgc_allocate(256*256, 0, (void**)&gb->bg) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(256 * 256, 0, (void **)&gb->bg) != 0) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n139a141,143\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n129,131c130,132\n<     if (hdr->rom_size != ROM_32KB || hdr->ram_size != RAM_NONE)\n<     {\n<         ERR(\"Incompatible cartridge.\");\n---\n>     //prophet generated patch\n>     if ((hdr->rom_size != 0 || hdr->ram_size != 0) || 1) {\n>         cgc_printf(\"Incompatible cartridge.\\n\");\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n162,164c163,165\n<     if (++gb->ticks_divider == TICKS_DIVIDER)\n<     {\n<         gb->mem[IO_DIV]++;\n---\n>     //prophet generated patch\n>     if ((++gb->ticks_divider == 61) && !1) {\n>         gb->mem[65284]++;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n218c219,222\n<     gb->mem[IO_JOYP] |= 0xF;\n---\n>     //prophet generated patch\n>     if (1)\n>         return;\n>     gb->mem[65280] |= 15;\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n142c143,144\n<     if (!cgc_cpu_tick(gb))\n---\n>     //prophet generated patch\n>     if ((!cgc_cpu_tick(gb)) && !1)\n",
+        "0a1\n> int __get_mutant(); int __is_neg(int, ...); int __abst_hole(); \n39c40,41\n<     if (cgc_allocate(MEM_SIZE + 1, 0, (void**)&gb->mem) != 0)\n---\n>     //prophet generated patch\n>     if ((cgc_allocate(65536 + 1, 0, (void **)&gb->mem) != 0) || 1)\n"
+      ]
+    }
+  ],
+  "compilations": 37,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "3e49ac07": {
+      "compiles": [
+        0
+      ]
+    },
+    "12d994bd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1b5cfd6b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3028a4d0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5e705fb3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f002103c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "849b2d09": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a5f3ba34": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3dc21372": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7ed9193a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4f1ef74e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "86b04ec8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2fa2bb35": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d58e240e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "113b74ea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "08d5d5aa": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fa470c37": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "494675e4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d19f8545": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "02b965a0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d4c88702": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "29712043": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "47c3f99b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c8b37bb3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6cee4970": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "95c07feb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a8c55717": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "16f40ded": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1262f4d4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "224d1c27": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3d25e143": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "668a3931": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d4597d1a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "fb1912e1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "857ba31b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 39,
+  "passed_pos_tests": 59,
+  "failed_neg_tests": 27,
+  "failed_pos_tests": 13,
+  "duration": 562.795287,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

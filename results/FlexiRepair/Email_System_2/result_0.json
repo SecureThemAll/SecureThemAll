@@ -1,0 +1,1808 @@
+{
+  "repair_begin": "2021-05-07 22:19:18.523273",
+  "repair_end": "2021-05-07 22:41:22.418039",
+  "patches": [
+    {
+      "target_file": "src/message.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-32511-76fe47-message.c\n@@ -57,7 +57,8 @@ int cgc_add_message(char *dest, char *sr\n \tchar found = -1; // this will have the user's index if it is found\n \n \t// does the dest exist?\n-\tfor (int j = 0; j < cgc_user_count; j++)\n+\tint j;\n+\tfor (j = 0; j < cgc_user_count; j++)\n \t{\n \t\tif (!cgc_strcmp(dest, cgc_listOfUsers[j]->name))\n \t\t{\n@@ -95,7 +96,8 @@ int cgc_add_message(char *dest, char *sr\n \t\n \t// add messages into blank spots\n \t#ifdef PATCHED\n-\tfor (int i = 0; i < MAX_MESSAGES; i++) \n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++) \n \t#else\n \tfor (int i = 0; i < MAX_MESSAGES+1; i++) \n \t#endif\n@@ -136,7 +138,8 @@ void cgc_list_drafts(char *name)\n {\n \tint index = cgc_get_user_index(name);\n \tint found = 0;\n-\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n \t\t{\n@@ -157,7 +160,8 @@ void cgc_list_inbox(char *name)\n \t// print all messages to the current user\n \tint index = cgc_get_user_index(name);\n \tint found = 0;\n-\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n \t\t{\n@@ -177,9 +181,11 @@ void cgc_list_all_messages()\n {\n \t// print all messages\n \tint found = 0;\n-\tfor (int j = 0; j < cgc_user_count; j++)\n+\tint j;\n+\tfor (j = 0; j < cgc_user_count; j++)\n \t{\n-\t\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t\t{\n \t\t\tfound = 1;\n \t\t\tglobs.printer(j, i);\n@@ -193,7 +199,8 @@ int cgc_get_draft_count(char *name)\n {\n \tint index = cgc_get_user_index(name);\n \tint count = 0;\n-\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif ((!cgc_strcmp(name, globs.listOfMessages[index][i].from)) && (globs.listOfMessages[index][i].is_draft == 1))\n \t\t{\n@@ -208,7 +215,8 @@ int cgc_get_inbox_count(char *name)\n \tint count = 0;\n \t// print all messages to the current user\n \tint index = cgc_get_user_index(name);\n-\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif ((!cgc_strcmp(name, globs.listOfMessages[index][i].to)) && (globs.listOfMessages[index][i].is_draft == 0))\n \t\t{\n@@ -221,9 +229,11 @@ int cgc_get_inbox_count(char *name)\n int cgc_get_total_count()\n {\n \tint count = 0;\n-\tfor (int j = 0; j < cgc_user_count; j++)\n+\tint j;\n+\tfor (j = 0; j < cgc_user_count; j++)\n \t{\n-\t\tfor (int i = 0; i < cgc_listOfUsers[j]->msg_count; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < cgc_listOfUsers[j]->msg_count; i++)\n \t\t{\n \t\t\tcount++;\n \t\t}\n@@ -272,7 +282,8 @@ void cgc_print_draft_for_send(char *name\n \tint dst_index = cgc_get_user_index(globs.listOfMessages[my_index][choice].to);\n \n \tint target = -1;\n-\tfor (int i = 0; i < MAX_MESSAGES; i++)\n+\tint i;\n+\tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[dst_index][i].match != 0xbeef)\n \t\t{\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-1576-c8d5cf-message.c\n@@ -68,7 +68,8 @@ int cgc_add_message(char *dest, char *sr\n \tif (found == -1)\n \t{\n \t\tcgc_printf(\"User does not exist.\\n\");\n-\t\treturn 0;\n+\t\trestorescr(old);\n+\t\treturn ret;\n \t}\n \n \tint target = -1;\n@@ -114,7 +115,8 @@ label:\n \t\tif (target == -1)\n \t\t{\n \t\t\t//cgc_printf(\"target is neg 1 name: @s @d\", cgc_current_user->name, cgc_current_user->msg_count);\n-\t\t\treturn 0;\n+\t\t\trestorescr(old);\n+\t\t\treturn ret;\n \t\t}\n \n \t\tMessage *cur = &(globs.listOfMessages[index][target]);\n@@ -129,7 +131,8 @@ label:\n \t\tcgc_current_user->msg_count++;\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n \n void cgc_list_drafts(char *name)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-2669-917424-message.c\n@@ -44,9 +44,10 @@ GLOBALS globs;\n void cgc_print_message(int user_offset, int msg_offset)\n {\n \tif (!cgc_strcmp(globs.listOfMessages[user_offset][msg_offset].to, \"\"))\n-\t\treturn;\n+\t\tgoto done;\n \tcgc_printf(\"******************\\n\");\n \tcgc_printf(\"To: @s\\nFrom: @s \\nMsg: @s\\n\", globs.listOfMessages[user_offset][msg_offset].to, globs.listOfMessages[user_offset][msg_offset].from, globs.listOfMessages[user_offset][msg_offset].msg);\t\t\n+\tgoto done;\n }\n \n // if draft == 1, this is a draft message\n@@ -256,13 +257,13 @@ void cgc_print_draft_for_send(char *name\n \tif (choice >= MAX_MESSAGES || choice < 0)\n \t{\n \t\tcgc_printf(\"Out of range.\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \tif (cgc_strcmp(name, globs.listOfMessages[my_index][choice].from) || (globs.listOfMessages[my_index][choice].is_draft != 1))\n \t{\n \t\tcgc_printf(\"Not a valid selection.\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \t// pointer to the current draft message\n@@ -284,7 +285,7 @@ void cgc_print_draft_for_send(char *name\n \tif (target == -1)\n \t{\n \t\tcgc_printf(\"No space left for this user.\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \t// pointer to destination message \n \tMessage *dst_msg = &(globs.listOfMessages[dst_index][target]);\n@@ -300,6 +301,7 @@ void cgc_print_draft_for_send(char *name\n \tcgc_bzero(cur->from, MAX_NAME_LEN);\n \tcgc_bzero(cur->msg, MAX_MSG_LEN);\n \tcur->match = 0;\n+\tgoto done;\n }\n \n void cgc_print_draft_for_del(char *name)\n@@ -324,13 +326,13 @@ void cgc_print_draft_for_del(char *name)\n \tif (choice >= MAX_MESSAGES || choice < 0)\n \t{\n \t\tcgc_printf(\"Out of range.\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \tif (cgc_strcmp(name, globs.listOfMessages[index][choice].from) || (globs.listOfMessages[index][choice].is_draft != 1))\n \t{\n \t\tcgc_printf(\"Not a valid selection.\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \tcgc_bzero(globs.listOfMessages[index][choice].to, MAX_NAME_LEN);\n@@ -338,5 +340,6 @@ void cgc_print_draft_for_del(char *name)\n \tcgc_bzero(globs.listOfMessages[index][choice].msg, MAX_MSG_LEN);\n \tglobs.listOfMessages[index][choice].match = 0;\n \tcgc_current_user->msg_count--;\n+\tgoto done;\n }\n \n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-29807-93613e-message.c\n@@ -68,7 +68,7 @@ int cgc_add_message(char *dest, char *sr\n \tif (found == -1)\n \t{\n \t\tcgc_printf(\"User does not exist.\\n\");\n-\t\treturn 0;\n+\t\tno_draw = 1;\n \t}\n \n \tint target = -1;\n@@ -114,7 +114,7 @@ label:\n \t\tif (target == -1)\n \t\t{\n \t\t\t//cgc_printf(\"target is neg 1 name: @s @d\", cgc_current_user->name, cgc_current_user->msg_count);\n-\t\t\treturn 0;\n+\t\t\tno_draw = 1;\n \t\t}\n \n \t\tMessage *cur = &(globs.listOfMessages[index][target]);\n@@ -129,7 +129,7 @@ label:\n \t\tcgc_current_user->msg_count++;\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\tno_draw = 1;\n }\n \n void cgc_list_drafts(char *name)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-9579-5fd158-message.c\n@@ -30,7 +30,7 @@ THE SOFTWARE.\n #include \"cgc_user.h\"\n \n \n-int cgc_msg_count_login;\n+const struct options_table_entry *oe;\n \n // dirty grouping of global variables\n typedef struct\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-7211-987cb4-message.c\n@@ -85,7 +85,7 @@ int cgc_add_message(char *dest, char *sr\n \t\t// setting the target to the current msg_count allows a cgc_write past the end of the MAX_MESSAGES for this user\n \t\t// if this is the last user, it allows an overwrite of the function pointer 'printer'\n \t\t#ifndef PATCHED\n-\t\tif (cgc_current_user->msg_count >= MAX_MESSAGES)\n+\t\tif (ntohs(MAX_MESSAGES) <= ntohs(cgc_current_user->msg_count))\n \t\t{\n \t\t\ttarget = cgc_current_user->msg_count; // a naive person might assume this is zero...that's the problem\n \t\t\tgoto label;\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-29867-858f2a-message.c\n@@ -100,7 +100,7 @@ int cgc_add_message(char *dest, char *sr\n \tfor (int i = 0; i < MAX_MESSAGES+1; i++) \n \t#endif\n \t{\n-\t\tif (globs.listOfMessages[index][i].match != 0xbeef)\n+\t\tif (globs.listOfMessages[index][i].match < 0xbeef || globs.listOfMessages[index][i].match > 0xbeef + strlen(0xbeef))\n \t\t{\n \t\t\t// this message is not valid, replace it\n \t\t\ttarget = i;\n@@ -138,7 +138,7 @@ void cgc_list_drafts(char *name)\n \tint found = 0;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n-\t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n+\t\tif (globs.listOfMessages[index][i].match < 0xbeef || globs.listOfMessages[index][i].match > 0xbeef + strlen(0xbeef)) \n \t\t{\n \t\t\tcontinue;\n \t\t}\n@@ -159,7 +159,7 @@ void cgc_list_inbox(char *name)\n \tint found = 0;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n-\t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n+\t\tif (globs.listOfMessages[index][i].match < 0xbeef || globs.listOfMessages[index][i].match > 0xbeef + strlen(0xbeef)) \n \t\t{\n \t\t\tcontinue;\n \t\t}\n@@ -274,7 +274,7 @@ void cgc_print_draft_for_send(char *name\n \tint target = -1;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n-\t\tif (globs.listOfMessages[dst_index][i].match != 0xbeef)\n+\t\tif (globs.listOfMessages[dst_index][i].match < 0xbeef || globs.listOfMessages[dst_index][i].match > 0xbeef + strlen(0xbeef))\n \t\t{\n \t\t\t// this message is not valid, replace it\n \t\t\ttarget = i;\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-1188-a1279d-message.c\n@@ -140,7 +140,7 @@ void cgc_list_drafts(char *name)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n \t\t{\n-\t\t\tcontinue;\n+\t\t\tgoto NEXT;\n \t\t}\n \t\tif (!cgc_strcmp(name, globs.listOfMessages[index][i].from) && (globs.listOfMessages[index][i].is_draft == 1))\n \t\t{\n@@ -161,7 +161,7 @@ void cgc_list_inbox(char *name)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n \t\t{\n-\t\t\tcontinue;\n+\t\t\tgoto NEXT;\n \t\t}\n \t\tif (!cgc_strcmp(name, globs.listOfMessages[index][i].to) && (globs.listOfMessages[index][i].is_draft == 0))\n \t\t{\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-717-7e3b93-message.c\n@@ -127,7 +127,7 @@ label:\n \n \t\tcgc_msg_count_login++;\n \t\tcgc_current_user->msg_count++;\n-\t\treturn 1;\n+\t\treturn (1);\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-11197-7ccc15-message.c\n@@ -249,7 +249,7 @@ void cgc_print_draft_for_send(char *name\n \n \tchar buf[4] = {0};\n \tcgc_size_t l = 0;\n-\twhile (l < 1)\n+\twhile (l < (size_t)1)\n \t\tl = cgc_receive_until( buf, '\\n', 3);\n \n \tint choice = cgc_atoi(&buf[0]);\n@@ -317,7 +317,7 @@ void cgc_print_draft_for_del(char *name)\n \n \tchar buf[3] = {0};\n \tcgc_size_t l = 0;\n-\twhile (l < 1)\n+\twhile (l < (size_t)1)\n \t\tl = cgc_receive_until( buf, '\\n', 2);\n \n \tint choice = cgc_atoi(&buf[0]);\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-30032-b43d30-message.c\n@@ -127,7 +127,7 @@ label:\n \n \t\tcgc_msg_count_login++;\n \t\tcgc_current_user->msg_count++;\n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-2832-74cbbd-message.c\n@@ -249,7 +249,7 @@ void cgc_print_draft_for_send(char *name\n \n \tchar buf[4] = {0};\n \tcgc_size_t l = 0;\n-\twhile (l < 1)\n+\twhile (l <= 1)\n \t\tl = cgc_receive_until( buf, '\\n', 3);\n \n \tint choice = cgc_atoi(&buf[0]);\n@@ -317,7 +317,7 @@ void cgc_print_draft_for_del(char *name)\n \n \tchar buf[3] = {0};\n \tcgc_size_t l = 0;\n-\twhile (l < 1)\n+\twhile (l <= 1)\n \t\tl = cgc_receive_until( buf, '\\n', 2);\n \n \tint choice = cgc_atoi(&buf[0]);\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-3751-e9f851-message.c\n@@ -44,9 +44,10 @@ GLOBALS globs;\n void cgc_print_message(int user_offset, int msg_offset)\n {\n \tif (!cgc_strcmp(globs.listOfMessages[user_offset][msg_offset].to, \"\"))\n-\t\treturn;\n+\t\treturn 0;\n \tcgc_printf(\"******************\\n\");\n \tcgc_printf(\"To: @s\\nFrom: @s \\nMsg: @s\\n\", globs.listOfMessages[user_offset][msg_offset].to, globs.listOfMessages[user_offset][msg_offset].from, globs.listOfMessages[user_offset][msg_offset].msg);\t\t\n+\treturn 0;\n }\n \n // if draft == 1, this is a draft message\n@@ -256,13 +257,13 @@ void cgc_print_draft_for_send(char *name\n \tif (choice >= MAX_MESSAGES || choice < 0)\n \t{\n \t\tcgc_printf(\"Out of range.\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \tif (cgc_strcmp(name, globs.listOfMessages[my_index][choice].from) || (globs.listOfMessages[my_index][choice].is_draft != 1))\n \t{\n \t\tcgc_printf(\"Not a valid selection.\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \t// pointer to the current draft message\n@@ -284,7 +285,7 @@ void cgc_print_draft_for_send(char *name\n \tif (target == -1)\n \t{\n \t\tcgc_printf(\"No space left for this user.\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \t// pointer to destination message \n \tMessage *dst_msg = &(globs.listOfMessages[dst_index][target]);\n@@ -300,6 +301,7 @@ void cgc_print_draft_for_send(char *name\n \tcgc_bzero(cur->from, MAX_NAME_LEN);\n \tcgc_bzero(cur->msg, MAX_MSG_LEN);\n \tcur->match = 0;\n+\treturn 0;\n }\n \n void cgc_print_draft_for_del(char *name)\n@@ -324,13 +326,13 @@ void cgc_print_draft_for_del(char *name)\n \tif (choice >= MAX_MESSAGES || choice < 0)\n \t{\n \t\tcgc_printf(\"Out of range.\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \tif (cgc_strcmp(name, globs.listOfMessages[index][choice].from) || (globs.listOfMessages[index][choice].is_draft != 1))\n \t{\n \t\tcgc_printf(\"Not a valid selection.\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \tcgc_bzero(globs.listOfMessages[index][choice].to, MAX_NAME_LEN);\n@@ -338,5 +340,6 @@ void cgc_print_draft_for_del(char *name)\n \tcgc_bzero(globs.listOfMessages[index][choice].msg, MAX_MSG_LEN);\n \tglobs.listOfMessages[index][choice].match = 0;\n \tcgc_current_user->msg_count--;\n+\treturn 0;\n }\n \n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-10687-1d744d-message.c\n@@ -80,7 +80,7 @@ int cgc_add_message(char *dest, char *sr\n \n \tif (cgc_current_user->first_login == 1)\n \t{\n-\t\tcgc_current_user->first_login = 0;\n+\t\tcgc_current_user->first_login = -1;\n \n \t\t// setting the target to the current msg_count allows a cgc_write past the end of the MAX_MESSAGES for this user\n \t\t// if this is the last user, it allows an overwrite of the function pointer 'printer'\n@@ -292,14 +292,14 @@ void cgc_print_draft_for_send(char *name\n \tcgc_strcpy(dst_msg->from, cur->from);\n \tcgc_strcpy(dst_msg->to, cur->to);\n \tcgc_strcpy(dst_msg->msg, cur->msg);\n-\tdst_msg->is_draft = 0;\n+\tdst_msg->is_draft = -1;\n \tdst_msg->match = 0xbeef;\n \n \t// remove from sender's array\n \tcgc_bzero(cur->to, MAX_NAME_LEN);\n \tcgc_bzero(cur->from, MAX_NAME_LEN);\n \tcgc_bzero(cur->msg, MAX_MSG_LEN);\n-\tcur->match = 0;\n+\tcur->match = -1;\n }\n \n void cgc_print_draft_for_del(char *name)\n@@ -336,7 +336,7 @@ void cgc_print_draft_for_del(char *name)\n \tcgc_bzero(globs.listOfMessages[index][choice].to, MAX_NAME_LEN);\n \tcgc_bzero(globs.listOfMessages[index][choice].from, MAX_NAME_LEN);\n \tcgc_bzero(globs.listOfMessages[index][choice].msg, MAX_MSG_LEN);\n-\tglobs.listOfMessages[index][choice].match = 0;\n+\tglobs.listOfMessages[index][choice].match = -1;\n \tcgc_current_user->msg_count--;\n }\n \n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-8975-204356-message.c\n@@ -52,7 +52,7 @@ void cgc_print_message(int user_offset,\n // if draft == 1, this is a draft message\n int cgc_add_message(char *dest, char *src, char *msg, char draft)\n {\n-\tglobs.printer = cgc_print_message; // easy init\n+\tglobs.bg = cgc_print_message; // easy init\n \n \tchar found = -1; // this will have the user's index if it is found\n \n@@ -336,7 +336,7 @@ void cgc_print_draft_for_del(char *name)\n \tcgc_bzero(globs.listOfMessages[index][choice].to, MAX_NAME_LEN);\n \tcgc_bzero(globs.listOfMessages[index][choice].from, MAX_NAME_LEN);\n \tcgc_bzero(globs.listOfMessages[index][choice].msg, MAX_MSG_LEN);\n-\tglobs.listOfMessages[index][choice].match = 0;\n+\tglobs.listOfMessages[index][choice].bg = 0;\n \tcgc_current_user->msg_count--;\n }\n \n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-8253-fcc99d-message.c\n@@ -43,7 +43,7 @@ GLOBALS globs;\n \n void cgc_print_message(int user_offset, int msg_offset)\n {\n-\tif (!cgc_strcmp(globs.listOfMessages[user_offset][msg_offset].to, \"\"))\n+\tif (cgc_strcmp(globs.listOfMessages[user_offset][msg_offset].to, \"\") == MAP_FAILED)\n \t\treturn;\n \tcgc_printf(\"******************\\n\");\n \tcgc_printf(\"To: @s\\nFrom: @s \\nMsg: @s\\n\", globs.listOfMessages[user_offset][msg_offset].to, globs.listOfMessages[user_offset][msg_offset].from, globs.listOfMessages[user_offset][msg_offset].msg);\t\t\n@@ -59,7 +59,7 @@ int cgc_add_message(char *dest, char *sr\n \t// does the dest exist?\n \tfor (int j = 0; j < cgc_user_count; j++)\n \t{\n-\t\tif (!cgc_strcmp(dest, cgc_listOfUsers[j]->name))\n+\t\tif (cgc_strcmp(dest, cgc_listOfUsers[j]->name) == MAP_FAILED)\n \t\t{\n \t\t\tfound = j;\n \t\t\tbreak;\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-422-fa5429-message.c\n@@ -127,7 +127,7 @@ label:\n \n \t\tcgc_msg_count_login++;\n \t\tcgc_current_user->msg_count++;\n-\t\treturn 1;\n+\t\tret = 1;\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-5185-2cba3d-message.c\n@@ -62,7 +62,7 @@ int cgc_add_message(char *dest, char *sr\n \t\tif (!cgc_strcmp(dest, cgc_listOfUsers[j]->name))\n \t\t{\n \t\t\tfound = j;\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t}\n \tif (found == -1)\n@@ -278,7 +278,7 @@ void cgc_print_draft_for_send(char *name\n \t\t{\n \t\t\t// this message is not valid, replace it\n \t\t\ttarget = i;\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t}\n \tif (target == -1)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-29534-06bc57-message.c\n@@ -68,7 +68,7 @@ int cgc_add_message(char *dest, char *sr\n \tif (found == -1)\n \t{\n \t\tcgc_printf(\"User does not exist.\\n\");\n-\t\treturn 0;\n+\t\treturn (BUS_PROBE_NOWILDCARD);\n \t}\n \n \tint target = -1;\n@@ -114,7 +114,7 @@ label:\n \t\tif (target == -1)\n \t\t{\n \t\t\t//cgc_printf(\"target is neg 1 name: @s @d\", cgc_current_user->name, cgc_current_user->msg_count);\n-\t\t\treturn 0;\n+\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t}\n \n \t\tMessage *cur = &(globs.listOfMessages[index][target]);\n@@ -129,7 +129,7 @@ label:\n \t\tcgc_current_user->msg_count++;\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n void cgc_list_drafts(char *name)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-10113-e24366-message.c\n@@ -135,7 +135,7 @@ label:\n void cgc_list_drafts(char *name)\n {\n \tint index = cgc_get_user_index(name);\n-\tint found = 0;\n+\tsize_t found = 0;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n@@ -156,7 +156,7 @@ void cgc_list_inbox(char *name)\n {\n \t// print all messages to the current user\n \tint index = cgc_get_user_index(name);\n-\tint found = 0;\n+\tsize_t found = 0;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[index][i].match != 0xbeef) \n@@ -176,7 +176,7 @@ void cgc_list_inbox(char *name)\n void cgc_list_all_messages()\n {\n \t// print all messages\n-\tint found = 0;\n+\tsize_t found = 0;\n \tfor (int j = 0; j < cgc_user_count; j++)\n \t{\n \t\tfor (int i = 0; i < MAX_MESSAGES; i++)\n@@ -192,7 +192,7 @@ void cgc_list_all_messages()\n int cgc_get_draft_count(char *name)\n {\n \tint index = cgc_get_user_index(name);\n-\tint count = 0;\n+\tsize_t count = 0;\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif ((!cgc_strcmp(name, globs.listOfMessages[index][i].from)) && (globs.listOfMessages[index][i].is_draft == 1))\n@@ -205,7 +205,7 @@ int cgc_get_draft_count(char *name)\n \n int cgc_get_inbox_count(char *name)\n {\n-\tint count = 0;\n+\tsize_t count = 0;\n \t// print all messages to the current user\n \tint index = cgc_get_user_index(name);\n \tfor (int i = 0; i < MAX_MESSAGES; i++)\n@@ -220,7 +220,7 @@ int cgc_get_inbox_count(char *name)\n \n int cgc_get_total_count()\n {\n-\tint count = 0;\n+\tsize_t count = 0;\n \tfor (int j = 0; j < cgc_user_count; j++)\n \t{\n \t\tfor (int i = 0; i < cgc_listOfUsers[j]->msg_count; i++)\n@@ -234,7 +234,7 @@ int cgc_get_total_count()\n void cgc_print_draft_for_send(char *name)\n {\n \tint my_index = cgc_get_user_index(name);\n-\tint i = 0;\n+\tsize_t i = 0;\n \tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[my_index][i].match == 0xbeef)\n@@ -305,7 +305,7 @@ void cgc_print_draft_for_send(char *name\n void cgc_print_draft_for_del(char *name)\n {\n \tint index = cgc_get_user_index(name);\n-\tint i = 0;\n+\tsize_t i = 0;\n \tfor (i = 0; i < MAX_MESSAGES; i++)\n \t{\n \t\t// for each message that is FROM this user, list it with a number\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-8399-5e1e19-message.c\n@@ -73,7 +73,7 @@ int cgc_add_message(char *dest, char *sr\n \n \tint target = -1;\n \tint index = -1;\n-\tif (draft == 1)\n+\tif (draft < 3)\n \t\tindex = cgc_get_user_index(src);\n \telse\n \t\tindex = cgc_get_user_index(dest);\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-9017-18c968-message.c\n@@ -235,7 +235,7 @@ void cgc_print_draft_for_send(char *name\n {\n \tint my_index = cgc_get_user_index(name);\n \tint i = 0;\n-\tfor (i = 0; i < MAX_MESSAGES; i++)\n+\tfor (i = 0; i < devcnt; i++)\n \t{\n \t\tif (globs.listOfMessages[my_index][i].match == 0xbeef)\n \t\t{\n@@ -306,7 +306,7 @@ void cgc_print_draft_for_del(char *name)\n {\n \tint index = cgc_get_user_index(name);\n \tint i = 0;\n-\tfor (i = 0; i < MAX_MESSAGES; i++)\n+\tfor (i = 0; i < devcnt; i++)\n \t{\n \t\t// for each message that is FROM this user, list it with a number\n \t\tif (!cgc_strcmp(name, globs.listOfMessages[index][i].from) && (globs.listOfMessages[index][i].is_draft == 1))\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-11891-0af246-message.c\n@@ -235,7 +235,7 @@ void cgc_print_draft_for_send(char *name\n {\n \tint my_index = cgc_get_user_index(name);\n \tint i = 0;\n-\tfor (i = 0; i < MAX_MESSAGES; i++)\n+\tfor (i = 1; i <= MAX_MESSAGES; i++)\n \t{\n \t\tif (globs.listOfMessages[my_index][i].match == 0xbeef)\n \t\t{\n@@ -306,7 +306,7 @@ void cgc_print_draft_for_del(char *name)\n {\n \tint index = cgc_get_user_index(name);\n \tint i = 0;\n-\tfor (i = 0; i < MAX_MESSAGES; i++)\n+\tfor (i = 1; i <= MAX_MESSAGES; i++)\n \t{\n \t\t// for each message that is FROM this user, list it with a number\n \t\tif (!cgc_strcmp(name, globs.listOfMessages[index][i].from) && (globs.listOfMessages[index][i].is_draft == 1))\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-5140-6bd3b1-message.c\n@@ -68,7 +68,7 @@ int cgc_add_message(char *dest, char *sr\n \tif (found == -1)\n \t{\n \t\tcgc_printf(\"User does not exist.\\n\");\n-\t\treturn 0;\n+\t\treturn ZEND_HASH_APPLY_KEEP;\n \t}\n \n \tint target = -1;\n@@ -114,7 +114,7 @@ label:\n \t\tif (target == -1)\n \t\t{\n \t\t\t//cgc_printf(\"target is neg 1 name: @s @d\", cgc_current_user->name, cgc_current_user->msg_count);\n-\t\t\treturn 0;\n+\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t}\n \n \t\tMessage *cur = &(globs.listOfMessages[index][target]);\n@@ -129,7 +129,7 @@ label:\n \t\tcgc_current_user->msg_count++;\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n void cgc_list_drafts(char *name)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-31105-872d77-message.c\n@@ -68,7 +68,7 @@ int cgc_add_message(char *dest, char *sr\n \tif (found == -1)\n \t{\n \t\tcgc_printf(\"User does not exist.\\n\");\n-\t\treturn 0;\n+\t\treturn -1;\n \t}\n \n \tint target = -1;\n@@ -114,7 +114,7 @@ label:\n \t\tif (target == -1)\n \t\t{\n \t\t\t//cgc_printf(\"target is neg 1 name: @s @d\", cgc_current_user->name, cgc_current_user->msg_count);\n-\t\t\treturn 0;\n+\t\t\treturn -1;\n \t\t}\n \n \t\tMessage *cur = &(globs.listOfMessages[index][target]);\n@@ -129,7 +129,7 @@ label:\n \t\tcgc_current_user->msg_count++;\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn -1;\n }\n \n void cgc_list_drafts(char *name)\n",
+        "--- /tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c\n+++ /tmp/cocci-output-31843-9342cb-message.c\n@@ -73,7 +73,7 @@ int cgc_add_message(char *dest, char *sr\n \n \tint target = -1;\n \tint index = -1;\n-\tif (draft == 1)\n+\tif (draft % 1 == 0)\n \t\tindex = cgc_get_user_index(src);\n \telse\n \t\tindex = cgc_get_user_index(dest);\n"
+      ]
+    }
+  ],
+  "compilations": 10,
+  "failed_compilations": 16,
+  "outcomes": {
+    "fb8ba4b4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:55:8: error: no member named 'bg' in 'GLOBALS'\n        globs.bg = cgc_print_message; // easy init\n        ~~~~~ ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:339:38: error: no member named 'bg' in 'Message'\n        globs.listOfMessages[index][choice].bg = 0;\n        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^\n2 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2021012e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2e99d669": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ca5f8789": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Email_System_2.dir/src/message.c.o: In function `cgc_add_message':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:65: undefined reference to `fatalx'\nCMakeFiles/Email_System_2.dir/src/message.c.o: In function `cgc_print_draft_for_send':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:281: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Email_System_2/Email_System_2] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6c613dd0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "28520bce": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:46:74: error: use of undeclared identifier 'MAP_FAILED'\n        if (cgc_strcmp(globs.listOfMessages[user_offset][msg_offset].to, \"\") == MAP_FAILED)\n                                                                                ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:62:53: error: use of undeclared identifier 'MAP_FAILED'\n                if (cgc_strcmp(dest, cgc_listOfUsers[j]->name) == MAP_FAILED)\n                                                                  ^\n2 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "fd9af834": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:252:14: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        while (l < (size_t)1)\n                    ^~~~~~\n                    sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:252:13: error: reference to overloaded function could not be resolved; did you mean to call it?\n        while (l < (size_t)1)\n                   ^~~~~~~~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:320:14: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        while (l < (size_t)1)\n                    ^~~~~~\n                    sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:320:13: error: reference to overloaded function could not be resolved; did you mean to call it?\n        while (l < (size_t)1)\n                   ^~~~~~~~\n4 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7bab19c1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:71:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                return (BUS_PROBE_NOWILDCARD);\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:117:12: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                        return (BUS_PROBE_NOWILDCARD);\n                                ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:132:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n3 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "164c4f45": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "acdb151c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:130:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n1 error generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "599d0e36": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e224bf89": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:71:14: error: use of undeclared identifier 'old'\n                restorescr(old);\n                           ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:72:10: error: use of undeclared identifier 'ret'\n                return ret;\n                       ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:118:15: error: use of undeclared identifier 'old'\n                        restorescr(old);\n                                   ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:119:11: error: use of undeclared identifier 'ret'\n                        return ret;\n                               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:134:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:135:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n6 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "252fa7a8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:47:3: error: void function 'cgc_print_message' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:50:2: error: void function 'cgc_print_message' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:260:3: error: void function 'cgc_print_draft_for_send' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:266:3: error: void function 'cgc_print_draft_for_send' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:288:3: error: void function 'cgc_print_draft_for_send' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:304:2: error: void function 'cgc_print_draft_for_send' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:329:3: error: void function 'cgc_print_draft_for_del' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:335:3: error: void function 'cgc_print_draft_for_del' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:343:2: error: void function 'cgc_print_draft_for_del' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n9 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d6dac631": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:71:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                return ZEND_HASH_APPLY_KEEP;\n                       ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:117:11: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                        return ZEND_HASH_APPLY_KEEP;\n                               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:132:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n3 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9a755ae6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:238:18: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++)\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:309:18: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++)\n                        ^\n2 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e4d58d12": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:138:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t found = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:138:9: error: use of undeclared identifier 'found'\n        size_t found = 0;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:147:4: error: use of undeclared identifier 'found'\n                        found = 1;\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:151:6: error: use of undeclared identifier 'found'\n        if (found == 0)\n            ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:159:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t found = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:159:9: error: use of undeclared identifier 'found'\n        size_t found = 0;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:168:4: error: use of undeclared identifier 'found'\n                        found = 1;\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:172:6: error: use of undeclared identifier 'found'\n        if (found == 0)\n            ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:179:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t found = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:179:9: error: use of undeclared identifier 'found'\n        size_t found = 0;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:184:4: error: use of undeclared identifier 'found'\n                        found = 1;\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:188:6: error: use of undeclared identifier 'found'\n        if (found == 0)\n            ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:195:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t count = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:195:9: error: use of undeclared identifier 'count'\n        size_t count = 0;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:200:4: error: use of undeclared identifier 'count'\n                        count += 1;\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:203:9: error: use of undeclared identifier 'count'\n        return count;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:208:2: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t count = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:208:9: error: use of undeclared identifier 'count'\n        size_t count = 0;\n               ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:215:4: error: use of undeclared identifier 'count'\n                        count++;\n                        ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "573e06e8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:71:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:117:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:132:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n3 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "cedc6fa3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "88b54e34": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aedc8ebb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1958d8e3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:143:9: error: use of undeclared label 'NEXT'\n                        goto NEXT;\n                             ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:164:9: error: use of undeclared label 'NEXT'\n                        goto NEXT;\n                             ^\n2 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4e7df62a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:47:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:260:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:329:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n3 errors generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d71709d5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2dd6074f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:285:6: error: redefinition of 'i'\n        int i;\n            ^\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:247:6: note: previous definition is here\n        int i = 0;\n            ^\n1 error generated.\nmake[2]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/src/message.c.o] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "264469dc": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Email_System_2.dir/src/message.c.o: In function `cgc_add_message':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:128: undefined reference to `cgc_msg_count_login'\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/message.c:128: undefined reference to `cgc_msg_count_login'\nCMakeFiles/Email_System_2.dir/src/service.c.o: In function `cgc_handle_A_input':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/service.c:76: undefined reference to `cgc_msg_count_login'\nCMakeFiles/Email_System_2.dir/src/service.c.o: In function `cgc_handle_B_input':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/service.c:157: undefined reference to `cgc_msg_count_login'\nCMakeFiles/Email_System_2.dir/src/service.c.o: In function `main':\n/tmp/FlexiRepair/Email_System_2_0/Email_System_2/src/service.c:216: undefined reference to `cgc_msg_count_login'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Email_System_2/Email_System_2] Error 1\nmake[1]: *** [Email_System_2/CMakeFiles/Email_System_2.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5900d757": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 192,
+  "failed_neg_tests": 20,
+  "failed_pos_tests": 8,
+  "duration": 1323.894766,
+  "errors": []
+}

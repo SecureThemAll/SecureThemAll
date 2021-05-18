@@ -1,0 +1,915 @@
+{
+  "repair_begin": "2021-05-08 11:17:57.381815",
+  "repair_end": "2021-05-08 11:29:04.345940",
+  "patches": [
+    {
+      "target_file": "src/main.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-21255-85d857-main.c\n@@ -141,7 +141,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     insns[totalInsns] = insn;\n     totalInsns++;\n-    if (totalInsns >= _MAX_INSNS_SIZE_)\n+    if (ntohs(_MAX_INSNS_SIZE_) <= ntohs(totalInsns))\n     {\n       cgc_transmit_all(_INSNS_OVERFLOW_EXCP_MSG_, sizeof(_INSNS_OVERFLOW_EXCP_MSG_));\n       cgc__terminate(-1);\n@@ -163,7 +163,7 @@ int main(int cgc_argc, char *cgc_argv[])\n       {\n         curTop++;\n #ifdef PATCHED\n-        if (curTop >= _MAX_STACK_SIZE_)\n+        if (ntohs(_MAX_STACK_SIZE_) <= ntohs(curTop))\n         {\n           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n           cgc__terminate(-1);\n@@ -185,7 +185,7 @@ int main(int cgc_argc, char *cgc_argv[])\n       case (PUSHPC):\n       {\n         curTop++;\n-        if (curTop >= _MAX_STACK_SIZE_)\n+        if (ntohs(_MAX_STACK_SIZE_) <= ntohs(curTop))\n         {\n           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n           cgc__terminate(-1);\n@@ -239,7 +239,7 @@ int main(int cgc_argc, char *cgc_argv[])\n       {\n         curTop++;\n #ifdef PATCHED\n-        if (curTop >= _MAX_STACK_SIZE_)\n+        if (ntohs(_MAX_STACK_SIZE_) <= ntohs(curTop))\n         {\n           cgc_transmit_all(_STACK_OVERFLOW_EXCP_MSG_, sizeof(_STACK_OVERFLOW_EXCP_MSG_));\n           cgc__terminate(-1);\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-11445-e1dacd-main.c\n@@ -32,7 +32,7 @@ cgc_size_t cgc_transmit_all(char* buf, c\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    no_draw = 1;\n   }\n   \n   do\n@@ -293,6 +293,6 @@ int main(int cgc_argc, char *cgc_argv[])\n \n   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n \n-  return (0);\n+  no_draw = 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-19933-fb5e9c-main.c\n@@ -42,7 +42,7 @@ cgc_size_t cgc_transmit_all(char* buf, c\n     {\n       cgc__terminate(1);\n     }\n-    total += rx_bytes;\n+    total--;\n   }\n   while (total < size);\n \n@@ -136,7 +136,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n         cgc__terminate(-1);\n       }\n-      total += rx_bytes;\n+      total--;\n     } while (total < sizeof(insn));\n \n     insns[totalInsns] = insn;\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-19479-0f149e-main.c\n@@ -223,7 +223,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n \n         uint32_t temp = stack[curTop];\n-        int temp2 = curTop - INSN_TO_IMM(insn);\n+        int temp2 = curTop;\n         \n         if ( (temp2 < 0) || (temp2 > curTop) )\n         {\n@@ -245,7 +245,7 @@ int main(int cgc_argc, char *cgc_argv[])\n           cgc__terminate(-1);\n         }\n #endif\n-        int temp = curTop - INSN_TO_IMM(insn) - 1;\n+        int temp = curTop - INSN_TO_IMM(insn);\n          \n         if ( (temp < 0) || (temp > curTop) )\n         {\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-12735-03a747-main.c\n@@ -32,7 +32,7 @@ cgc_size_t cgc_transmit_all(char* buf, c\n   int ret = 0;\n   if (buf == NULL)\n   {\n-    return (0);\n+    return -1;\n   }\n   \n   do\n@@ -293,6 +293,6 @@ int main(int cgc_argc, char *cgc_argv[])\n \n   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n \n-  return (0);\n+  return -1;\n }\n \n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-21919-5f367c-main.c\n@@ -101,7 +101,7 @@ char gHelpMsg[] = \"### The Instruction S\n \n int main(int cgc_argc, char *cgc_argv[])\n {\n-  uint32_t insn = 0;\n+  uint32_t insn = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n   cgc_size_t rx_bytes = 0;\n   cgc_size_t total = 0;\n   int curTop = -1;\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-24707-686257-main.c\n@@ -124,7 +124,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n   do\n   {\n-    total = 0;\n+    total = -1;\n     do\n     {\n       ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-24133-7fee01-main.c\n@@ -29,7 +29,7 @@ cgc_size_t cgc_transmit_all(char* buf, c\n {\n   cgc_size_t rx_bytes = 0;\n   cgc_size_t total = 0;\n-  int ret = 0;\n+  size_t ret = 0;\n   if (buf == NULL)\n   {\n     return (0);\n@@ -105,9 +105,9 @@ int main(int cgc_argc, char *cgc_argv[])\n   cgc_size_t rx_bytes = 0;\n   cgc_size_t total = 0;\n   int curTop = -1;\n-  int totalInsns = 0;\n-  int pc = 0;\n-  int ret = 0;\n+  size_t totalInsns = 0;\n+  size_t pc = 0;\n+  size_t ret = 0;\n \n   uint32_t* insns = NULL;\n   uint32_t* stack = NULL;\n",
+        "--- /tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c\n+++ /tmp/cocci-output-19220-6712aa-main.c\n@@ -154,7 +154,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     insn = insns[pc];\n     if (insn == END_INSN)\n     {\n-      break;\n+      fatalx(\"send_update: unknown af\");\n     }\n \n     switch (INSN_TO_OPCODE(insn))\n@@ -170,7 +170,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n #endif\n         stack[curTop] = INSN_TO_IMM(insn);\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (POP):\n       {\n@@ -180,7 +180,7 @@ int main(int cgc_argc, char *cgc_argv[])\n           cgc__terminate(-1);\n         }\n         curTop--;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (PUSHPC):\n       {\n@@ -191,7 +191,7 @@ int main(int cgc_argc, char *cgc_argv[])\n           cgc__terminate(-1);\n         }\n         stack[curTop] = pc;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (JMPZ):\n       {\n@@ -212,7 +212,7 @@ int main(int cgc_argc, char *cgc_argv[])\n           pc--; //for the pc++ at the end of the loop\n         }\n         curTop -= 2;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (SWAP):\n       {\n@@ -233,7 +233,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n         stack[curTop] = stack[temp2];\n         stack[temp2] = temp;\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       } \n       case (DUP):\n       {\n@@ -254,7 +254,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n \n         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (ADD):\n       {\n@@ -265,7 +265,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n         stack[curTop - 1] += stack[curTop];\n         curTop--;  \n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       case (SUB):\n       {\n@@ -276,7 +276,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n         stack[curTop - 1] -= stack[curTop];\n         curTop--;  \n-        break;\n+        fatalx(\"send_update: unknown af\");\n       }\n       default :\n       {\n"
+      ]
+    }
+  ],
+  "compilations": 5,
+  "failed_compilations": 4,
+  "outcomes": {
+    "9974c711": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "23a26242": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7a098e52": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ]
+      }
+    },
+    "f2932127": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Simple_Stack_Machine_patched.dir/src/main.c.o: In function `main':\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:157: undefined reference to `fatalx'\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:173: undefined reference to `fatalx'\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:183: undefined reference to `fatalx'\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:194: undefined reference to `fatalx'\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:215: undefined reference to `fatalx'\nCMakeFiles/Simple_Stack_Machine_patched.dir/src/main.c.o:/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:236: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Simple_Stack_Machine/Simple_Stack_Machine_patched] Error 1\nmake[1]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "707d92b5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "070236d5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:32:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t ret = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:32:10: error: use of undeclared identifier 'ret'\n  size_t ret = 0;\n         ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:40:5: error: use of undeclared identifier 'ret'\n    ret = cgc_transmit(STDOUT, buf, size - total, &rx_bytes);\n    ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:41:11: error: use of undeclared identifier 'ret'\n    if ( (ret != 0) || (rx_bytes == 0) )\n          ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:108:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t totalInsns = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:108:10: error: use of undeclared identifier 'totalInsns'\n  size_t totalInsns = 0;\n         ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:109:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t pc = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:109:10: error: use of undeclared identifier 'pc'\n  size_t pc = 0;\n         ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:110:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t ret = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:110:10: error: use of undeclared identifier 'ret'\n  size_t ret = 0;\n         ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:130:7: error: use of undeclared identifier 'ret'\n      ret = cgc_receive(STDIN, ((char*)(&insn)) + total, sizeof(insn) - total, &rx_bytes);\n      ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:131:13: error: use of undeclared identifier 'ret'\n      if ( (ret != 0) || (rx_bytes == 0) )\n            ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:133:13: error: use of undeclared identifier 'totalInsns'\n        if (totalInsns == 0)\n            ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:142:11: error: use of undeclared identifier 'totalInsns'\n    insns[totalInsns] = insn;\n          ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:143:5: error: use of undeclared identifier 'totalInsns'\n    totalInsns++;\n    ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:144:9: error: use of undeclared identifier 'totalInsns'\n    if (totalInsns >= _MAX_INSNS_SIZE_)\n        ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:152:8: error: use of undeclared identifier 'pc'\n  for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n       ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:152:17: error: use of undeclared identifier 'pc'\n  for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n                ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:152:22: error: use of undeclared identifier 'totalInsns'\n  for (pc = 0; (pc < totalInsns) && (insns[pc] != END_INSN) ; pc++)\n                     ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/src/main.c.o] Error 1\nmake[1]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c5a74a47": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:35:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:296:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n2 errors generated.\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/src/main.c.o] Error 1\nmake[1]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0edeaf74": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6b3e0259": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:104:19: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n  uint32_t insn = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                  ^\n1 error generated.\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/src/main.c.o] Error 1\nmake[1]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 6,
+  "passed_pos_tests": 61,
+  "failed_neg_tests": 9,
+  "failed_pos_tests": 39,
+  "duration": 666.964125,
+  "errors": []
+}

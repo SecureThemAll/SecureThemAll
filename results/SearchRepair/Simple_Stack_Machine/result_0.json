@@ -1,0 +1,6016 @@
+{
+  "repair_begin": "2021-05-07 07:59:34.740628",
+  "repair_end": "2021-05-07 08:42:16.433562",
+  "patches": [
+    {
+      "target_file": "src/main.c",
+      "fix": "",
+      "edits": [
+        "187c187,188\n<         curTop++;\n---\n>         (&curTop);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         sizeof(insn) ;\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>           cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if (   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n>  )\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (INSN_TO_OPCODE(curTop));\n>  )\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (insn);\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         (curTop == 0);\n> ;\n",
+        "172a173,179\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n173a181,183\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "174a175,181\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n175a183,185\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "187c187,188\n<         curTop++;\n---\n>         (&curTop);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (&temp2);\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (curTop);\n>  )\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( curTop ;\n>  )\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         insn++;\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (&temp2);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (&pc);\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (temp2 == 0);\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((stack == 0);\n> )\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (INSN_TO_OPCODE(insn));\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         ((char*)(&temp2)) ;\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((curTop < stack) ;\n> )\n",
+        "187c187,188\n<         curTop++;\n---\n>         ((char*)(&curTop));\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (&insn);\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (INSN_TO_OPCODE(insn));\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (temp < curTop);\n>  )\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((&stack);\n> )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         sizeof(pc) ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (curTop == 0);\n>  )\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((INSN_TO_OPCODE(stack));\n> )\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (temp2 < 0);\n> ;\n",
+        "208a209,215\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n209a217,219\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if (   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n>  )\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (&temp2);\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( ((char*)(&curTop)) ;\n>  )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>           cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (stack;\n> )\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         temp2++;\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if (   cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n>  )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (insn < 0);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (insn < 0);\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         curTop ;\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (stack ;\n> )\n",
+        "187a188\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         insn ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (curTop) ;\n>  )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (&insn);\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (&insn);\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         return (0);\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         (&curTop);\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         temp2++;\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         insn++;\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (  cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> )\n",
+        "214a215,221\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n215a223,225\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((&stack);\n> )\n",
+        "249a250,256\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp:%d:int_afs_\\n\", curTop, temp);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n250a258,260\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp:%d:int_afs_\\n\", curTop, temp);\n> fclose(fp);\n> if(0);\n",
+        "159a160,166\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:insn:%d:int_afs_\\n\", insn);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n160a168,170\n> fprintf(fp, \"input start:insn:%d:int_afs_\\n\", insn);\n> fclose(fp);\n> if(0);\n",
+        "187c187,188\n<         curTop++;\n---\n>         (curTop < 0);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>           cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((&stack);\n> )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (curTop < insn);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         ((char*)(&insn));\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (  cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> )\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((stack < 0);\n> )\n",
+        "235a236,242\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n236a244,246\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "206a207,213\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:pc:%d:int_afs_totalInsns:%d:int_afs_\\n\", pc, totalInsns);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n207a215,217\n> fprintf(fp, \"input start:pc:%d:int_afs_totalInsns:%d:int_afs_\\n\", pc, totalInsns);\n> fclose(fp);\n> if(0);\n",
+        "171a172,178\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_insn:%d:int_afs_stack:%d:int_afs_\\n\", curTop, insn, stack);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n172a180,182\n> fprintf(fp, \"input start:curTop:%d:int_afs_insn:%d:int_afs_stack:%d:int_afs_\\n\", curTop, insn, stack);\n> fclose(fp);\n> if(0);\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (&temp2);\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         pc++;\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>           cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (temp2) ;\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( curTop++;\n>  )\n",
+        "214c214,215\n<         curTop -= 2;\n---\n>         return (0);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (temp2 == 0);\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         sizeof(curTop) ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if (   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n>  )\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         sizeof(temp2) ;\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( ((char*)(&curTop)) ;\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         ((char*)(&pc)) ;\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (INSN_TO_OPCODE(temp2));\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (&pc);\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (curTop < temp2);\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (  cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> )\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (&temp2);\n> ;\n",
+        "195a196,202\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n196a204,206\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( curTop++;\n>  )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "233a234,240\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp2:%d:int_afs_stack:%d:int_afs_\\n\", curTop, temp2, stack);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n234a242,244\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp2:%d:int_afs_stack:%d:int_afs_\\n\", curTop, temp2, stack);\n> fclose(fp);\n> if(0);\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (&temp2);\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         (curTop) ;\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (&insn);\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (curTop < 0);\n>  )\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         temp2 ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if (   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (&pc);\n> ;\n",
+        "176a177,183\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n177a185,187\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fclose(fp);\n> if(0);\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( curTop ;\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         pc;\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (&insn);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         (temp < temp2) ;\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (sizeof(stack) ;\n> )\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         sizeof(insn) ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (temp2 < curTop);\n>  )\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( sizeof(curTop) ;\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (pc == 0);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         insn;\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         ((char*)(&insn));\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         temp2 ;\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (INSN_TO_OPCODE(pc));\n> ;\n",
+        "213a214,220\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n214a222,224\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fclose(fp);\n> if(0);\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (curTop < insn) ;\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (insn) ;\n> ;\n",
+        "203a204,210\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_stack:%d:int_afs_\\n\", curTop, stack);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n204a212,214\n> fprintf(fp, \"input start:curTop:%d:int_afs_stack:%d:int_afs_\\n\", curTop, stack);\n> fclose(fp);\n> if(0);\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (temp2);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         temp2 ;\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (insn == 0);\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (stack++;\n> )\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (curTop < 0);\n>  )\n",
+        "187c187,188\n<         curTop++;\n---\n>         curTop ;\n> ;\n",
+        "256a257,263\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n257a265,267\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (INSN_TO_OPCODE(temp2));\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (curTop < pc);\n> ;\n",
+        "233a234,240\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp2:%d:int_afs_stack:%d:int_afs_temp:%d:int_afs_\\n\", curTop, temp2, stack, temp);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n235a243,245\n> fprintf(fp, \"input start:curTop:%d:int_afs_temp2:%d:int_afs_stack:%d:int_afs_temp:%d:int_afs_\\n\", curTop, temp2, stack, temp);\n> fclose(fp);\n> if(0);\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         pc ;\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         return (0);\n> ;\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         return (0);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         sizeof(temp2) ;\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if (((char*)(&stack)) ;\n> )\n",
+        "251a252,258\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n252a260,262\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         ((char*)(&temp2));\n> ;\n",
+        "255a256,262\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_insn:%d:int_afs_stack:%d:int_afs_\\n\", curTop, insn, stack);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n256a264,266\n> fprintf(fp, \"input start:curTop:%d:int_afs_insn:%d:int_afs_stack:%d:int_afs_\\n\", curTop, insn, stack);\n> fclose(fp);\n> if(0);\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         insn;\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>           cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n> ;\n",
+        "227a228,234\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:temp2:%d:int_afs_curTop:%d:int_afs_\\n\", temp2, curTop);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n228a236,238\n> fprintf(fp, \"input start:temp2:%d:int_afs_curTop:%d:int_afs_\\n\", temp2, curTop);\n> fclose(fp);\n> if(0);\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "161a162,168\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n162a170,172\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         insn ;\n> ;\n",
+        "187c187,188\n<         curTop++;\n---\n>         (INSN_TO_OPCODE(curTop));\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "192a193,199\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_pc:%d:int_afs_stack:%d:int_afs_\\n\", curTop, pc, stack);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n193a201,203\n> fprintf(fp, \"input start:curTop:%d:int_afs_pc:%d:int_afs_stack:%d:int_afs_\\n\", curTop, pc, stack);\n> fclose(fp);\n> if(0);\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (pc < 0);\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if (   cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n>  )\n",
+        "187c187,188\n<         curTop++;\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         return (0);\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( sizeof(curTop) ;\n>  )\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>         (pc);\n> ;\n",
+        "172c172,173\n<         stack[curTop] = INSN_TO_IMM(insn);\n---\n>         (&insn);\n> ;\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>           cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n> ;\n",
+        "256c256,257\n<         stack[curTop] = stack[curTop - INSN_TO_IMM(insn) - 1];\n---\n>         (insn == 0);\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( curTop ;\n>  )\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         return (0);\n> ;\n",
+        "250c250,251\n<         if ( (temp < 0) || (temp > curTop) )\n---\n>         if ( (curTop == 0);\n>  )\n",
+        "184a185,191\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:\\n\");\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n185a193,195\n> fprintf(fp, \"input start:\\n\");\n> fclose(fp);\n> if(0);\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (INSN_TO_OPCODE(curTop));\n>  )\n",
+        "193c193,194\n<         stack[curTop] = pc;\n---\n>           cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n> ;\n",
+        "204c204,205\n<         if (stack[curTop] == 0)\n---\n>         if ((stack) ;\n> )\n",
+        "186a187,193\n> #include <stdio.h>\n> FILE *fp = fopen(\"/data/SearchRepair/Simple_Stack_Machine_0/outputs/main.c_output.txt\", \"w\");\n> unsigned char *buffer_afs;\n> int i_afs;\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fprintf(fp, \"--------------------------------\\n\");\n> fflush(fp);\n187a195,197\n> fprintf(fp, \"input start:curTop:%d:int_afs_\\n\", curTop);\n> fclose(fp);\n> if(0);\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( (&curTop);\n>  )\n",
+        "234c234,235\n<         stack[curTop] = stack[temp2];\n---\n>         (temp2 < 0);\n> ;\n",
+        "234,235c234,235\n<         stack[curTop] = stack[temp2];\n<         stack[temp2] = temp;\n---\n>         temp2 ;\n> ;\n",
+        "228c228,229\n<         if ( (temp2 < 0) || (temp2 > curTop) )\n---\n>         if ( curTop;\n>  )\n"
+      ]
+    }
+  ],
+  "compilations": 125,
+  "failed_compilations": 49,
+  "outcomes": {
+    "fbff7644": {
+      "compiles": [
+        0
+      ]
+    },
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "984a0c24": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "84567419": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "a368cc73": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "33f9509a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:28: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( sizeof(curTop) ;\n      |            ~               ^~\n      |                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "f8ea3b19": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "405c960b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:76: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if (   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n      |            ~                                                               ^\n      |                                                                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "beaa4404": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:38: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (INSN_TO_OPCODE(curTop));\n      |            ~                         ^\n      |                                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "45e12a8c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:66: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if (   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n      |            ~                                                     ^\n      |                                                                  )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "cceafc1c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:76: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if (   cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n      |            ~                                                               ^\n      |                                                                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "ecac9228": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:22: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( curTop++;\n      |            ~         ^\n      |                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "8224a2a8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( curTop ;\n      |            ~       ^~\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "a87cbe46": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:26: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (curTop < 0);\n      |            ~             ^\n      |                          )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "828362ac": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "0f002114": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( curTop ;\n      |            ~       ^~\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "a993b029": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "6a9b4736": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:22: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (curTop) ;\n      |            ~         ^~\n      |                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "3d44ee32": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:29: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (temp < curTop);\n      |            ~                ^\n      |                             )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "57383951": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:27: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( (curTop == 0);\n      |            ~              ^\n      |                           )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "7d9433bb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:250:32: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  250 |         if ( ((char*)(&curTop)) ;\n      |            ~                   ^~\n      |                                )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "f3fb59e6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "097e906b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "11aed94e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "bd6065dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5c23bd6f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "61f79f71": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "3802f267": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "7bfe560e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:21: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((&stack);\n      |            ~        ^\n      |                     )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "9e886ebe": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((stack) ;\n      |            ~       ^~\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "8363840c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:29: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((curTop < stack) ;\n      |            ~                ^~\n      |                             )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "66cafe5c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:6:32: error: invalid operands to binary & (have \u2018uint32_t *\u2019 {aka \u2018unsigned int *\u2019} and \u2018int\u2019)\n    6 | #define INSN_TO_OPCODE(_x) (_x & 0x7)\n      |                                ^\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:14: note: in expansion of macro \u2018INSN_TO_OPCODE\u2019\n  204 |         if ((INSN_TO_OPCODE(stack));\n      |              ^~~~~~~~~~~~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:36: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((INSN_TO_OPCODE(stack));\n      |            ~                       ^\n      |                                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "0ef8f831": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:21: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((&stack);\n      |            ~        ^\n      |                     )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "541543d5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:65: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (  cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n      |            ~                                                    ^\n      |                                                                 )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "ddf31935": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:75: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (  cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n      |            ~                                                              ^\n      |                                                                           )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "37e3184b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:25: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((stack == 0);\n      |            ~            ^\n      |                         )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "f1c02fe8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:18: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (stack;\n      |            ~     ^\n      |                  )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "8e789a1a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:26: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (sizeof(stack) ;\n      |            ~             ^~\n      |                          )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "6a3566ff": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:24: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((stack < 0);\n      |            ~           ^\n      |                        )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "812ab513": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:21: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if ((&stack);\n      |            ~        ^\n      |                     )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "a5d17498": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:30: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (((char*)(&stack)) ;\n      |            ~                 ^~\n      |                              )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "8b3a509b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:75: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (  cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n      |            ~                                                              ^\n      |                                                                           )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "3ae20054": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:18: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (stack ;\n      |            ~     ^~\n      |                  )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "6f5d24f7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:204:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  204 |         if (stack++;\n      |            ~       ^\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "b0372c1a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:172:7: error: case label not within a switch statement\n  172 |       case (PUSH):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:185:7: error: case label not within a switch statement\n  185 |       case (POP):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:195:7: error: case label not within a switch statement\n  195 |       case (PUSHPC):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:206:7: error: case label not within a switch statement\n  206 |       case (JMPZ):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:227:7: error: case label not within a switch statement\n  227 |       case (SWAP):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:248:7: error: case label not within a switch statement\n  248 |       case (DUP):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:269:7: error: case label not within a switch statement\n  269 |       case (ADD):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:280:7: error: case label not within a switch statement\n  280 |       case (SUB):\n      |       ^~~~\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:291:7: error: \u2018default\u2019 label not within a switch statement\n  291 |       default :\n      |       ^~~~~~~\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "8d433897": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "bc487832": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "9d3b6791": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "edfdfc6b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aa4c6bf5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "94b38e5e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "93e1ff35": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "28c95778": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "287cebe7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8dfe9488": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "933e49c4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1b5cb886": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e57da2f1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ed11c9c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "036872de": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ab05828d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "64bd3643": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6adea22b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "936c82f2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "77666845": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "8b8c625f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8d501637": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b067afe2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1999db3d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "88523c55": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "35ef79a7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "16fe0ecb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "43882ac8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1fdff6c2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "719b325a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7d79387c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "346b0411": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "adee2155": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "12dc62f3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "31114890": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6a24febb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7fe287bf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "23e9c28f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "c0b77cef": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9ff6504c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ca9f6854": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bb13bc0c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b360d12c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e4087cef": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "397814ec": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d3f50457": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "03a72614": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "60f25de6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d02b9bd3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e8273709": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ddc44b3d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3f42c76c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e09a0521": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f4c0f9b4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9a3c7c8a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "04cfa21e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "f90bb2a4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "eae83b55": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "f930d6cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "acebddb1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6da9257e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "52c40c52": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "70afde6e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4b75c14d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4ed366ae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bfca8ec2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8986cb82": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a7d004ec": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7601a38f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e74dbcf9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c958f18e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "62a2f2bd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2abf486a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "86e9bdee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "16196c00": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "61693783": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "53e331ce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "a024e3dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "fe468018": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3483f12d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "584e66ed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "81e81d8b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "adef0f77": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "917a0d3b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9e1d8f18": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "25ea6535": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "749bc320": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d67316bc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c3f3744c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d5f66aa2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8fe29bff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f7865feb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54fc3c27": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "36ac1378": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "98d6b3d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0a6515cf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "ce2265e1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "f9a50701": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0cc1ea37": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "40bb8294": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8b21750f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73de1272": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fb6ac6b3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "565c8b1c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c0be1840": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "93634eab": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0738d45e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "304e4fbb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1d48e112": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c665d77d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5cb5293b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0349df9f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {}
+    },
+    "156a09d0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( curTop ;\n      |            ~       ^~\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "2c383a26": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:28: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( sizeof(curTop) ;\n      |            ~               ^~\n      |                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "db5842c1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:26: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (curTop < 0);\n      |            ~             ^\n      |                          )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "694b64cc": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:20: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( curTop;\n      |            ~       ^\n      |                    )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "01cac9a9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:22: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( curTop++;\n      |            ~         ^\n      |                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "a5cae2ec": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:22: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (curTop);\n      |            ~         ^\n      |                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "85582ced": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:30: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (temp2 < curTop);\n      |            ~                 ^\n      |                              )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "f27e85b9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:76: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if (   cgc_allocate(_MAX_STACK_SIZE_IN_BYTES_, 0, (void**)(&stack));\n      |            ~                                                               ^\n      |                                                                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "09783302": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:27: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (curTop == 0);\n      |            ~              ^\n      |                           )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "acefe9da": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:38: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (INSN_TO_OPCODE(curTop));\n      |            ~                         ^\n      |                                      )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "3685bdca": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "6bab9d27": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "90791687": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:76: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if (   cgc_allocate(_MAX_INSNS_SIZE_IN_BYTES_, 0, (void**)(&insns));\n      |            ~                                                               ^\n      |                                                                            )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "a659ea5c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:66: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if (   cgc_transmit_all(&stack[curTop], sizeof(uint32_t));\n      |            ~                                                     ^\n      |                                                                  )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "2a158dce": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:32: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( ((char*)(&curTop)) ;\n      |            ~                   ^~\n      |                                )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    },
+    "192852e4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c: In function \u2018main\u2019:\n/data/SearchRepair/Simple_Stack_Machine_0/Simple_Stack_Machine/src/main.c:228:23: error: expected \u2018)\u2019 before \u2018;\u2019 token\n  228 |         if ( (&curTop);\n      |            ~          ^\n      |                       )\nmake[2]: *** [Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/build.make:63: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/src/main.c.o] Error 1\nmake[1]: *** [CMakeFiles/Makefile2:332: Simple_Stack_Machine/CMakeFiles/Simple_Stack_Machine.dir/all] Error 2\nmake: *** [Makefile:84: all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 22,
+  "passed_pos_tests": 403,
+  "failed_neg_tests": 104,
+  "failed_pos_tests": 79,
+  "duration": 2561.692934,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

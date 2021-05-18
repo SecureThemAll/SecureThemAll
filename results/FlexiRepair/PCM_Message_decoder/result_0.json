@@ -1,0 +1,3752 @@
+{
+  "repair_begin": "2021-05-08 05:30:01.840218",
+  "repair_end": "2021-05-08 06:03:20.133844",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-18723-14833c-service.c\n@@ -376,7 +376,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   symbol_end = 0;\n   silence = 1;\n   count = 0;\n-  while (pcm_pos < end_pcm && sp < MAX_SYMBOLS-2) {\n+  while (pcm_pos < end_pcm && sp <= MAX_SYMBOLS - 2) {\n     // grab the sample's value\n     s = *(short *)pcm_pos;\n \n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-16157-a93668-service.c\n@@ -80,7 +80,7 @@ void cgc_ParseCode(char *buf, char *outp\n         break;\n       case ' ':\n         // end of a word\n-        if (lp == &cgc_lh) {\n+        if (lp % &cgc_lh == 0) {\n           output[o++] = ' ';\n         } else if (lp) {\n           output[o++] = lp->c;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-18420-1b6089-service.c\n@@ -142,7 +142,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \t\tif (rval != 0) {\n \t\t\treturn(rval);\n \t\t}\n-\t\tif (rx != 1) {\n+\t\tif (rx < 0) {\n \t\t\treturn(-1);\n \t\t}\n \t\ttotal_bytes++;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-25078-9d7170-service.c\n@@ -457,7 +457,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // handle the last symbol we were processing\n   symbol_end = (int)(pcm_pos-pcm);\n   symbol_time = ((short)(symbol_end-symbol_start))/2;\n-  if (!silence) {\n+  if (silence == MAP_FAILED) {\n     Symbols[sp++] = cgc_AssignToBucket(symbol_time);\n   }\n \n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-28021-7a30c6-service.c\n@@ -137,7 +137,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \tcgc_size_t rx;\n \tint rval;\t\n \n-\twhile (total_bytes < count) {\n+\twhile (total_bytes < (size_t)count) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n \t\tif (rval != 0) {\n \t\t\treturn(rval);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-16805-def416-service.c\n@@ -72,7 +72,7 @@ void cgc_ParseCode(char *buf, char *outp\n         // end of a character\n         if (lp) {\n           output[o++] = lp->c;\n-          lp = &cgc_lh;\n+          lp = cgc_lh;\n         } else {\n           cgc_puts(\"unknown character\\n\");\n           cgc__terminate(UNABLE_TO_PARSE_PCM);\n@@ -84,7 +84,7 @@ void cgc_ParseCode(char *buf, char *outp\n           output[o++] = ' ';\n         } else if (lp) {\n           output[o++] = lp->c;\n-          lp = &cgc_lh;\n+          lp = cgc_lh;\n           output[o++] = ' ';\n         } else {\n           cgc_puts(\"unknown character\\n\");\n@@ -122,7 +122,7 @@ void cgc_ParseCode(char *buf, char *outp\n   }\n   if (lp) {\n     output[o++] = lp->c;\n-    lp = &cgc_lh;\n+    lp = cgc_lh;\n   } else {\n     cgc_puts(\"unknown character\\n\");\n     cgc__terminate(UNABLE_TO_PARSE_PCM);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-26929-12b0e1-service.c\n@@ -57,8 +57,8 @@ Once the pcm file has been decoded into\n parse those into corresponding english letters\n */\n void cgc_ParseCode(char *buf, char *output) {\n-  int i = 0;\n-  int o = 0;\n+  size_t i = 0;\n+  size_t o = 0;\n   struct language *lp = &cgc_lh;\n \n   while (buf[i] != '\\0') {\n@@ -272,9 +272,9 @@ Figure out how the pcm symbol timings co\n to morse-like symbols\n */\n void cgc_ValidateBuckets(void) {\n-  int dit = 0;\n-  int dah = 0;\n-  int word = 0;\n+  size_t dit = 0;\n+  size_t dah = 0;\n+  size_t word = 0;\n \n   // if all three buckets are valid,\n   // the largest bucket is word gap\n@@ -350,7 +350,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   int count;\n   short s;\n   char Symbols[MAX_SYMBOLS];\n-  int sp = 0;\n+  size_t sp = 0;\n   unsigned int symbol_time;\n   char output[MAX_SYMBOLS];\n   char output2[MAX_SYMBOLS];\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-24264-0975b5-service.c\n@@ -135,9 +135,9 @@ void cgc_ParseCode(char *buf, char *outp\n int cgc_recv(int fd, void *buf, cgc_size_t count, cgc_size_t *rx_bytes) {\n \tcgc_size_t total_bytes = 0;\n \tcgc_size_t rx;\n-\tint rval;\t\n-\n-\twhile (total_bytes < count) {\n+\tquit = 0;\n+\tdb_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+\twhile (total_bytes < count && !quit) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n \t\tif (rval != 0) {\n \t\t\treturn(rval);\n@@ -355,7 +355,6 @@ void cgc_ParseWav(unsigned char *pcm) {\n   char output[MAX_SYMBOLS];\n   char output2[MAX_SYMBOLS];\n   int i;\n-  int b;\n   int first = 1;\n \n   // init some vars\n@@ -376,7 +375,9 @@ void cgc_ParseWav(unsigned char *pcm) {\n   symbol_end = 0;\n   silence = 1;\n   count = 0;\n-  while (pcm_pos < end_pcm && sp < MAX_SYMBOLS-2) {\n+  quit = 0;\n+  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+  while (pcm_pos < end_pcm && sp < MAX_SYMBOLS - 2 && !quit) {\n     // grab the sample's value\n     s = *(short *)pcm_pos;\n \n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-21982-acd7d6-service.c\n@@ -77,7 +77,7 @@ void cgc_ParseCode(char *buf, char *outp\n           cgc_puts(\"unknown character\\n\");\n           cgc__terminate(UNABLE_TO_PARSE_PCM);\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case ' ':\n         // end of a word\n         if (lp == &cgc_lh) {\n@@ -90,7 +90,7 @@ void cgc_ParseCode(char *buf, char *outp\n           cgc_puts(\"unknown character\\n\");\n           cgc__terminate(UNABLE_TO_PARSE_PCM);\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case '.':\n         // dit symbol\n         if (lp) {\n@@ -99,7 +99,7 @@ void cgc_ParseCode(char *buf, char *outp\n           cgc_puts(\"unknown character\\n\");\n           cgc__terminate(UNABLE_TO_PARSE_PCM);\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case '-':\n         // dah symbol\n         if (lp) {\n@@ -108,10 +108,10 @@ void cgc_ParseCode(char *buf, char *outp\n           cgc_puts(\"unknown character\\n\");\n           cgc__terminate(UNABLE_TO_PARSE_PCM);\n         }\n-        break;\n+        fatalx(\"send_update: unknown af\");\n       case '\\n':\n         // newline...just ingore it\n-        break;\n+        fatalx(\"send_update: unknown af\");\n \n       default:\n         cgc_puts(\"invalid symbol\\n\");\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-28707-d5756f-service.c\n@@ -467,7 +467,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // now that we've parsed the tones and silences\n   // use that data to build the symbol string\n   sp = 0;\n-  for (i = 0; i < MAX_SYMBOLS-1; i++) {\n+  for (i = 1; i <= MAX_SYMBOLS - 1; i++) {\n     if (Symbols[i] == 0) {\n       continue;\n     }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-25790-ee1b3a-service.c\n@@ -237,9 +237,9 @@ int cgc_AssignToBucket(unsigned int symb\n   for (i = 1; i < 4; i++) {\n       if (Bucket[i].valid == 0) {\n         // found emtpy bucket, populate it\n-        Bucket[i].valid = 1;\n-        Bucket[i].time = symbol_time;\n-        Bucket[i].count = 1;\n+        Bucket[i].bg = 1;\n+        Bucket[i].bg = symbol_time;\n+        Bucket[i].bg = 1;\n         return(i);\n       }\n   }\n@@ -327,12 +327,12 @@ void cgc_ValidateBuckets(void) {\n       cgc__terminate(INVALID_PCM_FMT);\n   }\n \n-  Bucket[word].mark = ' ';\n-  Bucket[word].gap = ' ';\n-  Bucket[dah].mark = '-';\n-  Bucket[dah].gap = '|';\n-  Bucket[dit].mark = '.';\n-  Bucket[dit].gap = '\\0';\n+  Bucket[word].bg = ' ';\n+  Bucket[word].bg = ' ';\n+  Bucket[dah].bg = '-';\n+  Bucket[dah].bg = '|';\n+  Bucket[dit].bg = '.';\n+  Bucket[dit].bg = '\\0';\n   cgc_CheckLimits(dit,dah,word);\n }\n \n@@ -362,9 +362,9 @@ void cgc_ParseWav(unsigned char *pcm) {\n   cgc_bzero(Symbols, MAX_SYMBOLS);\n   cgc_bzero(output, MAX_SYMBOLS);\n   sp = 0;\n-  Bucket[1].valid = 0;\n-  Bucket[2].valid = 0;\n-  Bucket[3].valid = 0;\n+  Bucket[1].bg = 0;\n+  Bucket[2].bg = 0;\n+  Bucket[3].bg = 0;\n   p = (struct pcm_header *)pcm;\n \n   // calc the end byte of the pcm data\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-24108-97438c-service.c\n@@ -349,11 +349,11 @@ void cgc_ParseWav(unsigned char *pcm) {\n   int silence;\n   int count;\n   short s;\n-  char Symbols[MAX_SYMBOLS];\n+  char Symbols[MAX_SYMBOLS] = \"\";\n   int sp = 0;\n   unsigned int symbol_time;\n-  char output[MAX_SYMBOLS];\n-  char output2[MAX_SYMBOLS];\n+  char output[MAX_SYMBOLS] = \"\";\n+  char output2[MAX_SYMBOLS] = \"\";\n   int i;\n   int b;\n   int first = 1;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-21701-6523ab-service.c\n@@ -258,7 +258,7 @@ void cgc_CheckLimits(int dit, int dah, i\n     cgc_puts(\"Too much variance in symbol times\\n\");\n     cgc__terminate(UNABLE_TO_PARSE_PCM);\n   }\n-  if (word) {\n+  if (word || no_draw) {\n     if (Bucket[word].time < Bucket[dit].time*7*MIN_VARIANCE || Bucket[word].time > Bucket[dit].time*7*MAX_VARIANCE) {\n       // Bucket word is outside of our limits\n       cgc_puts(\"Too much variance in symbol times\\n\");\n@@ -391,7 +391,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       }\n \n       // see if this is our first symbol\n-      if (first) {\n+      if (first || no_draw) {\n         silence = 1;\n         count = 0;\n         first = 0;\n@@ -425,7 +425,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       }\n \n       // see if this is our first symbol\n-      if (first) {\n+      if (first || no_draw) {\n         silence = 0;\n         count = 0;\n         first = 0;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-26547-37055c-service.c\n@@ -386,7 +386,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // check 50 sample to be sure\n       if (++count < 50) {\n-        pcm_pos+=2;\n+        pcm_pos += 2 + 1;\n         continue;\n       }\n \n@@ -420,7 +420,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // check 50 sample to be sure\n       if (++count < 50) {\n-        pcm_pos+=2;\n+        pcm_pos += 2 + 1;\n         continue;\n       }\n \n@@ -451,7 +451,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n     } else {\n       count = 0;\n     }\n-    pcm_pos+=2;\n+    pcm_pos += 2 + 1;\n   }\n \n   // handle the last symbol we were processing\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-26399-c41b33-service.c\n@@ -135,7 +135,7 @@ void cgc_ParseCode(char *buf, char *outp\n int cgc_recv(int fd, void *buf, cgc_size_t count, cgc_size_t *rx_bytes) {\n \tcgc_size_t total_bytes = 0;\n \tcgc_size_t rx;\n-\tint rval;\t\n+\tconst struct options_table_entry *oe;\t\n \n \twhile (total_bytes < count) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n@@ -221,7 +221,7 @@ assign it to a paritcular bucket of simi\n symbol length.\n */\n int cgc_AssignToBucket(unsigned int symbol_time) {\n-  int i;\n+  const struct options_table_entry *oe;\n \n   // find a valid bucket to hold this symbol\n   for (i = 1; i < 4; i++) {\n@@ -346,16 +346,16 @@ void cgc_ParseWav(unsigned char *pcm) {\n   unsigned int symbol_start;\n   unsigned int symbol_end;\n   struct pcm_header *p;\n-  int silence;\n-  int count;\n+  const struct options_table_entry *oe;\n+  const struct options_table_entry *oe;\n   short s;\n   char Symbols[MAX_SYMBOLS];\n   int sp = 0;\n   unsigned int symbol_time;\n   char output[MAX_SYMBOLS];\n   char output2[MAX_SYMBOLS];\n-  int i;\n-  int b;\n+  const struct options_table_entry *oe;\n+  const struct options_table_entry *oe;\n   int first = 1;\n \n   // init some vars\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-15297-31c26c-service.c\n@@ -140,16 +140,16 @@ int cgc_recv(int fd, void *buf, cgc_size\n \twhile (total_bytes < count) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n \t\tif (rval != 0) {\n-\t\t\treturn(rval);\n+\t\t\treturn (rval);\n \t\t}\n \t\tif (rx != 1) {\n-\t\t\treturn(-1);\n+\t\t\treturn (rval);\n \t\t}\n \t\ttotal_bytes++;\n \t}\n \n \t*rx_bytes = total_bytes;\t\n-\treturn(0);\n+\treturn (rval);\n }\n \n /*\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-22790-3678fa-service.c\n@@ -167,7 +167,7 @@ unsigned char *cgc_ReadWav(unsigned char\n   }\n \n   // use our pcm_header struct to check some input values\n-  p = (struct pcm_header *)pcm;\n+  p = (const struct pcm_header *)pcm;\n   if (p->ID != PCM) {\n       cgc_puts(\"Invalid PCM format\\n\");\n       cgc__terminate(INVALID_PCM_FMT);\n@@ -365,7 +365,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   Bucket[1].valid = 0;\n   Bucket[2].valid = 0;\n   Bucket[3].valid = 0;\n-  p = (struct pcm_header *)pcm;\n+  p = (const struct pcm_header *)pcm;\n \n   // calc the end byte of the pcm data\n   end_pcm = pcm+12+(p->DataSize);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-23243-8da40a-service.c\n@@ -224,7 +224,7 @@ int cgc_AssignToBucket(unsigned int symb\n   int i;\n \n   // find a valid bucket to hold this symbol\n-  for (i = 1; i < 4; i++) {\n+  for (i = 0; i < 4; i++) {\n     if (Bucket[i].valid) {\n       if (Bucket[i].time > symbol_time*MIN_VARIANCE && Bucket[i].time < symbol_time*MAX_VARIANCE) {\n         // found match, count it\n@@ -234,7 +234,7 @@ int cgc_AssignToBucket(unsigned int symb\n     }\n   }\n   // didn't find one, so allocate a new one (if possible)\n-  for (i = 1; i < 4; i++) {\n+  for (i = 0; i < 4; i++) {\n       if (Bucket[i].valid == 0) {\n         // found emtpy bucket, populate it\n         Bucket[i].valid = 1;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-13110-897699-service.c\n@@ -253,13 +253,13 @@ Check that the symbol bucket times are\n at the correct ratios\n */\n void cgc_CheckLimits(int dit, int dah, int word) {\n-  if (Bucket[dah].time < Bucket[dit].time*3*MIN_VARIANCE || Bucket[dah].time > Bucket[dit].time*3*MAX_VARIANCE) {\n+  if (Bucket[dah].time > Bucket[dit].time * 3 * MAX_VARIANCE) {\n     // Bucket dah is outside of our limits\n     cgc_puts(\"Too much variance in symbol times\\n\");\n     cgc__terminate(UNABLE_TO_PARSE_PCM);\n   }\n   if (word) {\n-    if (Bucket[word].time < Bucket[dit].time*7*MIN_VARIANCE || Bucket[word].time > Bucket[dit].time*7*MAX_VARIANCE) {\n+    if (Bucket[word].time > Bucket[dit].time * 7 * MAX_VARIANCE) {\n       // Bucket word is outside of our limits\n       cgc_puts(\"Too much variance in symbol times\\n\");\n       cgc__terminate(UNABLE_TO_PARSE_PCM);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-15410-4f5f43-service.c\n@@ -149,7 +149,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \t}\n \n \t*rx_bytes = total_bytes;\t\n-\treturn(0);\n+\treturn -1;\n }\n \n /*\n@@ -512,5 +512,5 @@ int main(int cgc_argc, char *cgc_argv[])\n     // Read in each symbol\n     cgc_ParseWav(pcm);\n \n-    return(0);\n+    return -1;\n }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-20425-c323e9-service.c\n@@ -253,13 +253,13 @@ Check that the symbol bucket times are\n at the correct ratios\n */\n void cgc_CheckLimits(int dit, int dah, int word) {\n-  if (Bucket[dah].time < Bucket[dit].time*3*MIN_VARIANCE || Bucket[dah].time > Bucket[dit].time*3*MAX_VARIANCE) {\n+  if (Bucket[dah].time > Bucket[dit].time * 3 * MAX_VARIANCE) {\n     // Bucket dah is outside of our limits\n     cgc_puts(\"Too much variance in symbol times\\n\");\n     cgc__terminate(UNABLE_TO_PARSE_PCM);\n   }\n   if (word) {\n-    if (Bucket[word].time < Bucket[dit].time*7*MIN_VARIANCE || Bucket[word].time > Bucket[dit].time*7*MAX_VARIANCE) {\n+    if (Bucket[word].time > Bucket[dit].time * 7 * MAX_VARIANCE) {\n       // Bucket word is outside of our limits\n       cgc_puts(\"Too much variance in symbol times\\n\");\n       cgc__terminate(UNABLE_TO_PARSE_PCM);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-16786-278141-service.c\n@@ -472,7 +472,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       continue;\n     }\n     // silence\n-    if (Symbols[i] < 0) {\n+    if (Z_LVAL_PP(Symbols[i]) < 0) {\n       b = Symbols[i]*-1;\n       if (Bucket[b].gap != '\\0') {\n         output[sp++] = Bucket[b].gap;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-19618-078b2c-service.c\n@@ -137,7 +137,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \tcgc_size_t rx;\n \tint rval;\t\n \n-\twhile (total_bytes < count) {\n+\twhile (total_bytes <= count) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n \t\tif (rval != 0) {\n \t\t\treturn(rval);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-27506-b90090-service.c\n@@ -199,7 +199,7 @@ unsigned char *cgc_ReadWav(unsigned char\n #endif\n \n   // cgc_read in the data portion of the pcm\n-  total_size = 0;\n+  total_size = -1;\n   while (total_size != p->DataSize) {\n     if (cgc_receive(STDIN, pcm+12+total_size, (p->DataSize-total_size), &size) != 0) {\n       cgc_puts(\"Read error\\n\");\n@@ -314,7 +314,7 @@ void cgc_ValidateBuckets(void) {\n   // largest is the inter-char gap or dah\n   // second largest is intra-char gap or dit\n   } else if (Bucket[1].valid && Bucket[2].valid) {\n-    word = 0;\n+    word = -1;\n     if (Bucket[1].time > Bucket[2].time) {\n       dah = 1;\n       dit = 2;\n@@ -332,7 +332,7 @@ void cgc_ValidateBuckets(void) {\n   Bucket[dah].mark = '-';\n   Bucket[dah].gap = '|';\n   Bucket[dit].mark = '.';\n-  Bucket[dit].gap = '\\0';\n+  Bucket[dit].gap = -1;\n   cgc_CheckLimits(dit,dah,word);\n }\n \n@@ -361,10 +361,10 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // init some vars\n   cgc_bzero(Symbols, MAX_SYMBOLS);\n   cgc_bzero(output, MAX_SYMBOLS);\n-  sp = 0;\n-  Bucket[1].valid = 0;\n-  Bucket[2].valid = 0;\n-  Bucket[3].valid = 0;\n+  sp = -1;\n+  Bucket[1].valid = -1;\n+  Bucket[2].valid = -1;\n+  Bucket[3].valid = -1;\n   p = (struct pcm_header *)pcm;\n \n   // calc the end byte of the pcm data\n@@ -373,9 +373,9 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // start with the first sample\n   pcm_pos = pcm+12;\n   symbol_start = 12;\n-  symbol_end = 0;\n+  symbol_end = -1;\n   silence = 1;\n-  count = 0;\n+  count = -1;\n   while (pcm_pos < end_pcm && sp < MAX_SYMBOLS-2) {\n     // grab the sample's value\n     s = *(short *)pcm_pos;\n@@ -393,17 +393,17 @@ void cgc_ParseWav(unsigned char *pcm) {\n       // see if this is our first symbol\n       if (first) {\n         silence = 1;\n-        count = 0;\n-        first = 0;\n+        count = -1;\n+        first = -1;\n         pcm_pos = pcm+12;\n         symbol_start = 12;\n-        symbol_end = 0;\n+        symbol_end = -1;\n         continue;\n       }\n \n       // yep, found new silence, reset our flag vars\n       silence = 1;\n-      count = 0;\n+      count = -1;\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n@@ -426,18 +426,18 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // see if this is our first symbol\n       if (first) {\n-        silence = 0;\n-        count = 0;\n-        first = 0;\n+        silence = -1;\n+        count = -1;\n+        first = -1;\n         pcm_pos = pcm+12;\n         symbol_start = 12;\n-        symbol_end = 0;\n+        symbol_end = -1;\n         continue;\n       }\n \n       // yep, found new tone, reset our flag vars\n-      silence = 0;\n-      count = 0;\n+      silence = -1;\n+      count = -1;\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n@@ -449,7 +449,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       // Assign to a symbol bucket\n       Symbols[sp++] = cgc_AssignToBucket(symbol_time) * -1;\n     } else {\n-      count = 0;\n+      count = -1;\n     }\n     pcm_pos+=2;\n   }\n@@ -466,7 +466,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n   // now that we've parsed the tones and silences\n   // use that data to build the symbol string\n-  sp = 0;\n+  sp = -1;\n   for (i = 0; i < MAX_SYMBOLS-1; i++) {\n     if (Symbols[i] == 0) {\n       continue;\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-22690-341751-service.c\n@@ -209,7 +209,7 @@ unsigned char *cgc_ReadWav(unsigned char\n       cgc_puts(\"Read error\\n\");\n       cgc__terminate(READ_ERROR);\n     }\n-    total_size +=  size;\n+    total_size--;\n   }\n \n   return(pcm);\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-15001-ab1534-service.c\n@@ -386,7 +386,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // check 50 sample to be sure\n       if (++count < 50) {\n-        pcm_pos+=2;\n+        pcm_pos += 5;\n         continue;\n       }\n \n@@ -420,7 +420,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // check 50 sample to be sure\n       if (++count < 50) {\n-        pcm_pos+=2;\n+        pcm_pos += 5;\n         continue;\n       }\n \n@@ -451,7 +451,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n     } else {\n       count = 0;\n     }\n-    pcm_pos+=2;\n+    pcm_pos += 5;\n   }\n \n   // handle the last symbol we were processing\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-16164-4fe456-service.c\n@@ -407,7 +407,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_time = ((symbol_end - (50 * 2) - symbol_start)) / 2 + 1;\n \n       // get ready for the next symbol\n       symbol_start = symbol_end-(50*2);\n@@ -441,7 +441,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_time = ((symbol_end - (50 * 2) - symbol_start)) / 2 + 1;\n \n       // get ready for the next symbol\n       symbol_start = symbol_end-(50*2);\n@@ -456,7 +456,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n   // handle the last symbol we were processing\n   symbol_end = (int)(pcm_pos-pcm);\n-  symbol_time = ((short)(symbol_end-symbol_start))/2;\n+  symbol_time = ((short)(symbol_end - symbol_start)) / 2 + 1;\n   if (!silence) {\n     Symbols[sp++] = cgc_AssignToBucket(symbol_time);\n   }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-14098-185da4-service.c\n@@ -149,7 +149,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \t}\n \n \t*rx_bytes = total_bytes;\t\n-\treturn(0);\n+\tno_draw = 1;\n }\n \n /*\n@@ -512,5 +512,5 @@ int main(int cgc_argc, char *cgc_argv[])\n     // Read in each symbol\n     cgc_ParseWav(pcm);\n \n-    return(0);\n+    no_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-14156-487e5d-service.c\n@@ -139,10 +139,10 @@ int cgc_recv(int fd, void *buf, cgc_size\n \n \twhile (total_bytes < count) {\n \t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n-\t\tif (rval != 0) {\n+\t\tif (rval < 0 || rval > 0 + strlen(0)) {\n \t\t\treturn(rval);\n \t\t}\n-\t\tif (rx != 1) {\n+\t\tif (rx < 1 || rx > 1 + strlen(1)) {\n \t\t\treturn(-1);\n \t\t}\n \t\ttotal_bytes++;\n@@ -161,14 +161,14 @@ unsigned char *cgc_ReadWav(unsigned char\n   struct pcm_header *p;\n \n   // cgc_read in the pcm header\n-  if (cgc_recv(STDIN, pcm, 12, &size) != 0) {\n+  if (cgc_recv(STDIN, pcm, 12, &size) < 0 || cgc_recv(STDIN, pcm, 12, &size) > 0 + strlen(0)) {\n     cgc_puts(\"Read error\\n\");\n     cgc__terminate(READ_ERROR);\n   }\n \n   // use our pcm_header struct to check some input values\n   p = (struct pcm_header *)pcm;\n-  if (p->ID != PCM) {\n+  if (p->ID < PCM || p->ID > PCM + strlen(PCM)) {\n       cgc_puts(\"Invalid PCM format\\n\");\n       cgc__terminate(INVALID_PCM_FMT);\n   }\n@@ -183,7 +183,7 @@ unsigned char *cgc_ReadWav(unsigned char\n \n #ifdef PATCHED\n   // make sure the SampleSize value is valid\n-  if (p->DataSize*8.0 / p->NumSamples != 16.0) {\n+  if (p->DataSize * 8.0 / p->NumSamples < 16.0 || p->DataSize * 8.0 / p->NumSamples > 16.0 + strlen(16.0)) {\n     cgc_puts(\"Invalid PCM length\\n\");\n     cgc__terminate(INVALID_PCM_LEN);\n   }\n@@ -192,7 +192,7 @@ unsigned char *cgc_ReadWav(unsigned char\n   // BUG. Check is done with integer division instead of\n   // floating point which leads to an incorrectly\n   // checked DataSize\n-  if (p->DataSize*8/p->NumSamples != 16) {\n+  if (p->DataSize * 8 / p->NumSamples < 16 || p->DataSize * 8 / p->NumSamples > 16 + strlen(16)) {\n     cgc_puts(\"Invalid PCM length\\n\");\n     cgc__terminate(INVALID_PCM_LEN);\n   }\n@@ -201,7 +201,7 @@ unsigned char *cgc_ReadWav(unsigned char\n   // cgc_read in the data portion of the pcm\n   total_size = 0;\n   while (total_size != p->DataSize) {\n-    if (cgc_receive(STDIN, pcm+12+total_size, (p->DataSize-total_size), &size) != 0) {\n+    if (cgc_receive(STDIN, pcm + 12 + total_size, (p->DataSize - total_size), &size) < 0 || cgc_receive(STDIN, pcm + 12 + total_size, (p->DataSize - total_size), &size) > 0 + strlen(0)) {\n       cgc_puts(\"Read error\\n\");\n       cgc__terminate(READ_ERROR);\n       }\n@@ -474,14 +474,14 @@ void cgc_ParseWav(unsigned char *pcm) {\n     // silence\n     if (Symbols[i] < 0) {\n       b = Symbols[i]*-1;\n-      if (Bucket[b].gap != '\\0') {\n+      if (Bucket[b].gap < '\\0' || Bucket[b].gap > '\\0' + strlen('\\0')) {\n         output[sp++] = Bucket[b].gap;\n       }\n \n     // tone\n     } else {\n       b = Symbols[i];\n-      if (Bucket[b].mark != '\\0') {\n+      if (Bucket[b].mark < '\\0' || Bucket[b].mark > '\\0' + strlen('\\0')) {\n         output[sp++] = Bucket[b].mark;\n       }\n     }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-21054-7e1766-service.c\n@@ -467,7 +467,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // now that we've parsed the tones and silences\n   // use that data to build the symbol string\n   sp = 0;\n-  for (i = 0; i < MAX_SYMBOLS-1; i++) {\n+  for (i = 0; i < MAX_SYMBOLS; i++) {\n     if (Symbols[i] == 0) {\n       continue;\n     }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-15458-90aaa0-service.c\n@@ -146,6 +146,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \t\t\treturn(-1);\n \t\t}\n \t\ttotal_bytes++;\n+\t\ttotal_bytes++;\n \t}\n \n \t*rx_bytes = total_bytes;\t\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-14621-d812cb-service.c\n@@ -376,7 +376,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   symbol_end = 0;\n   silence = 1;\n   count = 0;\n-  while (pcm_pos < end_pcm && sp < MAX_SYMBOLS-2) {\n+  while (pcm_pos < end_pcm && MAX_SYMBOLS - 2 >= sp) {\n     // grab the sample's value\n     s = *(short *)pcm_pos;\n \n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-26258-1bb00b-service.c\n@@ -407,7 +407,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_time = 2;\n \n       // get ready for the next symbol\n       symbol_start = symbol_end-(50*2);\n@@ -441,7 +441,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n       // calc the length of the previous tone symbol\n       symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_time = 2;\n \n       // get ready for the next symbol\n       symbol_start = symbol_end-(50*2);\n@@ -456,7 +456,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n \n   // handle the last symbol we were processing\n   symbol_end = (int)(pcm_pos-pcm);\n-  symbol_time = ((short)(symbol_end-symbol_start))/2;\n+  symbol_time = 2;\n   if (!silence) {\n     Symbols[sp++] = cgc_AssignToBucket(symbol_time);\n   }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-17971-e97bc3-service.c\n@@ -387,7 +387,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       // check 50 sample to be sure\n       if (++count < 50) {\n         pcm_pos+=2;\n-        continue;\n+        goto NEXT;\n       }\n \n       // see if this is our first symbol\n@@ -398,7 +398,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n         pcm_pos = pcm+12;\n         symbol_start = 12;\n         symbol_end = 0;\n-        continue;\n+        goto NEXT;\n       }\n \n       // yep, found new silence, reset our flag vars\n@@ -421,7 +421,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n       // check 50 sample to be sure\n       if (++count < 50) {\n         pcm_pos+=2;\n-        continue;\n+        goto NEXT;\n       }\n \n       // see if this is our first symbol\n@@ -432,7 +432,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n         pcm_pos = pcm+12;\n         symbol_start = 12;\n         symbol_end = 0;\n-        continue;\n+        goto NEXT;\n       }\n \n       // yep, found new tone, reset our flag vars\n@@ -469,7 +469,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   sp = 0;\n   for (i = 0; i < MAX_SYMBOLS-1; i++) {\n     if (Symbols[i] == 0) {\n-      continue;\n+      goto NEXT;\n     }\n     // silence\n     if (Symbols[i] < 0) {\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-19112-5fd44f-service.c\n@@ -138,7 +138,7 @@ int cgc_recv(int fd, void *buf, cgc_size\n \tint rval;\t\n \n \twhile (total_bytes < count) {\n-\t\trval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n+\t\trval = cgc_receive(fd, buf + total_bytes, 1, &rx);\n \t\tif (rval != 0) {\n \t\t\treturn(rval);\n \t\t}\n@@ -167,7 +167,7 @@ unsigned char *cgc_ReadWav(unsigned char\n   }\n \n   // use our pcm_header struct to check some input values\n-  p = (struct pcm_header *)pcm;\n+  p = pcm;\n   if (p->ID != PCM) {\n       cgc_puts(\"Invalid PCM format\\n\");\n       cgc__terminate(INVALID_PCM_FMT);\n@@ -365,13 +365,13 @@ void cgc_ParseWav(unsigned char *pcm) {\n   Bucket[1].valid = 0;\n   Bucket[2].valid = 0;\n   Bucket[3].valid = 0;\n-  p = (struct pcm_header *)pcm;\n+  p = pcm;\n \n   // calc the end byte of the pcm data\n-  end_pcm = pcm+12+(p->DataSize);\n+  end_pcm = pcm + 12 + (p->DataSize);\n \n   // start with the first sample\n-  pcm_pos = pcm+12;\n+  pcm_pos = pcm + 12;\n   symbol_start = 12;\n   symbol_end = 0;\n   silence = 1;\n@@ -395,7 +395,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n         silence = 1;\n         count = 0;\n         first = 0;\n-        pcm_pos = pcm+12;\n+        pcm_pos = pcm + 12;\n         symbol_start = 12;\n         symbol_end = 0;\n         continue;\n@@ -406,11 +406,11 @@ void cgc_ParseWav(unsigned char *pcm) {\n       count = 0;\n \n       // calc the length of the previous tone symbol\n-      symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_end = (pcm_pos - pcm);\n+      symbol_time = ((symbol_end - (50 * 2) - symbol_start)) / 2;\n \n       // get ready for the next symbol\n-      symbol_start = symbol_end-(50*2);\n+      symbol_start = symbol_end - (50 * 2);\n \n       // Assign to a symbol bucket\n       Symbols[sp++] = cgc_AssignToBucket(symbol_time);\n@@ -429,7 +429,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n         silence = 0;\n         count = 0;\n         first = 0;\n-        pcm_pos = pcm+12;\n+        pcm_pos = pcm + 12;\n         symbol_start = 12;\n         symbol_end = 0;\n         continue;\n@@ -440,11 +440,11 @@ void cgc_ParseWav(unsigned char *pcm) {\n       count = 0;\n \n       // calc the length of the previous tone symbol\n-      symbol_end = (int)(pcm_pos-pcm);\n-      symbol_time = ((symbol_end-(50*2)-symbol_start))/2;\n+      symbol_end = (pcm_pos - pcm);\n+      symbol_time = ((symbol_end - (50 * 2) - symbol_start)) / 2;\n \n       // get ready for the next symbol\n-      symbol_start = symbol_end-(50*2);\n+      symbol_start = symbol_end - (50 * 2);\n \n       // Assign to a symbol bucket\n       Symbols[sp++] = cgc_AssignToBucket(symbol_time) * -1;\n@@ -455,8 +455,8 @@ void cgc_ParseWav(unsigned char *pcm) {\n   }\n \n   // handle the last symbol we were processing\n-  symbol_end = (int)(pcm_pos-pcm);\n-  symbol_time = ((short)(symbol_end-symbol_start))/2;\n+  symbol_end = (pcm_pos - pcm);\n+  symbol_time = ((short)(symbol_end - symbol_start)) / 2;\n   if (!silence) {\n     Symbols[sp++] = cgc_AssignToBucket(symbol_time);\n   }\n@@ -473,7 +473,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n     }\n     // silence\n     if (Symbols[i] < 0) {\n-      b = Symbols[i]*-1;\n+      b = Symbols[i] * -1;\n       if (Bucket[b].gap != '\\0') {\n         output[sp++] = Bucket[b].gap;\n       }\n",
+        "--- /tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c\n+++ /tmp/cocci-output-16383-294210-service.c\n@@ -224,7 +224,7 @@ int cgc_AssignToBucket(unsigned int symb\n   int i;\n \n   // find a valid bucket to hold this symbol\n-  for (i = 1; i < 4; i++) {\n+  for (i = 0; i < 4; i++) {\n     if (Bucket[i].valid) {\n       if (Bucket[i].time > symbol_time*MIN_VARIANCE && Bucket[i].time < symbol_time*MAX_VARIANCE) {\n         // found match, count it\n@@ -234,7 +234,7 @@ int cgc_AssignToBucket(unsigned int symb\n     }\n   }\n   // didn't find one, so allocate a new one (if possible)\n-  for (i = 1; i < 4; i++) {\n+  for (i = 0; i < 4; i++) {\n       if (Bucket[i].valid == 0) {\n         // found emtpy bucket, populate it\n         Bucket[i].valid = 1;\n@@ -467,7 +467,7 @@ void cgc_ParseWav(unsigned char *pcm) {\n   // now that we've parsed the tones and silences\n   // use that data to build the symbol string\n   sp = 0;\n-  for (i = 0; i < MAX_SYMBOLS-1; i++) {\n+  for (i = 0; i < MAX_SYMBOLS - 1; i++) {\n     if (Symbols[i] == 0) {\n       continue;\n     }\n"
+      ]
+    }
+  ],
+  "compilations": 23,
+  "failed_compilations": 13,
+  "outcomes": {
+    "fd2d9df5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bf5996be": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a905d5ad": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:75:14: error: assigning to 'struct language *' from incompatible type 'struct language'; take the address with &\n          lp = cgc_lh;\n             ^ ~~~~~~\n               &\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:87:14: error: assigning to 'struct language *' from incompatible type 'struct language'; take the address with &\n          lp = cgc_lh;\n             ^ ~~~~~~\n               &\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:125:8: error: assigning to 'struct language *' from incompatible type 'struct language'; take the address with &\n    lp = cgc_lh;\n       ^ ~~~~~~\n         &\n3 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ee36636d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a3579770": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ]
+      }
+    },
+    "06b476e6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:240:19: error: no member named 'bg' in 'struct time_bucket'\n        Bucket[i].bg = 1;\n        ~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:241:19: error: no member named 'bg' in 'struct time_bucket'\n        Bucket[i].bg = symbol_time;\n        ~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:242:19: error: no member named 'bg' in 'struct time_bucket'\n        Bucket[i].bg = 1;\n        ~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:330:16: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[word].bg = ' ';\n  ~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:331:16: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[word].bg = ' ';\n  ~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:332:15: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[dah].bg = '-';\n  ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:333:15: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[dah].bg = '|';\n  ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:334:15: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[dit].bg = '.';\n  ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:335:15: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[dit].bg = '\\0';\n  ~~~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:365:13: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[1].bg = 0;\n  ~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:366:13: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[2].bg = 0;\n  ~~~~~~~~~ ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:367:13: error: no member named 'bg' in 'struct time_bucket'\n  Bucket[3].bg = 0;\n  ~~~~~~~~~ ^\n12 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "267b2c0d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 7,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e0b86f26": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "44bcf7a4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ]
+      }
+    },
+    "01dd1de0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 7,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "46020608": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ]
+      }
+    },
+    "16298f49": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c6f3edb8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/PCM_Message_decoder.dir/src/service.c.o: In function `cgc_ParseCode':\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:80: undefined reference to `fatalx'\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:93: undefined reference to `fatalx'\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:102: undefined reference to `fatalx'\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:111: undefined reference to `fatalx'\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:114: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [PCM_Message_decoder/PCM_Message_decoder] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "953b9b39": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "291feac2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ce65867d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:460:18: error: use of undeclared identifier 'MAP_FAILED'\n  if (silence == MAP_FAILED) {\n                 ^\n1 error generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d05ddbc3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:140:24: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        while (total_bytes < (size_t)count) {\n                              ^~~~~~\n                              sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:140:23: error: reference to overloaded function could not be resolved; did you mean to call it?\n        while (total_bytes < (size_t)count) {\n                             ^~~~~~~~\n2 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0bbf86ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bfc0833d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "14e4f9d8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 7,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b6766f68": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "968388a2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26831257": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:261:15: error: use of undeclared identifier 'no_draw'\n  if (word || no_draw) {\n              ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:394:20: error: use of undeclared identifier 'no_draw'\n      if (first || no_draw) {\n                   ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:428:20: error: use of undeclared identifier 'no_draw'\n      if (first || no_draw) {\n                   ^\n3 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9d236eed": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:60:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t i = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:60:10: error: use of undeclared identifier 'i'\n  size_t i = 0;\n         ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:61:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t o = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:61:10: error: use of undeclared identifier 'o'\n  size_t o = 0;\n         ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:64:14: error: use of undeclared identifier 'i'\n  while (buf[i] != '\\0') {\n             ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:65:9: error: use of undeclared identifier 'o'\n    if (o > MAX_SYMBOLS-1) {\n        ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:70:17: error: use of undeclared identifier 'i'\n    switch (buf[i]) {\n                ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:121:5: error: use of undeclared identifier 'i'\n    i++;\n    ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:124:12: error: use of undeclared identifier 'o'\n    output[o++] = lp->c;\n           ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:275:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t dit = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:275:10: error: use of undeclared identifier 'dit'\n  size_t dit = 0;\n         ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:276:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t dah = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:276:10: error: use of undeclared identifier 'dah'\n  size_t dah = 0;\n         ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:277:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n  size_t word = 0;\n  ^~~~~~\n  sizeof\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:277:10: error: use of undeclared identifier 'word'; did you mean 'for'?\n  size_t word = 0;\n         ^~~~\n         for\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:277:10: error: expected expression\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:285:7: error: use of undeclared identifier 'word'\n      word = 1;\n      ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:287:9: error: use of undeclared identifier 'dah'\n        dah = 2;\n        ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:288:9: error: use of undeclared identifier 'dit'\n        dit = 3;\n        ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "87677092": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:152:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:515:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n2 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1ebf9204": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "649a7294": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d9095be0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:390:14: error: use of undeclared label 'NEXT'\n        goto NEXT;\n             ^\n1 error generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7a0ef869": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 7,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "728e5e8e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "450b1b80": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1eca40d9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54f20555": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:83:16: error: invalid operands to binary expression ('struct language *' and 'struct language *')\n        if (lp % &cgc_lh == 0) {\n            ~~ ^ ~~~~~~~\n1 error generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "063f9a33": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/PCM_Message_decoder.dir/src/service.c.o: In function `cgc_ParseWav':\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:475: undefined reference to `Z_LVAL_PP'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [PCM_Message_decoder/PCM_Message_decoder] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "02588bf2": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:141:3: error: use of undeclared identifier 'rval'\n                rval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n                ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:142:7: error: use of undeclared identifier 'rval'\n                if (rval != 0) {\n                    ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:143:11: error: use of undeclared identifier 'rval'\n                        return(rval);\n                               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:227:8: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n       ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:227:15: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n              ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:227:22: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n                     ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:228:16: error: use of undeclared identifier 'i'\n    if (Bucket[i].valid) {\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:229:18: error: use of undeclared identifier 'i'\n      if (Bucket[i].time > symbol_time*MIN_VARIANCE && Bucket[i].time < symbol_time*MAX_VARIANCE) {\n                 ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:229:63: error: use of undeclared identifier 'i'\n      if (Bucket[i].time > symbol_time*MIN_VARIANCE && Bucket[i].time < symbol_time*MAX_VARIANCE) {\n                                                              ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:231:16: error: use of undeclared identifier 'i'\n        Bucket[i].count++;\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:232:16: error: use of undeclared identifier 'i'\n        return(i);\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:237:8: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n       ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:237:15: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n              ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:237:22: error: use of undeclared identifier 'i'\n  for (i = 1; i < 4; i++) {\n                     ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:238:18: error: use of undeclared identifier 'i'\n      if (Bucket[i].valid == 0) {\n                 ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:240:16: error: use of undeclared identifier 'i'\n        Bucket[i].valid = 1;\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:241:16: error: use of undeclared identifier 'i'\n        Bucket[i].time = symbol_time;\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:242:16: error: use of undeclared identifier 'i'\n        Bucket[i].count = 1;\n               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:243:16: error: use of undeclared identifier 'i'\n        return(i);\n               ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4f6745dd": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:138:2: error: use of undeclared identifier 'quit'\n        quit = 0;\n        ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:139:18: error: use of undeclared identifier 'db_simple_pager'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                        ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:139:36: error: use of undeclared identifier 'quit'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:139:42: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                                ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:140:33: error: use of undeclared identifier 'quit'\n        while (total_bytes < count && !quit) {\n                                       ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:141:3: error: use of undeclared identifier 'rval'\n                rval = cgc_receive(fd, buf+total_bytes, 1, &rx);\n                ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:142:7: error: use of undeclared identifier 'rval'\n                if (rval != 0) {\n                    ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:143:11: error: use of undeclared identifier 'rval'\n                        return(rval);\n                               ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:378:3: error: use of undeclared identifier 'quit'\n  quit = 0;\n  ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:379:19: error: use of undeclared identifier 'db_simple_pager'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                  ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:379:37: error: use of undeclared identifier 'quit'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                    ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:379:43: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n  db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:380:56: error: use of undeclared identifier 'quit'\n  while (pcm_pos < end_pcm && sp < MAX_SYMBOLS - 2 && !quit) {\n                                                       ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:477:7: error: use of undeclared identifier 'b'\n      b = Symbols[i]*-1;\n      ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:478:18: error: use of undeclared identifier 'b'\n      if (Bucket[b].gap != '\\0') {\n                 ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:479:31: error: use of undeclared identifier 'b'\n        output[sp++] = Bucket[b].gap;\n                              ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:484:7: error: use of undeclared identifier 'b'\n      b = Symbols[i];\n      ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:485:18: error: use of undeclared identifier 'b'\n      if (Bucket[b].mark != '\\0') {\n                 ^\n/tmp/FlexiRepair/PCM_Message_decoder_0/PCM_Message_decoder/src/service.c:486:31: error: use of undeclared identifier 'b'\n        output[sp++] = Bucket[b].mark;\n                              ^\n19 errors generated.\nmake[2]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/src/service.c.o] Error 1\nmake[1]: *** [PCM_Message_decoder/CMakeFiles/PCM_Message_decoder.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 18,
+  "passed_pos_tests": 231,
+  "failed_neg_tests": 5,
+  "failed_pos_tests": 229,
+  "duration": 1998.293626,
+  "errors": []
+}

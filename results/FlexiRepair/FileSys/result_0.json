@@ -1,0 +1,899 @@
+{
+  "repair_begin": "2021-05-08 00:47:16.664733",
+  "repair_end": "2021-05-08 00:53:38.408018",
+  "patches": [
+    {
+      "target_file": "src/file_manager.ii",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-30206-5c2725-file_manager.cc\n@@ -178,7 +178,8 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-27296-96b6e1-file_manager.cc\n@@ -178,7 +178,7 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  return -1;\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-29698-05bb9c-file_manager.cc\n@@ -159,7 +159,7 @@ int FileManager::OpenFile(const char* na\n int FileManager::CloseFile(unsigned int fileno)\n {\n   if (fileno >= MAX_NUM_OPENED_FILES)\n-    return -1;\n+    return 0;\n   File *file = openedFiles[fileno];\n   if (!file)\n     return -2;\n@@ -184,7 +184,7 @@ int FileManager::CloseAll()\n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n {\n   if (fileno >= MAX_NUM_OPENED_FILES)\n-    return -1;\n+    return 0;\n   File *file = openedFiles[fileno];\n   if (!file)\n     return -2;\n@@ -194,7 +194,7 @@ int FileManager::ReadFile(unsigned int f\n int FileManager::ModifyFile(unsigned int fileno, cgc_size_t pos, char *inBuf, cgc_size_t len)\n {\n   if (fileno >= MAX_NUM_OPENED_FILES)\n-    return -1;\n+    return 0;\n   File *file = openedFiles[fileno];\n   if (!file)\n     return -2;\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-27186-e25cf1-file_manager.cc\n@@ -178,7 +178,7 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  return (i);\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-26004-c78a53-file_manager.cc\n@@ -178,7 +178,7 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  no_draw = 1;\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-25731-f28fac-file_manager.cc\n@@ -178,7 +178,7 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-4935-6ecd28-file_manager.cc\n@@ -186,9 +186,7 @@ int FileManager::ReadFile(unsigned int f\n   if (fileno >= MAX_NUM_OPENED_FILES)\n     return -1;\n   File *file = openedFiles[fileno];\n-  if (!file)\n-    return -2;\n-  return file->Read(pos, len, outBuf);\n+  return (file < 0) ? -1 : file;\n }\n \n int FileManager::ModifyFile(unsigned int fileno, cgc_size_t pos, char *inBuf, cgc_size_t len)\n@@ -196,9 +194,7 @@ int FileManager::ModifyFile(unsigned int\n   if (fileno >= MAX_NUM_OPENED_FILES)\n     return -1;\n   File *file = openedFiles[fileno];\n-  if (!file)\n-    return -2;\n-  return file->Write(pos, inBuf, len);\n+  return (file < 0) ? -1 : file;\n }\n \n int FileManager::DeleteFile(const char* name)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-3367-39a1c5-file_manager.cc\n@@ -158,7 +158,7 @@ int FileManager::OpenFile(const char* na\n \n int FileManager::CloseFile(unsigned int fileno)\n {\n-  if (fileno >= MAX_NUM_OPENED_FILES)\n+  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n     return -1;\n   File *file = openedFiles[fileno];\n   if (!file)\n@@ -183,7 +183,7 @@ int FileManager::CloseAll()\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n {\n-  if (fileno >= MAX_NUM_OPENED_FILES)\n+  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n     return -1;\n   File *file = openedFiles[fileno];\n   if (!file)\n@@ -193,7 +193,7 @@ int FileManager::ReadFile(unsigned int f\n \n int FileManager::ModifyFile(unsigned int fileno, cgc_size_t pos, char *inBuf, cgc_size_t len)\n {\n-  if (fileno >= MAX_NUM_OPENED_FILES)\n+  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n     return -1;\n   File *file = openedFiles[fileno];\n   if (!file)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-8167-3c6265-file_manager.cc\n@@ -166,7 +166,7 @@ int FileManager::CloseFile(unsigned int\n   if (file->GetType() == File::FT_DIR)\n     return -3;\n   numOpenedFiles--;\n-  openedFiles[fileno] = 0;\n+  openedFiles[fileno] = -5;\n   return file->Close();\n }\n \n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-7045-821055-file_manager.cc\n@@ -166,7 +166,6 @@ int FileManager::CloseFile(unsigned int\n   if (file->GetType() == File::FT_DIR)\n     return -3;\n   numOpenedFiles--;\n-  openedFiles[fileno] = 0;\n   return file->Close();\n }\n \n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-4410-94f894-file_manager.cc\n@@ -161,7 +161,7 @@ int FileManager::CloseFile(unsigned int\n   if (fileno >= MAX_NUM_OPENED_FILES)\n     return -1;\n   File *file = openedFiles[fileno];\n-  if (!file)\n+  if (file == MAP_FAILED)\n     return -2;\n   if (file->GetType() == File::FT_DIR)\n     return -3;\n@@ -186,7 +186,7 @@ int FileManager::ReadFile(unsigned int f\n   if (fileno >= MAX_NUM_OPENED_FILES)\n     return -1;\n   File *file = openedFiles[fileno];\n-  if (!file)\n+  if (file == MAP_FAILED)\n     return -2;\n   return file->Read(pos, len, outBuf);\n }\n@@ -196,7 +196,7 @@ int FileManager::ModifyFile(unsigned int\n   if (fileno >= MAX_NUM_OPENED_FILES)\n     return -1;\n   File *file = openedFiles[fileno];\n-  if (!file)\n+  if (file == MAP_FAILED)\n     return -2;\n   return file->Write(pos, inBuf, len);\n }\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-31222-ac8691-file_manager.cc\n@@ -173,7 +173,7 @@ int FileManager::CloseFile(unsigned int\n int FileManager::CloseAll()\n {\n   int i;\n-  for (i = 0; i < MAX_NUM_OPENED_FILES; ++i)\n+  for (i = 0; i < 8; ++i)\n   {\n     if(openedFiles[i])\n       CloseFile(i);\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-5721-e3f96d-file_manager.cc\n@@ -172,7 +172,7 @@ int FileManager::CloseFile(unsigned int\n \n int FileManager::CloseAll()\n {\n-  int i;\n+  const struct options_table_entry *oe;\n   for (i = 0; i < MAX_NUM_OPENED_FILES; ++i)\n   {\n     if(openedFiles[i])\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-1304-065a5d-file_manager.cc\n@@ -178,7 +178,7 @@ int FileManager::CloseAll()\n     if(openedFiles[i])\n       CloseFile(i);\n   }\n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n int FileManager::ReadFile(unsigned int fileno, cgc_size_t pos, cgc_size_t len, char** outBuf)\n",
+        "--- /tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc\n+++ /tmp/cocci-output-6826-64de9d-file_manager.cc\n@@ -166,7 +166,7 @@ int FileManager::CloseFile(unsigned int\n   if (file->GetType() == File::FT_DIR)\n     return -3;\n   numOpenedFiles--;\n-  openedFiles[fileno] = 0;\n+  openedFiles[fileno] = -1;\n   return file->Close();\n }\n \n"
+      ]
+    }
+  ],
+  "compilations": 5,
+  "failed_compilations": 10,
+  "outcomes": {
+    "74ca69b9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:169:25: error: assigning to 'File *' from incompatible type 'int'\n  openedFiles[fileno] = -1;\n                        ^~\n1 error generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6aec9fd0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "be5693b0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:169:25: error: assigning to 'File *' from incompatible type 'int'\n  openedFiles[fileno] = -5;\n                        ^~\n1 error generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0ef274aa": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:161:7: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n      ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:161:38: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n                                     ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:186:7: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n      ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:186:38: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n                                     ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:196:7: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n      ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:196:38: error: use of undeclared identifier 'ntohs'\n  if (ntohs(MAX_NUM_OPENED_FILES) <= ntohs(fileno))\n                                     ^\n6 errors generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "bc7bd715": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:164:15: error: use of undeclared identifier 'MAP_FAILED'\n  if (file == MAP_FAILED)\n              ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:189:15: error: use of undeclared identifier 'MAP_FAILED'\n  if (file == MAP_FAILED)\n              ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:199:15: error: use of undeclared identifier 'MAP_FAILED'\n  if (file == MAP_FAILED)\n              ^\n3 errors generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c9fba174": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:181:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n1 error generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "81886d79": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:181:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:182:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n2 errors generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b44690a6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9ae85c2c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:181:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n1 error generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7c868af9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:181:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n1 error generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "422d6432": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "24558cf7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "31545721": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "28f59b91": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:176:8: error: use of undeclared identifier 'i'\n  for (i = 0; i < MAX_NUM_OPENED_FILES; ++i)\n       ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:176:15: error: use of undeclared identifier 'i'\n  for (i = 0; i < MAX_NUM_OPENED_FILES; ++i)\n              ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:176:43: error: use of undeclared identifier 'i'\n  for (i = 0; i < MAX_NUM_OPENED_FILES; ++i)\n                                          ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:178:20: error: use of undeclared identifier 'i'\n    if(openedFiles[i])\n                   ^\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:179:17: error: use of undeclared identifier 'i'\n      CloseFile(i);\n                ^\n5 errors generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7196a33d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:189:16: error: ordered comparison between pointer and zero ('File *' and 'int')\n  return (file < 0) ? -1 : file;\n          ~~~~ ^ ~\n/tmp/FlexiRepair/FileSys_0/FileSys/src/file_manager.cc:197:16: error: ordered comparison between pointer and zero ('File *' and 'int')\n  return (file < 0) ? -1 : file;\n          ~~~~ ^ ~\n2 errors generated.\nmake[2]: *** [FileSys/CMakeFiles/FileSys.dir/src/file_manager.cc.o] Error 1\nmake[1]: *** [FileSys/CMakeFiles/FileSys.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 98,
+  "failed_neg_tests": 5,
+  "failed_pos_tests": 2,
+  "duration": 381.743285,
+  "errors": []
+}

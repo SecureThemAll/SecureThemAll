@@ -1,0 +1,2720 @@
+{
+  "repair_begin": "2021-05-06 22:11:04.890279",
+  "repair_end": "2021-05-06 23:11:04.899046",
+  "patches": [
+    {
+      "target_file": "src/auth.i",
+      "fix": "",
+      "edits": [
+        "468a469\n>   {\n469a471,472\n>   return ((securityIdType )newID);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   cgc_writeFile(fh3, real_name, count, 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   retcode = cgc_createFile(filename, (enum fileTypes )2, 1);\n>   }\n",
+        "383,388d382\n<   if ((int )cgc_securityIDFileHandle == -1) {\n<     cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n<     if ((int )cgc_securityIDFileHandle < 0) {\n<       cgc_printf(\"error opening security ID file\\n\");\n<       cgc__terminate(4294967295U);\n<     } else {\n390,393d383\n<     }\n<   } else {\n< \n<   }\n",
+        "469a470\n>   {\n470a472,483\n>   if ((int )cgc_securityIDFileHandle == -1) {\n>     cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n>     if ((int )cgc_securityIDFileHandle < 0) {\n>       cgc_printf(\"error opening security ID file\\n\");\n>       cgc__terminate(4294967295U);\n>     } else {\n> \n>     }\n>   } else {\n> \n>   }\n>   }\n",
+        "385,388d384\n<     if ((int )cgc_securityIDFileHandle < 0) {\n<       cgc_printf(\"error opening security ID file\\n\");\n<       cgc__terminate(4294967295U);\n<     } else {\n390d385\n<     }\n",
+        "439c439\n<   tmp___1 = cgc_strlen((char const   *)(line));\n---\n> \n",
+        "469a470\n>   {\n470a472,473\n>   cgc_sprintf(line, \"$s:$s:$d\\n\", name, password, newID);\n>   }\n",
+        "469a470\n>   {\n470a472,474\n>   retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n>                               (char )':', & count, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   fh = cgc_openFile((char *)\"Users.db\", 1);\n>   }\n",
+        "401,402c401\n<   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID2)),\n<                          (unsigned int )sizeof(ID2), 0, (unsigned int *)0, 1);\n---\n> \n",
+        "470a471\n>   {\n471a473,475\n>   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID2)),\n>                          (unsigned int )sizeof(ID2), 0, (unsigned int *)0, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   return (-1);\n>   }\n",
+        "413,415d412\n<     if (retcode == 0) {\n<       break;\n<     } else {\n417d413\n<     }\n",
+        "438c438\n<   cgc_sprintf(line, \"$s:$s:$d\\n\", name, password, newID);\n---\n> \n",
+        "470a471\n>   {\n471a473,474\n>   cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n>   }\n",
+        "468a469\n>   {\n469a471,472\n>   cgc_writeFile(fh3, real_name, count, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,478\n>   if ((int )fh3 < 0) {\n>     cgc_printf(\"error opening users file\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n>   }\n",
+        "330c330\n<     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n---\n> \n",
+        "470a471\n>   {\n471a473,475\n>   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID1)),\n>                          (unsigned int )sizeof(ID1), 0, (unsigned int *)0, 1);\n>   }\n",
+        "441,444d440\n<   if (retcode < 0) {\n<     cgc_printf(\"error updating Users.db\\n\");\n<     cgc__terminate(4294967295U);\n<   } else {\n446d441\n<   }\n",
+        "470a471\n>   {\n471a473,479\n>   if ((int )fh3 < 0) {\n>     cgc_printf(\"error opening users file\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "447c447\n<   cgc_closeFile(fh);\n---\n> \n",
+        "470a471\n>   {\n471a473,474\n>   tmp___1 = cgc_strlen((char const   *)(line));\n>   }\n",
+        "322,329c322\n<   while (1) {\n<     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n<                                 (char )':', & count, 1);\n<     if (retcode == 0) {\n<       break;\n<     } else {\n< \n<     }\n---\n>   while (! (retcode == 0)) {\n",
+        "469a470\n>   {\n470a472,474\n>   retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                               (char )'\\n', & count, 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   cgc_writeFile(fh3, real_name, count, 1);\n>   }\n",
+        "396,398d395\n<   if (retcode == -7) {\n<     cgc_fileReadPosition(cgc_securityIDFileHandle, 1U);\n<   } else {\n400d396\n<   }\n",
+        "469a470\n>   {\n470a472,473\n>   tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n>   }\n",
+        "469a470\n>   {\n470a472,478\n>   if ((int )cgc_securityIDFileHandle < 0) {\n>     cgc_printf(\"error opening security ID file\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "470a471\n>   {\n471a473,478\n>   if (retcode == -7) {\n>     cgc_fileReadPosition(cgc_securityIDFileHandle, 1U);\n>   } else {\n> \n>   }\n>   }\n",
+        "468c468\n<   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n---\n> \n",
+        "469a470\n>   {\n470a472,473\n>   cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n> \n>   }\n",
+        "469a470\n>   {\n470a472,479\n>   if (tmp == 0) {\n>     cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n>     cgc_closeFile(fh);\n>     return (-1);\n>   } else {\n> \n>   }\n>   }\n",
+        "470a471\n>   {\n471a473,480\n>   if (tmp == 0) {\n>     cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n>     cgc_closeFile(fh);\n>     return (-1);\n>   } else {\n> \n>   }\n>   }\n",
+        "468a469\n>   {\n469a471,472\n>   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n>   }\n",
+        "469a470\n>   {\n470a472,477\n>   if (retcode == -7) {\n>     cgc_fileReadPosition(cgc_securityIDFileHandle, 1U);\n>   } else {\n> \n>   }\n>   }\n",
+        "468a469\n>   {\n469a471,472\n>   retcode = cgc_createFile(filename, (enum fileTypes )2, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   fh = cgc_openFile((char *)\"Users.db\", 1);\n>   }\n",
+        "409c409\n<   newID &= 2147483647U;\n---\n> \n",
+        "469a470\n>   {\n470a472,500\n>   while (1) {\n>     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n>                                 (char )':', & count, 1);\n>     if (retcode == 0) {\n>       break;\n>     } else {\n> \n>     }\n>     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n>     if (tmp == 0) {\n>       cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n>       cgc_closeFile(fh);\n>       return (-1);\n>     } else {\n> \n>     }\n>     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                                 (char )':', & count, 1);\n>     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                                 (char )'\\n', & count, 1);\n>     tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n>     if ((unsigned int )tmp___0 == newID) {\n>       newID ++;\n>       continue;\n>     } else {\n> \n>     }\n>   }\n>   }\n",
+        "469a470\n>   {\n470a472,474\n>   retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line), (char )':',\n>                               & count, 1);\n>   }\n",
+        "408c408\n<   newID = ID1 * ID2;\n---\n> \n",
+        "316,319d315\n<   if ((int )fh < 0) {\n<     cgc_printf(\"error opening Users.db\\n\");\n<     cgc__terminate(4294967295U);\n<   } else {\n321d316\n<   }\n",
+        "469a470\n>   {\n470a472,473\n>   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   retcode = cgc_writeFile(fh, line, (unsigned int )tmp___1, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,474\n>   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID1)),\n>                          (unsigned int )sizeof(ID1), 0, (unsigned int *)0, 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   return (-1);\n>   }\n",
+        "347,348c347\n<     retcode = cgc_readFileUntil(fh, tmpbuff, (unsigned int )sizeof(tmpbuff),\n<                                 (char )'\\n', & count, 1);\n---\n> \n",
+        "470a471\n>   {\n471a473,484\n>   if ((int )cgc_securityIDFileHandle == -1) {\n>     cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n>     if ((int )cgc_securityIDFileHandle < 0) {\n>       cgc_printf(\"error opening security ID file\\n\");\n>       cgc__terminate(4294967295U);\n>     } else {\n> \n>     }\n>   } else {\n> \n>   }\n>   }\n",
+        "349c349\n<     cgc_closeFile(fh);\n---\n> \n",
+        "419,423d418\n<     if (tmp == 0) {\n<       cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n<       cgc_closeFile(fh);\n<       return (-1);\n<     } else {\n425d419\n<     }\n",
+        "469a470\n>   {\n470a472,473\n>   fh3 = cgc_openFile(filename, 1);\n>   }\n",
+        "470c470\n<   cgc_closeFile(fh3);\n---\n> \n",
+        "468a469\n>   {\n469a471,477\n>   if ((int )fh3 < 0) {\n>     cgc_printf(\"error opening users file\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   newID = ID1 * ID2;\n>   }\n",
+        "431,434d430\n<     if ((unsigned int )tmp___0 == newID) {\n<       newID ++;\n<       continue;\n<     } else {\n436d431\n<     }\n",
+        "457,460d456\n<   if ((int )fh3 < 0) {\n<     cgc_printf(\"error opening users file\\n\");\n<     cgc__terminate(4294967295U);\n<   } else {\n462d457\n<   }\n",
+        "470a471\n>   {\n471a473,474\n> \n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   cgc_closeFile(fh3);\n>   }\n",
+        "351c351\n<     return (tmp___1);\n---\n> \n",
+        "448c448\n<   cgc_sprintf(filename, \"$x.user\", newID);\n---\n> \n",
+        "470a471\n>   {\n471a473,475\n>   retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line), (char )':',\n>                               & count, 1);\n>   }\n",
+        "430c430\n<     tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n---\n> \n",
+        "341,344d340\n<     if (tmp___0 != 0) {\n<       cgc_closeFile(fh);\n<       return (-1);\n<     } else {\n346d341\n<     }\n",
+        "470a471\n>   {\n471a473,474\n>   cgc_closeFile(fh);\n>   }\n",
+        "456c456\n<   fh3 = cgc_openFile(filename, 1);\n---\n> \n",
+        "325,327d324\n<     if (retcode == 0) {\n<       break;\n<     } else {\n329d325\n<     }\n",
+        "440c440\n<   retcode = cgc_writeFile(fh, line, (unsigned int )tmp___1, 1);\n---\n> \n",
+        "468a469\n>   {\n469a471,477\n>   if (retcode < 0) {\n>     cgc_printf(\"$d\\n\", retcode);\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "350c350\n<     tmp___1 = cgc_atoi((char const   *)(tmpbuff));\n---\n> \n",
+        "470a471\n>   {\n471a473,474\n>   tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n>   }\n",
+        "468a469\n>   {\n469a471,472\n>   cgc_closeFile(fh3);\n>   }\n",
+        "428,429c428\n<     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                 (char )'\\n', & count, 1);\n---\n> \n",
+        "426,427c426\n<     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                 (char )':', & count, 1);\n---\n> \n",
+        "468a469\n>   {\n469a471,472\n>   cgc_closeFile(fh);\n>   }\n",
+        "464c464\n<   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n---\n> \n",
+        "469a470\n>   {\n470a472,473\n>   cgc_closeFile(fh);\n>   }\n",
+        "469a470\n>   {\n470a472,478\n>   if (retcode < 0) {\n>     cgc_printf(\"$d\\n\", retcode);\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "",
+        "470a471\n>   {\n471a473,474\n>   cgc_sprintf(line, \"$s:$s:$d\\n\", name, password, newID);\n>   }\n",
+        "467c467\n<   count = (unsigned int )tmp___2;\n---\n> \n",
+        "465c465\n<   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n---\n> \n",
+        "384c384\n<     cgc_securityIDFileHandle = cgc_openFile((char *)\"UserIDs.mem\", 1);\n---\n> \n",
+        "470a471\n>   {\n471a473,479\n>   if (retcode < 0) {\n>     cgc_printf(\"error updating Users.db\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "331,335d330\n<     if (tmp != 0) {\n<       retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                   (char )'\\n', & count, 1);\n<       continue;\n<     } else {\n337d331\n<     }\n",
+        "469a470\n>   {\n470a472,473\n>   retcode = cgc_createFile(filename, (enum fileTypes )2, 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   cgc_writeFile(fh3, (char *)(& count), (unsigned int )sizeof(count), 1);\n>   }\n",
+        "470a471\n>   {\n471a473,501\n>   while (1) {\n>     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n>                                 (char )':', & count, 1);\n>     if (retcode == 0) {\n>       break;\n>     } else {\n> \n>     }\n>     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n>     if (tmp == 0) {\n>       cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n>       cgc_closeFile(fh);\n>       return (-1);\n>     } else {\n> \n>     }\n>     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                                 (char )':', & count, 1);\n>     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                                 (char )'\\n', & count, 1);\n>     tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n>     if ((unsigned int )tmp___0 == newID) {\n>       newID ++;\n>       continue;\n>     } else {\n> \n>     }\n>   }\n>   }\n",
+        "466c466\n<   tmp___2 = cgc_strlen((char const   *)real_name);\n---\n> \n",
+        "468a469\n>   {\n469a471,472\n>   fh3 = cgc_openFile(filename, 1);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   retcode = cgc_writeFile(fh, line, (unsigned int )tmp___1, 1);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   cgc_sprintf(filename, \"$x.user\", newID);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   return ((securityIdType )newID);\n>   }\n",
+        "470a471\n>   {\n471a473,474\n>   tmp___2 = cgc_strlen((char const   *)real_name);\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   tmp___1 = cgc_strlen((char const   *)(line));\n>   }\n",
+        "468a469\n>   {\n469a471,472\n> \n>   }\n",
+        "338,339c338\n<     retcode = cgc_readFileUntil(fh, pass, (unsigned int )sizeof(pass),\n<                                 (char )':', & count, 1);\n---\n> \n",
+        "468a469\n>   {\n469a471,472\n>   tmp___2 = cgc_strlen((char const   *)real_name);\n>   }\n",
+        "403,405d402\n<   if (retcode == -7) {\n<     cgc_fileReadPosition(cgc_securityIDFileHandle, 1U);\n<   } else {\n407d403\n<   }\n",
+        "410,415d409\n<   while (1) {\n<     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n<                                 (char )':', & count, 1);\n<     if (retcode == 0) {\n<       break;\n<     } else {\n417,437d410\n<     }\n<     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n<     if (tmp == 0) {\n<       cgc_fileReadPosRelative(cgc_securityIDFileHandle, -4);\n<       cgc_closeFile(fh);\n<       return (-1);\n<     } else {\n< \n<     }\n<     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                 (char )':', & count, 1);\n<     retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                 (char )'\\n', & count, 1);\n<     tmp___0 = cgc_atoi((char const   *)(tmpbuff));\n<     if ((unsigned int )tmp___0 == newID) {\n<       newID ++;\n<       continue;\n<     } else {\n< \n<     }\n<   }\n",
+        "410,417c410\n<   while (1) {\n<     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n<                                 (char )':', & count, 1);\n<     if (retcode == 0) {\n<       break;\n<     } else {\n< \n<     }\n---\n>   while (! (retcode == 0)) {\n",
+        "470a471\n>   {\n471a473,474\n>   fh3 = cgc_openFile(filename, 1);\n>   }\n",
+        "450,453d449\n<   if (retcode < 0) {\n<     cgc_printf(\"$d\\n\", retcode);\n<     cgc__terminate(4294967295U);\n<   } else {\n455d450\n<   }\n",
+        "469a470\n>   {\n470a472,473\n>   cgc_sprintf(filename, \"$x.user\", newID);\n>   }\n",
+        "469a470\n>   {\n470a472,478\n>   if (retcode < 0) {\n>     cgc_printf(\"error updating Users.db\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   return ((securityIdType )newID);\n>   }\n",
+        "470a471\n>   {\n471a473,479\n>   if (retcode < 0) {\n>     cgc_printf(\"$d\\n\", retcode);\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "469a470\n>   {\n470a472,473\n>   tmp___2 = cgc_strlen((char const   *)real_name);\n>   }\n",
+        "469c469\n<   cgc_writeFile(fh3, real_name, count, 1);\n---\n> \n",
+        "376c376\n<   fh = cgc_openFile((char *)\"Users.db\", 1);\n---\n> \n",
+        "470a471\n>   {\n471a473,479\n>   if ((int )fh < 0) {\n>     cgc_printf(\"error opening Users.db\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "463c463\n<   count = 0U;\n---\n> \n",
+        "470a471\n>   {\n471a473,475\n>   retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n>                               (char )':', & count, 1);\n>   }\n",
+        "315c315\n<   fh = cgc_openFile((char *)\"Users.db\", 1);\n---\n> \n",
+        "449c449\n<   retcode = cgc_createFile(filename, (enum fileTypes )2, 1);\n---\n> \n",
+        "469a470\n>   {\n470a472,473\n>   newID &= 2147483647U;\n>   }\n",
+        "471c471\n<   return ((securityIdType )newID);\n---\n> \n",
+        "468a469\n>   {\n469a471,477\n>   if (retcode < 0) {\n>     cgc_printf(\"error updating Users.db\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "470a471\n>   {\n471a473,479\n>   if ((int )cgc_securityIDFileHandle < 0) {\n>     cgc_printf(\"error opening security ID file\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "468a469\n>   {\n469a471,472\n>   cgc_sprintf(filename, \"$x.user\", newID);\n>   }\n",
+        "377,380d376\n<   if ((int )fh < 0) {\n<     cgc_printf(\"error opening Users.db\\n\");\n<     cgc__terminate(4294967295U);\n<   } else {\n382d377\n<   }\n",
+        "469a470\n>   {\n470a472,478\n>   if ((int )fh < 0) {\n>     cgc_printf(\"error opening Users.db\\n\");\n>     cgc__terminate(4294967295U);\n>   } else {\n> \n>   }\n>   }\n",
+        "470a471\n>   {\n471a473,475\n>   retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n>                               (char )'\\n', & count, 1);\n>   }\n",
+        "418c418\n<     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n---\n> \n",
+        "470a471\n>   {\n471a473,474\n>   cgc_closeFile(fh3);\n>   }\n",
+        "340c340\n<     tmp___0 = cgc_strcmp((char const   *)(pass), (char const   *)password);\n---\n> \n",
+        "322,327d321\n<   while (1) {\n<     retcode = cgc_readFileUntil(fh, username, (unsigned int )sizeof(username),\n<                                 (char )':', & count, 1);\n<     if (retcode == 0) {\n<       break;\n<     } else {\n329,352d322\n<     }\n<     tmp = cgc_strcmp((char const   *)(username), (char const   *)name);\n<     if (tmp != 0) {\n<       retcode = cgc_readFileUntil(fh, line, (unsigned int )sizeof(line),\n<                                   (char )'\\n', & count, 1);\n<       continue;\n<     } else {\n< \n<     }\n<     retcode = cgc_readFileUntil(fh, pass, (unsigned int )sizeof(pass),\n<                                 (char )':', & count, 1);\n<     tmp___0 = cgc_strcmp((char const   *)(pass), (char const   *)password);\n<     if (tmp___0 != 0) {\n<       cgc_closeFile(fh);\n<       return (-1);\n<     } else {\n< \n<     }\n<     retcode = cgc_readFileUntil(fh, tmpbuff, (unsigned int )sizeof(tmpbuff),\n<                                 (char )'\\n', & count, 1);\n<     cgc_closeFile(fh);\n<     tmp___1 = cgc_atoi((char const   *)(tmpbuff));\n<     return (tmp___1);\n<   }\n",
+        "469a470\n>   {\n470a472,474\n>   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID2)),\n>                          (unsigned int )sizeof(ID2), 0, (unsigned int *)0, 1);\n>   }\n",
+        "394,395c394\n<   retcode = cgc_readFile(cgc_securityIDFileHandle, (char *)((void *)(& ID1)),\n<                          (unsigned int )sizeof(ID1), 0, (unsigned int *)0, 1);\n---\n> \n"
+      ]
+    }
+  ],
+  "compilations": 135,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "0460c1bc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "6082dc52": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "2106bbc3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "908a9f01": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "a84149f1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "5ac1f79b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "bf7e59dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "8f238126": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "9b19de2c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "b77e8f11": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "40b2c219": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "619c528a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "7463a712": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "8adf3a59": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "65bb9eea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "7a6fce87": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "dbd209a8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "6a74712a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "b0558ef5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "704f49f6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "c990094c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "21231d6c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "60465457": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "f1918ef8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "098a7256": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 2,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "889c3b30": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "8742bcda": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b847e317": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aea99eb1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "f337f4d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "1609a757": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "7225ece6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "5ebe930f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "07b588f8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "3f6330a0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "0d07322c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "a42785e5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "e66b55ba": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "ace27afc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "b3018817": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "4eddd18e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "91c0c62b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "592f59ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "0afea2ac": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "651f46e7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "45a1b5f9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "8ca9f7df": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "5a23144a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "64473d3e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "186f434c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "fae28860": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "592eb658": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "b8e58f69": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "0a26b3ee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "39928de6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "bad04a06": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "662e17a1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "9432b856": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "7bf840e1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "11cb43a2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "df990748": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "d7e6f70e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "f116ad67": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "5dcbda0e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "a9632f10": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "fc59327d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "4e936d27": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "9e984978": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "47644322": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "b9b0cdc3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "6fb30f82": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "0ce5d8d7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "75552ec0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "3caa020c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "284d0b51": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "50859a22": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "663c1b56": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "1830c797": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "91af9edb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "5aded63d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "8444ff3e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "9007df4a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "e3c566ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "83db6326": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "540f9d18": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "b12c26c4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "1520d0ae": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "6d3dbaa2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "a9714c60": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "b7970a3b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "f1a99a85": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "a2c339dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "20256b19": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "57613b19": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "cba7b77a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "df453a5b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "b0f48ed3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "f69cdd95": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "0b13cde6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "3324ca66": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "f553d837": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "86889c0e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "7d4c0757": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "c854000c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "c549108c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "496792d7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "f5e21bab": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "67815c0c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "447e4097": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "576ae2dd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "40f50da8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "2eba8bcd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "0cd73a2a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "eb6846c1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "52123ff8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "b88dbf59": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "bf0deecf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "6bbd1d70": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "8007a762": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "e142c9cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "f1e5c0f4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "3ee572ce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "41f23ac4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "e79b588f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "348577d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "5f650311": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "5ed78db4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "a701bdf4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "c729485f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 6
+          }
+        ]
+      }
+    },
+    "e595b0f2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "00f805de": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "f5165d4e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      }
+    },
+    "b304fe99": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": []
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 40,
+  "failed_neg_tests": 134,
+  "failed_pos_tests": 0,
+  "duration": 3600.008767,
+  "errors": [
+    "cat: /etc/redhat-release: No such file or directory",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "Exception in thread Thread-1:",
+    "Traceback (most recent call last):",
+    "  File \"/usr/lib/python3.8/threading.py\", line 932, in _bootstrap_inner",
+    "    self.run()",
+    "  File \"/usr/lib/python3.8/threading.py\", line 1254, in run",
+    "    self.function(*self.args, **self.kwargs)",
+    "  File \"/cb-repair/src/core/command.py\", line 142, in _timer_out",
+    "    proc.kill()",
+    "  File \"/usr/local/lib/python3.8/dist-packages/psutil/__init__.py\", line 269, in wrapper",
+    "    raise NoSuchProcess(self.pid, self._name)",
+    "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists (pid=15805)",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: pov did not negotiate\u001b[0m",
+    "\u001b[1;31mWARNING: pov did not negotiate\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "sh: 1: kill: No such process",
+    "",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mReturn code: -9\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "\u001b[1;31mWARNING: there was an error running a test\u001b[0m",
+    "",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

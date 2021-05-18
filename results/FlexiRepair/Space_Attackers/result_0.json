@@ -1,0 +1,4102 @@
+{
+  "repair_begin": "2021-05-08 11:45:23.013723",
+  "repair_end": "2021-05-08 12:26:27.301944",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-23143-537868-service.c\n@@ -153,7 +153,7 @@ int cgc_canEnemyFire(int m, int n) {\n     for (int i = m+1; i < rowCount; i++) {\n         // if there is an enemy, then error\n         if (enemies[i][n] != 0) {\n-            return 1;\n+            ret = 1;\n         }\n         \n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-29377-735556-service.c\n@@ -29,7 +29,7 @@ int columns = 25;\n int cgc_turnCounter = 0;\n int** board;\n int* shipCords;\n-char* playerName;\n+zstr playerName;\n int** enemies;\n int rowCount = 2;\n int** userBullets;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-20277-29ca5c-service.c\n@@ -153,7 +153,7 @@ int cgc_canEnemyFire(int m, int n) {\n     for (int i = m+1; i < rowCount; i++) {\n         // if there is an enemy, then error\n         if (enemies[i][n] != 0) {\n-            return 1;\n+            return (EINVAL);\n         }\n         \n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-18823-afad75-service.c\n@@ -265,7 +265,7 @@ void cgc_updateEnemies() {\n     }\n     // if there are no more enemies, then win\n     if (isThereAnEnemy == 0) {\n-        cgc_lost = -1;\n+        cgc_lost = -cgc_lost;\n     }\n }\n \n@@ -386,8 +386,8 @@ int cgc_setupNewGame() {\n     for (int i = 0; i < rows; i++)\n     {\n         userBullets[i] = (int*)cgc_calloc(2, sizeof(int));\n-        userBullets[i][0] = -1;\n-        userBullets[i][1] = -1;\n+        userBullets[i][0] = -userBullets[i][0];\n+        userBullets[i][1] = -userBullets[i][1];\n     }\n     \n     // instantiate enemy bullets array\n@@ -395,8 +395,8 @@ int cgc_setupNewGame() {\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n         enemyBullets[i] = (int*) cgc_calloc(2, sizeof(int));\n-        enemyBullets[i][0] = -1;\n-        enemyBullets[i][1] = -1;\n+        enemyBullets[i][0] = -enemyBullets[i][0];\n+        enemyBullets[i][1] = -enemyBullets[i][1];\n     }\n     \n     return 0;\n@@ -501,8 +501,8 @@ void cgc_updateBullets() {\n             if(userBullets[i][1] == 0)\n             {\n                 // delete the bullet\n-                userBullets[i][0] = -1;\n-                userBullets[i][1] = -1;\n+                userBullets[i][0] = -userBullets[i][0];\n+                userBullets[i][1] = -userBullets[i][1];\n             }\n             else\n             {\n@@ -522,8 +522,8 @@ void cgc_updateBullets() {\n             if(enemyBullets[i][0] == (rows-1))\n             {\n                 // delete the bullet\n-                enemyBullets[i][0] = -1;\n-                enemyBullets[i][1] = -1;\n+                enemyBullets[i][0] = -enemyBullets[i][0];\n+                enemyBullets[i][1] = -enemyBullets[i][1];\n             }\n             else\n             {\n@@ -565,8 +565,8 @@ void cgc_setBullets() {\n                 enemies[hold][(userBullets[i][0]/2)] = 0;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n-                userBullets[i][0] = -1;\n-                userBullets[i][1] = -1;\n+                userBullets[i][0] = -userBullets[i][0];\n+                userBullets[i][1] = -userBullets[i][1];\n                 \n             }\n             else\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-27884-6fff85-service.c\n@@ -140,14 +140,14 @@ void cgc_setEnemies() {\n \n int cgc_movePieces () {\n     \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_canEnemyFire(int m, int n) {\n     \n     // check if you are on the bottom row\n     if (m == rowCount-1) {\n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n     }\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n@@ -158,7 +158,7 @@ int cgc_canEnemyFire(int m, int n) {\n         \n     }\n     // this means there were no enemies below you so you are allowed to shoot\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n void cgc_enemyFire(int x, int y) {\n@@ -333,7 +333,7 @@ int cgc_drawBoard() {\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_setupNewGame() {\n@@ -399,7 +399,7 @@ int cgc_setupNewGame() {\n         enemyBullets[i][1] = -1;\n     }\n     \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n char cgc_getUserInput() {\n@@ -779,5 +779,5 @@ int main(int secret_page_i,  char *unuse\n     }\n \n     cgc_fflush(cgc_stdout);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-22099-dafc02-service.c\n@@ -39,7 +39,7 @@ unsigned int cgc_seed1 = 0;\n unsigned int cgc_seed2 = 0;\n \n void cgc_seedRandomGen(unsigned int inc1, unsigned int inc2) {\n-    if (cgc_strcmp(playerName, \"magic\") == 0) {\n+    if (cgc_strcmp(playerName, \"magic\") % 0 == 0) {\n         cgc_seed1 = 0;\n         cgc_seed2 = 0;\n     }\n@@ -191,7 +191,7 @@ void cgc_updateEnemies() {\n                 unsigned int r = gen%7;\n                 \n                 //decide if enemy wants to fire\n-                if (r == 1)\n+                if (r % 1 == 0)\n                 {\n                     int x = -1;\n                     int y = -1;\n@@ -233,7 +233,7 @@ void cgc_updateEnemies() {\n                     switch (gen%3) {\n                             // move left\n                         case 0:\n-                            if (enemies[i][j] == 1)\n+                            if (enemies[i][j] % 1 == 0)\n                             {\n                                 enemies[i][j] = 4;\n                             }\n@@ -245,7 +245,7 @@ void cgc_updateEnemies() {\n                             \n                             // move right\n                         case 1:\n-                            if (enemies[i][j] == 4)\n+                            if (enemies[i][j] % 4 == 0)\n                             {\n                                 enemies[i][j] = 1;\n                             }\n@@ -498,7 +498,7 @@ void cgc_updateBullets() {\n         // check if there is a bullet\n         if (userBullets[i][0] != -1) {\n             // check if bullet about to go off map\n-            if(userBullets[i][1] == 0)\n+            if (userBullets[i][1] % 0 == 0)\n             {\n                 // delete the bullet\n                 userBullets[i][0] = -1;\n@@ -519,7 +519,7 @@ void cgc_updateBullets() {\n         // check if there is a bullet\n         if (enemyBullets[i][0] != -1) {\n             // check if bullet about to go off map\n-            if(enemyBullets[i][0] == (rows-1))\n+            if (enemyBullets[i][0] % (rows - 1) == 0)\n             {\n                 // delete the bullet\n                 enemyBullets[i][0] = -1;\n@@ -555,7 +555,7 @@ void cgc_setBullets() {\n         if(userBullets[i][0] != -1)\n         {\n             // if there is a ship where the bullet now is, delete them both\n-            if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n+            if (board[userBullets[i][1]][userBullets[i][0]] % 3 == 0) {\n                 // clear board\n                 board[userBullets[i][1]][userBullets[i][0]] = 0;\n                 // delete ship\n@@ -581,7 +581,7 @@ void cgc_setBullets() {\n         if(enemyBullets[i][0] != -1)\n         {\n             // if the user is where the bullet is, then lose\n-            if (board[enemyBullets[i][0]][enemyBullets[i][1]] == 2) {\n+            if (board[enemyBullets[i][0]][enemyBullets[i][1]] % 2 == 0) {\n                 // set lost to true\n                 cgc_lost = 1;\n             }\n@@ -646,7 +646,7 @@ int main(int secret_page_i,  char *unuse\n     \n     \n     // check if we lost\n-    if (cgc_lost == 1) {\n+    if (cgc_lost % 1 == 0) {\n         cgc_clearScreen();\n         cgc_fprintf(cgc_stdout, \"\\t\\tyou lose\\n\\n\\n\\n\\n\");\n     }\n@@ -728,7 +728,7 @@ int main(int secret_page_i,  char *unuse\n             \n             switch (r) {\n                 case 0:\n-                    if (shipX == 9)\n+                    if (shipX % 9 == 0)\n                     {\n                         shipX = 0;\n                     }\n@@ -739,7 +739,7 @@ int main(int secret_page_i,  char *unuse\n                     break;\n                     \n                 case 1:\n-                    if (shipX == 0)\n+                    if (shipX % 0 == 0)\n                     {\n                         shipX = 9;\n                     }\n@@ -750,7 +750,7 @@ int main(int secret_page_i,  char *unuse\n                     break;\n                     \n                 case 2:\n-                    if (shipY == 9)\n+                    if (shipY % 9 == 0)\n                     {\n                         shipY = 0;\n                     }\n@@ -761,7 +761,7 @@ int main(int secret_page_i,  char *unuse\n                     break;\n                     \n                 case 3:\n-                    if (shipY == 0)\n+                    if (shipY % 0 == 0)\n                     {\n                         shipY = 9;\n                     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-26677-276489-service.c\n@@ -265,7 +265,7 @@ void cgc_updateEnemies() {\n     }\n     // if there are no more enemies, then win\n     if (isThereAnEnemy == 0) {\n-        cgc_lost = -1;\n+        cgc_lost = (u_int)-1;\n     }\n }\n \n@@ -386,8 +386,8 @@ int cgc_setupNewGame() {\n     for (int i = 0; i < rows; i++)\n     {\n         userBullets[i] = (int*)cgc_calloc(2, sizeof(int));\n-        userBullets[i][0] = -1;\n-        userBullets[i][1] = -1;\n+        userBullets[i][0] = (u_int)-1;\n+        userBullets[i][1] = (u_int)-1;\n     }\n     \n     // instantiate enemy bullets array\n@@ -395,8 +395,8 @@ int cgc_setupNewGame() {\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n         enemyBullets[i] = (int*) cgc_calloc(2, sizeof(int));\n-        enemyBullets[i][0] = -1;\n-        enemyBullets[i][1] = -1;\n+        enemyBullets[i][0] = (u_int)-1;\n+        enemyBullets[i][1] = (u_int)-1;\n     }\n     \n     return 0;\n@@ -501,8 +501,8 @@ void cgc_updateBullets() {\n             if(userBullets[i][1] == 0)\n             {\n                 // delete the bullet\n-                userBullets[i][0] = -1;\n-                userBullets[i][1] = -1;\n+                userBullets[i][0] = (u_int)-1;\n+                userBullets[i][1] = (u_int)-1;\n             }\n             else\n             {\n@@ -522,8 +522,8 @@ void cgc_updateBullets() {\n             if(enemyBullets[i][0] == (rows-1))\n             {\n                 // delete the bullet\n-                enemyBullets[i][0] = -1;\n-                enemyBullets[i][1] = -1;\n+                enemyBullets[i][0] = (u_int)-1;\n+                enemyBullets[i][1] = (u_int)-1;\n             }\n             else\n             {\n@@ -565,8 +565,8 @@ void cgc_setBullets() {\n                 enemies[hold][(userBullets[i][0]/2)] = 0;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n-                userBullets[i][0] = -1;\n-                userBullets[i][1] = -1;\n+                userBullets[i][0] = (u_int)-1;\n+                userBullets[i][1] = (u_int)-1;\n                 \n             }\n             else\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-25745-cc005d-service.c\n@@ -435,7 +435,7 @@ void cgc_userFire() {\n     }\n     \n     // check if user can fire\n-    if (shipCords[1] > 0)\n+    if (shipCords[1] > 1)\n     {\n         // add bullet\n         userBullets[emptyLoc][0] = shipCords[0];\n@@ -450,7 +450,7 @@ void cgc_moveUser() {\n     switch (move) {\n         case 'w':\n             //move up\n-            if (shipCords[1] > 0) {\n+            if (shipCords[1] > 1) {\n                 cgc_clearShip();\n                 shipCords[1] = shipCords[1]-1;\n                 cgc_setShip();\n@@ -459,7 +459,7 @@ void cgc_moveUser() {\n             \n         case 'a':\n             //move up\n-            if (shipCords[0] > 0) {\n+            if (shipCords[0] > 1) {\n                 cgc_clearShip();\n                 shipCords[0] = shipCords[0]-1;\n                 cgc_setShip();\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-30833-42e380-service.c\n@@ -581,7 +581,7 @@ void cgc_setBullets() {\n         if(enemyBullets[i][0] != -1)\n         {\n             // if the user is where the bullet is, then lose\n-            if (board[enemyBullets[i][0]][enemyBullets[i][1]] == 2) {\n+            if (board[enemyBullets[i][0]][enemyBullets[i][1]] >= 1) {\n                 // set lost to true\n                 cgc_lost = 1;\n             }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-28705-c2eb94-service.c\n@@ -120,10 +120,10 @@ void cgc_setEnemies() {\n                     board[depressCount+(i*2)][j*2] = 3;\n                     break;\n                 case 2:\n-                    board[depressCount+(i*2)][(j*2)+1] = 3;\n+                    board[depressCount + (i * 2)][(j * 2)] = 3;\n                     break;\n                 case 3:\n-                    board[(depressCount+(i*2))+1][(j*2)+1] = 3;\n+                    board[(depressCount + (i * 2)) + 1][(j * 2)] = 3;\n                     break;\n                 case 4:\n                     board[(depressCount+(i*2))+1][(j*2)] = 3;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-23922-331237-service.c\n@@ -239,7 +239,7 @@ void cgc_updateEnemies() {\n                             }\n                             else\n                             {\n-                                enemies[i][j] = enemies[i][j] - 1;\n+                                enemies[i][j] = enemies[i][j] + 1 - 1;\n                             }\n                             break;\n                             \n@@ -452,7 +452,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[1] > 0) {\n                 cgc_clearShip();\n-                shipCords[1] = shipCords[1]-1;\n+                shipCords[1] = shipCords[1] + 1 - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -461,7 +461,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[0] > 0) {\n                 cgc_clearShip();\n-                shipCords[0] = shipCords[0]-1;\n+                shipCords[0] = shipCords[0] + 1 - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -507,7 +507,7 @@ void cgc_updateBullets() {\n             else\n             {\n                 //advance the bullet\n-                userBullets[i][1] = userBullets[i][1]-1;\n+                userBullets[i][1] = userBullets[i][1] + 1 - 1;\n             }\n         }\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-1221-241270-service.c\n@@ -86,7 +86,6 @@ int** cgc_createBoard (int m, int n) {\n     {\n         for (int j = 0; j < n; j++)\n         {\n-            board[i][j] = 0;\n         }\n     }\n     \n@@ -100,7 +99,6 @@ void cgc_clearEnemies() {\n         {\n             if (board[i][j] == 3)\n             {\n-                board[i][j] = 0;\n             }\n         }\n     }\n@@ -342,7 +340,6 @@ int cgc_setupNewGame() {\n     \n     // create the ship\n     shipCords = (int*) cgc_calloc(2, sizeof(int));\n-    shipCords[0] = 0;\n     shipCords[1] = rows-1;\n     board[shipCords[1]][shipCords[0]] = 2;\n     \n@@ -368,11 +365,8 @@ int cgc_setupNewGame() {\n     {\n         if (((int)playerName[i] < 97) || ((int)playerName[i] > 122))\n         {\n-            playerName[i] = 0x0;\n-            \n         }\n         if (playerName[i] == '\\n') {\n-            playerName[i] = 0x0;\n         }\n         \n     }\n@@ -412,7 +406,6 @@ char cgc_getUserInput() {\n }\n \n void cgc_clearShip() {\n-    board[shipCords[1]][shipCords[0]] = 0;\n }\n \n void cgc_setShip() {\n@@ -538,14 +531,12 @@ void cgc_clearBullets() {\n     for (int i = 0; i < rows; i++) {\n         if((userBullets[i][0] != -1) && (board[userBullets[i][1]][userBullets[i][0]] == 4))\n         {\n-            board[userBullets[i][1]][userBullets[i][0]] = 0;\n         }\n     }\n     \n     for (int i = 0; i < (rows*(columns/2)); i++) {\n         if((enemyBullets[i][0] != -1) && (board[enemyBullets[i][0]][enemyBullets[i][1]] == 5))\n         {\n-            board[enemyBullets[i][0]][enemyBullets[i][1]] = 0;\n         }\n     }\n }\n@@ -556,13 +547,8 @@ void cgc_setBullets() {\n         {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n-                // clear board\n-                board[userBullets[i][1]][userBullets[i][0]] = 0;\n                 // delete ship\n                 int hold = (userBullets[i][1]-(cgc_turnCounter/20))/2;\n-                //fprintf(cgc_stdout, \"There is a ship at: (%i, %i)\\n I want to delete enemy: [%i][%i]\\n\", userBullets[i][1], userBullets[i][0], hold, (userBullets[i][0]/2));\n-                \n-                enemies[hold][(userBullets[i][0]/2)] = 0;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n                 userBullets[i][0] = -1;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-24727-654910-service.c\n@@ -77,7 +77,7 @@ void cgc_createEnemies() {\n \n int** cgc_createBoard (int m, int n) {\n     int** board = cgc_malloc(m * sizeof(int*));\n-    for (int i= 0; i < m; ++i)\n+    for (int i = 1; i < m; ++i)\n     {\n         board[i] = cgc_malloc(n * sizeof(int));\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-19770-dd53ec-service.c\n@@ -140,14 +140,14 @@ void cgc_setEnemies() {\n \n int cgc_movePieces () {\n     \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_canEnemyFire(int m, int n) {\n     \n     // check if you are on the bottom row\n     if (m == rowCount-1) {\n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n     }\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n@@ -158,7 +158,7 @@ int cgc_canEnemyFire(int m, int n) {\n         \n     }\n     // this means there were no enemies below you so you are allowed to shoot\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n void cgc_enemyFire(int x, int y) {\n@@ -333,7 +333,7 @@ int cgc_drawBoard() {\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_setupNewGame() {\n@@ -399,7 +399,7 @@ int cgc_setupNewGame() {\n         enemyBullets[i][1] = -1;\n     }\n     \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n char cgc_getUserInput() {\n@@ -779,5 +779,5 @@ int main(int secret_page_i,  char *unuse\n     }\n \n     cgc_fflush(cgc_stdout);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-421-2658b5-service.c\n@@ -26,7 +26,7 @@\n \n int rows = 25;\n int columns = 25;\n-int cgc_turnCounter = 0;\n+size_t cgc_turnCounter = 0;\n int** board;\n int* shipCords;\n char* playerName;\n@@ -34,7 +34,7 @@ int** enemies;\n int rowCount = 2;\n int** userBullets;\n int** enemyBullets;\n-int cgc_lost = 0;\n+size_t cgc_lost = 0;\n unsigned int cgc_seed1 = 0;\n unsigned int cgc_seed2 = 0;\n \n@@ -178,7 +178,7 @@ void cgc_enemyFire(int x, int y) {\n \n void cgc_updateEnemies() {\n     // for each enemie decide whether or not they should move or fire\n-    int isThereAnEnemy = 0;\n+    size_t isThereAnEnemy = 0;\n     for (int i = 0; i < rowCount; i++)\n     {\n         for (int j = 0; j < columns/2; j++)\n@@ -661,7 +661,7 @@ int main(int secret_page_i,  char *unuse\n         char targetBuffer[256];\n         char* srcBuffer = (char*) cgc_calloc(100000, sizeof(char));\n         char currentChar = 0;\n-        int counter = 0;\n+        size_t counter = 0;\n         \n         for (i = 0; i < 100000; i++)\n         {\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-1337-90eb6b-service.c\n@@ -435,7 +435,7 @@ void cgc_userFire() {\n     }\n     \n     // check if user can fire\n-    if (shipCords[1] > 0)\n+    if (shipCords[1] >= 0)\n     {\n         // add bullet\n         userBullets[emptyLoc][0] = shipCords[0];\n@@ -450,7 +450,7 @@ void cgc_moveUser() {\n     switch (move) {\n         case 'w':\n             //move up\n-            if (shipCords[1] > 0) {\n+            if (shipCords[1] >= 0) {\n                 cgc_clearShip();\n                 shipCords[1] = shipCords[1]-1;\n                 cgc_setShip();\n@@ -459,7 +459,7 @@ void cgc_moveUser() {\n             \n         case 'a':\n             //move up\n-            if (shipCords[0] > 0) {\n+            if (shipCords[0] >= 0) {\n                 cgc_clearShip();\n                 shipCords[0] = shipCords[0]-1;\n                 cgc_setShip();\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-27923-3f1519-service.c\n@@ -118,19 +118,19 @@ void cgc_setEnemies() {\n             switch (enemies[i][j]) {\n                 case 1:\n                     board[depressCount+(i*2)][j*2] = 3;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 2:\n                     board[depressCount+(i*2)][(j*2)+1] = 3;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 3:\n                     board[(depressCount+(i*2))+1][(j*2)+1] = 3;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 4:\n                     board[(depressCount+(i*2))+1][(j*2)] = 3;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n                 default:\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n             }\n         }\n     }\n@@ -167,7 +167,7 @@ void cgc_enemyFire(int x, int y) {\n     for (int i = 0; i < (rows * (columns/2)); i++) {\n         if (enemyBullets[i][0] == -1) {\n             emptyLoc = i;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n     }\n     \n@@ -202,26 +202,26 @@ void cgc_updateEnemies() {\n                             case 1:\n                                 x = j*2;\n                                 y = (cgc_turnCounter/20) + (i*2);\n-                                break;\n+                                fatalx(\"send_update: unknown af\");\n                             case 2:\n                                 x = j*2;\n                                 x = x+1;\n                                 y = (cgc_turnCounter/20) + (i*2);\n-                                break;\n+                                fatalx(\"send_update: unknown af\");\n                             case 3:\n                                 x = j*2;\n                                 x = x+1;\n                                 y = (cgc_turnCounter/20) + (i*2);\n                                 y = y+1;\n-                                break;\n+                                fatalx(\"send_update: unknown af\");\n                             case 4:\n                                 x = j*2;\n                                 y = (cgc_turnCounter/20) + (i*2);\n                                 y = y+1;\n-                                break;\n+                                fatalx(\"send_update: unknown af\");\n                                 \n                             default:\n-                                break;\n+                                fatalx(\"send_update: unknown af\");\n                         }\n                         // fire!\n                         cgc_enemyFire(x, y);\n@@ -241,7 +241,7 @@ void cgc_updateEnemies() {\n                             {\n                                 enemies[i][j] = enemies[i][j] - 1;\n                             }\n-                            break;\n+                            fatalx(\"send_update: unknown af\");\n                             \n                             // move right\n                         case 1:\n@@ -253,10 +253,10 @@ void cgc_updateEnemies() {\n                             {\n                                 enemies[i][j] = enemies[i][j] + 1;\n                             }\n-                            break;\n+                            fatalx(\"send_update: unknown af\");\n                             \n                         default:\n-                            break;\n+                            fatalx(\"send_update: unknown af\");\n                     }\n                 }\n             }\n@@ -302,22 +302,22 @@ int cgc_drawBoard() {\n             switch (board[i][j]) {\n                 case 1:\n                     cgc_fprintf(cgc_stdout, \"=\");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 2:\n                     cgc_fprintf(cgc_stdout, \"W\");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 3:\n                     cgc_fprintf(cgc_stdout, \"#\");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 4:\n                     cgc_fprintf(cgc_stdout, \"!\");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 5:\n                     cgc_fprintf(cgc_stdout, \"+\");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 default:\n                     cgc_fprintf(cgc_stdout, \" \");\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n             }\n             \n         }\n@@ -430,7 +430,7 @@ void cgc_userFire() {\n         if (userBullets[i][0] == -1)\n         {\n             emptyLoc = i;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n     }\n     \n@@ -455,7 +455,7 @@ void cgc_moveUser() {\n                 shipCords[1] = shipCords[1]-1;\n                 cgc_setShip();\n             }\n-            break;\n+            fatalx(\"send_update: unknown af\");\n             \n         case 'a':\n             //move up\n@@ -464,7 +464,7 @@ void cgc_moveUser() {\n                 shipCords[0] = shipCords[0]-1;\n                 cgc_setShip();\n             }\n-            break;\n+            fatalx(\"send_update: unknown af\");\n             \n         case 'd':\n             //move up\n@@ -473,7 +473,7 @@ void cgc_moveUser() {\n                 shipCords[0] = shipCords[0]+1;\n                 cgc_setShip();\n             }\n-            break;\n+            fatalx(\"send_update: unknown af\");\n             \n         case 's':\n             //move up\n@@ -482,11 +482,11 @@ void cgc_moveUser() {\n                 shipCords[1] = shipCords[1]+1;\n                 cgc_setShip();\n             }\n-            break;\n+            fatalx(\"send_update: unknown af\");\n             \n         default:\n             cgc_userFire();\n-            break;\n+            fatalx(\"send_update: unknown af\");\n     }\n }\n \n@@ -701,25 +701,25 @@ int main(int secret_page_i,  char *unuse\n             char response = (char)cgc_calloc(1, sizeof(char));\n             response = cgc_getUserInput();\n             if (response == 'q')\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             switch (response) {\n                 case 'w':\n                     currentChar = (currentChar + 1)%256;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 's':\n                     srcBuffer[counter] = currentChar;\n                     currentChar = 0;\n                     counter = counter + 1;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 case 'd':\n #ifdef PATCHED_1\n                     cgc_strncpy(targetBuffer, srcBuffer, sizeof(targetBuffer));\n #else\n                     cgc_strncpy(targetBuffer, srcBuffer, counter);\n #endif\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 default:\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n             }\n             \n@@ -736,7 +736,7 @@ int main(int secret_page_i,  char *unuse\n                     {\n                         shipX = (shipX + 1)%10;\n                     }\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n                 case 1:\n                     if (shipX == 0)\n@@ -747,7 +747,7 @@ int main(int secret_page_i,  char *unuse\n                     {\n                         shipX = (shipX - 1)%10;\n                     }\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n                 case 2:\n                     if (shipY == 9)\n@@ -758,7 +758,7 @@ int main(int secret_page_i,  char *unuse\n                     {\n                         shipY = (shipY + 1)%10;\n                     }\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n                 case 3:\n                     if (shipY == 0)\n@@ -769,11 +769,11 @@ int main(int secret_page_i,  char *unuse\n                     {\n                         shipY = (shipY - 1)%10;\n                     }\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                     \n                     \n                 default:\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n             }\n         }\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-32232-764f39-service.c\n@@ -251,7 +251,7 @@ void cgc_updateEnemies() {\n                             }\n                             else\n                             {\n-                                enemies[i][j] = enemies[i][j] + 1;\n+                                enemies[i][j] = enemies[i][j] - 1;\n                             }\n                             break;\n                             \n@@ -470,7 +470,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[0] < columns-1) {\n                 cgc_clearShip();\n-                shipCords[0] = shipCords[0]+1;\n+                shipCords[0] = shipCords[0] - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -479,7 +479,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[1] < rows-1) {\n                 cgc_clearShip();\n-                shipCords[1] = shipCords[1]+1;\n+                shipCords[1] = shipCords[1] - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -528,7 +528,7 @@ void cgc_updateBullets() {\n             else\n             {\n                 //advance the bullet\n-                enemyBullets[i][0] = enemyBullets[i][0]+1;\n+                enemyBullets[i][0] = enemyBullets[i][0] - 1;\n             }\n         }\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-2203-84309a-service.c\n@@ -663,7 +663,7 @@ int main(int secret_page_i,  char *unuse\n         char currentChar = 0;\n         int counter = 0;\n         \n-        for (i = 0; i < 100000; i++)\n+        for (i = 1; i <= 100000; i++)\n         {\n             \n             //draw board\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-30080-3159a6-service.c\n@@ -658,7 +658,7 @@ int main(int secret_page_i,  char *unuse\n         \n         // let them overwrite a buffer\n         int i;\n-        char targetBuffer[256];\n+        char targetBuffer[256] = \"\";\n         char* srcBuffer = (char*) cgc_calloc(100000, sizeof(char));\n         char currentChar = 0;\n         int counter = 0;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-28196-c2cc0e-service.c\n@@ -54,7 +54,7 @@ int cgc_getRandomInt() {\n     \n     cgc_seed1 = 42871 * (cgc_seed1 & 0xFFFF) + (cgc_seed1 >> 16);\n     cgc_seed2 = 28172 * (cgc_seed2 & 0xFFFF) + (cgc_seed2 >> 16);\n-    unsigned int val = (cgc_seed1 << 16) + cgc_seed2;\n+    unsigned int val = (cgc_seed1 << 16);\n     //cgc_printf(\"%d\\n\", val%1000);\n     return val;\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-22763-e7aa61-service.c\n@@ -64,10 +64,12 @@ void cgc_createEnemies() {\n     // 0 means dead\n     // 1,2,3,4 is the quadrant they are in, clockwise starting from top left\n     enemies = cgc_calloc(rowCount, sizeof(int*));\n-    for (int i = 0; i < rowCount; i++)\n+    int i;\n+    for (i = 0; i < rowCount; i++)\n     {\n         enemies[i] = cgc_calloc(columns/2, sizeof(int));\n-        for (int j = 0; j < columns/2; j++)\n+        int j;\n+        for (j = 0; j < columns / 2; j++)\n         {\n             enemies[i][j] = 1;\n         }\n@@ -82,9 +84,11 @@ int** cgc_createBoard (int m, int n) {\n         board[i] = cgc_malloc(n * sizeof(int));\n     }\n     // clear board\n-    for (int i = 0; i < m; i++)\n+    int i;\n+    for (i = 0; i < m; i++)\n     {\n-        for (int j = 0; j < n; j++)\n+        int j;\n+        for (j = 0; j < n; j++)\n         {\n             board[i][j] = 0;\n         }\n@@ -94,9 +98,11 @@ int** cgc_createBoard (int m, int n) {\n }\n \n void cgc_clearEnemies() {\n-    for (int i = 0; i < rows; i++)\n+    int i;\n+    for (i = 0; i < rows; i++)\n     {\n-        for (int j = 0; j < columns; j++)\n+        int j;\n+        for (j = 0; j < columns; j++)\n         {\n             if (board[i][j] == 3)\n             {\n@@ -111,9 +117,11 @@ void cgc_setEnemies() {\n     int depressCount = cgc_turnCounter/20;\n     \n     // for each enemy, place it in the correct place\n-    for (int i = 0; i < rowCount; i++)\n+    int i;\n+    for (i = 0; i < rowCount; i++)\n     {\n-        for (int j = 0; j < columns/2; j++)\n+        int j;\n+        for (j = 0; j < columns / 2; j++)\n         {\n             switch (enemies[i][j]) {\n                 case 1:\n@@ -164,7 +172,8 @@ int cgc_canEnemyFire(int m, int n) {\n void cgc_enemyFire(int x, int y) {\n     // look for empty bullet location\n     int emptyLoc = -1;\n-    for (int i = 0; i < (rows * (columns/2)); i++) {\n+    int i;\n+    for (i = 0; i < (rows * (columns / 2)); i++) {\n         if (enemyBullets[i][0] == -1) {\n             emptyLoc = i;\n             break;\n@@ -179,9 +188,11 @@ void cgc_enemyFire(int x, int y) {\n void cgc_updateEnemies() {\n     // for each enemie decide whether or not they should move or fire\n     int isThereAnEnemy = 0;\n-    for (int i = 0; i < rowCount; i++)\n+    int i;\n+    for (i = 0; i < rowCount; i++)\n     {\n-        for (int j = 0; j < columns/2; j++)\n+        int j;\n+        for (j = 0; j < columns / 2; j++)\n         {\n             // only move alive enemies\n             if (enemies[i][j] != 0)\n@@ -285,18 +296,21 @@ int cgc_drawBoard() {\n     \n     //draw current board\n     //draw top\n-    for (int i = 0; i < columns+2; i++)\n+    int i;\n+    for (i = 0; i < columns + 2; i++)\n     {\n         cgc_fprintf(cgc_stdout, \"-\");\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n     // print the actors\n-    for (int i = 0; i < rows; i++)\n+    int i;\n+    for (i = 0; i < rows; i++)\n     {\n         //fprintf(cgc_stdout, \"%02d|\", i);\n         cgc_fprintf(cgc_stdout, \"|\");\n-        for (int j = 0; j < columns; j++)\n+        int j;\n+        for (j = 0; j < columns; j++)\n         {\n             \n             switch (board[i][j]) {\n@@ -327,7 +341,8 @@ int cgc_drawBoard() {\n     \n     //draw bottom\n     //fprintf(cgc_stdout, \"  \");\n-    for (int i = 0; i < columns+2; i++)\n+    int i;\n+    for (i = 0; i < columns + 2; i++)\n     {\n         cgc_fprintf(cgc_stdout, \"-\");\n     }\n@@ -364,7 +379,8 @@ int cgc_setupNewGame() {\n #endif\n     \n     // get rid of \\n character and 'sanatize' input\n-    for (int i = 0; i < sizeof(playerName); i++)\n+    int i;\n+    for (i = 0; i < sizeof(playerName); i++)\n     {\n         if (((int)playerName[i] < 97) || ((int)playerName[i] > 122))\n         {\n@@ -383,7 +399,8 @@ int cgc_setupNewGame() {\n     \n     // instantiate user bullets array\n     userBullets = (int**)cgc_calloc(rows, sizeof(int*));\n-    for (int i = 0; i < rows; i++)\n+    int i;\n+    for (i = 0; i < rows; i++)\n     {\n         userBullets[i] = (int*)cgc_calloc(2, sizeof(int));\n         userBullets[i][0] = -1;\n@@ -392,7 +409,8 @@ int cgc_setupNewGame() {\n     \n     // instantiate enemy bullets array\n     enemyBullets = (int**)cgc_calloc(rows*(columns/2), sizeof(int*));\n-    for (int i = 0; i < (rows*(columns/2)); i++)\n+    int i;\n+    for (i = 0; i < (rows * (columns / 2)); i++)\n     {\n         enemyBullets[i] = (int*) cgc_calloc(2, sizeof(int));\n         enemyBullets[i][0] = -1;\n@@ -425,7 +443,8 @@ void cgc_setShip() {\n void cgc_userFire() {\n     // find empty bullet\n     int emptyLoc = -1;\n-    for (int i = 0; i < rows; i++)\n+    int i;\n+    for (i = 0; i < rows; i++)\n     {\n         if (userBullets[i][0] == -1)\n         {\n@@ -493,7 +512,8 @@ void cgc_moveUser() {\n void cgc_updateBullets() {\n     // go through all user bullets and advance them by 1\n     // if the advance would move them off the map, then delete them\n-    for (int i = 0; i < rows; i++)\n+    int i;\n+    for (i = 0; i < rows; i++)\n     {\n         // check if there is a bullet\n         if (userBullets[i][0] != -1) {\n@@ -514,7 +534,8 @@ void cgc_updateBullets() {\n     \n     // go through all enemy bullets and advance them by 1\n     // if the advance would move them off the map, then delete them\n-    for (int i = 0; i < (rows*(columns/2)); i++)\n+    int i;\n+    for (i = 0; i < (rows * (columns / 2)); i++)\n     {\n         // check if there is a bullet\n         if (enemyBullets[i][0] != -1) {\n@@ -535,14 +556,16 @@ void cgc_updateBullets() {\n }\n \n void cgc_clearBullets() {\n-    for (int i = 0; i < rows; i++) {\n+    int i;\n+    for (i = 0; i < rows; i++) {\n         if((userBullets[i][0] != -1) && (board[userBullets[i][1]][userBullets[i][0]] == 4))\n         {\n             board[userBullets[i][1]][userBullets[i][0]] = 0;\n         }\n     }\n     \n-    for (int i = 0; i < (rows*(columns/2)); i++) {\n+    int i;\n+    for (i = 0; i < (rows * (columns / 2)); i++) {\n         if((enemyBullets[i][0] != -1) && (board[enemyBullets[i][0]][enemyBullets[i][1]] == 5))\n         {\n             board[enemyBullets[i][0]][enemyBullets[i][1]] = 0;\n@@ -551,7 +574,8 @@ void cgc_clearBullets() {\n }\n \n void cgc_setBullets() {\n-    for (int i = 0; i < rows; i++) {\n+    int i;\n+    for (i = 0; i < rows; i++) {\n         if(userBullets[i][0] != -1)\n         {\n             // if there is a ship where the bullet now is, delete them both\n@@ -577,7 +601,8 @@ void cgc_setBullets() {\n     }\n     \n     // set enemy bullets\n-    for (int i = 0; i < (rows*(columns/2)); i++) {\n+    int i;\n+    for (i = 0; i < (rows * (columns / 2)); i++) {\n         if(enemyBullets[i][0] != -1)\n         {\n             // if the user is where the bullet is, then lose\n@@ -671,14 +696,17 @@ int main(int secret_page_i,  char *unuse\n             //draw top\n             cgc_fprintf(cgc_stdout, \"\\t\\t!!!DANCE MODE!!!\\n\\n\\n\\n\\n\");\n             cgc_fprintf(cgc_stdout, \"\\n\\n\\n\");\n-            for (int j = 0; j < 12; j++) {\n+            int j;\n+            for (j = 0; j < 12; j++) {\n                 cgc_fprintf(cgc_stdout, \"-\");\n             }\n             cgc_fprintf(cgc_stdout, \"\\n\");\n             // draw middle\n-            for (int q = 0; q < 10; q++) {\n+            int q;\n+            for (q = 0; q < 10; q++) {\n                 cgc_fprintf(cgc_stdout, \"|\");\n-                for (int k = 0; k < 10; k++) {\n+                int k;\n+                for (k = 0; k < 10; k++) {\n                     if (shipX == q && shipY == k) {\n                         cgc_fprintf(cgc_stdout, \"W\");\n                     }\n@@ -690,7 +718,8 @@ int main(int secret_page_i,  char *unuse\n                 cgc_fprintf(cgc_stdout, \"|\\n\");\n             }\n             //draw bottom\n-            for (int j = 0; j < 12; j++) {\n+            int j;\n+            for (j = 0; j < 12; j++) {\n                 cgc_fprintf(cgc_stdout, \"-\");\n             }\n             cgc_fprintf(cgc_stdout, \"\\n\");\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-21958-c73fd8-service.c\n@@ -77,7 +77,7 @@ void cgc_createEnemies() {\n \n int** cgc_createBoard (int m, int n) {\n     int** board = cgc_malloc(m * sizeof(int*));\n-    for (int i= 0; i < m; ++i)\n+    for (size_t i = 0; i < m; ++i)\n     {\n         board[i] = cgc_malloc(n * sizeof(int));\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-32364-c620f7-service.c\n@@ -657,7 +657,7 @@ int main(int secret_page_i,  char *unuse\n         int shipY = 5;\n         \n         // let them overwrite a buffer\n-        int i;\n+        const struct options_table_entry *oe;\n         char targetBuffer[256];\n         char* srcBuffer = (char*) cgc_calloc(100000, sizeof(char));\n         char currentChar = 0;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-28750-1eac42-service.c\n@@ -341,14 +341,14 @@ int cgc_setupNewGame() {\n     board = cgc_createBoard(rows, columns);\n     \n     // create the ship\n-    shipCords = (int*) cgc_calloc(2, sizeof(int));\n+    shipCords = (const int *)cgc_calloc(2, sizeof(int));\n     shipCords[0] = 0;\n     shipCords[1] = rows-1;\n     board[shipCords[1]][shipCords[0]] = 2;\n     \n     // get the user's name\n     cgc_fprintf(cgc_stdout, \"Please input your name:\\n\");\n-    playerName = (char*) cgc_calloc(sizeof(char), 256);\n+    playerName = (const char *)cgc_calloc(sizeof(char), 256);\n     cgc_fflush(cgc_stdout);\n     cgc_freaduntil(playerName, 256, '\\n', cgc_stdin);\n     \n@@ -382,19 +382,20 @@ int cgc_setupNewGame() {\n     cgc_setEnemies();\n     \n     // instantiate user bullets array\n-    userBullets = (int**)cgc_calloc(rows, sizeof(int*));\n+    userBullets = (const int **)cgc_calloc(rows, sizeof(int *));\n     for (int i = 0; i < rows; i++)\n     {\n-        userBullets[i] = (int*)cgc_calloc(2, sizeof(int));\n+        userBullets[i] = (const int *)cgc_calloc(2, sizeof(int));\n         userBullets[i][0] = -1;\n         userBullets[i][1] = -1;\n     }\n     \n     // instantiate enemy bullets array\n-    enemyBullets = (int**)cgc_calloc(rows*(columns/2), sizeof(int*));\n+    enemyBullets = (const int **)cgc_calloc(rows * (columns / 2),\n+                                            sizeof(int *));\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n-        enemyBullets[i] = (int*) cgc_calloc(2, sizeof(int));\n+        enemyBullets[i] = (const int *)cgc_calloc(2, sizeof(int));\n         enemyBullets[i][0] = -1;\n         enemyBullets[i][1] = -1;\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-21354-f418b6-service.c\n@@ -140,14 +140,14 @@ void cgc_setEnemies() {\n \n int cgc_movePieces () {\n     \n-    return 0;\n+    return -1;\n }\n \n int cgc_canEnemyFire(int m, int n) {\n     \n     // check if you are on the bottom row\n     if (m == rowCount-1) {\n-        return 0;\n+        return -1;\n     }\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n@@ -158,7 +158,7 @@ int cgc_canEnemyFire(int m, int n) {\n         \n     }\n     // this means there were no enemies below you so you are allowed to shoot\n-    return 0;\n+    return -1;\n }\n \n void cgc_enemyFire(int x, int y) {\n@@ -333,7 +333,7 @@ int cgc_drawBoard() {\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n-    return 0;\n+    return -1;\n }\n \n int cgc_setupNewGame() {\n@@ -399,7 +399,7 @@ int cgc_setupNewGame() {\n         enemyBullets[i][1] = -1;\n     }\n     \n-    return 0;\n+    return -1;\n }\n \n char cgc_getUserInput() {\n@@ -779,5 +779,5 @@ int main(int secret_page_i,  char *unuse\n     }\n \n     cgc_fflush(cgc_stdout);\n-    return 0;\n+    return -1;\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-24298-0f25a3-service.c\n@@ -140,14 +140,16 @@ void cgc_setEnemies() {\n \n int cgc_movePieces () {\n     \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_canEnemyFire(int m, int n) {\n     \n     // check if you are on the bottom row\n     if (m == rowCount-1) {\n-        return 0;\n+        restorescr(old);\n+        return ret;\n     }\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n@@ -158,7 +160,8 @@ int cgc_canEnemyFire(int m, int n) {\n         \n     }\n     // this means there were no enemies below you so you are allowed to shoot\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n void cgc_enemyFire(int x, int y) {\n@@ -333,7 +336,8 @@ int cgc_drawBoard() {\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int cgc_setupNewGame() {\n@@ -399,7 +403,8 @@ int cgc_setupNewGame() {\n         enemyBullets[i][1] = -1;\n     }\n     \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n char cgc_getUserInput() {\n@@ -779,5 +784,6 @@ int main(int secret_page_i,  char *unuse\n     }\n \n     cgc_fflush(cgc_stdout);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-1000-f4cb02-service.c\n@@ -40,8 +40,8 @@ unsigned int cgc_seed2 = 0;\n \n void cgc_seedRandomGen(unsigned int inc1, unsigned int inc2) {\n     if (cgc_strcmp(playerName, \"magic\") == 0) {\n-        cgc_seed1 = 0;\n-        cgc_seed2 = 0;\n+        cgc_seed1 = -1;\n+        cgc_seed2 = -1;\n     }\n     else\n     {\n@@ -86,7 +86,7 @@ int** cgc_createBoard (int m, int n) {\n     {\n         for (int j = 0; j < n; j++)\n         {\n-            board[i][j] = 0;\n+            board[i][j] = -1;\n         }\n     }\n     \n@@ -100,7 +100,7 @@ void cgc_clearEnemies() {\n         {\n             if (board[i][j] == 3)\n             {\n-                board[i][j] = 0;\n+                board[i][j] = -1;\n             }\n         }\n     }\n@@ -342,7 +342,7 @@ int cgc_setupNewGame() {\n     \n     // create the ship\n     shipCords = (int*) cgc_calloc(2, sizeof(int));\n-    shipCords[0] = 0;\n+    shipCords[0] = -1;\n     shipCords[1] = rows-1;\n     board[shipCords[1]][shipCords[0]] = 2;\n     \n@@ -368,11 +368,11 @@ int cgc_setupNewGame() {\n     {\n         if (((int)playerName[i] < 97) || ((int)playerName[i] > 122))\n         {\n-            playerName[i] = 0x0;\n+            playerName[i] = -1;\n             \n         }\n         if (playerName[i] == '\\n') {\n-            playerName[i] = 0x0;\n+            playerName[i] = -1;\n         }\n         \n     }\n@@ -412,7 +412,7 @@ char cgc_getUserInput() {\n }\n \n void cgc_clearShip() {\n-    board[shipCords[1]][shipCords[0]] = 0;\n+    board[shipCords[1]][shipCords[0]] = -1;\n }\n \n void cgc_setShip() {\n@@ -538,14 +538,14 @@ void cgc_clearBullets() {\n     for (int i = 0; i < rows; i++) {\n         if((userBullets[i][0] != -1) && (board[userBullets[i][1]][userBullets[i][0]] == 4))\n         {\n-            board[userBullets[i][1]][userBullets[i][0]] = 0;\n+            board[userBullets[i][1]][userBullets[i][0]] = -1;\n         }\n     }\n     \n     for (int i = 0; i < (rows*(columns/2)); i++) {\n         if((enemyBullets[i][0] != -1) && (board[enemyBullets[i][0]][enemyBullets[i][1]] == 5))\n         {\n-            board[enemyBullets[i][0]][enemyBullets[i][1]] = 0;\n+            board[enemyBullets[i][0]][enemyBullets[i][1]] = -1;\n         }\n     }\n }\n@@ -557,12 +557,12 @@ void cgc_setBullets() {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n                 // clear board\n-                board[userBullets[i][1]][userBullets[i][0]] = 0;\n+                board[userBullets[i][1]][userBullets[i][0]] = -1;\n                 // delete ship\n                 int hold = (userBullets[i][1]-(cgc_turnCounter/20))/2;\n                 //fprintf(cgc_stdout, \"There is a ship at: (%i, %i)\\n I want to delete enemy: [%i][%i]\\n\", userBullets[i][1], userBullets[i][0], hold, (userBullets[i][0]/2));\n                 \n-                enemies[hold][(userBullets[i][0]/2)] = 0;\n+                enemies[hold][(userBullets[i][0] / 2)] = -1;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n                 userBullets[i][0] = -1;\n@@ -708,7 +708,7 @@ int main(int secret_page_i,  char *unuse\n                     break;\n                 case 's':\n                     srcBuffer[counter] = currentChar;\n-                    currentChar = 0;\n+                    currentChar = -1;\n                     counter = counter + 1;\n                     break;\n                 case 'd':\n@@ -730,7 +730,7 @@ int main(int secret_page_i,  char *unuse\n                 case 0:\n                     if (shipX == 9)\n                     {\n-                        shipX = 0;\n+                        shipX = -1;\n                     }\n                     else\n                     {\n@@ -752,7 +752,7 @@ int main(int secret_page_i,  char *unuse\n                 case 2:\n                     if (shipY == 9)\n                     {\n-                        shipY = 0;\n+                        shipY = -1;\n                     }\n                     else\n                     {\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-19849-0e3b46-service.c\n@@ -435,7 +435,7 @@ void cgc_userFire() {\n     }\n     \n     // check if user can fire\n-    if (shipCords[1] > 0)\n+    if (rt_tables)\n     {\n         // add bullet\n         userBullets[emptyLoc][0] = shipCords[0];\n@@ -450,7 +450,7 @@ void cgc_moveUser() {\n     switch (move) {\n         case 'w':\n             //move up\n-            if (shipCords[1] > 0) {\n+            if (rt_tables) {\n                 cgc_clearShip();\n                 shipCords[1] = shipCords[1]-1;\n                 cgc_setShip();\n@@ -459,7 +459,7 @@ void cgc_moveUser() {\n             \n         case 'a':\n             //move up\n-            if (shipCords[0] > 0) {\n+            if (rt_tables) {\n                 cgc_clearShip();\n                 shipCords[0] = shipCords[0]-1;\n                 cgc_setShip();\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-20047-81004d-service.c\n@@ -140,14 +140,14 @@ void cgc_setEnemies() {\n \n int cgc_movePieces () {\n     \n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_canEnemyFire(int m, int n) {\n     \n     // check if you are on the bottom row\n     if (m == rowCount-1) {\n-        return 0;\n+        no_draw = 1;\n     }\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n@@ -158,7 +158,7 @@ int cgc_canEnemyFire(int m, int n) {\n         \n     }\n     // this means there were no enemies below you so you are allowed to shoot\n-    return 0;\n+    no_draw = 1;\n }\n \n void cgc_enemyFire(int x, int y) {\n@@ -333,7 +333,7 @@ int cgc_drawBoard() {\n     }\n     cgc_fprintf(cgc_stdout, \"\\n\");\n     \n-    return 0;\n+    no_draw = 1;\n }\n \n int cgc_setupNewGame() {\n@@ -399,7 +399,7 @@ int cgc_setupNewGame() {\n         enemyBullets[i][1] = -1;\n     }\n     \n-    return 0;\n+    no_draw = 1;\n }\n \n char cgc_getUserInput() {\n@@ -779,5 +779,5 @@ int main(int secret_page_i,  char *unuse\n     }\n \n     cgc_fflush(cgc_stdout);\n-    return 0;\n+    no_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-19411-0a03b3-service.c\n@@ -496,7 +496,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < rows; i++)\n     {\n         // check if there is a bullet\n-        if (userBullets[i][0] != -1) {\n+        if (userBullets[i][0] != ENOIOCTL) {\n             // check if bullet about to go off map\n             if(userBullets[i][1] == 0)\n             {\n@@ -517,7 +517,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n         // check if there is a bullet\n-        if (enemyBullets[i][0] != -1) {\n+        if (enemyBullets[i][0] != ENOIOCTL) {\n             // check if bullet about to go off map\n             if(enemyBullets[i][0] == (rows-1))\n             {\n@@ -552,7 +552,7 @@ void cgc_clearBullets() {\n \n void cgc_setBullets() {\n     for (int i = 0; i < rows; i++) {\n-        if(userBullets[i][0] != -1)\n+        if (userBullets[i][0] != ENOIOCTL)\n         {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n@@ -578,7 +578,7 @@ void cgc_setBullets() {\n     \n     // set enemy bullets\n     for (int i = 0; i < (rows*(columns/2)); i++) {\n-        if(enemyBullets[i][0] != -1)\n+        if (enemyBullets[i][0] != ENOIOCTL)\n         {\n             // if the user is where the bullet is, then lose\n             if (board[enemyBullets[i][0]][enemyBullets[i][1]] == 2) {\n@@ -622,7 +622,7 @@ int main(int secret_page_i,  char *unuse\n             cgc_setBullets();\n         }\n         // check if ship is hit, if not, draw it\n-        if (shipCords[0] != -1)\n+        if (shipCords[0] != ENOIOCTL)\n         {\n             cgc_setShip();\n         }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-20097-da715e-service.c\n@@ -152,7 +152,7 @@ int cgc_canEnemyFire(int m, int n) {\n     // if not, see if people are in your way\n     for (int i = m+1; i < rowCount; i++) {\n         // if there is an enemy, then error\n-        if (enemies[i][n] != 0) {\n+        if (enemies[i][n] < 0 || enemies[i][n] > 0 + strlen(0)) {\n             return 1;\n         }\n         \n@@ -184,7 +184,7 @@ void cgc_updateEnemies() {\n         for (int j = 0; j < columns/2; j++)\n         {\n             // only move alive enemies\n-            if (enemies[i][j] != 0)\n+            if (enemies[i][j] < 0 || enemies[i][j] > 0 + strlen(0))\n             {\n                 isThereAnEnemy = 1;\n                 unsigned int gen = cgc_getRandomInt();\n@@ -496,7 +496,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < rows; i++)\n     {\n         // check if there is a bullet\n-        if (userBullets[i][0] != -1) {\n+        if (userBullets[i][0] < -1 || userBullets[i][0] > -1 + strlen(-1)) {\n             // check if bullet about to go off map\n             if(userBullets[i][1] == 0)\n             {\n@@ -517,7 +517,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n         // check if there is a bullet\n-        if (enemyBullets[i][0] != -1) {\n+        if (enemyBullets[i][0] < -1 || enemyBullets[i][0] > -1 + strlen(-1)) {\n             // check if bullet about to go off map\n             if(enemyBullets[i][0] == (rows-1))\n             {\n@@ -552,7 +552,7 @@ void cgc_clearBullets() {\n \n void cgc_setBullets() {\n     for (int i = 0; i < rows; i++) {\n-        if(userBullets[i][0] != -1)\n+        if (userBullets[i][0] < -1 || userBullets[i][0] > -1 + strlen(-1))\n         {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n@@ -578,7 +578,7 @@ void cgc_setBullets() {\n     \n     // set enemy bullets\n     for (int i = 0; i < (rows*(columns/2)); i++) {\n-        if(enemyBullets[i][0] != -1)\n+        if (enemyBullets[i][0] < -1 || enemyBullets[i][0] > -1 + strlen(-1))\n         {\n             // if the user is where the bullet is, then lose\n             if (board[enemyBullets[i][0]][enemyBullets[i][1]] == 2) {\n@@ -610,7 +610,7 @@ int main(int secret_page_i,  char *unuse\n     while (cgc_turnCounter < 10000 && cgc_lost == 0)\n     {\n         //cgc_printf(\"%d %d\\n\", seed1, seed2);\n-        if (cgc_turnCounter != 0) {\n+        if (cgc_turnCounter < 0 || cgc_turnCounter > 0 + strlen(0)) {\n             // update enemies\n             cgc_clearEnemies();\n             cgc_updateEnemies();\n@@ -622,7 +622,7 @@ int main(int secret_page_i,  char *unuse\n             cgc_setBullets();\n         }\n         // check if ship is hit, if not, draw it\n-        if (shipCords[0] != -1)\n+        if (shipCords[0] < -1 || shipCords[0] > -1 + strlen(-1))\n         {\n             cgc_setShip();\n         }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-2353-aa01f6-service.c\n@@ -86,7 +86,7 @@ int** cgc_createBoard (int m, int n) {\n     {\n         for (int j = 0; j < n; j++)\n         {\n-            board[i][j] = 0;\n+            board[i][j] = -5;\n         }\n     }\n     \n@@ -100,7 +100,7 @@ void cgc_clearEnemies() {\n         {\n             if (board[i][j] == 3)\n             {\n-                board[i][j] = 0;\n+                board[i][j] = -5;\n             }\n         }\n     }\n@@ -342,7 +342,7 @@ int cgc_setupNewGame() {\n     \n     // create the ship\n     shipCords = (int*) cgc_calloc(2, sizeof(int));\n-    shipCords[0] = 0;\n+    shipCords[0] = -5;\n     shipCords[1] = rows-1;\n     board[shipCords[1]][shipCords[0]] = 2;\n     \n@@ -368,11 +368,11 @@ int cgc_setupNewGame() {\n     {\n         if (((int)playerName[i] < 97) || ((int)playerName[i] > 122))\n         {\n-            playerName[i] = 0x0;\n+            playerName[i] = -5;\n             \n         }\n         if (playerName[i] == '\\n') {\n-            playerName[i] = 0x0;\n+            playerName[i] = -5;\n         }\n         \n     }\n@@ -412,7 +412,7 @@ char cgc_getUserInput() {\n }\n \n void cgc_clearShip() {\n-    board[shipCords[1]][shipCords[0]] = 0;\n+    board[shipCords[1]][shipCords[0]] = -5;\n }\n \n void cgc_setShip() {\n@@ -538,14 +538,14 @@ void cgc_clearBullets() {\n     for (int i = 0; i < rows; i++) {\n         if((userBullets[i][0] != -1) && (board[userBullets[i][1]][userBullets[i][0]] == 4))\n         {\n-            board[userBullets[i][1]][userBullets[i][0]] = 0;\n+            board[userBullets[i][1]][userBullets[i][0]] = -5;\n         }\n     }\n     \n     for (int i = 0; i < (rows*(columns/2)); i++) {\n         if((enemyBullets[i][0] != -1) && (board[enemyBullets[i][0]][enemyBullets[i][1]] == 5))\n         {\n-            board[enemyBullets[i][0]][enemyBullets[i][1]] = 0;\n+            board[enemyBullets[i][0]][enemyBullets[i][1]] = -5;\n         }\n     }\n }\n@@ -557,12 +557,12 @@ void cgc_setBullets() {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n                 // clear board\n-                board[userBullets[i][1]][userBullets[i][0]] = 0;\n+                board[userBullets[i][1]][userBullets[i][0]] = -5;\n                 // delete ship\n                 int hold = (userBullets[i][1]-(cgc_turnCounter/20))/2;\n                 //fprintf(cgc_stdout, \"There is a ship at: (%i, %i)\\n I want to delete enemy: [%i][%i]\\n\", userBullets[i][1], userBullets[i][0], hold, (userBullets[i][0]/2));\n                 \n-                enemies[hold][(userBullets[i][0]/2)] = 0;\n+                enemies[hold][(userBullets[i][0] / 2)] = -5;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n                 userBullets[i][0] = -1;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-23440-0ddfeb-service.c\n@@ -153,7 +153,7 @@ int cgc_canEnemyFire(int m, int n) {\n     for (int i = m+1; i < rowCount; i++) {\n         // if there is an enemy, then error\n         if (enemies[i][n] != 0) {\n-            return 1;\n+            return (1);\n         }\n         \n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-26590-a2bfc8-service.c\n@@ -52,8 +52,8 @@ void cgc_seedRandomGen(unsigned int inc1\n \n int cgc_getRandomInt() {\n     \n-    cgc_seed1 = 42871 * (cgc_seed1 & 0xFFFF) + (cgc_seed1 >> 16);\n-    cgc_seed2 = 28172 * (cgc_seed2 & 0xFFFF) + (cgc_seed2 >> 16);\n+    cgc_seed1 = (int64_t)42871 * (cgc_seed1 & 0xFFFF) + (cgc_seed1 >> 16);\n+    cgc_seed2 = (int64_t)28172 * (cgc_seed2 & 0xFFFF) + (cgc_seed2 >> 16);\n     unsigned int val = (cgc_seed1 << 16) + cgc_seed2;\n     //cgc_printf(\"%d\\n\", val%1000);\n     return val;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-31184-d3ac80-service.c\n@@ -191,7 +191,7 @@ void cgc_updateEnemies() {\n                 unsigned int r = gen%7;\n                 \n                 //decide if enemy wants to fire\n-                if (r == 1)\n+                if (r < 3)\n                 {\n                     int x = -1;\n                     int y = -1;\n@@ -233,7 +233,7 @@ void cgc_updateEnemies() {\n                     switch (gen%3) {\n                             // move left\n                         case 0:\n-                            if (enemies[i][j] == 1)\n+                            if (enemies[i][j] < 3)\n                             {\n                                 enemies[i][j] = 4;\n                             }\n@@ -646,7 +646,7 @@ int main(int secret_page_i,  char *unuse\n     \n     \n     // check if we lost\n-    if (cgc_lost == 1) {\n+    if (cgc_lost < 3) {\n         cgc_clearScreen();\n         cgc_fprintf(cgc_stdout, \"\\t\\tyou lose\\n\\n\\n\\n\\n\");\n     }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-28918-5583ae-service.c\n@@ -496,7 +496,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < rows; i++)\n     {\n         // check if there is a bullet\n-        if (userBullets[i][0] != -1) {\n+        if (userBullets[i][0] >= 0) {\n             // check if bullet about to go off map\n             if(userBullets[i][1] == 0)\n             {\n@@ -517,7 +517,7 @@ void cgc_updateBullets() {\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n         // check if there is a bullet\n-        if (enemyBullets[i][0] != -1) {\n+        if (enemyBullets[i][0] >= 0) {\n             // check if bullet about to go off map\n             if(enemyBullets[i][0] == (rows-1))\n             {\n@@ -552,7 +552,7 @@ void cgc_clearBullets() {\n \n void cgc_setBullets() {\n     for (int i = 0; i < rows; i++) {\n-        if(userBullets[i][0] != -1)\n+        if (userBullets[i][0] >= 0)\n         {\n             // if there is a ship where the bullet now is, delete them both\n             if (board[userBullets[i][1]][userBullets[i][0]] == 3) {\n@@ -578,7 +578,7 @@ void cgc_setBullets() {\n     \n     // set enemy bullets\n     for (int i = 0; i < (rows*(columns/2)); i++) {\n-        if(enemyBullets[i][0] != -1)\n+        if (enemyBullets[i][0] >= 0)\n         {\n             // if the user is where the bullet is, then lose\n             if (board[enemyBullets[i][0]][enemyBullets[i][1]] == 2) {\n@@ -622,7 +622,7 @@ int main(int secret_page_i,  char *unuse\n             cgc_setBullets();\n         }\n         // check if ship is hit, if not, draw it\n-        if (shipCords[0] != -1)\n+        if (shipCords[0] >= 0)\n         {\n             cgc_setShip();\n         }\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-25059-ee6a97-service.c\n@@ -63,10 +63,10 @@ void cgc_createEnemies() {\n     // allocate enemies array\n     // 0 means dead\n     // 1,2,3,4 is the quadrant they are in, clockwise starting from top left\n-    enemies = cgc_calloc(rowCount, sizeof(int*));\n+    enemies = cgc_calloc(rowCount, sizeof(int *));\n     for (int i = 0; i < rowCount; i++)\n     {\n-        enemies[i] = cgc_calloc(columns/2, sizeof(int));\n+        enemies[i] = cgc_calloc(columns / 2, sizeof(int));\n         for (int j = 0; j < columns/2; j++)\n         {\n             enemies[i][j] = 1;\n@@ -117,16 +117,16 @@ void cgc_setEnemies() {\n         {\n             switch (enemies[i][j]) {\n                 case 1:\n-                    board[depressCount+(i*2)][j*2] = 3;\n+                    board[depressCount + (i * 2)][j * 2] = 3;\n                     break;\n                 case 2:\n-                    board[depressCount+(i*2)][(j*2)+1] = 3;\n+                    board[depressCount + (i * 2)][(j * 2) + 1] = 3;\n                     break;\n                 case 3:\n-                    board[(depressCount+(i*2))+1][(j*2)+1] = 3;\n+                    board[(depressCount + (i * 2)) + 1][(j * 2) + 1] = 3;\n                     break;\n                 case 4:\n-                    board[(depressCount+(i*2))+1][(j*2)] = 3;\n+                    board[(depressCount + (i * 2)) + 1][(j * 2)] = 3;\n                     break;\n                     \n                 default:\n@@ -200,24 +200,24 @@ void cgc_updateEnemies() {\n                         // bullet should come from\n                         switch (enemies[i][j]) {\n                             case 1:\n-                                x = j*2;\n-                                y = (cgc_turnCounter/20) + (i*2);\n+                                x = j * 2;\n+                                y = (cgc_turnCounter / 20) + (i * 2);\n                                 break;\n                             case 2:\n-                                x = j*2;\n-                                x = x+1;\n-                                y = (cgc_turnCounter/20) + (i*2);\n+                                x = j * 2;\n+                                x = x + 1;\n+                                y = (cgc_turnCounter / 20) + (i * 2);\n                                 break;\n                             case 3:\n-                                x = j*2;\n-                                x = x+1;\n-                                y = (cgc_turnCounter/20) + (i*2);\n-                                y = y+1;\n+                                x = j * 2;\n+                                x = x + 1;\n+                                y = (cgc_turnCounter / 20) + (i * 2);\n+                                y = y + 1;\n                                 break;\n                             case 4:\n-                                x = j*2;\n-                                y = (cgc_turnCounter/20) + (i*2);\n-                                y = y+1;\n+                                x = j * 2;\n+                                y = (cgc_turnCounter / 20) + (i * 2);\n+                                y = y + 1;\n                                 break;\n                                 \n                             default:\n@@ -341,14 +341,14 @@ int cgc_setupNewGame() {\n     board = cgc_createBoard(rows, columns);\n     \n     // create the ship\n-    shipCords = (int*) cgc_calloc(2, sizeof(int));\n+    shipCords = cgc_calloc(2, sizeof(int));\n     shipCords[0] = 0;\n-    shipCords[1] = rows-1;\n+    shipCords[1] = rows - 1;\n     board[shipCords[1]][shipCords[0]] = 2;\n     \n     // get the user's name\n     cgc_fprintf(cgc_stdout, \"Please input your name:\\n\");\n-    playerName = (char*) cgc_calloc(sizeof(char), 256);\n+    playerName = cgc_calloc(sizeof(char), 256);\n     cgc_fflush(cgc_stdout);\n     cgc_freaduntil(playerName, 256, '\\n', cgc_stdin);\n     \n@@ -382,19 +382,19 @@ int cgc_setupNewGame() {\n     cgc_setEnemies();\n     \n     // instantiate user bullets array\n-    userBullets = (int**)cgc_calloc(rows, sizeof(int*));\n+    userBullets = cgc_calloc(rows, sizeof(int *));\n     for (int i = 0; i < rows; i++)\n     {\n-        userBullets[i] = (int*)cgc_calloc(2, sizeof(int));\n+        userBullets[i] = cgc_calloc(2, sizeof(int));\n         userBullets[i][0] = -1;\n         userBullets[i][1] = -1;\n     }\n     \n     // instantiate enemy bullets array\n-    enemyBullets = (int**)cgc_calloc(rows*(columns/2), sizeof(int*));\n+    enemyBullets = cgc_calloc(rows * (columns / 2), sizeof(int *));\n     for (int i = 0; i < (rows*(columns/2)); i++)\n     {\n-        enemyBullets[i] = (int*) cgc_calloc(2, sizeof(int));\n+        enemyBullets[i] = cgc_calloc(2, sizeof(int));\n         enemyBullets[i][0] = -1;\n         enemyBullets[i][1] = -1;\n     }\n@@ -452,7 +452,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[1] > 0) {\n                 cgc_clearShip();\n-                shipCords[1] = shipCords[1]-1;\n+                shipCords[1] = shipCords[1] - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -461,7 +461,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[0] > 0) {\n                 cgc_clearShip();\n-                shipCords[0] = shipCords[0]-1;\n+                shipCords[0] = shipCords[0] - 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -470,7 +470,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[0] < columns-1) {\n                 cgc_clearShip();\n-                shipCords[0] = shipCords[0]+1;\n+                shipCords[0] = shipCords[0] + 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -479,7 +479,7 @@ void cgc_moveUser() {\n             //move up\n             if (shipCords[1] < rows-1) {\n                 cgc_clearShip();\n-                shipCords[1] = shipCords[1]+1;\n+                shipCords[1] = shipCords[1] + 1;\n                 cgc_setShip();\n             }\n             break;\n@@ -507,7 +507,7 @@ void cgc_updateBullets() {\n             else\n             {\n                 //advance the bullet\n-                userBullets[i][1] = userBullets[i][1]-1;\n+                userBullets[i][1] = userBullets[i][1] - 1;\n             }\n         }\n     }\n@@ -528,7 +528,7 @@ void cgc_updateBullets() {\n             else\n             {\n                 //advance the bullet\n-                enemyBullets[i][0] = enemyBullets[i][0]+1;\n+                enemyBullets[i][0] = enemyBullets[i][0] + 1;\n             }\n         }\n     }\n@@ -562,7 +562,7 @@ void cgc_setBullets() {\n                 int hold = (userBullets[i][1]-(cgc_turnCounter/20))/2;\n                 //fprintf(cgc_stdout, \"There is a ship at: (%i, %i)\\n I want to delete enemy: [%i][%i]\\n\", userBullets[i][1], userBullets[i][0], hold, (userBullets[i][0]/2));\n                 \n-                enemies[hold][(userBullets[i][0]/2)] = 0;\n+                enemies[hold][(userBullets[i][0] / 2)] = 0;\n                 //fprintf(cgc_stdout, \"BOOM\\n\");\n                 //delete bullet\n                 userBullets[i][0] = -1;\n@@ -704,7 +704,7 @@ int main(int secret_page_i,  char *unuse\n                 break;\n             switch (response) {\n                 case 'w':\n-                    currentChar = (currentChar + 1)%256;\n+                    currentChar = (currentChar + 1) % 256;\n                     break;\n                 case 's':\n                     srcBuffer[counter] = currentChar;\n@@ -734,7 +734,7 @@ int main(int secret_page_i,  char *unuse\n                     }\n                     else\n                     {\n-                        shipX = (shipX + 1)%10;\n+                        shipX = (shipX + 1) % 10;\n                     }\n                     break;\n                     \n@@ -745,7 +745,7 @@ int main(int secret_page_i,  char *unuse\n                     }\n                     else\n                     {\n-                        shipX = (shipX - 1)%10;\n+                        shipX = (shipX - 1) % 10;\n                     }\n                     break;\n                     \n@@ -756,7 +756,7 @@ int main(int secret_page_i,  char *unuse\n                     }\n                     else\n                     {\n-                        shipY = (shipY + 1)%10;\n+                        shipY = (shipY + 1) % 10;\n                     }\n                     break;\n                     \n@@ -767,7 +767,7 @@ int main(int secret_page_i,  char *unuse\n                     }\n                     else\n                     {\n-                        shipY = (shipY - 1)%10;\n+                        shipY = (shipY - 1) % 10;\n                     }\n                     break;\n                     \n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-20691-5c40be-service.c\n@@ -108,7 +108,7 @@ void cgc_clearEnemies() {\n \n void cgc_setEnemies() {\n     // calc how far down the enemies have moved\n-    int depressCount = cgc_turnCounter/20;\n+    long long depressCount = cgc_turnCounter * (20 - 1) / 20;\n     \n     // for each enemy, place it in the correct place\n     for (int i = 0; i < rowCount; i++)\n@@ -559,7 +559,7 @@ void cgc_setBullets() {\n                 // clear board\n                 board[userBullets[i][1]][userBullets[i][0]] = 0;\n                 // delete ship\n-                int hold = (userBullets[i][1]-(cgc_turnCounter/20))/2;\n+                long long hold = (userBullets[i][1] - (cgc_turnCounter / 20)) * (2 - 1) / 2;\n                 //fprintf(cgc_stdout, \"There is a ship at: (%i, %i)\\n I want to delete enemy: [%i][%i]\\n\", userBullets[i][1], userBullets[i][0], hold, (userBullets[i][0]/2));\n                 \n                 enemies[hold][(userBullets[i][0]/2)] = 0;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-19664-ca1481-service.c\n@@ -658,7 +658,7 @@ int main(int secret_page_i,  char *unuse\n         \n         // let them overwrite a buffer\n         int i;\n-        char targetBuffer[256];\n+        char targetBuffer[256 + MAXHOSTNAMELEN];\n         char* srcBuffer = (char*) cgc_calloc(100000, sizeof(char));\n         char currentChar = 0;\n         int counter = 0;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-24991-0f2d9c-service.c\n@@ -658,7 +658,7 @@ int main(int secret_page_i,  char *unuse\n         \n         // let them overwrite a buffer\n         int i;\n-        char targetBuffer[256];\n+        char targetBuffer[MAX_LONG_DOUBLE_CHARS];\n         char* srcBuffer = (char*) cgc_calloc(100000, sizeof(char));\n         char currentChar = 0;\n         int counter = 0;\n",
+        "--- /tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c\n+++ /tmp/cocci-output-27948-0a48e7-service.c\n@@ -77,7 +77,7 @@ void cgc_createEnemies() {\n \n int** cgc_createBoard (int m, int n) {\n     int** board = cgc_malloc(m * sizeof(int*));\n-    for (int i= 0; i < m; ++i)\n+    for (int i = 0; i < i < m; ++i)\n     {\n         board[i] = cgc_malloc(n * sizeof(int));\n     }\n"
+      ]
+    }
+  ],
+  "compilations": 25,
+  "failed_compilations": 17,
+  "outcomes": {
+    "b7b63d8f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cf1d5a94": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cad400a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "54862e23": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1a5b30a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0adf6278": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8a70e60f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6a804c05": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 31
+          }
+        ]
+      }
+    },
+    "671b2702": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c5bc0bc7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:55:18: error: use of undeclared identifier 'int64_t'\n    cgc_seed1 = (int64_t)42871 * (cgc_seed1 & 0xFFFF) + (cgc_seed1 >> 16);\n                 ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:56:18: error: use of undeclared identifier 'int64_t'\n    cgc_seed2 = (int64_t)28172 * (cgc_seed2 & 0xFFFF) + (cgc_seed2 >> 16);\n                 ^\n2 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b43051ce": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:268:21: error: use of undeclared identifier 'u_int'\n        cgc_lost = (u_int)-1;\n                    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:389:30: error: use of undeclared identifier 'u_int'\n        userBullets[i][0] = (u_int)-1;\n                             ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:390:30: error: use of undeclared identifier 'u_int'\n        userBullets[i][1] = (u_int)-1;\n                             ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:398:31: error: use of undeclared identifier 'u_int'\n        enemyBullets[i][0] = (u_int)-1;\n                              ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:399:31: error: use of undeclared identifier 'u_int'\n        enemyBullets[i][1] = (u_int)-1;\n                              ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:504:38: error: use of undeclared identifier 'u_int'\n                userBullets[i][0] = (u_int)-1;\n                                     ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:505:38: error: use of undeclared identifier 'u_int'\n                userBullets[i][1] = (u_int)-1;\n                                     ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:525:39: error: use of undeclared identifier 'u_int'\n                enemyBullets[i][0] = (u_int)-1;\n                                      ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:526:39: error: use of undeclared identifier 'u_int'\n                enemyBullets[i][1] = (u_int)-1;\n                                      ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:568:38: error: use of undeclared identifier 'u_int'\n                userBullets[i][0] = (u_int)-1;\n                                     ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:569:38: error: use of undeclared identifier 'u_int'\n                userBullets[i][1] = (u_int)-1;\n                                     ^\n11 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ea6ce621": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Space_Attackers.dir/src/service.c.o: In function `cgc_setEnemies':\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:121: undefined reference to `fatalx'\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:124: undefined reference to `fatalx'\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:127: undefined reference to `fatalx'\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:130: undefined reference to `fatalx'\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:133: undefined reference to `fatalx'\nCMakeFiles/Space_Attackers.dir/src/service.c.o:/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:170: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Space_Attackers/Space_Attackers] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f732fb3f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8074682b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5470bde9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:661:33: error: use of undeclared identifier 'MAXHOSTNAMELEN'\n        char targetBuffer[256 + MAXHOSTNAMELEN];\n                                ^\n1 error generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "cc788022": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:143:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:150:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:161:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:336:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:402:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:782:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n6 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3554e97a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:438:9: error: use of undeclared identifier 'rt_tables'\n    if (rt_tables)\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:453:17: error: use of undeclared identifier 'rt_tables'\n            if (rt_tables) {\n                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:462:17: error: use of undeclared identifier 'rt_tables'\n            if (rt_tables) {\n                ^\n3 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0f830e7f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3edc8d9a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5c0fa824": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:156:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n1 error generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "35c7a27b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f1ca8774": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:143:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:144:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:151:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:152:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:163:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:164:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:339:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:340:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:406:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:407:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:787:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:788:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n12 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8ba9e9bc": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:661:27: error: use of undeclared identifier 'MAX_LONG_DOUBLE_CHARS'\n        char targetBuffer[MAX_LONG_DOUBLE_CHARS];\n                          ^\n1 error generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f34362ad": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:143:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:150:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:161:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:336:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:402:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:782:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n6 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d185aaf0": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:29:1: error: unknown type name 'size_t'\nsize_t cgc_turnCounter = 0;\n^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:37:1: error: unknown type name 'size_t'\nsize_t cgc_lost = 0;\n^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:181:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t isThereAnEnemy = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:181:12: error: use of undeclared identifier 'isThereAnEnemy'\n    size_t isThereAnEnemy = 0;\n           ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:189:17: error: use of undeclared identifier 'isThereAnEnemy'\n                isThereAnEnemy = 1;\n                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:267:9: error: use of undeclared identifier 'isThereAnEnemy'\n    if (isThereAnEnemy == 0) {\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:664:9: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n        size_t counter = 0;\n        ^~~~~~\n        sizeof\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:664:16: error: use of undeclared identifier 'counter'\n        size_t counter = 0;\n               ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:710:31: error: use of undeclared identifier 'counter'\n                    srcBuffer[counter] = currentChar;\n                              ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:712:21: error: use of undeclared identifier 'counter'\n                    counter = counter + 1;\n                    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:712:31: error: use of undeclared identifier 'counter'\n                    counter = counter + 1;\n                              ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:718:58: error: use of undeclared identifier 'counter'\n                    cgc_strncpy(targetBuffer, srcBuffer, counter);\n                                                         ^\n12 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a9b144b8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "657ee202": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:499:34: error: use of undeclared identifier 'ENOIOCTL'\n        if (userBullets[i][0] != ENOIOCTL) {\n                                 ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:520:35: error: use of undeclared identifier 'ENOIOCTL'\n        if (enemyBullets[i][0] != ENOIOCTL) {\n                                  ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:555:34: error: use of undeclared identifier 'ENOIOCTL'\n        if (userBullets[i][0] != ENOIOCTL)\n                                 ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:581:35: error: use of undeclared identifier 'ENOIOCTL'\n        if (enemyBullets[i][0] != ENOIOCTL)\n                                  ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:625:29: error: use of undeclared identifier 'ENOIOCTL'\n        if (shipCords[0] != ENOIOCTL)\n                            ^\n5 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e9dbf1bb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:143:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:150:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:161:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:336:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:402:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:782:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n6 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "93bb0ced": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8d49181f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5027cc6b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c7c401ac": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:32:1: error: unknown type name 'zstr'\nzstr playerName;\n^\n1 error generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "db13b87a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "640812f9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b9d84eb3": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:666:14: error: use of undeclared identifier 'i'\n        for (i = 0; i < 100000; i++)\n             ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:666:21: error: use of undeclared identifier 'i'\n        for (i = 0; i < 100000; i++)\n                    ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:666:33: error: use of undeclared identifier 'i'\n        for (i = 0; i < 100000; i++)\n                                ^\n3 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0e29c5c4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a80f620b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:307:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:299:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:344:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:299:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:402:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:382:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:412:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:382:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:537:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:515:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:567:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:559:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:604:9: error: redefinition of 'i'\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:577:9: note: previous definition is here\n    int i;\n        ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:721:17: error: redefinition of 'j'\n            int j;\n                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:699:17: note: previous definition is here\n            int j;\n                ^\n8 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6d3e3395": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "450d6a56": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:80:10: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    for (size_t i = 0; i < m; ++i)\n         ^~~~~~\n         sizeof\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:80:17: error: use of undeclared identifier 'i'\n    for (size_t i = 0; i < m; ++i)\n                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:80:24: error: use of undeclared identifier 'i'\n    for (size_t i = 0; i < m; ++i)\n                       ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:80:33: error: use of undeclared identifier 'i'\n    for (size_t i = 0; i < m; ++i)\n                                ^\n/tmp/FlexiRepair/Space_Attackers_0/Space_Attackers/src/service.c:82:15: error: use of undeclared identifier 'i'\n        board[i] = cgc_malloc(n * sizeof(int));\n              ^\n5 errors generated.\nmake[2]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/src/service.c.o] Error 1\nmake[1]: *** [Space_Attackers/CMakeFiles/Space_Attackers.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b2bbb623": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7f49104c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6f33f64a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 4,
+  "passed_pos_tests": 167,
+  "failed_neg_tests": 21,
+  "failed_pos_tests": 333,
+  "duration": 2464.288221,
+  "errors": []
+}

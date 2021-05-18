@@ -1,0 +1,1509 @@
+{
+  "repair_begin": "2021-05-08 03:27:22.448357",
+  "repair_end": "2021-05-08 03:41:04.850688",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-27717-ca80bd-service.c\n@@ -128,7 +128,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n     node->msg = msg;\n     node->next = NULL;\n \n-    if (!sess->head) {\n+    if (sess->head == NULL || gtk_notebook_get_current_page(sess->head) == -1) {\n         sess->head = node;\n     } else {\n         cur = sess->head;\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-26073-4aeb93-service.c\n@@ -228,5 +228,5 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     } while (cgc_outstanding && (msg = cgc_recv_msg()));\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-20318-571cf8-service.c\n@@ -146,7 +146,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n     //\n     for (i=0; i < sess->count && sess->received[i]; i++);\n \n-    if (i == sess->count) {\n+    if (i % sess->count == 0) {\n         //reassembly time\n         if (!(res = cgc_calloc(sess->total))) {\n             TERM(LMSERR,95);\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-29197-e2cc48-service.c\n@@ -40,11 +40,11 @@ lms_sess_t *cgc_find_session(uint32_t si\n lms_sess_t *cgc_new_session(lms_msg_t *msg) {\n     lms_sess_t *new_s = NULL;\n \n-    if (!(new_s = cgc_calloc(sizeof(lms_sess_t)))) {\n+    if ((new_s = cgc_calloc(sizeof(lms_sess_t))) == MAP_FAILED) {\n        TERM(LMSERR,90); \n     }\n \n-    if (!(new_s->received = cgc_calloc(sizeof(uint8_t)*msg->count))) {\n+    if ((new_s->received = cgc_calloc(sizeof(uint8_t) * msg->count)) == MAP_FAILED) {\n        TERM(LMSERR,90); \n     }\n \n@@ -56,7 +56,7 @@ lms_sess_t *cgc_new_session(lms_msg_t *m\n lms_sess_t *cgc_add_session(lms_msg_t *msg) {\n     lms_sess_t *cur = cgc_head;\n \n-    if (!cgc_head) {\n+    if (cgc_head == MAP_FAILED) {\n         cgc_head = cgc_new_session(msg);\n         return cgc_head;\n     }\n@@ -121,7 +121,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n         return NULL;\n     }\n \n-    if (!(node = cgc_calloc(sizeof(lms_msg_list_t)))) {\n+    if ((node = cgc_calloc(sizeof(lms_msg_list_t))) == MAP_FAILED) {\n        TERM(LMSERR,90); \n     }\n     \n@@ -148,7 +148,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n \n     if (i == sess->count) {\n         //reassembly time\n-        if (!(res = cgc_calloc(sess->total))) {\n+        if ((res = cgc_calloc(sess->total)) == MAP_FAILED) {\n             TERM(LMSERR,95);\n         }\n \n@@ -173,7 +173,7 @@ void cgc_process_msg(lms_msg_t *msg) {\n     lms_sess_t *sess = NULL;\n     uint8_t *res;\n \n-    if (!(sess = cgc_find_session(msg->sid))) {\n+    if ((sess = cgc_find_session(msg->sid)) == MAP_FAILED) {\n         sess = cgc_add_session(msg);\n     }\n \n@@ -188,7 +188,7 @@ void cgc_process_msg(lms_msg_t *msg) {\n lms_msg_t *cgc_recv_msg() {\n     lms_msg_t *msg;\n \n-    if (!(msg = cgc_calloc(sizeof(lms_msg_t)))) {\n+    if ((msg = cgc_calloc(sizeof(lms_msg_t))) == MAP_FAILED) {\n         TERM(LMSERR,93);\n     }\n \n@@ -198,7 +198,7 @@ lms_msg_t *cgc_recv_msg() {\n         TERM(LMSERR,91);\n     }\n \n-    if (!(msg->data = cgc_calloc(msg->size))) {\n+    if ((msg->data = cgc_calloc(msg->size)) == MAP_FAILED) {\n         TERM(LMSERR,94);\n     }\n \n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-18029-b6a0f1-service.c\n@@ -228,5 +228,5 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     } while (cgc_outstanding && (msg = cgc_recv_msg()));\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-23028-0581ff-service.c\n@@ -34,7 +34,7 @@ lms_sess_t *cgc_find_session(uint32_t si\n             return cur;\n         cur = cur->next;\n     }\n-    return NULL;\n+    return \"N/A\";\n }\n \n lms_sess_t *cgc_new_session(lms_msg_t *msg) {\n@@ -118,7 +118,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n #endif\n         cgc_free(msg->data);\n         cgc_free(msg);\n-        return NULL;\n+        return \"N/A\";\n     }\n \n     if (!(node = cgc_calloc(sizeof(lms_msg_list_t)))) {\n@@ -165,7 +165,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n         }\n         return res;\n     } else {\n-        return NULL;\n+        return \"N/A\";\n     }\n }\n \n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-26121-431b50-service.c\n@@ -158,7 +158,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n                 if (cur->msg->mid == i) {\n                     cgc_memcpy(res+idx,cur->msg->data,cur->msg->size);\n                     idx += cur->msg->size;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 }\n                 cur = cur->next;\n             }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-320-a84bf9-service.c\n@@ -152,7 +152,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n             TERM(LMSERR,95);\n         }\n \n-        for (i=0; i < sess->count; i++) {\n+        for (i = 1; i <= sess->count; i++) {\n             cur = sess->head;\n             while (cur) {\n                 if (cur->msg->mid == i) {\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-25840-6e00a1-service.c\n@@ -80,7 +80,7 @@ void cgc_delete_session(uint32_t sid) {\n                 cgc_head = cur->next;\n             #endif\n             //remove from list\n-            if (last)\n+            if (last || no_draw)\n                 last->next = cur->next;\n \n             //free all our messages and the list\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-27014-4545a6-service.c\n@@ -126,7 +126,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n     }\n     \n     node->msg = msg;\n-    node->next = NULL;\n+    node->next = node->dir_next = NULL;\n \n     if (!sess->head) {\n         sess->head = node;\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-24687-5f30ad-service.c\n@@ -96,13 +96,14 @@ void cgc_delete_session(uint32_t sid) {\n             cgc_free(cur->received);\n             cgc_free(cur);\n             cgc_outstanding--;\n-            return;\n+            return 0;\n         }\n         #ifdef PATCHED\n         last = cur;\n         #endif\n         cur = cur->next;\n     }   \n+    return 0;\n }\n \n uint8_t *cgc_add_msg(lms_msg_t *msg, lms_sess_t *sess) {\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-17311-575ad5-service.c\n@@ -194,7 +194,7 @@ lms_msg_t *cgc_recv_msg() {\n \n     RECV(sizeof(lms_msg_t)-sizeof(uint8_t*),(char *)msg);\n \n-    if (msg->size < 1 || msg->size > MAX_LMS_SIZE) {\n+    if (msg->size > MAX_LMS_SIZE) {\n         TERM(LMSERR,91);\n     }\n \n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-19582-130474-service.c\n@@ -228,5 +228,5 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     } while (cgc_outstanding && (msg = cgc_recv_msg()));\n \n-    return 0;\n+    return -1;\n }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-24565-3c0089-service.c\n@@ -194,7 +194,7 @@ lms_msg_t *cgc_recv_msg() {\n \n     RECV(sizeof(lms_msg_t)-sizeof(uint8_t*),(char *)msg);\n \n-    if (msg->size < 1 || msg->size > MAX_LMS_SIZE) {\n+    if (msg->size > MAX_LMS_SIZE) {\n         TERM(LMSERR,91);\n     }\n \n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-22487-294140-service.c\n@@ -228,5 +228,6 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     } while (cgc_outstanding && (msg = cgc_recv_msg()));\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-23589-8302db-service.c\n@@ -96,13 +96,14 @@ void cgc_delete_session(uint32_t sid) {\n             cgc_free(cur->received);\n             cgc_free(cur);\n             cgc_outstanding--;\n-            return;\n+            goto done;\n         }\n         #ifdef PATCHED\n         last = cur;\n         #endif\n         cur = cur->next;\n     }   \n+    goto done;\n }\n \n uint8_t *cgc_add_msg(lms_msg_t *msg, lms_sess_t *sess) {\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-18301-f14ea9-service.c\n@@ -228,5 +228,5 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     } while (cgc_outstanding && (msg = cgc_recv_msg()));\n \n-    return 0;\n+    no_draw = 1;\n }\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-28805-56ea3d-service.c\n@@ -24,7 +24,7 @@\n #include \"cgc_libc.h\"\n #include \"cgc_service.h\"\n \n-uint32_t cgc_outstanding = 0;\n+uint32_t cgc_outstanding = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n lms_sess_t *cgc_head = NULL;\n \n lms_sess_t *cgc_find_session(uint32_t sid) {\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-23964-38a94b-service.c\n@@ -171,7 +171,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n \n void cgc_process_msg(lms_msg_t *msg) {\n     lms_sess_t *sess = NULL;\n-    uint8_t *res;\n+    const uint8_t *res;\n \n     if (!(sess = cgc_find_session(msg->sid))) {\n         sess = cgc_add_session(msg);\n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-24504-f6ef22-service.c\n@@ -34,7 +34,7 @@ lms_sess_t *cgc_find_session(uint32_t si\n             return cur;\n         cur = cur->next;\n     }\n-    return NULL;\n+    return;\n }\n \n lms_sess_t *cgc_new_session(lms_msg_t *msg) {\n@@ -118,7 +118,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n #endif\n         cgc_free(msg->data);\n         cgc_free(msg);\n-        return NULL;\n+        return;\n     }\n \n     if (!(node = cgc_calloc(sizeof(lms_msg_list_t)))) {\n@@ -165,7 +165,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n         }\n         return res;\n     } else {\n-        return NULL;\n+        return;\n     }\n }\n \n",
+        "--- /tmp/FlexiRepair/LMS_0/LMS/src/service.c\n+++ /tmp/cocci-output-21540-409ded-service.c\n@@ -128,7 +128,7 @@ uint8_t *cgc_add_msg(lms_msg_t *msg, lms\n     node->msg = msg;\n     node->next = NULL;\n \n-    if (!sess->head) {\n+    if (sess->head == NULL) {\n         sess->head = node;\n     } else {\n         cur = sess->head;\n"
+      ]
+    }
+  ],
+  "compilations": 8,
+  "failed_compilations": 13,
+  "outcomes": {
+    "20482391": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:129:24: error: no member named 'dir_next' in 'struct lms_msg_list'\n    node->next = node->dir_next = NULL;\n                 ~~~~  ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ee47cb2a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/LMS_patched.dir/src/service.c.o: In function `cgc_add_msg':\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:161: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [LMS/LMS_patched] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "df8544cc": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:43:53: error: use of undeclared identifier 'MAP_FAILED'\n    if ((new_s = cgc_calloc(sizeof(lms_sess_t))) == MAP_FAILED) {\n                                                    ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:47:73: error: use of undeclared identifier 'MAP_FAILED'\n    if ((new_s->received = cgc_calloc(sizeof(uint8_t) * msg->count)) == MAP_FAILED) {\n                                                                        ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:59:21: error: use of undeclared identifier 'MAP_FAILED'\n    if (cgc_head == MAP_FAILED) {\n                    ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:124:56: error: use of undeclared identifier 'MAP_FAILED'\n    if ((node = cgc_calloc(sizeof(lms_msg_list_t))) == MAP_FAILED) {\n                                                       ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:151:48: error: use of undeclared identifier 'MAP_FAILED'\n        if ((res = cgc_calloc(sess->total)) == MAP_FAILED) {\n                                               ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:176:48: error: use of undeclared identifier 'MAP_FAILED'\n    if ((sess = cgc_find_session(msg->sid)) == MAP_FAILED) {\n                                               ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:191:50: error: use of undeclared identifier 'MAP_FAILED'\n    if ((msg = cgc_calloc(sizeof(lms_msg_t))) == MAP_FAILED) {\n                                                 ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:201:48: error: use of undeclared identifier 'MAP_FAILED'\n    if ((msg->data = cgc_calloc(msg->size)) == MAP_FAILED) {\n                                               ^\n8 errors generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5075c6fb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "adf41557": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:231:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "40bbc5f1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:231:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:232:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n2 errors generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "75f48289": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ef4cd9d9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:37:5: error: non-void function 'cgc_find_session' should return a value [-Wreturn-type]\n    return;\n    ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:121:9: error: non-void function 'cgc_add_msg' should return a value [-Wreturn-type]\n        return;\n        ^\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:168:9: error: non-void function 'cgc_add_msg' should return a value [-Wreturn-type]\n        return;\n        ^\n3 errors generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "49c61b4a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1f7706b9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:99:13: error: void function 'cgc_delete_session' should not return a value [-Wreturn-type]\n            return 0;\n            ^      ~\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:106:5: error: void function 'cgc_delete_session' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n2 errors generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0c4057cf": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:83:25: error: use of undeclared identifier 'no_draw'\n            if (last || no_draw)\n                        ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5549991b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:231:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9e6bc51d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:27:28: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\nuint32_t cgc_outstanding = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                           ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c3afe267": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:231:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1222e33e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "68218e0a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/LMS_0/LMS/src/service.c:99:18: error: use of undeclared label 'done'\n            goto done;\n                 ^\n1 error generated.\nmake[2]: *** [LMS/CMakeFiles/LMS_patched.dir/src/service.c.o] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "49031053": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "693796b7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2741a6fe": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 15
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "40f89971": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6de6d91e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/LMS_patched.dir/src/service.c.o: In function `cgc_add_msg':\n/tmp/FlexiRepair/LMS_0/LMS/src/service.c:131: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [LMS/LMS_patched] Error 1\nmake[1]: *** [LMS/CMakeFiles/LMS_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 3,
+  "pos_tests": 20,
+  "passed_neg_tests": 1,
+  "passed_pos_tests": 119,
+  "failed_neg_tests": 23,
+  "failed_pos_tests": 41,
+  "duration": 822.402331,
+  "errors": []
+}

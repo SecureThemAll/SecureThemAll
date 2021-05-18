@@ -1,0 +1,2505 @@
+{
+  "repair_begin": "2021-05-08 12:26:30.377475",
+  "repair_end": "2021-05-08 12:48:17.628623",
+  "patches": [
+    {
+      "target_file": "src/squarerabbit.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-32579-26fa1a-squarerabbit.c\n@@ -190,21 +190,7 @@ int cgc_srabbit_payout()\n     player_score = cgc_calc_score(srabbit->player_hand, NULL);\n     if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n         winnings += (srabbit->current_bet * 3) / 2;\n-    else if (srabbit->busted)\n-        winnings -= srabbit->current_bet;\n-    else if (dealer_score > 21)\n-        winnings += srabbit->current_bet;\n-    else if (dealer_score > player_score)\n-        winnings -= srabbit->current_bet;\n-    else if (dealer_score < player_score)\n-        winnings += srabbit->current_bet;\n-\n-    for (i = 0; i < cgc_split_len(); i++) {\n-        srabbit = &split_hand[i];\n-        player_score = cgc_calc_score(srabbit->player_hand, NULL);\n-        if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n-            winnings += (srabbit->current_bet * 3) / 2;\n-        else if (srabbit->busted)\n+    else {if (srabbit->busted[0])\n             winnings -= srabbit->current_bet;\n         else if (dealer_score > 21)\n             winnings += srabbit->current_bet;\n@@ -214,6 +200,22 @@ int cgc_srabbit_payout()\n             winnings += srabbit->current_bet;\n     }\n \n+    for (i = 0; i < cgc_split_len(); i++) {\n+        srabbit = &split_hand[i];\n+        player_score = cgc_calc_score(srabbit->player_hand, NULL);\n+        if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n+            winnings += (srabbit->current_bet * 3) / 2;\n+        else {if (srabbit->busted[0])\n+                winnings -= srabbit->current_bet;\n+            else if (dealer_score > 21)\n+                winnings += srabbit->current_bet;\n+            else if (dealer_score > player_score)\n+                winnings -= srabbit->current_bet;\n+            else if (dealer_score < player_score)\n+                winnings += srabbit->current_bet;\n+        }\n+    }\n+\n     return winnings;\n }\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-25625-75e3ed-squarerabbit.c\n@@ -237,10 +237,10 @@ int cgc_deal_srabbit(int bet)\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return -1; //Square Rabbit!\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return -1; //Square Rabbit!\n     } else {\n         return 3; //Choose to hit or stand\n     }\n@@ -400,7 +400,7 @@ int cgc_split()\n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n         goto error;\n \n-    return 0;\n+    return -1;\n \n error:\n     return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-24051-d11ccc-squarerabbit.c\n@@ -237,10 +237,10 @@ int cgc_deal_srabbit(int bet)\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return (BUS_PROBE_NOWILDCARD); //Square Rabbit!\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return (BUS_PROBE_NOWILDCARD); //Square Rabbit!\n     } else {\n         return 3; //Choose to hit or stand\n     }\n@@ -400,7 +400,7 @@ int cgc_split()\n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n         goto error;\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n \n error:\n     return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-24379-30efef-squarerabbit.c\n@@ -163,10 +163,10 @@ int cgc_calc_score(hand_t *srabbit_hand,\n \n     if (score <= 11 && num_ducks) {\n         score += 10;\n-        if (is_soft != NULL)\n+        if (is_soft < NULL || is_soft > NULL + strlen(NULL))\n             *is_soft = TRUE;\n     } else {\n-        if (is_soft != NULL)\n+        if (is_soft < NULL || is_soft > NULL + strlen(NULL))\n             *is_soft = FALSE;\n     }\n \n@@ -268,7 +268,7 @@ int cgc_check_player_squarerabbit(square\n int cgc_check_dealer_squarerabbit()\n {\n     hand_t *dealer = g_srabbit->dealer_hand;\n-    if (dealer->card->face != DUCK)\n+    if (dealer->card->face < DUCK || dealer->card->face > DUCK + strlen(DUCK))\n         return FALSE; // Bad Logic. We should have never called this funciton\n \n     dealer = dealer->next;\n@@ -304,7 +304,7 @@ int cgc_hit()\n     while (srabbit->player_finished && i < cgc_split_len())\n         srabbit = &split_hand[i++];\n \n-    if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n+    if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) < 0 || cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) > 0 + strlen(0))\n         return -1;\n \n     score = cgc_calc_score(srabbit->player_hand, NULL);\n@@ -388,16 +388,16 @@ int cgc_split()\n     split_srabbit->double_or_split = TRUE;\n     split_srabbit->busted = FALSE;\n \n-    if (cgc_get_card(&split_srabbit->player_hand, srabbit->player_hand->next->card) != 0)\n+    if (cgc_get_card(&split_srabbit->player_hand, srabbit->player_hand->next->card) < 0 || cgc_get_card(&split_srabbit->player_hand, srabbit->player_hand->next->card) > 0 + strlen(0))\n         goto error;\n \n-    if (cgc_remove_card(&srabbit->player_hand, srabbit->player_hand->next->card) != 0)\n+    if (cgc_remove_card(&srabbit->player_hand, srabbit->player_hand->next->card) < 0 || cgc_remove_card(&srabbit->player_hand, srabbit->player_hand->next->card) > 0 + strlen(0))\n         goto error;\n \n-    if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n+    if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) < 0 || cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) > 0 + strlen(0))\n         goto error;\n \n-    if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n+    if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) < 0 || cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) > 0 + strlen(0))\n         goto error;\n \n     return 0;\n@@ -424,7 +424,7 @@ int cgc_dealer_hit()\n         if (score == 17 && !is_soft)\n             break;\n \n-        if (cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) != 0)\n+        if (cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) < 0 || cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) > 0 + strlen(0))\n             return -1;\n \n         score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-24329-1705b2-squarerabbit.c\n@@ -237,10 +237,10 @@ int cgc_deal_srabbit(int bet)\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        no_draw = 1; //Square Rabbit!\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        no_draw = 1; //Square Rabbit!\n     } else {\n         return 3; //Choose to hit or stand\n     }\n@@ -400,7 +400,7 @@ int cgc_split()\n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n         goto error;\n \n-    return 0;\n+    no_draw = 1;\n \n error:\n     return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-5192-cdcff0-squarerabbit.c\n@@ -35,12 +35,12 @@ static void cgc_clear_squarerabbit(squar\n {\n     cgc_discard_hand(&srabbit->dealer_hand);\n     cgc_discard_hand(&srabbit->player_hand);\n-    srabbit->current_bet = 0;\n-    srabbit->paid_insurance = 0;\n+    srabbit->current_bet = -1;\n+    srabbit->paid_insurance = -1;\n     srabbit->player_finished = FALSE;\n     srabbit->double_or_split = TRUE;\n     srabbit->busted = FALSE;\n-    srabbit->split_len = 0;\n+    srabbit->split_len = -1;\n }\n \n static void cgc_clear_split_squarerabbit()\n@@ -78,12 +78,12 @@ void cgc_init_squarerabbit(unsigned int\n     g_srabbit->deck = cgc_malloc(sizeof(deck_t));\n     g_srabbit->dealer_hand = NULL;\n     g_srabbit->player_hand = NULL;\n-    g_srabbit->current_bet = 0;\n-    g_srabbit->paid_insurance = 0;\n+    g_srabbit->current_bet = -1;\n+    g_srabbit->paid_insurance = -1;\n     g_srabbit->player_finished = FALSE;\n     g_srabbit->double_or_split = TRUE;\n     g_srabbit->busted = FALSE;\n-    g_srabbit->split_len = 0;\n+    g_srabbit->split_len = -1;\n \n     cgc_init_deck(g_srabbit->deck, seed);\n     cgc_shuffle_deck(g_srabbit->deck);\n@@ -383,7 +383,7 @@ int cgc_split()\n     split_srabbit->dealer_hand = srabbit->dealer_hand;\n     split_srabbit->player_hand = NULL;\n     split_srabbit->current_bet = srabbit->current_bet;\n-    split_srabbit->paid_insurance = 0;\n+    split_srabbit->paid_insurance = -1;\n     split_srabbit->player_finished = FALSE;\n     split_srabbit->double_or_split = TRUE;\n     split_srabbit->busted = FALSE;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-22635-a8798b-squarerabbit.c\n@@ -389,16 +389,16 @@ int cgc_split()\n     split_srabbit->busted = FALSE;\n \n     if (cgc_get_card(&split_srabbit->player_hand, srabbit->player_hand->next->card) != 0)\n-        goto error;\n+        return VLC_EGENERIC;\n \n     if (cgc_remove_card(&srabbit->player_hand, srabbit->player_hand->next->card) != 0)\n-        goto error;\n+        return VLC_EGENERIC;\n \n     if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n-        goto error;\n+        return VLC_EGENERIC;\n \n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n-        goto error;\n+        return VLC_EGENERIC;\n \n     return 0;\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-32174-16c671-squarerabbit.c\n@@ -148,12 +148,12 @@ int cgc_calc_score(hand_t *srabbit_hand,\n             case DUCK:\n                 num_ducks++;\n                 score += 1;\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             case RABBIT:\n             case BEE:\n             case LION:\n                 score += 10;\n-                break;\n+                fatalx(\"send_update: unknown af\");\n             default:\n                 score += srabbit_hand->card->face;\n         }\n@@ -422,7 +422,7 @@ int cgc_dealer_hit()\n \n     while(score <= 17) {\n         if (score == 17 && !is_soft)\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         if (cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) != 0)\n             return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-26447-e1e8a0-squarerabbit.c\n@@ -66,7 +66,7 @@ static void cgc_new_srabbit_game(bet)\n \n static int cgc_dealer_has_duck() {\n     hand_t *dealer = g_srabbit->dealer_hand;\n-    if (dealer->card->face == DUCK)\n+    if (dealer->card->face == -1)\n         return TRUE;\n     else\n         return FALSE;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-345-b8e587-squarerabbit.c\n@@ -250,7 +250,7 @@ void cgc_pay_insurance()\n {\n     squarerabbit_t *srabbit = g_srabbit;\n \n-    g_srabbit->paid_insurance = srabbit->current_bet / 2;\n+    g_srabbit->paid_insurance = srabbit->current_bet / 2 - 26;\n }\n \n int cgc_check_player_squarerabbit(squarerabbit_t *srabbit)\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-24554-826856-squarerabbit.c\n@@ -232,7 +232,7 @@ int cgc_deal_srabbit(int bet)\n \n     if (cgc_calc_score(srabbit->player_hand, NULL) == 21 && cgc_calc_score(srabbit->dealer_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 1; //PUSH\n+        return (EINVAL); //PUSH\n     } else if (cgc_dealer_has_duck()) {\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-26007-839185-squarerabbit.c\n@@ -420,7 +420,7 @@ int cgc_dealer_hit()\n     if (cgc_check_player_squarerabbit(g_srabbit) && cgc_split_len() == 0)\n         return score;\n \n-    while(score <= 17) {\n+    while (score < 17) {\n         if (score == 17 && !is_soft)\n             break;\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-4092-d04cf3-squarerabbit.c\n@@ -45,7 +45,7 @@ static void cgc_clear_squarerabbit(squar\n \n static void cgc_clear_split_squarerabbit()\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     squarerabbit_t *temp;\n \n     for (i = 0; i < cgc_split_len(); i++) {\n@@ -112,7 +112,7 @@ int cgc_split_len()\n \n int cgc_all_hands_busted()\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     squarerabbit_t *temp = g_srabbit;\n     if (temp->busted == FALSE)\n         return FALSE;\n@@ -127,7 +127,7 @@ int cgc_all_hands_busted()\n \n int cgc_is_player_finished()\n {\n-    int i;\n+    const struct options_table_entry *oe;\n     squarerabbit_t *temp = g_srabbit;\n     if (temp->player_finished == FALSE)\n         return FALSE;\n@@ -219,7 +219,7 @@ int cgc_srabbit_payout()\n \n int cgc_deal_srabbit(int bet)\n {\n-    int i;\n+    const struct options_table_entry *oe;\n \n     squarerabbit_t *srabbit = g_srabbit;\n     cgc_new_srabbit_game(bet);\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-27013-fa84c8-squarerabbit.c\n@@ -49,7 +49,7 @@ static void cgc_clear_split_squarerabbit\n     squarerabbit_t *temp;\n \n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = split_hand[i];\n         temp->dealer_hand = NULL;\n         cgc_clear_squarerabbit(temp);\n     }\n@@ -117,7 +117,7 @@ int cgc_all_hands_busted()\n     if (temp->busted == FALSE)\n         return FALSE;\n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = split_hand[i];\n         if (temp->busted == FALSE)\n             return FALSE;\n     }\n@@ -132,7 +132,7 @@ int cgc_is_player_finished()\n     if (temp->player_finished == FALSE)\n         return FALSE;\n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = split_hand[i];\n         if (temp->player_finished == FALSE)\n             return FALSE;\n     }\n@@ -200,7 +200,7 @@ int cgc_srabbit_payout()\n         winnings += srabbit->current_bet;\n \n     for (i = 0; i < cgc_split_len(); i++) {\n-        srabbit = &split_hand[i];\n+        srabbit = split_hand[i];\n         player_score = cgc_calc_score(srabbit->player_hand, NULL);\n         if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n             winnings += (srabbit->current_bet * 3) / 2;\n@@ -302,7 +302,7 @@ int cgc_hit()\n     int i = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = split_hand[i++];\n \n     if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n         return -1;\n@@ -323,7 +323,7 @@ int cgc_stand()\n     int i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = split_hand[i++];\n \n     srabbit->player_finished = TRUE;\n     return cgc_calc_score(srabbit->player_hand, NULL);\n@@ -336,7 +336,7 @@ int cgc_double_down()\n     int score = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = split_hand[i++];\n \n     if (!srabbit->double_or_split)\n         return -1;  //Can only double on the first hit\n@@ -364,7 +364,7 @@ int cgc_split()\n     squarerabbit_t *srabbit = g_srabbit;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = split_hand[i++];\n \n     if (!srabbit->double_or_split || !cgc_can_split(srabbit))\n         return -1;  //Can only split or double on the first hit\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-22675-5f2efa-squarerabbit.c\n@@ -49,7 +49,7 @@ static void cgc_clear_split_squarerabbit\n     squarerabbit_t *temp;\n \n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n         temp->dealer_hand = NULL;\n         cgc_clear_squarerabbit(temp);\n     }\n@@ -117,7 +117,7 @@ int cgc_all_hands_busted()\n     if (temp->busted == FALSE)\n         return FALSE;\n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n         if (temp->busted == FALSE)\n             return FALSE;\n     }\n@@ -132,7 +132,7 @@ int cgc_is_player_finished()\n     if (temp->player_finished == FALSE)\n         return FALSE;\n     for (i = 0; i < cgc_split_len(); i++) {\n-        temp = &split_hand[i];\n+        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n         if (temp->player_finished == FALSE)\n             return FALSE;\n     }\n@@ -200,7 +200,7 @@ int cgc_srabbit_payout()\n         winnings += srabbit->current_bet;\n \n     for (i = 0; i < cgc_split_len(); i++) {\n-        srabbit = &split_hand[i];\n+        srabbit = &split_hand[i % VMWPVS_REQ_COUNT];\n         player_score = cgc_calc_score(srabbit->player_hand, NULL);\n         if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n             winnings += (srabbit->current_bet * 3) / 2;\n@@ -302,7 +302,7 @@ int cgc_hit()\n     int i = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n \n     if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n         return -1;\n@@ -323,7 +323,7 @@ int cgc_stand()\n     int i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n \n     srabbit->player_finished = TRUE;\n     return cgc_calc_score(srabbit->player_hand, NULL);\n@@ -336,7 +336,7 @@ int cgc_double_down()\n     int score = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n \n     if (!srabbit->double_or_split)\n         return -1;  //Can only double on the first hit\n@@ -364,7 +364,7 @@ int cgc_split()\n     squarerabbit_t *srabbit = g_srabbit;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n-        srabbit = &split_hand[i++];\n+        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n \n     if (!srabbit->double_or_split || !cgc_can_split(srabbit))\n         return -1;  //Can only split or double on the first hit\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-4623-8c426f-squarerabbit.c\n@@ -141,8 +141,8 @@ int cgc_is_player_finished()\n }\n \n int cgc_calc_score(hand_t *srabbit_hand, int *is_soft) {\n-    int score = 0;\n-    int num_ducks = 0;\n+    size_t score = 0;\n+    size_t num_ducks = 0;\n     while (srabbit_hand != NULL) {\n         switch (srabbit_hand->card->face) {\n             case DUCK:\n@@ -175,10 +175,10 @@ int cgc_calc_score(hand_t *srabbit_hand,\n \n int cgc_srabbit_payout()\n {\n-    int i = 0;\n+    size_t i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n     int dealer_score = cgc_calc_score(srabbit->dealer_hand, NULL), player_score;\n-    int winnings = 0;\n+    size_t winnings = 0;\n \n     if (cgc_check_dealer_squarerabbit() && cgc_calc_score(srabbit->player_hand, NULL) != 21) {\n         winnings = (srabbit->current_bet * -1) + srabbit->paid_insurance * 2;\n@@ -298,8 +298,8 @@ int cgc_check_dealer_squarerabbit2()\n int cgc_hit()\n {\n     squarerabbit_t *srabbit = g_srabbit;\n-    int score = 0;\n-    int i = 0;\n+    size_t score = 0;\n+    size_t i = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n         srabbit = &split_hand[i++];\n@@ -320,7 +320,7 @@ int cgc_hit()\n \n int cgc_stand()\n {\n-    int i = 0;\n+    size_t i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n     while (srabbit->player_finished && i < cgc_split_len())\n         srabbit = &split_hand[i++];\n@@ -331,9 +331,9 @@ int cgc_stand()\n \n int cgc_double_down()\n {\n-    int i = 0;\n+    size_t i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n-    int score = 0;\n+    size_t score = 0;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n         srabbit = &split_hand[i++];\n@@ -360,7 +360,7 @@ int cgc_can_split(squarerabbit_t *srabbi\n //split\n int cgc_split()\n {\n-    int i = 0;\n+    size_t i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n \n     while (srabbit->player_finished && i < cgc_split_len())\n@@ -408,7 +408,7 @@ error:\n \n int cgc_dealer_hit()\n {\n-    int score = 0;\n+    size_t score = 0;\n     int is_soft = FALSE;\n     if (!g_srabbit->player_finished)\n         return -1;  // Dealer should only ever hit after all players are done\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-3771-7946d7-squarerabbit.c\n@@ -409,7 +409,7 @@ error:\n int cgc_dealer_hit()\n {\n     int score = 0;\n-    int is_soft = FALSE;\n+    bool is_soft = FALSE;\n     if (!g_srabbit->player_finished)\n         return -1;  // Dealer should only ever hit after all players are done\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-28570-65ee0b-squarerabbit.c\n@@ -237,10 +237,12 @@ int cgc_deal_srabbit(int bet)\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        restorescr(old);\n+        return ret; //Square Rabbit!\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        restorescr(old);\n+        return ret; //Square Rabbit!\n     } else {\n         return 3; //Choose to hit or stand\n     }\n@@ -400,7 +402,8 @@ int cgc_split()\n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n         goto error;\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n \n error:\n     return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-26369-3055fb-squarerabbit.c\n@@ -66,7 +66,7 @@ static void cgc_new_srabbit_game(bet)\n \n static int cgc_dealer_has_duck() {\n     hand_t *dealer = g_srabbit->dealer_hand;\n-    if (dealer->card->face == DUCK)\n+    if (dealer->card->face % DUCK == 0)\n         return TRUE;\n     else\n         return FALSE;\n@@ -235,14 +235,16 @@ int cgc_deal_srabbit(int bet)\n         return 1; //PUSH\n     } else if (cgc_dealer_has_duck()) {\n         return 2; //Check for insurance\n-    } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n-        srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n-    } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n-        srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n-    } else {\n-        return 3; //Choose to hit or stand\n+    } else {if (cgc_calc_score(srabbit->player_hand, NULL) % 21 == 0) {\n+            srabbit->player_finished = TRUE;\n+            return 0; //Square Rabbit!\n+        } else {if (cgc_calc_score(srabbit->player_hand, NULL) % 21 == 0) {\n+                srabbit->player_finished = TRUE;\n+                return 0; //Square Rabbit!\n+            } else {\n+                return 3; //Choose to hit or stand\n+            }\n+        }\n     }\n }\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-2773-887d8a-squarerabbit.c\n@@ -338,7 +338,7 @@ int cgc_double_down()\n     while (srabbit->player_finished && i < cgc_split_len())\n         srabbit = &split_hand[i++];\n \n-    if (!srabbit->double_or_split)\n+    if (srabbit->double_or_split == MAP_FAILED)\n         return -1;  //Can only double on the first hit\n \n     score = cgc_hit();\n@@ -410,7 +410,7 @@ int cgc_dealer_hit()\n {\n     int score = 0;\n     int is_soft = FALSE;\n-    if (!g_srabbit->player_finished)\n+    if (g_srabbit->player_finished == MAP_FAILED)\n         return -1;  // Dealer should only ever hit after all players are done\n \n     score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-3954-e5f78f-squarerabbit.c\n@@ -250,7 +250,7 @@ void cgc_pay_insurance()\n {\n     squarerabbit_t *srabbit = g_srabbit;\n \n-    g_srabbit->paid_insurance = srabbit->current_bet / 2;\n+    g_srabbit->paid_insurance = 2;\n }\n \n int cgc_check_player_squarerabbit(squarerabbit_t *srabbit)\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-27717-411d58-squarerabbit.c\n@@ -232,7 +232,7 @@ int cgc_deal_srabbit(int bet)\n \n     if (cgc_calc_score(srabbit->player_hand, NULL) == 21 && cgc_calc_score(srabbit->dealer_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 1; //PUSH\n+        return (1); //PUSH\n     } else if (cgc_dealer_has_duck()) {\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-24851-2d81de-squarerabbit.c\n@@ -301,7 +301,7 @@ int cgc_hit()\n     int score = 0;\n     int i = 0;\n \n-    while (srabbit->player_finished && i < cgc_split_len())\n+    while (srabbit->player_finished && cgc_split_len() >= i)\n         srabbit = &split_hand[i++];\n \n     if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n@@ -322,7 +322,7 @@ int cgc_stand()\n {\n     int i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n-    while (srabbit->player_finished && i < cgc_split_len())\n+    while (srabbit->player_finished && cgc_split_len() >= i)\n         srabbit = &split_hand[i++];\n \n     srabbit->player_finished = TRUE;\n@@ -335,7 +335,7 @@ int cgc_double_down()\n     squarerabbit_t *srabbit = g_srabbit;\n     int score = 0;\n \n-    while (srabbit->player_finished && i < cgc_split_len())\n+    while (srabbit->player_finished && cgc_split_len() >= i)\n         srabbit = &split_hand[i++];\n \n     if (!srabbit->double_or_split)\n@@ -363,7 +363,7 @@ int cgc_split()\n     int i = 0;\n     squarerabbit_t *srabbit = g_srabbit;\n \n-    while (srabbit->player_finished && i < cgc_split_len())\n+    while (srabbit->player_finished && cgc_split_len() >= i)\n         srabbit = &split_hand[i++];\n \n     if (!srabbit->double_or_split || !cgc_can_split(srabbit))\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-26375-644ed3-squarerabbit.c\n@@ -250,7 +250,7 @@ void cgc_pay_insurance()\n {\n     squarerabbit_t *srabbit = g_srabbit;\n \n-    g_srabbit->paid_insurance = srabbit->current_bet / 2;\n+    g_srabbit->paid_insurance = srabbit->current_bet / 2 + 1;\n }\n \n int cgc_check_player_squarerabbit(squarerabbit_t *srabbit)\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-6390-520d02-squarerabbit.c\n@@ -48,7 +48,7 @@ static void cgc_clear_split_squarerabbit\n     int i;\n     squarerabbit_t *temp;\n \n-    for (i = 0; i < cgc_split_len(); i++) {\n+    for (i = 1; i <= cgc_split_len(); i++) {\n         temp = &split_hand[i];\n         temp->dealer_hand = NULL;\n         cgc_clear_squarerabbit(temp);\n@@ -116,7 +116,7 @@ int cgc_all_hands_busted()\n     squarerabbit_t *temp = g_srabbit;\n     if (temp->busted == FALSE)\n         return FALSE;\n-    for (i = 0; i < cgc_split_len(); i++) {\n+    for (i = 1; i <= cgc_split_len(); i++) {\n         temp = &split_hand[i];\n         if (temp->busted == FALSE)\n             return FALSE;\n@@ -131,7 +131,7 @@ int cgc_is_player_finished()\n     squarerabbit_t *temp = g_srabbit;\n     if (temp->player_finished == FALSE)\n         return FALSE;\n-    for (i = 0; i < cgc_split_len(); i++) {\n+    for (i = 1; i <= cgc_split_len(); i++) {\n         temp = &split_hand[i];\n         if (temp->player_finished == FALSE)\n             return FALSE;\n@@ -199,7 +199,7 @@ int cgc_srabbit_payout()\n     else if (dealer_score < player_score)\n         winnings += srabbit->current_bet;\n \n-    for (i = 0; i < cgc_split_len(); i++) {\n+    for (i = 1; i <= cgc_split_len(); i++) {\n         srabbit = &split_hand[i];\n         player_score = cgc_calc_score(srabbit->player_hand, NULL);\n         if (cgc_check_player_squarerabbit(srabbit) && dealer_score != 21)\n@@ -223,7 +223,7 @@ int cgc_deal_srabbit(int bet)\n \n     squarerabbit_t *srabbit = g_srabbit;\n     cgc_new_srabbit_game(bet);\n-    for (i = 0; i < 2; i++) {\n+    for (i = 1; i <= 2; i++) {\n         if (cgc_get_card(&g_srabbit->player_hand, cgc_draw_card(g_srabbit->deck)) != 0 ||\n             cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) != 0) {\n             return -1;  // Couldn't get cards from the deck\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-1730-895216-squarerabbit.c\n@@ -369,11 +369,11 @@ int cgc_split()\n     if (!srabbit->double_or_split || !cgc_can_split(srabbit))\n         return -1;  //Can only split or double on the first hit\n #ifdef PATCHED\n-    if (g_srabbit->split_len >= MAX_SPLIT)\n+    if (ntohs(MAX_SPLIT) <= ntohs(g_srabbit->split_len))\n         return -1;\n     g_srabbit->split_len++;\n #else\n-    if (g_srabbit->split_len++ >= MAX_SPLIT)\n+    if (ntohs(MAX_SPLIT) <= ntohs(g_srabbit->split_len++))\n         return -1;\n #endif\n \n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-32124-55c987-squarerabbit.c\n@@ -237,10 +237,10 @@ int cgc_deal_srabbit(int bet)\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return ZEND_HASH_APPLY_KEEP; //Square Rabbit!\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 0; //Square Rabbit!\n+        return ZEND_HASH_APPLY_KEEP; //Square Rabbit!\n     } else {\n         return 3; //Choose to hit or stand\n     }\n@@ -400,7 +400,7 @@ int cgc_split()\n     if (cgc_get_card(&split_srabbit->player_hand, cgc_draw_card(split_srabbit->deck)) != 0)\n         goto error;\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n \n error:\n     return -1;\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-28065-971f42-squarerabbit.c\n@@ -226,7 +226,7 @@ int cgc_deal_srabbit(int bet)\n     for (i = 0; i < 2; i++) {\n         if (cgc_get_card(&g_srabbit->player_hand, cgc_draw_card(g_srabbit->deck)) != 0 ||\n             cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) != 0) {\n-            return -1;  // Couldn't get cards from the deck\n+            return 0;  // Couldn't get cards from the deck\n         }\n     }\n \n@@ -305,7 +305,7 @@ int cgc_hit()\n         srabbit = &split_hand[i++];\n \n     if (cgc_get_card(&srabbit->player_hand, cgc_draw_card(srabbit->deck)) != 0)\n-        return -1;\n+        return 0;\n \n     score = cgc_calc_score(srabbit->player_hand, NULL);\n     if (score > 21) {\n@@ -339,7 +339,7 @@ int cgc_double_down()\n         srabbit = &split_hand[i++];\n \n     if (!srabbit->double_or_split)\n-        return -1;  //Can only double on the first hit\n+        return 0;  //Can only double on the first hit\n \n     score = cgc_hit();\n     srabbit->player_finished = TRUE;\n@@ -367,14 +367,14 @@ int cgc_split()\n         srabbit = &split_hand[i++];\n \n     if (!srabbit->double_or_split || !cgc_can_split(srabbit))\n-        return -1;  //Can only split or double on the first hit\n+        return 0;  //Can only split or double on the first hit\n #ifdef PATCHED\n     if (g_srabbit->split_len >= MAX_SPLIT)\n-        return -1;\n+        return 0;\n     g_srabbit->split_len++;\n #else\n     if (g_srabbit->split_len++ >= MAX_SPLIT)\n-        return -1;\n+        return 0;\n #endif\n \n     i = g_srabbit->split_len - 1;\n@@ -403,7 +403,7 @@ int cgc_split()\n     return 0;\n \n error:\n-    return -1;\n+    return 0;\n }\n \n int cgc_dealer_hit()\n@@ -411,7 +411,7 @@ int cgc_dealer_hit()\n     int score = 0;\n     int is_soft = FALSE;\n     if (!g_srabbit->player_finished)\n-        return -1;  // Dealer should only ever hit after all players are done\n+        return 0;  // Dealer should only ever hit after all players are done\n \n     score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n     if (cgc_all_hands_busted())\n@@ -425,7 +425,7 @@ int cgc_dealer_hit()\n             break;\n \n         if (cgc_get_card(&g_srabbit->dealer_hand, cgc_draw_card(g_srabbit->deck)) != 0)\n-            return -1;\n+            return 0;\n \n         score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n     }\n",
+        "--- /tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c\n+++ /tmp/cocci-output-27421-715866-squarerabbit.c\n@@ -232,7 +232,7 @@ int cgc_deal_srabbit(int bet)\n \n     if (cgc_calc_score(srabbit->player_hand, NULL) == 21 && cgc_calc_score(srabbit->dealer_hand, NULL) == 21) {\n         srabbit->player_finished = TRUE;\n-        return 1; //PUSH\n+        ret = 1; //PUSH\n     } else if (cgc_dealer_has_duck()) {\n         return 2; //Check for insurance\n     } else if (cgc_calc_score(srabbit->player_hand, NULL) == 21) {\n"
+      ]
+    }
+  ],
+  "compilations": 15,
+  "failed_compilations": 14,
+  "outcomes": {
+    "fc8a5179": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:52:32: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n                               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:120:32: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n                               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:135:32: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        temp = &split_hand[i % VMWPVS_REQ_COUNT];\n                               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:203:35: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        srabbit = &split_hand[i % VMWPVS_REQ_COUNT];\n                                  ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:305:37: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n                                    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:326:37: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n                                    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:339:37: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n                                    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:367:37: error: use of undeclared identifier 'VMWPVS_REQ_COUNT'\n        srabbit = &split_hand[i++ % VMWPVS_REQ_COUNT];\n                                    ^\n8 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0c267edf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "39f08387": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:52:14: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        temp = split_hand[i];\n             ^ ~~~~~~~~~~~~~\n               &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:120:14: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        temp = split_hand[i];\n             ^ ~~~~~~~~~~~~~\n               &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:135:14: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        temp = split_hand[i];\n             ^ ~~~~~~~~~~~~~\n               &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:203:17: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        srabbit = split_hand[i];\n                ^ ~~~~~~~~~~~~~\n                  &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:305:17: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        srabbit = split_hand[i++];\n                ^ ~~~~~~~~~~~~~~~\n                  &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:326:17: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        srabbit = split_hand[i++];\n                ^ ~~~~~~~~~~~~~~~\n                  &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:339:17: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        srabbit = split_hand[i++];\n                ^ ~~~~~~~~~~~~~~~\n                  &\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:367:17: error: assigning to 'squarerabbit_t *' (aka 'struct squarerabbit *') from incompatible type 'squarerabbit_t' (aka 'struct squarerabbit'); take the address with &\n        srabbit = split_hand[i++];\n                ^ ~~~~~~~~~~~~~~~\n                  &\n8 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7d9ab0eb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c9c0eef6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 8
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "40a58e7b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3d433a32": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e1e5f88e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o: In function `cgc_calc_score':\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:151: undefined reference to `fatalx'\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:156: undefined reference to `fatalx'\nCMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o: In function `cgc_dealer_hit':\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:425: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Square_Rabbit/Square_Rabbit] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "bfa9f0a2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "7dc1628a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:341:37: error: use of undeclared identifier 'MAP_FAILED'\n    if (srabbit->double_or_split == MAP_FAILED)\n                                    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:413:39: error: use of undeclared identifier 'MAP_FAILED'\n    if (g_srabbit->player_finished == MAP_FAILED)\n                                      ^\n2 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "55ef09f9": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:240:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD); //Square Rabbit!\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:243:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD); //Square Rabbit!\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:403:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n3 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "d162fdba": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d61e804": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2084adeb": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:235:9: error: use of undeclared identifier 'ret'; did you mean 'bet'?\n        ret = 1; //PUSH\n        ^~~\n        bet\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:220:26: note: 'bet' declared here\nint cgc_deal_srabbit(int bet)\n                         ^\n1 error generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f3969248": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bf21df90": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:240:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:241:16: error: use of undeclared identifier 'ret'; did you mean 'bet'?\n        return ret; //Square Rabbit!\n               ^~~\n               bet\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:220:26: note: 'bet' declared here\nint cgc_deal_srabbit(int bet)\n                         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:244:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:245:16: error: use of undeclared identifier 'ret'; did you mean 'bet'?\n        return ret; //Square Rabbit!\n               ^~~\n               bet\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:220:26: note: 'bet' declared here\nint cgc_deal_srabbit(int bet)\n                         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:405:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:406:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n6 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a95d9f51": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:240:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP; //Square Rabbit!\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:243:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP; //Square Rabbit!\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:403:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n3 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f103df4a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:144:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t score = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:144:12: error: use of undeclared identifier 'score'\n    size_t score = 0;\n           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:145:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t num_ducks = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:145:12: error: use of undeclared identifier 'num_ducks'\n    size_t num_ducks = 0;\n           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:149:17: error: use of undeclared identifier 'num_ducks'\n                num_ducks++;\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:150:17: error: use of undeclared identifier 'score'\n                score += 1;\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:155:17: error: use of undeclared identifier 'score'\n                score += 10;\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:158:17: error: use of undeclared identifier 'score'\n                score += srabbit_hand->card->face;\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:164:9: error: use of undeclared identifier 'score'\n    if (score <= 11 && num_ducks) {\n        ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:164:24: error: use of undeclared identifier 'num_ducks'\n    if (score <= 11 && num_ducks) {\n                       ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:165:9: error: use of undeclared identifier 'score'\n        score += 10;\n        ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:173:12: error: use of undeclared identifier 'score'\n    return score;\n           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:178:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t i = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:178:12: error: use of undeclared identifier 'i'\n    size_t i = 0;\n           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:181:5: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n    size_t winnings = 0;\n    ^~~~~~\n    sizeof\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:181:12: error: use of undeclared identifier 'winnings'\n    size_t winnings = 0;\n           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:184:9: error: use of undeclared identifier 'winnings'\n        winnings = (srabbit->current_bet * -1) + srabbit->paid_insurance * 2;\n        ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:185:16: error: use of undeclared identifier 'winnings'\n        return winnings;\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:188:5: error: use of undeclared identifier 'winnings'\n    winnings -= srabbit->paid_insurance;\n    ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3ad2cac7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:240:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1; //Square Rabbit!\n        ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:243:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1; //Square Rabbit!\n        ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:403:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n3 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1b420edb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ea8caa42": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "23cf5e45": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "38ac24f5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f302a9d7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:412:5: error: use of undeclared identifier 'bool'\n    bool is_soft = FALSE;\n    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:416:53: error: use of undeclared identifier 'is_soft'\n    score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n                                                    ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:424:29: error: use of undeclared identifier 'is_soft'\n        if (score == 17 && !is_soft)\n                            ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:430:57: error: use of undeclared identifier 'is_soft'\n        score = cgc_calc_score(g_srabbit->dealer_hand, &is_soft);\n                                                        ^\n4 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "1ab26609": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:51:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:51:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:51:38: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                                     ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:52:28: error: use of undeclared identifier 'i'\n        temp = &split_hand[i];\n                           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:119:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:119:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:119:38: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                                     ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:120:28: error: use of undeclared identifier 'i'\n        temp = &split_hand[i];\n                           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:134:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:134:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:134:38: error: use of undeclared identifier 'i'\n    for (i = 0; i < cgc_split_len(); i++) {\n                                     ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:135:28: error: use of undeclared identifier 'i'\n        temp = &split_hand[i];\n                           ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:226:10: error: use of undeclared identifier 'i'\n    for (i = 0; i < 2; i++) {\n         ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:226:17: error: use of undeclared identifier 'i'\n    for (i = 0; i < 2; i++) {\n                ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:226:24: error: use of undeclared identifier 'i'\n    for (i = 0; i < 2; i++) {\n                       ^\n15 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b25380d5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:392:16: error: use of undeclared identifier 'VLC_EGENERIC'\n        return VLC_EGENERIC;\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:395:16: error: use of undeclared identifier 'VLC_EGENERIC'\n        return VLC_EGENERIC;\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:398:16: error: use of undeclared identifier 'VLC_EGENERIC'\n        return VLC_EGENERIC;\n               ^\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:401:16: error: use of undeclared identifier 'VLC_EGENERIC'\n        return VLC_EGENERIC;\n               ^\n4 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9cc47708": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 27
+          }
+        ]
+      }
+    },
+    "6156bc06": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 5
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "27b2d49c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:193:30: error: subscripted value is not an array, pointer, or vector\n    else {if (srabbit->busted[0])\n              ~~~~~~~~~~~~~~~^~\n/tmp/FlexiRepair/Square_Rabbit_0/Square_Rabbit/src/squarerabbit.c:208:34: error: subscripted value is not an array, pointer, or vector\n        else {if (srabbit->busted[0])\n                  ~~~~~~~~~~~~~~~^~\n2 errors generated.\nmake[2]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/src/squarerabbit.c.o] Error 1\nmake[1]: *** [Square_Rabbit/CMakeFiles/Square_Rabbit.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 3,
+  "passed_pos_tests": 225,
+  "failed_neg_tests": 12,
+  "failed_pos_tests": 75,
+  "duration": 1307.251148,
+  "errors": []
+}

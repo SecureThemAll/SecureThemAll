@@ -1,0 +1,4030 @@
+{
+  "repair_begin": "2021-05-08 14:19:02.227929",
+  "repair_end": "2021-05-08 15:18:39.801446",
+  "patches": [
+    {
+      "target_file": "src/packet.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-15881-d27d0d-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i != 0 && i % 2 == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i != 0 && i % 2 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i != 0 && i % 2 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i != 0 && i % 2 == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-23584-3dfa00-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) == 0 && i != 6)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) == 0 && i != 6)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) == 0 && i != 6)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) == 0 && i != 6)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-8950-4cb1af-packet.c\n@@ -31,7 +31,7 @@ THE SOFTWARE.\n // reads user-sent string and saves it into a Packet struct\n int cgc_populate_packet(Packet *pkt, char* data, int len)\n {\n-\tif (len != sizeof(Packet))\n+\tif (len < sizeof(Packet) || len > sizeof(Packet) + strlen(sizeof(Packet)))\n \t{\n \t\tcgc_printf(\"not proper packet length: got @d, should be @d\\n\", len, sizeof(Packet));\n \t\treturn FAIL;\n@@ -86,10 +86,10 @@ int cgc_validate_packet(Packet *pkt)\n \t\tret = FAIL;\n \t}\n \n-\tif (pkt->subtype != ASSREQ)\n+\tif (pkt->subtype < ASSREQ || pkt->subtype > ASSREQ + strlen(ASSREQ))\n \t{\n \t\t// verify connection number\n-\t\tif ((pkt->conn_number - '0') != current_connection_number)\n+\t\tif ((pkt->conn_number - '0') < current_connection_number || (pkt->conn_number - '0') > current_connection_number + strlen(current_connection_number))\n \t\t{\n \t\t\tcgc_printf(\"connection number not valid: @c vs @c\\n\", pkt->conn_number, current_connection_number+'0');\n \t\t\tret = FAIL;\n@@ -97,7 +97,7 @@ int cgc_validate_packet(Packet *pkt)\n \t}\n \n \tchar checksum = cgc_get_checksum(pkt);\n-\tif (pkt->checksum != checksum)\n+\tif (pkt->checksum < checksum || pkt->checksum > checksum + strlen(checksum))\n \t{\n \t\tcgc_printf(\"checksum does not match @c vs @d\", checksum, pkt->checksum);\n \t\tcgc_printf(\"@s\\n\", (char*)pkt);\n@@ -275,7 +275,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t// if the road was placed on another road, update max length\n \t\t\t\t// the pkt->content will say which two pieces are to be connected\n \t\t\t\t// format: <pieceA #><sideA>:<pieceB #><sideB>\n-\t\t\t\tif ((pkt->length - '0') != 5)\n+\t\t\t\tif ((pkt->length - '0') < 5 || (pkt->length - '0') > 5 + strlen(5))\n \t\t\t\t{\n \t\t\t\t\treturn FAIL; // wrong length for placing a piece\n \t\t\t\t}\n@@ -486,7 +486,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\tchar matches = SUCCESS;\n \t\t\tfor (int i = 0; i < 5; i++)\n \t\t\t{\n-\t\t\t\tif (answer[i] != enc_chal.answer[i])\n+\t\t\t\tif (answer[i] < enc_chal.answer[i] || answer[i] > enc_chal.answer[i] + strlen(enc_chal.answer[i]))\n \t\t\t\t\tmatches = FAIL; \n \t\t\t}\n \n@@ -521,7 +521,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\tchar matches = SUCCESS;\n \t\t\tfor (int i = 0; i < 5; i++)\n \t\t\t{\n-\t\t\t\tif (answer[i] != enc_chal.answer[i])\n+\t\t\t\tif (answer[i] < enc_chal.answer[i] || answer[i] > enc_chal.answer[i] + strlen(enc_chal.answer[i]))\n \t\t\t\t\tmatches = FAIL; \n \t\t\t}\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-23641-2ef91d-packet.c\n@@ -843,7 +843,7 @@ int cgc_check_win(int goal)\n \t\t#else\n \t\tint len = cgc_receive_until(buff, '\\n', 5);\n \t\t#endif\n-\t\tbuff[len] = 0x00;\n+\t\tbuff[len] = -5;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-21039-2b2ca0-packet.c\n@@ -324,7 +324,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\t// successful placement\n \t\t\t\t\ttmp_pkt.type = DATA;\n \t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\t\ttmp_pkt.content[0] = '0' - cgc_current_max_road_len;\n \n \t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n \n@@ -336,7 +336,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t{\n \t\t\t\ttmp_pkt.type = DATA;\n \t\t\t\ttmp_pkt.subtype = GETLEN;\n-\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\ttmp_pkt.content[0] = '0' - cgc_current_max_road_len;\n \n \t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n \n@@ -393,7 +393,7 @@ void cgc_send_nack(char pktnum, int reas\n \ttmp.type = CONTROL;\n \ttmp.subtype = NACK;\n \ttmp.content[0] = pktnum;\n-\ttmp.content[1] = reason + '0';\n+\ttmp.content[1] = reason - '0';\n \t\n \tcurrent_packet_count_recvd++;\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-16749-d37f25-packet.c\n@@ -514,7 +514,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n \t\t\t}\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t\tcase ENC_ONE:\n \t\t{\n@@ -549,7 +549,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n \t\t\t}\n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t\t}\n \t\tdefault:\n \t\t\treturn FALSE;\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-12272-9190ce-packet.c\n@@ -760,7 +760,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\treturn (1);\n }\n \n // this will decrypt the chars sent to it using XOR and save the result in the given packet\n@@ -827,7 +827,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\treturn (1);\n }\n \n // return 1 if we won\n@@ -845,7 +845,7 @@ int cgc_check_win(int goal)\n \t\t#endif\n \t\tbuff[len] = 0x00;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n-\t\treturn 1;\n+\t\treturn (1);\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-10930-195dc6-packet.c\n@@ -115,9 +115,9 @@ int cgc_validate_packet(Packet *pkt)\n // returns FALSE if \n int cgc_packet_handler(Packet* pkt)//, Game *game)\n {\n-\tif (pkt->type == MGMT)\n+\tif (pkt->type % MGMT == 0)\n \t{\n-\t\tif (pkt->subtype == ASSREQ)\n+\t\tif (pkt->subtype % ASSREQ == 0)\n \t\t{\n \t\t\t// verify requested connection number is next number\n \t\t\t// if so, send response: association accepted\n@@ -126,55 +126,62 @@ int cgc_packet_handler(Packet* pkt)//, G\n \n \t\t\treturn SUCCESS;\n \t\t}\n-\t\telse if (pkt->subtype == ASSRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHREQ)\n-\t\t{\n-\t\t\tcgc_send_auth_response(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHCHALRESP)\n-\t\t{\n-\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\telse {if (pkt->subtype % ASSRESP == 0)\n \t\t\t{\n-\t\t\t\tcgc_printf(\"Failed disass\\n\");\n-\t\t\t\treturn 2; // quit the program\n-\t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISRESP)\n-\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n-\t\t\t{\n-\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n-\t\t\t\treturn 2; // quit the program\n+\t\t\t\treturn FAIL;\n \t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHRESP)\n-\t\t{\n+\t\t\telse {if (pkt->subtype % AUTHREQ == 0)\n+\t\t\t\t{\n+\t\t\t\t\tcgc_send_auth_response(pkt->content);\n+\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t}\n+\t\t\t\telse {if (pkt->subtype % AUTHRESP == 0)\n+\t\t\t\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (pkt->subtype % AUTHCHALRESP == 0)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse {if (pkt->subtype % DISREQ == 0)\n+\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Failed disass\\n\");\n+\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\telse {if (pkt->subtype % DISRESP == 0)\n+\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\telse {if (pkt->subtype % DEAUTHREQ == 0)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n+\t\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n+\t\t\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\telse if (pkt->subtype == DEAUTHRESP)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n+\t\t\t\t}\n+\t\t\t}\n \t\t}\n \t}\n \telse if (pkt->type == DATA)\n@@ -192,7 +199,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\tcgc_send_ack(pkt->packet_number);\n \n \t\t\t// handle game mechanics here\n-\t\t\tif (pkt->subtype == NXTPCE)\n+\t\t\tif (pkt->subtype % NXTPCE == 0)\n \t\t\t{\n \t\t\t\tPiece piece;\n \n@@ -201,7 +208,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\tif (rtn != SUCCESS)\n \t\t\t\t{\n \t\t\t\t\t// nope, can't create a new piece\n-\t\t\t\t\tif (rtn == 33)\n+\t\t\t\t\tif (rtn % 33 == 0)\n \t\t\t\t\t{\n \t\t\t\t\t\tchar *t = \"nfull\";\n \t\t\t\t\t\t// stack is full. game over\n@@ -212,28 +219,29 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, cgc_strlen(t));\n \t\t\t\t\t\treturn SUCCESS;\n \t\t\t\t\t}\n-\t\t\t\t\telse if (rtn == 22)\n-\t\t\t\t\t{\n+\t\t\t\t\telse {if (rtn % 22 == 0)\n+\t\t\t\t\t\t{\n \t\t\t\t\t\t// top piece already there. tell user there is already a piece to be used\n-\t\t\t\t\t\tPacket tmp;\n-\t\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\t\ttmp.subtype = NXTPCE;\n-\t\t\t\t\t\tcgc_strncpy(tmp.content, \"nusetop\", 7);\n-\n-\t\t\t\t\t\tcgc_send_packet_new(&tmp, 7);\n-\t\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t\t}\n-\t\t\t\t\telse\n-\t\t\t\t\t{\n+\t\t\t\t\t\t\tPacket tmp;\n+\t\t\t\t\t\t\ttmp.type = DATA;\n+\t\t\t\t\t\t\ttmp.subtype = NXTPCE;\n+\t\t\t\t\t\t\tcgc_strncpy(tmp.content, \"nusetop\", 7);\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp, 7);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n \t\t\t\t\t\t// not sure why it failed\n \t\t\t\t\t\t// print failure\n-\t\t\t\t\t\tPacket tmp;\n-\t\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\t\ttmp.subtype = NXTPCE;\n-\t\t\t\t\t\tcgc_strncpy(tmp.content, \"nconfused\", 9);\n-\n-\t\t\t\t\t\tcgc_send_packet_new(&tmp, 9);\n-\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\tPacket tmp;\n+\t\t\t\t\t\t\ttmp.type = DATA;\n+\t\t\t\t\t\t\ttmp.subtype = NXTPCE;\n+\t\t\t\t\t\t\tcgc_strncpy(tmp.content, \"nconfused\", 9);\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp, 9);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n \t\t\t\t\t}\n \t\t\t\t}\n \t\t\t\telse\n@@ -253,116 +261,119 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\treturn SUCCESS;\n \t\t\t\t}\n \t\t\t}\n-\t\t\telse if (pkt->subtype == PLCPCE)\n-\t\t\t{\n-\t\t\t\t// check encryption is valid\n-\t\t\t\tif (current_encryption == ENC_ONE)\n+\t\t\telse {if (pkt->subtype % PLCPCE == 0)\n \t\t\t\t{\n+\t\t\t\t// check encryption is valid\n+\t\t\t\t\tif (current_encryption % ENC_ONE == 0)\n+\t\t\t\t\t{\n \t\t\t\t\t// verify that data is properly encrypted\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n-\t\t\t\t}\n-\t\t\t\telse if (current_encryption == ENC_TWO)\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (current_encryption % ENC_TWO == 0)\n+\t\t\t\t\t\t{\n \t\t\t\t\t// saves the decrypted content overtop the pkt->content pointer (same length)\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n \t\t\t\t\t// encryption is required\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n+\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \n \t\t\t\t// if the road was placed on another road, update max length\n \t\t\t\t// the pkt->content will say which two pieces are to be connected\n \t\t\t\t// format: <pieceA #><sideA>:<pieceB #><sideB>\n-\t\t\t\tif ((pkt->length - '0') != 5)\n-\t\t\t\t{\n-\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n-\t\t\t\t}\n-\t\t\t\tif (game_stack.top_element < 1)\n-\t\t\t\t{\n-\t\t\t\t\tchar *ss = \"NO,PCE\";\n+\t\t\t\t\tif ((pkt->length - '0') != 5)\n+\t\t\t\t\t{\n+\t\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n+\t\t\t\t\t}\n+\t\t\t\t\tif (game_stack.top_element < 1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tchar *ss = \"NO,PCE\";\n \t\t\t\t\t// error, must get another piece first\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \n-\t\t\t\tchar sideA = pkt->content[1];\n+\t\t\t\t\tchar sideA = pkt->content[1];\n \t\t\t\t// pkt->content[2] is a colon\n-\t\t\t\tchar sideB = pkt->content[4];\n-\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n-\t\t\t\tif (indexA == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n-\t\t\t\tif (indexB == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') == FAIL)\n-\t\t\t\t{\n+\t\t\t\t\tchar sideB = pkt->content[4];\n+\t\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n+\t\t\t\t\tif (indexA == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n+\t\t\t\t\tif (indexB == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') % FAIL == 0)\n+\t\t\t\t\t{\n \t\t\t\t\t// failed to connect pieces\n-\t\t\t\t\tchar *ss = \"NO,ERROR\";\n+\t\t\t\t\t\tchar *ss = \"NO,ERROR\";\n \t\t\t\t\t// user may have asked to connect two sides that don't both have roads\n-\t\t\t\t\tPacket tmp;\n-\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\ttmp.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n+\t\t\t\t\t\tPacket tmp;\n+\t\t\t\t\t\ttmp.type = DATA;\n+\t\t\t\t\t\ttmp.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse\n+\t\t\t\t\t{\n \t\t\t\t\t// successful placement\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == GETLEN)\n-\t\t\t{\n-\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\ttmp_pkt.subtype = GETLEN;\n-\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\telse {if (pkt->subtype % GETLEN == 0)\n+\t\t\t\t\t{\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = GETLEN;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n \n-\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\treturn SUCCESS;\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == DCDPCE)\n-\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse if (pkt->subtype == DCDPCE)\n+\t\t\t\t\t{\n \t\t\t\t// discard the top piece\n-\t\t\t\tif (cgc_discard_piece() == SUCCESS)\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = 'y';\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tif (cgc_discard_piece() % SUCCESS == 0)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\ttmp_pkt.content[0] = 'y';\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t}\n \t\t}\n@@ -403,7 +414,7 @@ void cgc_send_nack(char pktnum, int reas\n // requested connection passed in as number\n void cgc_send_assoc_response(char req_conn)\n {\n-\tif (req_conn == last_connection_number+1)\n+\tif (req_conn % (last_connection_number + 1) == 0)\n \t{\n \t\t// reset packet counts for this new connection\n \t\tlast_connection_number += 1;\n@@ -436,19 +447,20 @@ void cgc_send_assoc_response(char req_co\n void cgc_send_auth_response(char* req_enc)\n {\n \t// pick from valid authentication types\n-\tif (req_enc[0] == 'a')\n+\tif (req_enc[0] % 'a' == 0)\n \t{\n \t\tcgc_send_auth_challenge(ENC_ONE);\n \t}\n-\telse if (req_enc[0] == 'x')\n-\t{\t\n-\t\tcgc_send_auth_challenge(ENC_TWO);\n-\t}\n-\telse\n-\t{\n+\telse {if (req_enc[0] % 'x' == 0)\n+\t\t{\t\n+\t\t\tcgc_send_auth_challenge(ENC_TWO);\n+\t\t}\n+\t\telse\n+\t\t{\n \t\t// unsuccessful association\n-\t\tcgc_printf(\"AUTH RESP sent: fail\\n\");\n-\t\tcgc_printf(\"requested: @s, next: @c\\n\", req_enc);\n+\t\t\tcgc_printf(\"AUTH RESP sent: fail\\n\");\n+\t\t\tcgc_printf(\"requested: @s, next: @c\\n\", req_enc);\n+\t\t}\n \t}\n }\n \n@@ -638,7 +650,7 @@ void cgc_send_packet(Packet *pkt)\n // len is the number of characters being used in the content field\n void cgc_send_packet_new(Packet *pkt, int len)\n {\n-\tif (pkt->type == DATA) // data \n+\tif (pkt->type % DATA == 0) // data \n \t{\n \t\tpkt->packet_number = ++current_packet_count_sent + '0';\n \t}\n@@ -711,7 +723,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) % 0 == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +753,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) % 0 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +790,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) % 0 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +821,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif ((i % 2) % 0 == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-8619-67be11-packet.c\n@@ -708,7 +708,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -738,7 +738,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -775,7 +775,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -806,7 +806,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn (BUS_PROBE_NOWILDCARD);\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -847,6 +847,6 @@ int cgc_check_win(int goal)\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn (BUS_PROBE_NOWILDCARD);\n }\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-8893-74259d-packet.c\n@@ -708,7 +708,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -738,7 +738,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -775,7 +775,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -806,7 +806,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\tno_draw = 1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -847,6 +847,6 @@ int cgc_check_win(int goal)\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\tno_draw = 1;\n }\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-10995-8676ee-packet.c\n@@ -115,9 +115,9 @@ int cgc_validate_packet(Packet *pkt)\n // returns FALSE if \n int cgc_packet_handler(Packet* pkt)//, Game *game)\n {\n-\tif (pkt->type == MGMT)\n+\tif (pkt->type == -1)\n \t{\n-\t\tif (pkt->subtype == ASSREQ)\n+\t\tif (pkt->subtype == -1)\n \t\t{\n \t\t\t// verify requested connection number is next number\n \t\t\t// if so, send response: association accepted\n@@ -126,55 +126,62 @@ int cgc_packet_handler(Packet* pkt)//, G\n \n \t\t\treturn SUCCESS;\n \t\t}\n-\t\telse if (pkt->subtype == ASSRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHREQ)\n-\t\t{\n-\t\t\tcgc_send_auth_response(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHCHALRESP)\n-\t\t{\n-\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\telse {if (pkt->subtype == -1)\n \t\t\t{\n-\t\t\t\tcgc_printf(\"Failed disass\\n\");\n-\t\t\t\treturn 2; // quit the program\n-\t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISRESP)\n-\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n-\t\t\t{\n-\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n-\t\t\t\treturn 2; // quit the program\n+\t\t\t\treturn FAIL;\n \t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHRESP)\n-\t\t{\n+\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t{\n+\t\t\t\t\tcgc_send_auth_response(pkt->content);\n+\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t}\n+\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Failed disass\\n\");\n+\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n+\t\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n+\t\t\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\telse if (pkt->subtype == DEAUTHRESP)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n+\t\t\t\t}\n+\t\t\t}\n \t\t}\n \t}\n \telse if (pkt->type == DATA)\n@@ -192,7 +199,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\tcgc_send_ack(pkt->packet_number);\n \n \t\t\t// handle game mechanics here\n-\t\t\tif (pkt->subtype == NXTPCE)\n+\t\t\tif (pkt->subtype == -1)\n \t\t\t{\n \t\t\t\tPiece piece;\n \n@@ -253,116 +260,119 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\treturn SUCCESS;\n \t\t\t\t}\n \t\t\t}\n-\t\t\telse if (pkt->subtype == PLCPCE)\n-\t\t\t{\n-\t\t\t\t// check encryption is valid\n-\t\t\t\tif (current_encryption == ENC_ONE)\n+\t\t\telse {if (pkt->subtype == -1)\n \t\t\t\t{\n+\t\t\t\t// check encryption is valid\n+\t\t\t\t\tif (current_encryption == -1)\n+\t\t\t\t\t{\n \t\t\t\t\t// verify that data is properly encrypted\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n-\t\t\t\t}\n-\t\t\t\telse if (current_encryption == ENC_TWO)\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (current_encryption == -1)\n+\t\t\t\t\t\t{\n \t\t\t\t\t// saves the decrypted content overtop the pkt->content pointer (same length)\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n \t\t\t\t\t// encryption is required\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n+\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \n \t\t\t\t// if the road was placed on another road, update max length\n \t\t\t\t// the pkt->content will say which two pieces are to be connected\n \t\t\t\t// format: <pieceA #><sideA>:<pieceB #><sideB>\n-\t\t\t\tif ((pkt->length - '0') != 5)\n-\t\t\t\t{\n-\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n-\t\t\t\t}\n-\t\t\t\tif (game_stack.top_element < 1)\n-\t\t\t\t{\n-\t\t\t\t\tchar *ss = \"NO,PCE\";\n+\t\t\t\t\tif ((pkt->length - '0') != 5)\n+\t\t\t\t\t{\n+\t\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n+\t\t\t\t\t}\n+\t\t\t\t\tif (game_stack.top_element < 1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tchar *ss = \"NO,PCE\";\n \t\t\t\t\t// error, must get another piece first\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \n-\t\t\t\tchar sideA = pkt->content[1];\n+\t\t\t\t\tchar sideA = pkt->content[1];\n \t\t\t\t// pkt->content[2] is a colon\n-\t\t\t\tchar sideB = pkt->content[4];\n-\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n-\t\t\t\tif (indexA == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n-\t\t\t\tif (indexB == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') == FAIL)\n-\t\t\t\t{\n+\t\t\t\t\tchar sideB = pkt->content[4];\n+\t\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n+\t\t\t\t\tif (indexA == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n+\t\t\t\t\tif (indexB == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') == -1)\n+\t\t\t\t\t{\n \t\t\t\t\t// failed to connect pieces\n-\t\t\t\t\tchar *ss = \"NO,ERROR\";\n+\t\t\t\t\t\tchar *ss = \"NO,ERROR\";\n \t\t\t\t\t// user may have asked to connect two sides that don't both have roads\n-\t\t\t\t\tPacket tmp;\n-\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\ttmp.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n+\t\t\t\t\t\tPacket tmp;\n+\t\t\t\t\t\ttmp.type = DATA;\n+\t\t\t\t\t\ttmp.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse\n+\t\t\t\t\t{\n \t\t\t\t\t// successful placement\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == GETLEN)\n-\t\t\t{\n-\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\ttmp_pkt.subtype = GETLEN;\n-\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\telse {if (pkt->subtype == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = GETLEN;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n \n-\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\treturn SUCCESS;\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == DCDPCE)\n-\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse if (pkt->subtype == DCDPCE)\n+\t\t\t\t\t{\n \t\t\t\t// discard the top piece\n-\t\t\t\tif (cgc_discard_piece() == SUCCESS)\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = 'y';\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tif (cgc_discard_piece() == -1)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\ttmp_pkt.content[0] = 'y';\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t}\n \t\t}\n@@ -638,7 +648,7 @@ void cgc_send_packet(Packet *pkt)\n // len is the number of characters being used in the content field\n void cgc_send_packet_new(Packet *pkt, int len)\n {\n-\tif (pkt->type == DATA) // data \n+\tif (pkt->type == -1) // data \n \t{\n \t\tpkt->packet_number = ++current_packet_count_sent + '0';\n \t}\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-18882-450e51-packet.c\n@@ -239,7 +239,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\telse\n \t\t\t\t{\n \t\t\t\t\t// we just create a new piece. send it to the user\n-\t\t\t\t\tchar ss[9];\n+\t\t\t\t\tchar ss[9] = \"\";\n \t\t\t\t\tcgc_piece_to_pkt(&piece, ss); // put piece info into packet format\n \n \t\t\t\t\ttmp_pkt.type = DATA;\n@@ -458,7 +458,7 @@ void cgc_send_auth_challenge(int enc)\n \tenc_chal.pending = TRUE;\n \n \t// Generate a random string to send the user\n-\tchar chall_val[5];\n+\tchar chall_val[5] = \"\";\n \tfor (int i = 0; i < 5; i++) \n \t{\n \t\tchall_val[i] = cgc_random_in_range('a', 'p'); \n@@ -834,7 +834,7 @@ int cgc_decrypt_packet(char *data, int l\n // return 0 if we have not won yet\n int cgc_check_win(int goal)\n {\n-\tchar buff[5];\n+\tchar buff[5] = \"\";\n \tif (cgc_get_max_road_len() >= goal)\n \t{\n \t\tcgc_printf(\"YOU WIN, what is your name?\\n\");\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-22277-1169f9-packet.c\n@@ -843,7 +843,7 @@ int cgc_check_win(int goal)\n \t\t#else\n \t\tint len = cgc_receive_until(buff, '\\n', 5);\n \t\t#endif\n-\t\tbuff[len] = 0x00;\n+\t\tbuff[len] = -1;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-18796-21dd9d-packet.c\n@@ -126,55 +126,62 @@ int cgc_packet_handler(Packet* pkt)//, G\n \n \t\t\treturn SUCCESS;\n \t\t}\n-\t\telse if (pkt->subtype == ASSRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHREQ)\n-\t\t{\n-\t\t\tcgc_send_auth_response(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHRESP)\n-\t\t{\n-\t\t\t// we should not receive this type of packet\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == AUTHCHALRESP)\n-\t\t{\n-\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\telse {if (pkt->subtype == ASSRESP)\n \t\t\t{\n-\t\t\t\tcgc_printf(\"Failed disass\\n\");\n-\t\t\t\treturn 2; // quit the program\n-\t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DISRESP)\n-\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHREQ)\n-\t\t{\n-\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n-\t\t\t{\n-\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n-\t\t\t\treturn 2; // quit the program\n+\t\t\t\treturn FAIL;\n \t\t\t}\n-\t\t\treturn SUCCESS;\n-\t\t}\n-\t\telse if (pkt->subtype == DEAUTHRESP)\n-\t\t{\n+\t\t\telse {if (pkt->subtype == AUTHREQ)\n+\t\t\t\t{\n+\t\t\t\t\tcgc_send_auth_response(pkt->content);\n+\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t}\n+\t\t\t\telse {if (pkt->subtype == AUTHRESP)\n+\t\t\t\t\t{\n \t\t\t// we should not receive this type of packet\n-\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n-\t\t\treturn FAIL;\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (pkt->subtype == AUTHCHALRESP)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_handle_auth_challenge_resp(pkt->content);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse {if (pkt->subtype == DISREQ)\n+\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\tif (cgc_handle_disass_req(pkt->content[0]) == FAIL) // disass reason\n+\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Failed disass\\n\");\n+\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\telse {if (pkt->subtype == DISRESP)\n+\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\telse {if (pkt->subtype == DEAUTHREQ)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\tif (cgc_handle_deauth_req(pkt->content[0]) == FAIL) // deauth reason\n+\t\t\t\t\t\t\t\t\t\t{\n+\t\t\t\t\t\t\t\t\t\t\tcgc_printf(\"failed deauth...leaving\\n\");\n+\t\t\t\t\t\t\t\t\t\t\treturn 2; // quit the program\n+\t\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t\telse if (pkt->subtype == DEAUTHRESP)\n+\t\t\t\t\t\t\t\t\t{\n+\t\t\t// we should not receive this type of packet\n+\t\t\t\t\t\t\t\t\t\tcgc_printf(\"Dissasociation response received\\n\");\n+\t\t\t\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t\t}\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n+\t\t\t\t}\n+\t\t\t}\n \t\t}\n \t}\n \telse if (pkt->type == DATA)\n@@ -253,116 +260,119 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\treturn SUCCESS;\n \t\t\t\t}\n \t\t\t}\n-\t\t\telse if (pkt->subtype == PLCPCE)\n-\t\t\t{\n-\t\t\t\t// check encryption is valid\n-\t\t\t\tif (current_encryption == ENC_ONE)\n+\t\t\telse {if (pkt->subtype == PLCPCE)\n \t\t\t\t{\n+\t\t\t\t// check encryption is valid\n+\t\t\t\t\tif (current_encryption == ENC_ONE)\n+\t\t\t\t\t{\n \t\t\t\t\t// verify that data is properly encrypted\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n-\t\t\t\t}\n-\t\t\t\telse if (current_encryption == ENC_TWO)\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_ONE);\n+\t\t\t\t\t}\n+\t\t\t\t\telse {if (current_encryption == ENC_TWO)\n+\t\t\t\t\t\t{\n \t\t\t\t\t// saves the decrypted content overtop the pkt->content pointer (same length)\n-\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\t\tcgc_decrypt_packet(pkt->content, pkt->length - '0', ENC_TWO);\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n \t\t\t\t\t// encryption is required\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n+\t\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \n \t\t\t\t// if the road was placed on another road, update max length\n \t\t\t\t// the pkt->content will say which two pieces are to be connected\n \t\t\t\t// format: <pieceA #><sideA>:<pieceB #><sideB>\n-\t\t\t\tif ((pkt->length - '0') != 5)\n-\t\t\t\t{\n-\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n-\t\t\t\t}\n-\t\t\t\tif (game_stack.top_element < 1)\n-\t\t\t\t{\n-\t\t\t\t\tchar *ss = \"NO,PCE\";\n+\t\t\t\t\tif ((pkt->length - '0') != 5)\n+\t\t\t\t\t{\n+\t\t\t\t\t\treturn FAIL; // wrong length for placing a piece\n+\t\t\t\t\t}\n+\t\t\t\t\tif (game_stack.top_element < 1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tchar *ss = \"NO,PCE\";\n \t\t\t\t\t// error, must get another piece first\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \n-\t\t\t\tchar sideA = pkt->content[1];\n+\t\t\t\t\tchar sideA = pkt->content[1];\n \t\t\t\t// pkt->content[2] is a colon\n-\t\t\t\tchar sideB = pkt->content[4];\n-\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n-\t\t\t\tif (indexA == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n-\t\t\t\tif (indexB == -1)\n-\t\t\t\t{\n-\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n-\t\t\t\t\treturn FAIL;\n-\t\t\t\t}\n-\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') == FAIL)\n-\t\t\t\t{\n+\t\t\t\t\tchar sideB = pkt->content[4];\n+\t\t\t\t\tint indexA = cgc_get_piece(pkt->content[0] - '0');\n+\t\t\t\t\tif (indexA == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested A: @d vs @d...\\n\", pkt->content[0] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tint indexB = cgc_get_piece(pkt->content[3] - '0');\n+\t\t\t\t\tif (indexB == -1)\n+\t\t\t\t\t{\n+\t\t\t\t\t\tcgc_printf(\"Out of bounds piece requested B: @d vs @d...\\n\", pkt->content[3] - '0', game_stack.top_element);\n+\t\t\t\t\t\treturn FAIL;\n+\t\t\t\t\t}\n+\t\t\t\t\tif (cgc_connect_pieces(&game_stack.stack[indexA], sideA - '0', &game_stack.stack[indexB], sideB - '0') == FAIL)\n+\t\t\t\t\t{\n \t\t\t\t\t// failed to connect pieces\n-\t\t\t\t\tchar *ss = \"NO,ERROR\";\n+\t\t\t\t\t\tchar *ss = \"NO,ERROR\";\n \t\t\t\t\t// user may have asked to connect two sides that don't both have roads\n-\t\t\t\t\tPacket tmp;\n-\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\ttmp.subtype = PLCPCE;\n-\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n+\t\t\t\t\t\tPacket tmp;\n+\t\t\t\t\t\ttmp.type = DATA;\n+\t\t\t\t\t\ttmp.subtype = PLCPCE;\n+\t\t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse\n+\t\t\t\t\t{\n \t\t\t\t\t// successful placement\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n \n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n \t\t\t\t}\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == GETLEN)\n-\t\t\t{\n-\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\ttmp_pkt.subtype = GETLEN;\n-\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n+\t\t\t\telse {if (pkt->subtype == GETLEN)\n+\t\t\t\t\t{\n+\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\ttmp_pkt.subtype = GETLEN;\n+\t\t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n-\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n+\t\t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n \n-\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\treturn SUCCESS;\n-\t\t\t}\n-\t\t\telse if (pkt->subtype == DCDPCE)\n-\t\t\t{\n+\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t}\n+\t\t\t\t\telse if (pkt->subtype == DCDPCE)\n+\t\t\t\t\t{\n \t\t\t\t// discard the top piece\n-\t\t\t\tif (cgc_discard_piece() == SUCCESS)\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\ttmp_pkt.content[0] = 'y';\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n-\t\t\t\t\treturn SUCCESS;\n-\t\t\t\t}\n-\t\t\t\telse\n-\t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n-\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n-\n-\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n-\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\tif (cgc_discard_piece() == SUCCESS)\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\ttmp_pkt.content[0] = 'y';\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t\telse\n+\t\t\t\t\t\t{\n+\t\t\t\t\t\t\ttmp_pkt.type = DATA;\n+\t\t\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n+\n+\t\t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n+\t\t\t\t\t\t\treturn SUCCESS;\n+\t\t\t\t\t\t}\n+\t\t\t\t\t}\n \t\t\t\t}\n \t\t\t}\n \t\t}\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-22439-f2332e-packet.c\n@@ -239,7 +239,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\telse\n \t\t\t\t{\n \t\t\t\t\t// we just create a new piece. send it to the user\n-\t\t\t\t\tchar ss[9];\n+\t\t\t\t\tchar ss[10];\n \t\t\t\t\tcgc_piece_to_pkt(&piece, ss); // put piece info into packet format\n \n \t\t\t\t\ttmp_pkt.type = DATA;\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-22516-a24c8e-packet.c\n@@ -843,7 +843,6 @@ int cgc_check_win(int goal)\n \t\t#else\n \t\tint len = cgc_receive_until(buff, '\\n', 5);\n \t\t#endif\n-\t\tbuff[len] = 0x00;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-14772-882322-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-11598-55886c-packet.c\n@@ -459,7 +459,8 @@ void cgc_send_auth_challenge(int enc)\n \n \t// Generate a random string to send the user\n \tchar chall_val[5];\n-\tfor (int i = 0; i < 5; i++) \n+\tint i;\n+\tfor (i = 0; i < 5; i++) \n \t{\n \t\tchall_val[i] = cgc_random_in_range('a', 'p'); \n \t}\n@@ -484,7 +485,8 @@ int cgc_handle_auth_challenge_resp(char\n \t\tcase ENC_TWO:\n \t\t{\n \t\t\tchar matches = SUCCESS;\n-\t\t\tfor (int i = 0; i < 5; i++)\n+\t\t\tint i;\n+\t\t\tfor (i = 0; i < 5; i++)\n \t\t\t{\n \t\t\t\tif (answer[i] != enc_chal.answer[i])\n \t\t\t\t\tmatches = FAIL; \n@@ -519,7 +521,8 @@ int cgc_handle_auth_challenge_resp(char\n \t\tcase ENC_ONE:\n \t\t{\n \t\t\tchar matches = SUCCESS;\n-\t\t\tfor (int i = 0; i < 5; i++)\n+\t\t\tint i;\n+\t\t\tfor (i = 0; i < 5; i++)\n \t\t\t{\n \t\t\t\tif (answer[i] != enc_chal.answer[i])\n \t\t\t\t\tmatches = FAIL; \n@@ -661,7 +664,8 @@ void cgc_send_packet_new(Packet *pkt, in\n char cgc_calculateCS(char *bytes, int len)\n {\n \tchar ret = 0;\n-\tfor (int i = 0; i < len; i++)\n+\tint i;\n+\tfor (i = 0; i < len; i++)\n \t{\n \t\tret ^= bytes[i];\n \t}\n@@ -685,7 +689,8 @@ int LAST_CHAR_POS = 74; // zero-based la\n // return -1 if not found\n int cgc_locate_char(char c)\n {\n-\tfor (int i = 0; i < LAST_CHAR_POS; i++)\n+\tint i;\n+\tfor (i = 0; i < LAST_CHAR_POS; i++)\n \t{\n \t\tif (VALID_CHARS[i] == c)\n \t\t\treturn i;\n@@ -702,7 +707,8 @@ int cgc_encrypt_data(char *data, int len\n \tif (type == ENC_TWO)\n \t{\n \t\tint i = 0;\n-\t\tfor (int i = 0; i < len; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n \t\t\tif (char_index == -1)\n@@ -732,7 +738,8 @@ int cgc_encrypt_data(char *data, int len\n \tif (type == ENC_ONE)\n \t{\n \t\tint i = 0;\n-\t\tfor (int i = 0; i < len; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n \t\t\tif (char_index == -1)\n@@ -769,7 +776,8 @@ int cgc_decrypt_packet(char *data, int l\n \tif (type == ENC_TWO)\n \t{\n \t\tint i = 0;\n-\t\tfor (int i = 0; i < len; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n \t\t\tif (char_index == -1)\n@@ -800,7 +808,8 @@ int cgc_decrypt_packet(char *data, int l\n \tif (type == ENC_ONE)\n \t{\n \t\tint i = 0;\n-\t\tfor (int i = 0; i < len; i++)\n+\t\tint i;\n+\t\tfor (i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n \t\t\tif (char_index == -1)\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-20892-aeba2d-packet.c\n@@ -55,7 +55,7 @@ int cgc_validate_packet(Packet *pkt)\n \tint ret = SUCCESS;\n \n \t// check TYPE\n-\tif (pkt->type < CONTROL && pkt->type > DATA)\n+\tif (pkt->type < CONTROL && pkt->type >= DATA)\n \t{\n \t\tcgc_printf(\"type is out of range (@c)\\n\", pkt->type);\n \t\tret = FAIL;\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-16706-f3214c-packet.c\n@@ -708,7 +708,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -738,7 +738,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -775,7 +775,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -806,7 +806,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn ZEND_HASH_APPLY_KEEP;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -847,6 +847,6 @@ int cgc_check_win(int goal)\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn ZEND_HASH_APPLY_KEEP;\n }\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-10189-0a3d19-packet.c\n@@ -708,7 +708,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -738,7 +738,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -775,7 +775,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -806,7 +806,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\treturn -1;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -847,6 +847,6 @@ int cgc_check_win(int goal)\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\treturn -1;\n }\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-11981-0eedfb-packet.c\n@@ -760,7 +760,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\tret = 1;\n }\n \n // this will decrypt the chars sent to it using XOR and save the result in the given packet\n@@ -827,7 +827,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\tret = 1;\n }\n \n // return 1 if we won\n@@ -845,7 +845,7 @@ int cgc_check_win(int goal)\n \t\t#endif\n \t\tbuff[len] = 0x00;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n-\t\treturn 1;\n+\t\tret = 1;\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-14667-2b1b0b-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 2)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 2)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 2)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 2)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-17014-3c011d-packet.c\n@@ -39,7 +39,7 @@ int cgc_populate_packet(Packet *pkt, cha\n \n \tcgc_memcpy(pkt, data, len);\n \n-\tint content_len = pkt->length - '0';\n+\tint content_len = pkt->length;\n \tif (content_len > MAX_CONTENT || content_len < 0)\n \t{\n \t\tcgc_printf(\"length field outside valid range\\n\");\n@@ -78,7 +78,7 @@ int cgc_validate_packet(Packet *pkt)\n \t\t\tret = FAIL;\n \t\t}\n \t}\n-\tint len = pkt->length - '0';\n+\tint len = pkt->length;\n \t// validate length\n \tif (len > MAX_CONTENT || len < 0)\n \t{\n@@ -720,7 +720,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\telse\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n-\t\t\t\tsigned char x = char_index - offset;\n+\t\t\t\tsigned char x = char_index;\n \t\t\t\tif (x < 0)\n \t\t\t\t{\n \t\t\t\t\tx = LAST_CHAR_POS - (offset-char_index);\n@@ -744,7 +744,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (i %2 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n-\t\t\t\tsigned char x = char_index - offset;\n+\t\t\t\tsigned char x = char_index;\n \t\t\t\tif (x < 0)\n \t\t\t\t{\n \t\t\t\t\tx = LAST_CHAR_POS - (offset-char_index);\n@@ -781,7 +781,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (i %2 == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n-\t\t\t\tsigned char x = char_index - offset;\n+\t\t\t\tsigned char x = char_index;\n \t\t\t\tif (x < 0)\n \t\t\t\t{\n \t\t\t\t\tx = LAST_CHAR_POS - (offset-char_index);\n@@ -818,7 +818,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\telse\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n-\t\t\t\tsigned char x = char_index - offset;\n+\t\t\t\tsigned char x = char_index;\n \t\t\t\tif (x < 0)\n \t\t\t\t{\n \t\t\t\t\tx = LAST_CHAR_POS - (offset-char_index);\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-13417-28cb93-packet.c\n@@ -458,7 +458,7 @@ void cgc_send_auth_challenge(int enc)\n \tenc_chal.pending = TRUE;\n \n \t// Generate a random string to send the user\n-\tchar chall_val[5];\n+\tchar chall_val[8];\n \tfor (int i = 0; i < 5; i++) \n \t{\n \t\tchall_val[i] = cgc_random_in_range('a', 'p'); \n@@ -834,7 +834,7 @@ int cgc_decrypt_packet(char *data, int l\n // return 0 if we have not won yet\n int cgc_check_win(int goal)\n {\n-\tchar buff[5];\n+\tchar buff[8];\n \tif (cgc_get_max_road_len() >= goal)\n \t{\n \t\tcgc_printf(\"YOU WIN, what is your name?\\n\");\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-13132-7f60ad-packet.c\n@@ -708,7 +708,8 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -738,7 +739,8 @@ int cgc_encrypt_data(char *data, int len\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -775,7 +777,8 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -806,7 +809,8 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\tif (char_index == -1)\n \t\t\t{\n \t\t\t\t// out of bounds character found\n-\t\t\t\treturn 0;\n+\t\t\t\trestorescr(old);\n+\t\t\t\treturn ret;\n \t\t\t}\n \n \t\t\tif (i %2 == 0)\n@@ -847,6 +851,7 @@ int cgc_check_win(int goal)\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n \t\treturn 1;\n \t}\n-\treturn 0;\n+\trestorescr(old);\n+\treturn ret;\n }\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-21558-d92f22-packet.c\n@@ -245,7 +245,7 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\ttmp_pkt.type = DATA;\n \t\t\t\t\ttmp_pkt.subtype = NXTPCE;\n \t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 9);\n-\t\t\t\t\ttmp_pkt.content[9] = '0';\n+\t\t\t\t\ttmp_pkt.content[9] = 'O';\n \n \t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n \n@@ -425,7 +425,7 @@ void cgc_send_assoc_response(char req_co\n \t\tPacket tmp;\n \t\ttmp.type = MGMT;\n \t\ttmp.subtype = ASSRESP;\n-\t\ttmp.content[0] = '0';\n+\t\ttmp.content[0] = 'O';\n \t\t\n \t\tcgc_send_packet_new(&tmp, 1);\n \t}\n@@ -510,7 +510,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t\tPacket tmp;\n \t\t\t\ttmp.type = MGMT;\n \t\t\t\ttmp.subtype = AUTHRESP;\n-\t\t\t\ttmp.content[0] = '0'; // Failed authentication\n+\t\t\t\ttmp.content[0] = 'O'; // Failed authentication\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n \t\t\t}\n@@ -545,7 +545,7 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t\tPacket tmp;\n \t\t\t\ttmp.type = MGMT;\n \t\t\t\ttmp.subtype = AUTHRESP;\n-\t\t\t\ttmp.content[0] = '0'; // Failed authentication\n+\t\t\t\ttmp.content[0] = 'O'; // Failed authentication\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n \t\t\t}\n@@ -574,7 +574,7 @@ int cgc_handle_disass_req(char reason)\n \t\tPacket tmp;\n \t\ttmp.type = MGMT;\n \t\ttmp.subtype = DISRESP;\n-\t\ttmp.content[0] = '0'; // Failed disassociation \n+\t\ttmp.content[0] = 'O'; // Failed disassociation \n \t\tcgc_send_packet_new(&tmp, 1);\n \t\treturn FAIL; // quit program\n \t}\n@@ -606,7 +606,7 @@ int cgc_handle_deauth_req(char reason)\n \t\tPacket tmp;\n \t\ttmp.type = MGMT;\n \t\ttmp.subtype = DEAUTHRESP;\n-\t\ttmp.content[0] = '0'; // Failed deauthentication\n+\t\ttmp.content[0] = 'O'; // Failed deauthentication\n \n \t\tcgc_send_packet_new(&tmp, 1);\n \t\treturn FAIL; // cgc_exit\n@@ -649,7 +649,7 @@ void cgc_send_packet_new(Packet *pkt, in\n \n \tfor (int i = len; i < MAX_CONTENT; i++)\n \t{\n-\t\tpkt->content[i] = '0';\n+\t\tpkt->content[i] = 'O';\n \t}\n \tpkt->length = len + '0';\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-9121-95ebe4-packet.c\n@@ -760,7 +760,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\treturn (EINVAL);\n }\n \n // this will decrypt the chars sent to it using XOR and save the result in the given packet\n@@ -827,7 +827,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t}\n \t\t}\n \t}\n-\treturn 1;\n+\treturn (EINVAL);\n }\n \n // return 1 if we won\n@@ -845,7 +845,7 @@ int cgc_check_win(int goal)\n \t\t#endif\n \t\tbuff[len] = 0x00;\n \t\tcgc_printf(\"Well done, @s\\n\", buff);\n-\t\treturn 1;\n+\t\treturn (EINVAL);\n \t}\n \treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-22137-97b8c3-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 && i != 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-12628-ca8c3a-packet.c\n@@ -690,7 +690,7 @@ int cgc_locate_char(char c)\n \t\tif (VALID_CHARS[i] == c)\n \t\t\treturn i;\n \t}\n-\treturn -1;\n+\treturn 0;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-21696-071547-packet.c\n@@ -701,7 +701,7 @@ int cgc_encrypt_data(char *data, int len\n {\n \tif (type == ENC_TWO)\n \t{\n-\t\tint i = 0;\n+\t\tsize_t i = 0;\n \t\tfor (int i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n@@ -731,7 +731,7 @@ int cgc_encrypt_data(char *data, int len\n \t}\n \tif (type == ENC_ONE)\n \t{\n-\t\tint i = 0;\n+\t\tsize_t i = 0;\n \t\tfor (int i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n@@ -768,7 +768,7 @@ int cgc_decrypt_packet(char *data, int l\n {\n \tif (type == ENC_TWO)\n \t{\n-\t\tint i = 0;\n+\t\tsize_t i = 0;\n \t\tfor (int i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n@@ -799,7 +799,7 @@ int cgc_decrypt_packet(char *data, int l\n \n \tif (type == ENC_ONE)\n \t{\n-\t\tint i = 0;\n+\t\tsize_t i = 0;\n \t\tfor (int i = 0; i < len; i++)\n \t\t{\n \t\t\tint char_index = cgc_locate_char(data[i]);\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-22280-d30431-packet.c\n@@ -711,7 +711,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 || i == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n@@ -741,7 +741,7 @@ int cgc_encrypt_data(char *data, int len\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 || i == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -778,7 +778,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 || i == 0)\n \t\t\t{\n \t\t\t\t// subtract the offset (wrap around)\n \t\t\t\tsigned char x = char_index - offset;\n@@ -809,7 +809,7 @@ int cgc_decrypt_packet(char *data, int l\n \t\t\t\treturn 0;\n \t\t\t}\n \n-\t\t\tif (i %2 == 0)\n+\t\t\tif (i % 2 == 0 || i == 0)\n \t\t\t{\n \t\t\t\t// add the offset (wrap around)\n \t\t\t\tchar x = VALID_CHARS[(char_index + offset) % (LAST_CHAR_POS)];\n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-20551-303379-packet.c\n@@ -205,8 +205,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\t{\n \t\t\t\t\t\tchar *t = \"nfull\";\n \t\t\t\t\t\t// stack is full. game over\n-\t\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\t\ttmp_pkt.subtype = NXTPCE;\n+\t\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\t\ttmp_pkt.bg = NXTPCE;\n \t\t\t\t\t\tcgc_strncpy(tmp_pkt.content, t, cgc_strlen(t));\n \n \t\t\t\t\t\tcgc_send_packet_new(&tmp_pkt, cgc_strlen(t));\n@@ -216,8 +216,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\t{\n \t\t\t\t\t\t// top piece already there. tell user there is already a piece to be used\n \t\t\t\t\t\tPacket tmp;\n-\t\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\t\ttmp.subtype = NXTPCE;\n+\t\t\t\t\t\ttmp.bg = DATA;\n+\t\t\t\t\t\ttmp.bg = NXTPCE;\n \t\t\t\t\t\tcgc_strncpy(tmp.content, \"nusetop\", 7);\n \n \t\t\t\t\t\tcgc_send_packet_new(&tmp, 7);\n@@ -228,8 +228,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\t\t// not sure why it failed\n \t\t\t\t\t\t// print failure\n \t\t\t\t\t\tPacket tmp;\n-\t\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\t\ttmp.subtype = NXTPCE;\n+\t\t\t\t\t\ttmp.bg = DATA;\n+\t\t\t\t\t\ttmp.bg = NXTPCE;\n \t\t\t\t\t\tcgc_strncpy(tmp.content, \"nconfused\", 9);\n \n \t\t\t\t\t\tcgc_send_packet_new(&tmp, 9);\n@@ -242,8 +242,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\tchar ss[9];\n \t\t\t\t\tcgc_piece_to_pkt(&piece, ss); // put piece info into packet format\n \n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = NXTPCE;\n+\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\ttmp_pkt.bg = NXTPCE;\n \t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 9);\n \t\t\t\t\ttmp_pkt.content[9] = '0';\n \n@@ -283,8 +283,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t{\n \t\t\t\t\tchar *ss = \"NO,PCE\";\n \t\t\t\t\t// error, must get another piece first\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\ttmp_pkt.bg = PLCPCE;\n \t\t\t\t\tcgc_memcpy(tmp_pkt.content, ss, 6);\n \n \t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 6);\n@@ -312,8 +312,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t\tchar *ss = \"NO,ERROR\";\n \t\t\t\t\t// user may have asked to connect two sides that don't both have roads\n \t\t\t\t\tPacket tmp;\n-\t\t\t\t\ttmp.type = DATA;\n-\t\t\t\t\ttmp.subtype = PLCPCE;\n+\t\t\t\t\ttmp.bg = DATA;\n+\t\t\t\t\ttmp.bg = PLCPCE;\n \t\t\t\t\tcgc_memcpy(tmp.content, ss, 8);\n \n \t\t\t\t\tcgc_send_packet_new(&tmp, 8);\n@@ -322,8 +322,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\telse\n \t\t\t\t{\n \t\t\t\t\t// successful placement\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = PLCPCE;\n+\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\ttmp_pkt.bg = PLCPCE;\n \t\t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n \t\t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption);\n@@ -334,8 +334,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t}\n \t\t\telse if (pkt->subtype == GETLEN)\n \t\t\t{\n-\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\ttmp_pkt.subtype = GETLEN;\n+\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\ttmp_pkt.bg = GETLEN;\n \t\t\t\ttmp_pkt.content[0] = '0' + cgc_current_max_road_len;\n \n \t\t\t\tcgc_encrypt_data(tmp_pkt.content, 10, current_encryption); \n@@ -348,8 +348,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t// discard the top piece\n \t\t\t\tif (cgc_discard_piece() == SUCCESS)\n \t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\ttmp_pkt.bg = DCDPCE;\n \t\t\t\t\ttmp_pkt.content[0] = 'y';\n \n \t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 1);\n@@ -357,8 +357,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n \t\t\t\t}\n \t\t\t\telse\n \t\t\t\t{\n-\t\t\t\t\ttmp_pkt.type = DATA;\n-\t\t\t\t\ttmp_pkt.subtype = DCDPCE;\n+\t\t\t\t\ttmp_pkt.bg = DATA;\n+\t\t\t\t\ttmp_pkt.bg = DCDPCE;\n \t\t\t\t\tcgc_strncpy(tmp_pkt.content, \"nplaced\", 7);\n \n \t\t\t\t\tcgc_send_packet_new(&tmp_pkt, 7);\n@@ -376,8 +376,8 @@ int cgc_packet_handler(Packet* pkt)//, G\n void cgc_send_ack(char pkt_num)\n {\t\n \tPacket tmp;\n-\ttmp.type = CONTROL;\n-\ttmp.subtype = ACK;\n+\ttmp.bg = CONTROL;\n+\ttmp.bg = ACK;\n \ttmp.content[0] = pkt_num;\n \t\n \tcurrent_packet_count_recvd++;\n@@ -390,8 +390,8 @@ void cgc_send_ack(char pkt_num)\n void cgc_send_nack(char pktnum, int reason)\n {\n \tPacket tmp;\n-\ttmp.type = CONTROL;\n-\ttmp.subtype = NACK;\n+\ttmp.bg = CONTROL;\n+\ttmp.bg = NACK;\n \ttmp.content[0] = pktnum;\n \ttmp.content[1] = reason + '0';\n \t\n@@ -412,8 +412,8 @@ void cgc_send_assoc_response(char req_co\n \n \t\t// successful association\n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = ASSRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = ASSRESP;\n \t\ttmp.content[0] = '1';\n \t\t\n \t\tcgc_send_packet_new(&tmp, 1);\n@@ -423,8 +423,8 @@ void cgc_send_assoc_response(char req_co\n \t{\n \t\t// unsuccessful association\n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = ASSRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = ASSRESP;\n \t\ttmp.content[0] = '0';\n \t\t\n \t\tcgc_send_packet_new(&tmp, 1);\n@@ -455,7 +455,7 @@ void cgc_send_auth_response(char* req_en\n int offset = 3;\n void cgc_send_auth_challenge(int enc)\n {\n-\tenc_chal.pending = TRUE;\n+\tenc_chal.bg = TRUE;\n \n \t// Generate a random string to send the user\n \tchar chall_val[5];\n@@ -464,11 +464,11 @@ void cgc_send_auth_challenge(int enc)\n \t\tchall_val[i] = cgc_random_in_range('a', 'p'); \n \t}\n \n-\tenc_chal.enc_type = enc;\n+\tenc_chal.bg = enc;\n \n \tPacket tmp;\n-\ttmp.type = MGMT;\n-\ttmp.subtype = AUTHCHALREQ;\n+\ttmp.bg = MGMT;\n+\ttmp.bg = AUTHCHALREQ;\n \tcgc_memcpy(tmp.content, chall_val, 5);\n \t\n \tcgc_send_packet_new(&tmp, 5);\n@@ -493,11 +493,11 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\tif (matches)\n \t\t\t{\n \t\t\t\t// user successfully answered the encryption challenge\n-\t\t\t\tenc_chal.pending = FALSE;\n+\t\t\t\tenc_chal.bg = FALSE;\n \n \t\t\t\tPacket tmp;\n-\t\t\t\ttmp.type = MGMT;\n-\t\t\t\ttmp.subtype = AUTHRESP;\n+\t\t\t\ttmp.bg = MGMT;\n+\t\t\t\ttmp.bg = AUTHRESP;\n \t\t\t\ttmp.content[0] = '1'; // good auth\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n@@ -508,8 +508,8 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t{\n \t\t\t\tcgc_printf(\"failed to match (@s)\", enc_chal.answer);\n \t\t\t\tPacket tmp;\n-\t\t\t\ttmp.type = MGMT;\n-\t\t\t\ttmp.subtype = AUTHRESP;\n+\t\t\t\ttmp.bg = MGMT;\n+\t\t\t\ttmp.bg = AUTHRESP;\n \t\t\t\ttmp.content[0] = '0'; // Failed authentication\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n@@ -528,11 +528,11 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\tif (matches)\n \t\t\t{\n \t\t\t\t// user successfully answered the encryption challenge\n-\t\t\t\tenc_chal.pending = FALSE;\n+\t\t\t\tenc_chal.bg = FALSE;\n \n \t\t\t\tPacket tmp;\n-\t\t\t\ttmp.type = MGMT;\n-\t\t\t\ttmp.subtype = AUTHRESP;\n+\t\t\t\ttmp.bg = MGMT;\n+\t\t\t\ttmp.bg = AUTHRESP;\n \t\t\t\ttmp.content[0] = '1'; // good auth\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n@@ -543,8 +543,8 @@ int cgc_handle_auth_challenge_resp(char\n \t\t\t{\n \t\t\t\tcgc_printf(\"failed to match (@s)\", enc_chal.answer);\n \t\t\t\tPacket tmp;\n-\t\t\t\ttmp.type = MGMT;\n-\t\t\t\ttmp.subtype = AUTHRESP;\n+\t\t\t\ttmp.bg = MGMT;\n+\t\t\t\ttmp.bg = AUTHRESP;\n \t\t\t\ttmp.content[0] = '0'; // Failed authentication\n \t\t\t\tcgc_send_packet_new(&tmp, 1);\n \n@@ -572,8 +572,8 @@ int cgc_handle_disass_req(char reason)\n \tif (reason != GOOD_DISRESP)\n \t{\n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = DISRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = DISRESP;\n \t\ttmp.content[0] = '0'; // Failed disassociation \n \t\tcgc_send_packet_new(&tmp, 1);\n \t\treturn FAIL; // quit program\n@@ -582,8 +582,8 @@ int cgc_handle_disass_req(char reason)\n \t{\n \t\t// just disassociate\n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = DISRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = DISRESP;\n \t\ttmp.content[0] = '1'; // Successful disassociation \n \t\tcgc_send_packet_new(&tmp, 1);\n \n@@ -604,8 +604,8 @@ int cgc_handle_deauth_req(char reason)\n \t{\n \t\t// quit the program \n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = DEAUTHRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = DEAUTHRESP;\n \t\ttmp.content[0] = '0'; // Failed deauthentication\n \n \t\tcgc_send_packet_new(&tmp, 1);\n@@ -615,8 +615,8 @@ int cgc_handle_deauth_req(char reason)\n \t{\n \t\t// just deauth\n \t\tPacket tmp;\n-\t\ttmp.type = MGMT;\n-\t\ttmp.subtype = DEAUTHRESP;\n+\t\ttmp.bg = MGMT;\n+\t\ttmp.bg = DEAUTHRESP;\n \t\ttmp.content[0] = '1'; // Successful deauthentication\n \t\tcgc_send_packet_new(&tmp, 1);\n \n",
+        "--- /tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c\n+++ /tmp/cocci-output-18788-4ad8a4-packet.c\n@@ -835,7 +835,7 @@ int cgc_decrypt_packet(char *data, int l\n int cgc_check_win(int goal)\n {\n \tchar buff[5];\n-\tif (cgc_get_max_road_len() >= goal)\n+\tif (ntohs(goal) <= ntohs(cgc_get_max_road_len()))\n \t{\n \t\tcgc_printf(\"YOU WIN, what is your name?\\n\");\n \t\t#ifndef PATCHED\n"
+      ]
+    }
+  ],
+  "compilations": 25,
+  "failed_compilations": 9,
+  "outcomes": {
+    "25c43131": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0074ee88": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "7764e16c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:208:15: error: no member named 'bg' in 'Packet'\n                                                tmp_pkt.bg = DATA;\n                                                ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:209:15: error: no member named 'bg' in 'Packet'\n                                                tmp_pkt.bg = NXTPCE;\n                                                ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:219:11: error: no member named 'bg' in 'Packet'\n                                                tmp.bg = DATA;\n                                                ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:220:11: error: no member named 'bg' in 'Packet'\n                                                tmp.bg = NXTPCE;\n                                                ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:231:11: error: no member named 'bg' in 'Packet'\n                                                tmp.bg = DATA;\n                                                ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:232:11: error: no member named 'bg' in 'Packet'\n                                                tmp.bg = NXTPCE;\n                                                ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:245:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DATA;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:246:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = NXTPCE;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:286:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DATA;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:287:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = PLCPCE;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:315:10: error: no member named 'bg' in 'Packet'\n                                        tmp.bg = DATA;\n                                        ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:316:10: error: no member named 'bg' in 'Packet'\n                                        tmp.bg = PLCPCE;\n                                        ~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:325:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DATA;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:326:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = PLCPCE;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:337:13: error: no member named 'bg' in 'Packet'\n                                tmp_pkt.bg = DATA;\n                                ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:338:13: error: no member named 'bg' in 'Packet'\n                                tmp_pkt.bg = GETLEN;\n                                ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:351:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DATA;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:352:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DCDPCE;\n                                        ~~~~~~~ ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:360:14: error: no member named 'bg' in 'Packet'\n                                        tmp_pkt.bg = DATA;\n                                        ~~~~~~~ ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a33fb9d4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e49ed042": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d75be81": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c8f1d32f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "567402f5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cfac36c2": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/The_Longest_Road.dir/src/packet.c.o: In function `cgc_handle_auth_challenge_resp':\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:517: undefined reference to `fatalx'\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:552: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [The_Longest_Road/The_Longest_Road] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "245ea53e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e9bbcc3c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a3fda9b7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:711:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:741:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:778:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:809:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n                                return (BUS_PROBE_NOWILDCARD);\n                                        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:850:10: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n5 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "132b8ee4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "25b91e95": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b12e9f6b": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:711:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:741:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:778:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:809:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n                                return ZEND_HASH_APPLY_KEEP;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:850:9: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n5 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b20b4deb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "346a3cac": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:704:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n                size_t i = 0;\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:704:10: error: use of undeclared identifier 'i'\n                size_t i = 0;\n                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:734:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n                size_t i = 0;\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:734:10: error: use of undeclared identifier 'i'\n                size_t i = 0;\n                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:771:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n                size_t i = 0;\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:771:10: error: use of undeclared identifier 'i'\n                size_t i = 0;\n                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:802:3: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n                size_t i = 0;\n                ^~~~~~\n                sizeof\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:802:10: error: use of undeclared identifier 'i'\n                size_t i = 0;\n                       ^\n8 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c4d73629": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:711:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:741:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:778:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:809:5: error: use of undeclared identifier 'no_draw'\n                                no_draw = 1;\n                                ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:850:2: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n5 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6c60d183": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1175e1c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26366047": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:763:2: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:830:2: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:848:3: error: use of undeclared identifier 'ret'\n                ret = 1;\n                ^\n3 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "a7612217": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4711624e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:711:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:712:12: error: use of undeclared identifier 'ret'\n                                return ret;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:742:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:743:12: error: use of undeclared identifier 'ret'\n                                return ret;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:780:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:781:12: error: use of undeclared identifier 'ret'\n                                return ret;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:812:16: error: use of undeclared identifier 'old'\n                                restorescr(old);\n                                           ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:813:12: error: use of undeclared identifier 'ret'\n                                return ret;\n                                       ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:854:13: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:855:9: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n10 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2416db91": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d8a9941c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2e638199": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "f4075108": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:710:7: error: redefinition of 'i'\n                int i;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:709:7: note: previous definition is here\n                int i = 0;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:741:7: error: redefinition of 'i'\n                int i;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:740:7: note: previous definition is here\n                int i = 0;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:779:7: error: redefinition of 'i'\n                int i;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:778:7: note: previous definition is here\n                int i = 0;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:811:7: error: redefinition of 'i'\n                int i;\n                    ^\n/tmp/FlexiRepair/The_Longest_Road_0/The_Longest_Road/src/packet.c:810:7: note: previous definition is here\n                int i = 0;\n                    ^\n4 errors generated.\nmake[2]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/src/packet.c.o] Error 1\nmake[1]: *** [The_Longest_Road/CMakeFiles/The_Longest_Road.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "0df1add8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "1ef572cb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6cca2c22": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "dec44d83": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "3ff91100": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 29
+          }
+        ]
+      }
+    },
+    "31a71576": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f6c3bd31": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 6,
+  "passed_pos_tests": 280,
+  "failed_neg_tests": 19,
+  "failed_pos_tests": 220,
+  "duration": 3577.573517,
+  "errors": []
+}

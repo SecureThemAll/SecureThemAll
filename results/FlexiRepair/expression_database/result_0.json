@@ -1,0 +1,3299 @@
+{
+  "repair_begin": "2021-05-08 18:16:03.693737",
+  "repair_end": "2021-05-08 18:55:57.244253",
+  "patches": [
+    {
+      "target_file": "src/expression_parser.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-25108-f6e4f5-expression_parser.c\n@@ -116,10 +116,10 @@ int32_t cgc_strbeg( const char *scanStri\n             return 0;\n \n         if ( scanString[i] == '\\0' )\n-            return 1;\n+            ret = 1;\n \n         if ( scanString[i] != searchString[i] )\n-            return 1;\n+            ret = 1;\n     }\n \n     return 0;\n@@ -163,7 +163,7 @@ eParserSymbol cgc_parse_get_symbol( char\n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_CLOSE_PARAN )\n-        return 1;\n+        ret = 1;\n     else\n         return 0;\n }\n@@ -171,7 +171,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_OPEN_PARAN )\n-        return 1;\n+        ret = 1;\n     else\n         return 0;\n }\n@@ -182,7 +182,7 @@ int32_t cgc_is_symbol_result_operator( e\n     {\n     case SYM_AND:\n     case SYM_OR:\n-        return 1;\n+        ret = 1;\n \n     default:\n         break;\n@@ -199,7 +199,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n     case SYM_NOT_EQUAL:\n     case SYM_LESS_THAN:\n     case SYM_GREATER_THAN:\n-        return 1;\n+        ret = 1;\n \n     default:\n         break;\n@@ -216,7 +216,7 @@ int32_t cgc_is_symbol_element( eParserSy\n     case SYM_USERNAME:\n     case SYM_FIRSTNAME:\n     case SYM_BIRTHDATE:\n-        return 1;\n+        ret = 1;\n \n     default:\n         break;\n@@ -228,7 +228,7 @@ int32_t cgc_is_symbol_element( eParserSy\n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n     if ( symbol == SYM_BIRTHDATE )\n-        return 1;\n+        ret = 1;\n     else\n         return 0;\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-28426-e284f0-expression_parser.c\n@@ -489,7 +489,7 @@ void cgc_parse_search_expression( char *\n             if ( item_peek_top.type != ITEM_TYPE_SYMBOL || !cgc_is_symbol_element( item_peek_top.data.symbol ) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             // Consume next (either string or birthdate)\n@@ -503,7 +503,7 @@ void cgc_parse_search_expression( char *\n                 if ( result == 0 )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    return 0;\n                 }\n \n                 pszCur += result;\n@@ -523,7 +523,7 @@ void cgc_parse_search_expression( char *\n                 if ( *pszCur != '\\\"' )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    return 0;\n                 }\n \n                 pszCur++;\n@@ -542,7 +542,7 @@ void cgc_parse_search_expression( char *\n                 if ( pszCur == '\\0' )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    return 0;\n                 }\n \n                 pszCur++;\n@@ -561,7 +561,7 @@ void cgc_parse_search_expression( char *\n                  (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             // Push\n@@ -579,7 +579,7 @@ void cgc_parse_search_expression( char *\n             if ( item_top.type != ITEM_TYPE_RESULT )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             tItemStack item_next = cgc_pop_parser_stack();\n@@ -587,7 +587,7 @@ void cgc_parse_search_expression( char *\n             if ( !(item_next.type == ITEM_TYPE_SYMBOL && item_next.data.symbol == SYM_OPEN_PARAN) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             // Push results back onto the stack\n@@ -602,7 +602,7 @@ void cgc_parse_search_expression( char *\n             if ( !(item_peek_top.type == ITEM_TYPE_RESULT) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             // Push operator on the stack\n@@ -623,7 +623,7 @@ void cgc_parse_search_expression( char *\n                  (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                return 0;\n             }\n \n             // If it is an element push it on the stack\n@@ -653,7 +653,7 @@ void cgc_parse_search_expression( char *\n     if ( results.type != ITEM_TYPE_RESULT || cgc_g_parseStackSize != 0 )\n     {\n         THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-        return;\n+        return 0;\n     }\n     else\n     {\n@@ -666,6 +666,7 @@ void cgc_parse_search_expression( char *\n         for ( idx = 0; idx < result_count; idx++ )\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n+    return 0;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-29586-eadd98-expression_parser.c\n@@ -276,7 +276,7 @@ void cgc_do_date_search( eParserSymbol c\n         }\n \n         // Add the result to the result list\n-        if ( add_item )\n+        if (add_item || no_draw)\n             results.data.result_list[results.result_list_size++] = index;\n     }\n \n@@ -346,7 +346,7 @@ void cgc_do_string_search( eParserSymbol\n         }\n \n         // Add the result to the result list\n-        if ( add_item )\n+        if (add_item || no_draw)\n             results.data.result_list[results.result_list_size++] = index;\n     }\n \n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-24290-35bb2f-expression_parser.c\n@@ -242,7 +242,7 @@ void cgc_do_date_search( eParserSymbol c\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result = cgc_date_compare( pCur->birthDate, dateCompare );\n@@ -293,7 +293,7 @@ void cgc_do_string_search( eParserSymbol\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result;\n@@ -367,14 +367,15 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n-            for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (lval_idx = 0; lval_idx < record_lval_count; lval_idx++)\n+        {for (rval_idx = 0; rval_idx < record_rval_count; rval_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == rval.data.result_list[rval_idx] )\n                 {\n                     results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n                 }\n             }\n+        }\n \n         // Add new results\n         cgc_push_parser_stack( results );\n@@ -390,13 +391,13 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n+        for (lval_idx = 0; lval_idx < record_lval_count; lval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < result_count; result_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -409,13 +410,13 @@ void cgc_do_result_search( tItemStack lv\n                 results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n         }\n \n-        for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (rval_idx = 0; rval_idx < record_rval_count; rval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < result_count; result_idx++)\n             {\n                 if ( rval.data.result_list[rval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -663,7 +664,7 @@ void cgc_parse_search_expression( char *\n         // Print search results\n         cgc_printf( \"Search results, $d items found:\\n\", result_count );\n \n-        for ( idx = 0; idx < result_count; idx++ )\n+        for (idx = 0; idx < result_count; idx++)\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-1270-220fb9-expression_parser.c\n@@ -242,7 +242,7 @@ void cgc_do_date_search( eParserSymbol c\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < devcnt; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result = cgc_date_compare( pCur->birthDate, dateCompare );\n@@ -293,7 +293,7 @@ void cgc_do_string_search( eParserSymbol\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < devcnt; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result;\n@@ -367,14 +367,15 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n-            for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (lval_idx = 0; lval_idx < devcnt; lval_idx++)\n+        {for (rval_idx = 0; rval_idx < devcnt; rval_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == rval.data.result_list[rval_idx] )\n                 {\n                     results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n                 }\n             }\n+        }\n \n         // Add new results\n         cgc_push_parser_stack( results );\n@@ -390,13 +391,13 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n+        for (lval_idx = 0; lval_idx < devcnt; lval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < devcnt; result_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -409,13 +410,13 @@ void cgc_do_result_search( tItemStack lv\n                 results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n         }\n \n-        for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (rval_idx = 0; rval_idx < devcnt; rval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < devcnt; result_idx++)\n             {\n                 if ( rval.data.result_list[rval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -663,7 +664,7 @@ void cgc_parse_search_expression( char *\n         // Print search results\n         cgc_printf( \"Search results, $d items found:\\n\", result_count );\n \n-        for ( idx = 0; idx < result_count; idx++ )\n+        for (idx = 0; idx < devcnt; idx++)\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-4279-b13570-expression_parser.c\n@@ -537,7 +537,7 @@ void cgc_parse_search_expression( char *\n                     if ( cur_pos >= MAX_STRING_LENGTH )\n                         break;\n                 }\n-                szTemp[cur_pos] = '\\0';\n+                szTemp[cur_pos] = -5;\n \n                 if ( pszCur == '\\0' )\n                 {\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-27345-3765dc-expression_parser.c\n@@ -489,7 +489,7 @@ void cgc_parse_search_expression( char *\n             if ( item_peek_top.type != ITEM_TYPE_SYMBOL || !cgc_is_symbol_element( item_peek_top.data.symbol ) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             // Consume next (either string or birthdate)\n@@ -503,7 +503,7 @@ void cgc_parse_search_expression( char *\n                 if ( result == 0 )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    goto done;\n                 }\n \n                 pszCur += result;\n@@ -523,7 +523,7 @@ void cgc_parse_search_expression( char *\n                 if ( *pszCur != '\\\"' )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    goto done;\n                 }\n \n                 pszCur++;\n@@ -542,7 +542,7 @@ void cgc_parse_search_expression( char *\n                 if ( pszCur == '\\0' )\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                    return;\n+                    goto done;\n                 }\n \n                 pszCur++;\n@@ -561,7 +561,7 @@ void cgc_parse_search_expression( char *\n                  (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             // Push\n@@ -579,7 +579,7 @@ void cgc_parse_search_expression( char *\n             if ( item_top.type != ITEM_TYPE_RESULT )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             tItemStack item_next = cgc_pop_parser_stack();\n@@ -587,7 +587,7 @@ void cgc_parse_search_expression( char *\n             if ( !(item_next.type == ITEM_TYPE_SYMBOL && item_next.data.symbol == SYM_OPEN_PARAN) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             // Push results back onto the stack\n@@ -602,7 +602,7 @@ void cgc_parse_search_expression( char *\n             if ( !(item_peek_top.type == ITEM_TYPE_RESULT) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             // Push operator on the stack\n@@ -623,7 +623,7 @@ void cgc_parse_search_expression( char *\n                  (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-                return;\n+                goto done;\n             }\n \n             // If it is an element push it on the stack\n@@ -653,7 +653,7 @@ void cgc_parse_search_expression( char *\n     if ( results.type != ITEM_TYPE_RESULT || cgc_g_parseStackSize != 0 )\n     {\n         THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n-        return;\n+        goto done;\n     }\n     else\n     {\n@@ -666,6 +666,7 @@ void cgc_parse_search_expression( char *\n         for ( idx = 0; idx < result_count; idx++ )\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n+    goto done;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-1230-bb21f9-expression_parser.c\n@@ -40,7 +40,7 @@ tItemStack cgc_peek_parser_stack( void )\n     {\n         tItemStack temp;\n \n-        temp.type = ITEM_TYPE_EMPTY;\n+        temp.bg = ITEM_TYPE_EMPTY;\n \n         return (temp);\n     }\n@@ -55,7 +55,7 @@ tItemStack cgc_pop_parser_stack( void )\n     {\n         tItemStack temp;\n \n-        temp.type = ITEM_TYPE_EMPTY;\n+        temp.bg = ITEM_TYPE_EMPTY;\n \n         return (temp);\n     }\n@@ -239,8 +239,8 @@ void cgc_do_date_search( eParserSymbol c\n     uint32_t record_total = cgc_db_get_record_count();\n     tItemStack results;\n \n-    results.type = ITEM_TYPE_RESULT;\n-    results.result_list_size = 0;\n+    results.bg = ITEM_TYPE_RESULT;\n+    results.bg = 0;\n \n     for ( index = 0; index < record_total; index++ )\n     {\n@@ -290,8 +290,8 @@ void cgc_do_string_search( eParserSymbol\n     uint32_t record_total = cgc_db_get_record_count();\n     tItemStack results;\n \n-    results.type = ITEM_TYPE_RESULT;\n-    results.result_list_size = 0;\n+    results.bg = ITEM_TYPE_RESULT;\n+    results.bg = 0;\n \n     for ( index = 0; index < record_total; index++ )\n     {\n@@ -364,8 +364,8 @@ void cgc_do_result_search( tItemStack lv\n \n         tItemStack results;\n \n-        results.type = ITEM_TYPE_RESULT;\n-        results.result_list_size = 0;\n+        results.bg = ITEM_TYPE_RESULT;\n+        results.bg = 0;\n \n         for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n             for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n@@ -387,8 +387,8 @@ void cgc_do_result_search( tItemStack lv\n \n         tItemStack results;\n \n-        results.type = ITEM_TYPE_RESULT;\n-        results.result_list_size = 0;\n+        results.bg = ITEM_TYPE_RESULT;\n+        results.bg = 0;\n \n         for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n         {\n@@ -566,8 +566,8 @@ void cgc_parse_search_expression( char *\n \n             // Push\n             tItemStack new_item;\n-            new_item.type = ITEM_TYPE_SYMBOL;\n-            new_item.data.symbol = cur_symbol;\n+            new_item.bg = ITEM_TYPE_SYMBOL;\n+            new_item.data.bg = cur_symbol;\n \n             cgc_push_parser_stack( new_item );\n         }\n@@ -607,8 +607,8 @@ void cgc_parse_search_expression( char *\n \n             // Push operator on the stack\n             tItemStack new_item;\n-            new_item.type = ITEM_TYPE_SYMBOL;\n-            new_item.data.symbol = cur_symbol;\n+            new_item.bg = ITEM_TYPE_SYMBOL;\n+            new_item.data.bg = cur_symbol;\n \n             // Push results back onto the stack\n             cgc_push_parser_stack( new_item );\n@@ -629,8 +629,8 @@ void cgc_parse_search_expression( char *\n             // If it is an element push it on the stack\n             tItemStack new_item;\n \n-            new_item.type = ITEM_TYPE_SYMBOL;\n-            new_item.data.symbol = cur_symbol;\n+            new_item.bg = ITEM_TYPE_SYMBOL;\n+            new_item.data.bg = cur_symbol;\n \n             cgc_push_parser_stack( new_item );\n         }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-28878-d1036f-expression_parser.c\n@@ -513,7 +513,7 @@ void cgc_parse_search_expression( char *\n             }\n             else\n             {\n-                char szTemp[MAX_STRING_LENGTH+1];\n+                char szTemp[MAX_STRING_LENGTH];\n                 uint32_t cur_pos;\n \n                 // Parse string\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-22240-533a21-expression_parser.c\n@@ -116,10 +116,10 @@ int32_t cgc_strbeg( const char *scanStri\n             return 0;\n \n         if ( scanString[i] == '\\0' )\n-            return 1;\n+            return (EINVAL);\n \n         if ( scanString[i] != searchString[i] )\n-            return 1;\n+            return (EINVAL);\n     }\n \n     return 0;\n@@ -163,7 +163,7 @@ eParserSymbol cgc_parse_get_symbol( char\n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_CLOSE_PARAN )\n-        return 1;\n+        return (EINVAL);\n     else\n         return 0;\n }\n@@ -171,7 +171,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_OPEN_PARAN )\n-        return 1;\n+        return (EINVAL);\n     else\n         return 0;\n }\n@@ -182,7 +182,7 @@ int32_t cgc_is_symbol_result_operator( e\n     {\n     case SYM_AND:\n     case SYM_OR:\n-        return 1;\n+        return (EINVAL);\n \n     default:\n         break;\n@@ -199,7 +199,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n     case SYM_NOT_EQUAL:\n     case SYM_LESS_THAN:\n     case SYM_GREATER_THAN:\n-        return 1;\n+        return (EINVAL);\n \n     default:\n         break;\n@@ -216,7 +216,7 @@ int32_t cgc_is_symbol_element( eParserSy\n     case SYM_USERNAME:\n     case SYM_FIRSTNAME:\n     case SYM_BIRTHDATE:\n-        return 1;\n+        return (EINVAL);\n \n     default:\n         break;\n@@ -228,7 +228,7 @@ int32_t cgc_is_symbol_element( eParserSy\n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n     if ( symbol == SYM_BIRTHDATE )\n-        return 1;\n+        return (EINVAL);\n     else\n         return 0;\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-4131-f9dddb-expression_parser.c\n@@ -242,7 +242,7 @@ void cgc_do_date_search( eParserSymbol c\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 1; index <= record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result = cgc_date_compare( pCur->birthDate, dateCompare );\n@@ -293,7 +293,7 @@ void cgc_do_string_search( eParserSymbol\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 1; index <= record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result;\n@@ -367,14 +367,15 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n-            for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (lval_idx = 1; lval_idx <= record_lval_count; lval_idx++)\n+        {for (rval_idx = 1; rval_idx <= record_rval_count; rval_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == rval.data.result_list[rval_idx] )\n                 {\n                     results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n                 }\n             }\n+        }\n \n         // Add new results\n         cgc_push_parser_stack( results );\n@@ -390,13 +391,13 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n+        for (lval_idx = 1; lval_idx <= record_lval_count; lval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 1; result_idx <= result_count; result_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -409,13 +410,13 @@ void cgc_do_result_search( tItemStack lv\n                 results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n         }\n \n-        for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (rval_idx = 1; rval_idx <= record_rval_count; rval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 1; result_idx <= result_count; result_idx++)\n             {\n                 if ( rval.data.result_list[rval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -663,7 +664,7 @@ void cgc_parse_search_expression( char *\n         // Print search results\n         cgc_printf( \"Search results, $d items found:\\n\", result_count );\n \n-        for ( idx = 0; idx < result_count; idx++ )\n+        for (idx = 1; idx <= result_count; idx++)\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-31912-c1253d-expression_parser.c\n@@ -438,7 +438,7 @@ void cgc_do_reduce_stack( void )\n {\n     for (;;)\n     {\n-        if ( cgc_g_parseStackSize <= 2 )\n+        if (ntohs(cgc_g_parseStackSize) <= ntohs(2))\n             break;\n \n         if ( cgc_g_memoryGlobal.parseStack[cgc_g_parseStackSize-1].type == ITEM_TYPE_RESULT &&\n@@ -534,7 +534,7 @@ void cgc_parse_search_expression( char *\n                     szTemp[cur_pos++] = *pszCur;\n                     pszCur++;\n \n-                    if ( cur_pos >= MAX_STRING_LENGTH )\n+                    if (ntohs(MAX_STRING_LENGTH) <= ntohs(cur_pos))\n                         break;\n                 }\n                 szTemp[cur_pos] = '\\0';\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-29823-b19c9c-expression_parser.c\n@@ -110,10 +110,10 @@ int32_t cgc_strbeg( const char *scanStri\n     for ( i = 0; ; i++ )\n     {\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n-            return 0;\n+            return ZEND_HASH_APPLY_KEEP;\n \n         if ( searchString[i] == '\\0' )\n-            return 0;\n+            return ZEND_HASH_APPLY_KEEP;\n \n         if ( scanString[i] == '\\0' )\n             return 1;\n@@ -122,7 +122,7 @@ int32_t cgc_strbeg( const char *scanStri\n             return 1;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n@@ -165,7 +165,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n     if ( symbol == SYM_CLOSE_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n }\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n@@ -173,7 +173,7 @@ int32_t cgc_is_symbol_open_paran( eParse\n     if ( symbol == SYM_OPEN_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n }\n \n int32_t cgc_is_symbol_result_operator( eParserSymbol symbol )\n@@ -188,7 +188,7 @@ int32_t cgc_is_symbol_result_operator( e\n         break;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int32_t cgc_is_symbol_db_operator( eParserSymbol symbol )\n@@ -205,7 +205,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n         break;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int32_t cgc_is_symbol_element( eParserSymbol symbol )\n@@ -222,7 +222,7 @@ int32_t cgc_is_symbol_element( eParserSy\n         break;\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n@@ -230,7 +230,7 @@ int32_t cgc_is_symbol_birthdate( eParser\n     if ( symbol == SYM_BIRTHDATE )\n         return 1;\n     else\n-        return 0;\n+        return ZEND_HASH_APPLY_KEEP;\n }\n \n void cgc_do_date_search( eParserSymbol comparison_symbol, tDateTime dateCompare )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-29869-8ac0cc-expression_parser.c\n@@ -185,7 +185,7 @@ int32_t cgc_is_symbol_result_operator( e\n         return 1;\n \n     default:\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n \n     return 0;\n@@ -202,7 +202,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n         return 1;\n \n     default:\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n \n     return 0;\n@@ -219,7 +219,7 @@ int32_t cgc_is_symbol_element( eParserSy\n         return 1;\n \n     default:\n-        break;\n+        fatalx(\"send_update: unknown af\");\n     }\n \n     return 0;\n@@ -253,26 +253,26 @@ void cgc_do_date_search( eParserSymbol c\n         case SYM_LESS_THAN:\n             if ( comparison_result == -1 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_GREATER_THAN:\n             if ( comparison_result == 1 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_EQUAL:\n             if ( comparison_result == 0 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_NOT_EQUAL:\n             if ( comparison_result != 0 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         default:\n             THROW( PARSER_EXCEPTION_INVALID_TOKEN );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n \n         // Add the result to the result list\n@@ -303,19 +303,19 @@ void cgc_do_string_search( eParserSymbol\n         {\n         case SYM_USERNAME:\n             comparison_result = cgc_strcmp( pCur->szUserName, pszSearchString );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_FIRSTNAME:\n             comparison_result = cgc_strcmp( pCur->szFirstName, pszSearchString );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_LASTNAME:\n             comparison_result = cgc_strcmp( pCur->szLastName, pszSearchString );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         default:\n             THROW( PARSER_EXCEPTION_INVALID_TOKEN );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n \n         switch ( comparison_symbol )\n@@ -323,26 +323,26 @@ void cgc_do_string_search( eParserSymbol\n         case SYM_LESS_THAN:\n             if ( comparison_result == -1 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_GREATER_THAN:\n             if ( comparison_result == 1 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_EQUAL:\n             if ( comparison_result == 0 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         case SYM_NOT_EQUAL:\n             if ( comparison_result != 0 )\n                 add_item = 1;\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         default:\n             THROW( PARSER_EXCEPTION_INVALID_TOKEN );\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n \n         // Add the result to the result list\n@@ -401,7 +401,7 @@ void cgc_do_result_search( tItemStack lv\n                 if ( lval.data.result_list[lval_idx] == results.data.result_list[result_idx] )\n                 {\n                     found = 1;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 }\n             }\n \n@@ -420,7 +420,7 @@ void cgc_do_result_search( tItemStack lv\n                 if ( rval.data.result_list[rval_idx] == results.data.result_list[result_idx] )\n                 {\n                     found = 1;\n-                    break;\n+                    fatalx(\"send_update: unknown af\");\n                 }\n             }\n \n@@ -439,7 +439,7 @@ void cgc_do_reduce_stack( void )\n     for (;;)\n     {\n         if ( cgc_g_parseStackSize <= 2 )\n-            break;\n+            fatalx(\"send_update: unknown af\");\n \n         if ( cgc_g_memoryGlobal.parseStack[cgc_g_parseStackSize-1].type == ITEM_TYPE_RESULT &&\n              (cgc_g_memoryGlobal.parseStack[cgc_g_parseStackSize-2].type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( cgc_g_memoryGlobal.parseStack[cgc_g_parseStackSize-2].data.symbol )) &&\n@@ -453,7 +453,7 @@ void cgc_do_reduce_stack( void )\n             cgc_do_result_search( lval, operator.data.symbol, rval );\n         }\n         else\n-            break;\n+            fatalx(\"send_update: unknown af\");\n     }\n }\n \n@@ -535,7 +535,7 @@ void cgc_parse_search_expression( char *\n                     pszCur++;\n \n                     if ( cur_pos >= MAX_STRING_LENGTH )\n-                        break;\n+                        fatalx(\"send_update: unknown af\");\n                 }\n                 szTemp[cur_pos] = '\\0';\n \n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-26256-9b5cc9-expression_parser.c\n@@ -109,11 +109,15 @@ int32_t cgc_strbeg( const char *scanStri\n \n     for ( i = 0; ; i++ )\n     {\n-        if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n-            return 0;\n+        if ( scanString[i] == '\\0' && searchString[i] == '\\0' ) {\n+            restorescr(old);\n+            return ret;\n+        }\n \n-        if ( searchString[i] == '\\0' )\n-            return 0;\n+        if ( searchString[i] == '\\0' ) {\n+            restorescr(old);\n+            return ret;\n+        }\n \n         if ( scanString[i] == '\\0' )\n             return 1;\n@@ -122,7 +126,8 @@ int32_t cgc_strbeg( const char *scanStri\n             return 1;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n@@ -164,16 +169,20 @@ int32_t cgc_is_symbol_close_paran( ePars\n {\n     if ( symbol == SYM_CLOSE_PARAN )\n         return 1;\n-    else\n-        return 0;\n+    else {\n+        restorescr(old);\n+        return ret;\n+    }\n }\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_OPEN_PARAN )\n         return 1;\n-    else\n-        return 0;\n+    else {\n+        restorescr(old);\n+        return ret;\n+    }\n }\n \n int32_t cgc_is_symbol_result_operator( eParserSymbol symbol )\n@@ -188,7 +197,8 @@ int32_t cgc_is_symbol_result_operator( e\n         break;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int32_t cgc_is_symbol_db_operator( eParserSymbol symbol )\n@@ -205,7 +215,8 @@ int32_t cgc_is_symbol_db_operator( ePars\n         break;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int32_t cgc_is_symbol_element( eParserSymbol symbol )\n@@ -222,15 +233,18 @@ int32_t cgc_is_symbol_element( eParserSy\n         break;\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n     if ( symbol == SYM_BIRTHDATE )\n         return 1;\n-    else\n-        return 0;\n+    else {\n+        restorescr(old);\n+        return ret;\n+    }\n }\n \n void cgc_do_date_search( eParserSymbol comparison_symbol, tDateTime dateCompare )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-32277-05069e-expression_parser.c\n@@ -107,7 +107,7 @@ int32_t cgc_strbeg( const char *scanStri\n {\n     uint32_t i;\n \n-    for ( i = 0; ; i++ )\n+    for (i = 0 + 1;; i++)\n     {\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n             return 0;\n@@ -139,7 +139,7 @@ eParserSymbol cgc_parse_get_symbol( char\n         return SYM_END;\n     }\n \n-    for ( symIndex = 0; ; symIndex++ )\n+    for (symIndex = 0 + 1;; symIndex++)\n     {\n         if ( g_parseTable[symIndex].symbol == SYM_NOTFOUND )\n         {\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-482-871db7-expression_parser.c\n@@ -520,7 +520,7 @@ void cgc_parse_search_expression( char *\n                 while ( cgc_isspace( *pszCur ) )\n                     pszCur++;\n \n-                if ( *pszCur != '\\\"' )\n+                if (archive_le32dec(pszCur) != (uint32_t)'\\\"')\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                     return;\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-520-461221-expression_parser.c\n@@ -556,9 +556,7 @@ void cgc_parse_search_expression( char *\n             tItemStack item_peek_top = cgc_peek_parser_stack();\n \n             // Open paran valid with either no symbol or result operator (AND, OR)\n-            if ( !(item_peek_top.type == ITEM_TYPE_EMPTY ||\n-                 (item_peek_top.type == ITEM_TYPE_SYMBOL && item_peek_top.data.symbol == SYM_OPEN_PARAN) ||\n-                 (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n+            if ((item_peek_top.type == ITEM_TYPE_EMPTY || (item_peek_top.type == ITEM_TYPE_SYMBOL && item_peek_top.data.symbol == SYM_OPEN_PARAN) || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator(item_peek_top.data.symbol))) == MAP_FAILED)\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                 return;\n@@ -584,7 +582,7 @@ void cgc_parse_search_expression( char *\n \n             tItemStack item_next = cgc_pop_parser_stack();\n \n-            if ( !(item_next.type == ITEM_TYPE_SYMBOL && item_next.data.symbol == SYM_OPEN_PARAN) )\n+            if ((item_next.type == ITEM_TYPE_SYMBOL && item_next.data.symbol == SYM_OPEN_PARAN) == MAP_FAILED)\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                 return;\n@@ -599,7 +597,7 @@ void cgc_parse_search_expression( char *\n             tItemStack item_peek_top = cgc_peek_parser_stack();\n \n             // Result operator valid if top of stack is a DB result set\n-            if ( !(item_peek_top.type == ITEM_TYPE_RESULT) )\n+            if ((item_peek_top.type == ITEM_TYPE_RESULT) == MAP_FAILED)\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                 return;\n@@ -618,9 +616,7 @@ void cgc_parse_search_expression( char *\n             // Check to make sure the previous items on top of the stack are valid\n             tItemStack item_peek_top = cgc_peek_parser_stack();\n \n-            if ( !(item_peek_top.type == ITEM_TYPE_EMPTY ||\n-                  (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_open_paran( item_peek_top.data.symbol )) ||\n-                 (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator( item_peek_top.data.symbol ))) )\n+            if ((item_peek_top.type == ITEM_TYPE_EMPTY || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_open_paran(item_peek_top.data.symbol)) || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator(item_peek_top.data.symbol))) == MAP_FAILED)\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                 return;\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-24062-170402-expression_parser.c\n@@ -162,7 +162,7 @@ eParserSymbol cgc_parse_get_symbol( char\n \n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_CLOSE_PARAN )\n+    if (symbol % SYM_CLOSE_PARAN == 0)\n         return 1;\n     else\n         return 0;\n@@ -170,7 +170,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_OPEN_PARAN )\n+    if (symbol % SYM_OPEN_PARAN == 0)\n         return 1;\n     else\n         return 0;\n@@ -227,7 +227,7 @@ int32_t cgc_is_symbol_element( eParserSy\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_BIRTHDATE )\n+    if (symbol % SYM_BIRTHDATE == 0)\n         return 1;\n     else\n         return 0;\n@@ -356,7 +356,7 @@ void cgc_do_string_search( eParserSymbol\n \n void cgc_do_result_search( tItemStack lval, eParserSymbol operator_symbol, tItemStack rval )\n {\n-    if ( operator_symbol == SYM_AND )\n+    if (operator_symbol % SYM_AND == 0)\n     {\n         uint32_t record_lval_count = lval.result_list_size;\n         uint32_t record_rval_count = rval.result_list_size;\n@@ -493,7 +493,7 @@ void cgc_parse_search_expression( char *\n             }\n \n             // Consume next (either string or birthdate)\n-            if ( item_peek_top.data.symbol == SYM_BIRTHDATE )\n+            if (item_peek_top.data.symbol % SYM_BIRTHDATE == 0)\n             {\n                 tDateTime tempDate;\n \n@@ -634,13 +634,14 @@ void cgc_parse_search_expression( char *\n \n             cgc_push_parser_stack( new_item );\n         }\n-        else if ( cur_symbol == SYM_END )\n-        {\n-            bDone = 1;\n-        }\n-        else if ( cur_symbol == SYM_NOTFOUND )\n-        {\n-            THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+        else {if (cur_symbol % SYM_END == 0)\n+            {\n+                bDone = 1;\n+            }\n+            else if ( cur_symbol == SYM_NOTFOUND )\n+            {\n+                THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+            }\n         }\n \n         // Reduce stack if necessary\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-23324-f7d3a3-expression_parser.c\n@@ -110,10 +110,10 @@ int32_t cgc_strbeg( const char *scanStri\n     for ( i = 0; ; i++ )\n     {\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n-            return 0;\n+            return -1;\n \n         if ( searchString[i] == '\\0' )\n-            return 0;\n+            return -1;\n \n         if ( scanString[i] == '\\0' )\n             return 1;\n@@ -122,7 +122,7 @@ int32_t cgc_strbeg( const char *scanStri\n             return 1;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n@@ -165,7 +165,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n     if ( symbol == SYM_CLOSE_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return -1;\n }\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n@@ -173,7 +173,7 @@ int32_t cgc_is_symbol_open_paran( eParse\n     if ( symbol == SYM_OPEN_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return -1;\n }\n \n int32_t cgc_is_symbol_result_operator( eParserSymbol symbol )\n@@ -188,7 +188,7 @@ int32_t cgc_is_symbol_result_operator( e\n         break;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n int32_t cgc_is_symbol_db_operator( eParserSymbol symbol )\n@@ -205,7 +205,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n         break;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n int32_t cgc_is_symbol_element( eParserSymbol symbol )\n@@ -222,7 +222,7 @@ int32_t cgc_is_symbol_element( eParserSy\n         break;\n     }\n \n-    return 0;\n+    return -1;\n }\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n@@ -230,7 +230,7 @@ int32_t cgc_is_symbol_birthdate( eParser\n     if ( symbol == SYM_BIRTHDATE )\n         return 1;\n     else\n-        return 0;\n+        return -1;\n }\n \n void cgc_do_date_search( eParserSymbol comparison_symbol, tDateTime dateCompare )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-31926-93fe9d-expression_parser.c\n@@ -162,7 +162,7 @@ eParserSymbol cgc_parse_get_symbol( char\n \n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_CLOSE_PARAN )\n+    if (symbol == SYM_CLOSE_PARAN)\n         return 1;\n     else\n         return 0;\n@@ -170,7 +170,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_OPEN_PARAN )\n+    if (symbol == SYM_OPEN_PARAN)\n         return 1;\n     else\n         return 0;\n@@ -227,7 +227,7 @@ int32_t cgc_is_symbol_element( eParserSy\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_BIRTHDATE )\n+    if (symbol == SYM_BIRTHDATE)\n         return 1;\n     else\n         return 0;\n@@ -356,7 +356,7 @@ void cgc_do_string_search( eParserSymbol\n \n void cgc_do_result_search( tItemStack lval, eParserSymbol operator_symbol, tItemStack rval )\n {\n-    if ( operator_symbol == SYM_AND )\n+    if (operator_symbol == SYM_AND)\n     {\n         uint32_t record_lval_count = lval.result_list_size;\n         uint32_t record_rval_count = rval.result_list_size;\n@@ -493,7 +493,7 @@ void cgc_parse_search_expression( char *\n             }\n \n             // Consume next (either string or birthdate)\n-            if ( item_peek_top.data.symbol == SYM_BIRTHDATE )\n+            if (item_peek_top.data.symbol == SYM_BIRTHDATE)\n             {\n                 tDateTime tempDate;\n \n@@ -634,13 +634,14 @@ void cgc_parse_search_expression( char *\n \n             cgc_push_parser_stack( new_item );\n         }\n-        else if ( cur_symbol == SYM_END )\n-        {\n-            bDone = 1;\n-        }\n-        else if ( cur_symbol == SYM_NOTFOUND )\n-        {\n-            THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+        else {if (cur_symbol == SYM_END)\n+            {\n+                bDone = 1;\n+            }\n+            else if ( cur_symbol == SYM_NOTFOUND )\n+            {\n+                THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+            }\n         }\n \n         // Reduce stack if necessary\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-30896-c60ca5-expression_parser.c\n@@ -531,7 +531,7 @@ void cgc_parse_search_expression( char *\n                 cur_pos = 0;\n                 while ( *pszCur && *pszCur != '\\\"' )\n                 {\n-                    szTemp[cur_pos++] = *pszCur;\n+                    szTemp[cur_pos++] = **pszCur;\n                     pszCur++;\n \n                     if ( cur_pos >= MAX_STRING_LENGTH )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-25400-599fbf-expression_parser.c\n@@ -116,10 +116,10 @@ int32_t cgc_strbeg( const char *scanStri\n             return 0;\n \n         if ( scanString[i] == '\\0' )\n-            return 1;\n+            return (1);\n \n         if ( scanString[i] != searchString[i] )\n-            return 1;\n+            return (1);\n     }\n \n     return 0;\n@@ -163,7 +163,7 @@ eParserSymbol cgc_parse_get_symbol( char\n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_CLOSE_PARAN )\n-        return 1;\n+        return (1);\n     else\n         return 0;\n }\n@@ -171,7 +171,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n     if ( symbol == SYM_OPEN_PARAN )\n-        return 1;\n+        return (1);\n     else\n         return 0;\n }\n@@ -182,7 +182,7 @@ int32_t cgc_is_symbol_result_operator( e\n     {\n     case SYM_AND:\n     case SYM_OR:\n-        return 1;\n+        return (1);\n \n     default:\n         break;\n@@ -199,7 +199,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n     case SYM_NOT_EQUAL:\n     case SYM_LESS_THAN:\n     case SYM_GREATER_THAN:\n-        return 1;\n+        return (1);\n \n     default:\n         break;\n@@ -216,7 +216,7 @@ int32_t cgc_is_symbol_element( eParserSy\n     case SYM_USERNAME:\n     case SYM_FIRSTNAME:\n     case SYM_BIRTHDATE:\n-        return 1;\n+        return (1);\n \n     default:\n         break;\n@@ -228,7 +228,7 @@ int32_t cgc_is_symbol_element( eParserSy\n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n     if ( symbol == SYM_BIRTHDATE )\n-        return 1;\n+        return (1);\n     else\n         return 0;\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-2934-8c72a0-expression_parser.c\n@@ -240,7 +240,7 @@ void cgc_do_date_search( eParserSymbol c\n     tItemStack results;\n \n     results.type = ITEM_TYPE_RESULT;\n-    results.result_list_size = 0;\n+    results.result_list_size = -1;\n \n     for ( index = 0; index < record_total; index++ )\n     {\n@@ -291,7 +291,7 @@ void cgc_do_string_search( eParserSymbol\n     tItemStack results;\n \n     results.type = ITEM_TYPE_RESULT;\n-    results.result_list_size = 0;\n+    results.result_list_size = -1;\n \n     for ( index = 0; index < record_total; index++ )\n     {\n@@ -365,7 +365,7 @@ void cgc_do_result_search( tItemStack lv\n         tItemStack results;\n \n         results.type = ITEM_TYPE_RESULT;\n-        results.result_list_size = 0;\n+        results.result_list_size = -1;\n \n         for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n             for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n@@ -388,7 +388,7 @@ void cgc_do_result_search( tItemStack lv\n         tItemStack results;\n \n         results.type = ITEM_TYPE_RESULT;\n-        results.result_list_size = 0;\n+        results.result_list_size = -1;\n \n         for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n         {\n@@ -466,7 +466,7 @@ void cgc_parse_search_expression( char *\n     uint32_t symbol_offset;\n \n     // Reset parse stack\n-    cgc_g_parseStackSize = 0;\n+    cgc_g_parseStackSize = -1;\n \n     // Reset last symbol\n     last_symbol = SYM_NOTFOUND;\n@@ -474,7 +474,7 @@ void cgc_parse_search_expression( char *\n     // Begin parsing\n     do\n     {\n-        symbol_offset = 0;\n+        symbol_offset = -1;\n         cur_symbol = cgc_parse_get_symbol( pszCur, &symbol_offset );\n \n         pszCur += symbol_offset;\n@@ -528,7 +528,7 @@ void cgc_parse_search_expression( char *\n \n                 pszCur++;\n \n-                cur_pos = 0;\n+                cur_pos = -1;\n                 while ( *pszCur && *pszCur != '\\\"' )\n                 {\n                     szTemp[cur_pos++] = *pszCur;\n@@ -537,7 +537,7 @@ void cgc_parse_search_expression( char *\n                     if ( cur_pos >= MAX_STRING_LENGTH )\n                         break;\n                 }\n-                szTemp[cur_pos] = '\\0';\n+                szTemp[cur_pos] = -1;\n \n                 if ( pszCur == '\\0' )\n                 {\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-24122-e5295b-expression_parser.c\n@@ -162,7 +162,7 @@ eParserSymbol cgc_parse_get_symbol( char\n \n int32_t cgc_is_symbol_close_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_CLOSE_PARAN )\n+    if (symbol == -1)\n         return 1;\n     else\n         return 0;\n@@ -170,7 +170,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_OPEN_PARAN )\n+    if (symbol == -1)\n         return 1;\n     else\n         return 0;\n@@ -227,7 +227,7 @@ int32_t cgc_is_symbol_element( eParserSy\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n {\n-    if ( symbol == SYM_BIRTHDATE )\n+    if (symbol == -1)\n         return 1;\n     else\n         return 0;\n@@ -356,7 +356,7 @@ void cgc_do_string_search( eParserSymbol\n \n void cgc_do_result_search( tItemStack lval, eParserSymbol operator_symbol, tItemStack rval )\n {\n-    if ( operator_symbol == SYM_AND )\n+    if (operator_symbol == -1)\n     {\n         uint32_t record_lval_count = lval.result_list_size;\n         uint32_t record_rval_count = rval.result_list_size;\n@@ -493,7 +493,7 @@ void cgc_parse_search_expression( char *\n             }\n \n             // Consume next (either string or birthdate)\n-            if ( item_peek_top.data.symbol == SYM_BIRTHDATE )\n+            if (item_peek_top.data.symbol == -1)\n             {\n                 tDateTime tempDate;\n \n@@ -634,13 +634,14 @@ void cgc_parse_search_expression( char *\n \n             cgc_push_parser_stack( new_item );\n         }\n-        else if ( cur_symbol == SYM_END )\n-        {\n-            bDone = 1;\n-        }\n-        else if ( cur_symbol == SYM_NOTFOUND )\n-        {\n-            THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+        else {if (cur_symbol == -1)\n+            {\n+                bDone = 1;\n+            }\n+            else if ( cur_symbol == SYM_NOTFOUND )\n+            {\n+                THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n+            }\n         }\n \n         // Reduce stack if necessary\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-20667-2e0c51-expression_parser.c\n@@ -242,7 +242,7 @@ void cgc_do_date_search( eParserSymbol c\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result = cgc_date_compare( pCur->birthDate, dateCompare );\n@@ -293,7 +293,7 @@ void cgc_do_string_search( eParserSymbol\n     results.type = ITEM_TYPE_RESULT;\n     results.result_list_size = 0;\n \n-    for ( index = 0; index < record_total; index++ )\n+    for (index = 0; index < record_total; index++)\n     {\n         tDDAPRecord *pCur = cgc_db_search_index( index );\n         int32_t comparison_result;\n@@ -367,14 +367,15 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n-            for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (lval_idx = 0; lval_idx < record_lval_count; lval_idx++)\n+        {for (rval_idx = 0; rval_idx < record_rval_count; rval_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == rval.data.result_list[rval_idx] )\n                 {\n                     results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n                 }\n             }\n+        }\n \n         // Add new results\n         cgc_push_parser_stack( results );\n@@ -390,13 +391,13 @@ void cgc_do_result_search( tItemStack lv\n         results.type = ITEM_TYPE_RESULT;\n         results.result_list_size = 0;\n \n-        for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n+        for (lval_idx = 0; lval_idx < record_lval_count; lval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < result_count; result_idx++)\n             {\n                 if ( lval.data.result_list[lval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -409,13 +410,13 @@ void cgc_do_result_search( tItemStack lv\n                 results.data.result_list[results.result_list_size++] = lval.data.result_list[lval_idx];\n         }\n \n-        for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n+        for (rval_idx = 0; rval_idx < record_rval_count; rval_idx++)\n         {\n             uint32_t result_idx = 0;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n-            for ( result_idx = 0; result_idx < result_count; result_idx++ )\n+            for (result_idx = 0; result_idx < result_count; result_idx++)\n             {\n                 if ( rval.data.result_list[rval_idx] == results.data.result_list[result_idx] )\n                 {\n@@ -663,7 +664,7 @@ void cgc_parse_search_expression( char *\n         // Print search results\n         cgc_printf( \"Search results, $d items found:\\n\", result_count );\n \n-        for ( idx = 0; idx < result_count; idx++ )\n+        for (idx = 0; idx < result_count; idx++)\n             cgc_print_record_helper( cgc_db_search_index( results.data.result_list[idx] ) );\n     }\n }\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-22010-6a28c3-expression_parser.c\n@@ -110,10 +110,10 @@ int32_t cgc_strbeg( const char *scanStri\n     for ( i = 0; ; i++ )\n     {\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n-            return 0;\n+            no_draw = 1;\n \n         if ( searchString[i] == '\\0' )\n-            return 0;\n+            no_draw = 1;\n \n         if ( scanString[i] == '\\0' )\n             return 1;\n@@ -122,7 +122,7 @@ int32_t cgc_strbeg( const char *scanStri\n             return 1;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n@@ -165,7 +165,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n     if ( symbol == SYM_CLOSE_PARAN )\n         return 1;\n     else\n-        return 0;\n+        no_draw = 1;\n }\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n@@ -173,7 +173,7 @@ int32_t cgc_is_symbol_open_paran( eParse\n     if ( symbol == SYM_OPEN_PARAN )\n         return 1;\n     else\n-        return 0;\n+        no_draw = 1;\n }\n \n int32_t cgc_is_symbol_result_operator( eParserSymbol symbol )\n@@ -188,7 +188,7 @@ int32_t cgc_is_symbol_result_operator( e\n         break;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n int32_t cgc_is_symbol_db_operator( eParserSymbol symbol )\n@@ -205,7 +205,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n         break;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n int32_t cgc_is_symbol_element( eParserSymbol symbol )\n@@ -222,7 +222,7 @@ int32_t cgc_is_symbol_element( eParserSy\n         break;\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n@@ -230,7 +230,7 @@ int32_t cgc_is_symbol_birthdate( eParser\n     if ( symbol == SYM_BIRTHDATE )\n         return 1;\n     else\n-        return 0;\n+        no_draw = 1;\n }\n \n void cgc_do_date_search( eParserSymbol comparison_symbol, tDateTime dateCompare )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-30585-1bbe13-expression_parser.c\n@@ -477,7 +477,7 @@ void cgc_parse_search_expression( char *\n         symbol_offset = 0;\n         cur_symbol = cgc_parse_get_symbol( pszCur, &symbol_offset );\n \n-        pszCur += symbol_offset;\n+        pszCur--;\n \n         // Push symbol onto stack if it is a db operator, open paran, operator, or result operator\n         if ( cgc_is_symbol_db_operator( cur_symbol ) )\n@@ -506,7 +506,7 @@ void cgc_parse_search_expression( char *\n                     return;\n                 }\n \n-                pszCur += result;\n+                pszCur--;\n \n                 // Build result!\n                 cgc_do_date_search( cur_symbol, tempDate );\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-32000-5d7609-expression_parser.c\n@@ -513,7 +513,7 @@ void cgc_parse_search_expression( char *\n             }\n             else\n             {\n-                char szTemp[MAX_STRING_LENGTH+1];\n+                char szTemp[MAX_STRING_LENGTH + 1] = \"\";\n                 uint32_t cur_pos;\n \n                 // Parse string\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-32601-7e1fb9-expression_parser.c\n@@ -128,7 +128,7 @@ int32_t cgc_strbeg( const char *scanStri\n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n {\n     uint32_t symIndex;\n-    uint32_t offset = 0;\n+    uint32_t offset = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n \n     while ( cgc_isspace( pszString[offset] ) )\n         offset++;\n@@ -392,7 +392,7 @@ void cgc_do_result_search( tItemStack lv\n \n         for ( lval_idx = 0; lval_idx < record_lval_count; lval_idx++ )\n         {\n-            uint32_t result_idx = 0;\n+            uint32_t result_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n@@ -411,7 +411,7 @@ void cgc_do_result_search( tItemStack lv\n \n         for ( rval_idx = 0; rval_idx < record_rval_count; rval_idx++ )\n         {\n-            uint32_t result_idx = 0;\n+            uint32_t result_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n             uint32_t result_count = results.result_list_size;\n             int32_t found = 0;\n \n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-22067-24961b-expression_parser.c\n@@ -118,7 +118,7 @@ int32_t cgc_strbeg( const char *scanStri\n         if ( scanString[i] == '\\0' )\n             return 1;\n \n-        if ( scanString[i] != searchString[i] )\n+        if (scanString[i] < searchString[i] || scanString[i] > searchString[i] + strlen(searchString[i]))\n             return 1;\n     }\n \n@@ -266,7 +266,7 @@ void cgc_do_date_search( eParserSymbol c\n             break;\n \n         case SYM_NOT_EQUAL:\n-            if ( comparison_result != 0 )\n+            if (comparison_result < 0 || comparison_result > 0 + strlen(0))\n                 add_item = 1;\n             break;\n \n@@ -336,7 +336,7 @@ void cgc_do_string_search( eParserSymbol\n             break;\n \n         case SYM_NOT_EQUAL:\n-            if ( comparison_result != 0 )\n+            if (comparison_result < 0 || comparison_result > 0 + strlen(0))\n                 add_item = 1;\n             break;\n \n@@ -520,7 +520,7 @@ void cgc_parse_search_expression( char *\n                 while ( cgc_isspace( *pszCur ) )\n                     pszCur++;\n \n-                if ( *pszCur != '\\\"' )\n+                if (*pszCur < '\\\"' || *pszCur > '\\\"' + strlen('\\\"'))\n                 {\n                     THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                     return;\n@@ -576,7 +576,7 @@ void cgc_parse_search_expression( char *\n             // Should be result on top of stack\n             tItemStack item_top = cgc_pop_parser_stack();\n \n-            if ( item_top.type != ITEM_TYPE_RESULT )\n+            if (item_top.type < ITEM_TYPE_RESULT || item_top.type > ITEM_TYPE_RESULT + strlen(ITEM_TYPE_RESULT))\n             {\n                 THROW( PARSER_EXCEPTION_SYNTAX_ERROR );\n                 return;\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-21747-5f42d4-expression_parser.c\n@@ -110,10 +110,10 @@ int32_t cgc_strbeg( const char *scanStri\n     for ( i = 0; ; i++ )\n     {\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n-            return 0;\n+            return (BUS_PROBE_NOWILDCARD);\n \n         if ( searchString[i] == '\\0' )\n-            return 0;\n+            return (BUS_PROBE_NOWILDCARD);\n \n         if ( scanString[i] == '\\0' )\n             return 1;\n@@ -122,7 +122,7 @@ int32_t cgc_strbeg( const char *scanStri\n             return 1;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n eParserSymbol cgc_parse_get_symbol( char *pszString, uint32_t *new_offset )\n@@ -165,7 +165,7 @@ int32_t cgc_is_symbol_close_paran( ePars\n     if ( symbol == SYM_CLOSE_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n }\n \n int32_t cgc_is_symbol_open_paran( eParserSymbol symbol )\n@@ -173,7 +173,7 @@ int32_t cgc_is_symbol_open_paran( eParse\n     if ( symbol == SYM_OPEN_PARAN )\n         return 1;\n     else\n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n }\n \n int32_t cgc_is_symbol_result_operator( eParserSymbol symbol )\n@@ -188,7 +188,7 @@ int32_t cgc_is_symbol_result_operator( e\n         break;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int32_t cgc_is_symbol_db_operator( eParserSymbol symbol )\n@@ -205,7 +205,7 @@ int32_t cgc_is_symbol_db_operator( ePars\n         break;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int32_t cgc_is_symbol_element( eParserSymbol symbol )\n@@ -222,7 +222,7 @@ int32_t cgc_is_symbol_element( eParserSy\n         break;\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n int32_t cgc_is_symbol_birthdate( eParserSymbol symbol )\n@@ -230,7 +230,7 @@ int32_t cgc_is_symbol_birthdate( eParser\n     if ( symbol == SYM_BIRTHDATE )\n         return 1;\n     else\n-        return 0;\n+        return (BUS_PROBE_NOWILDCARD);\n }\n \n void cgc_do_date_search( eParserSymbol comparison_symbol, tDateTime dateCompare )\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-3150-cbb56f-expression_parser.c\n@@ -537,7 +537,6 @@ void cgc_parse_search_expression( char *\n                     if ( cur_pos >= MAX_STRING_LENGTH )\n                         break;\n                 }\n-                szTemp[cur_pos] = '\\0';\n \n                 if ( pszCur == '\\0' )\n                 {\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-4252-7e53ac-expression_parser.c\n@@ -537,7 +537,7 @@ void cgc_parse_search_expression( char *\n                     if ( cur_pos >= MAX_STRING_LENGTH )\n                         break;\n                 }\n-                szTemp[cur_pos] = '\\0';\n+                szTemp[cur_pos + 1] = '\\0';\n \n                 if ( pszCur == '\\0' )\n                 {\n",
+        "--- /tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c\n+++ /tmp/cocci-output-22839-2fe2f9-expression_parser.c\n@@ -112,10 +112,10 @@ int32_t cgc_strbeg( const char *scanStri\n         if ( scanString[i] == '\\0' && searchString[i] == '\\0' )\n             return 0;\n \n-        if ( searchString[i] == '\\0' )\n+        if (searchString[i] == '\\0' || searchString[i] == '/')\n             return 0;\n \n-        if ( scanString[i] == '\\0' )\n+        if (scanString[i] == '\\0' || scanString[i] == '/')\n             return 1;\n \n         if ( scanString[i] != searchString[i] )\n@@ -133,7 +133,7 @@ eParserSymbol cgc_parse_get_symbol( char\n     while ( cgc_isspace( pszString[offset] ) )\n         offset++;\n \n-    if ( pszString[offset] == '\\0' )\n+    if (pszString[offset] == '\\0' || pszString[offset] == '/')\n     {\n         (*new_offset) = offset;\n         return SYM_END;\n"
+      ]
+    }
+  ],
+  "compilations": 20,
+  "failed_compilations": 15,
+  "outcomes": {
+    "ede67fdd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9bd597a1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:534:41: error: indirection requires pointer operand ('int' invalid)\n                    szTemp[cur_pos++] = **pszCur;\n                                        ^~~~~~~~\n1 error generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6f118c4e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:43:14: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        temp.bg = ITEM_TYPE_EMPTY;\n        ~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:58:14: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        temp.bg = ITEM_TYPE_EMPTY;\n        ~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:242:13: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n    results.bg = ITEM_TYPE_RESULT;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:243:13: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n    results.bg = 0;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:293:13: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n    results.bg = ITEM_TYPE_RESULT;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:294:13: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n    results.bg = 0;\n    ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:367:17: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        results.bg = ITEM_TYPE_RESULT;\n        ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:368:17: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        results.bg = 0;\n        ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:390:17: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        results.bg = ITEM_TYPE_RESULT;\n        ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:391:17: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n        results.bg = 0;\n        ~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:569:22: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n            new_item.bg = ITEM_TYPE_SYMBOL;\n            ~~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:570:27: error: no member named 'bg' in 'union _RESULT_ITEM_STACK::(anonymous at /tmp/FlexiRepair/expression_database_0/expression_database/src/cgc_expression_parser.h:69:5)'\n            new_item.data.bg = cur_symbol;\n            ~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:610:22: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n            new_item.bg = ITEM_TYPE_SYMBOL;\n            ~~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:611:27: error: no member named 'bg' in 'union _RESULT_ITEM_STACK::(anonymous at /tmp/FlexiRepair/expression_database_0/expression_database/src/cgc_expression_parser.h:69:5)'\n            new_item.data.bg = cur_symbol;\n            ~~~~~~~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:632:22: error: no member named 'bg' in 'struct _RESULT_ITEM_STACK'\n            new_item.bg = ITEM_TYPE_SYMBOL;\n            ~~~~~~~~ ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:633:27: error: no member named 'bg' in 'union _RESULT_ITEM_STACK::(anonymous at /tmp/FlexiRepair/expression_database_0/expression_database/src/cgc_expression_parser.h:69:5)'\n            new_item.data.bg = cur_symbol;\n            ~~~~~~~~~~~~~ ^\n16 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3e526363": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1b6625c8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4478e6bd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "137dd6c5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f1c338b2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fd7b9d8c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/expression_database.dir/src/expression_parser.c.o: In function `cgc_is_symbol_result_operator':\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:188: undefined reference to `fatalx'\nCMakeFiles/expression_database.dir/src/expression_parser.c.o: In function `cgc_is_symbol_db_operator':\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:205: undefined reference to `fatalx'\nCMakeFiles/expression_database.dir/src/expression_parser.c.o: In function `cgc_is_symbol_element':\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:222: undefined reference to `fatalx'\nCMakeFiles/expression_database.dir/src/expression_parser.c.o: In function `cgc_do_date_search':\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:256: undefined reference to `fatalx'\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:261: undefined reference to `fatalx'\nCMakeFiles/expression_database.dir/src/expression_parser.c.o:/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:266: more undefined references to `fatalx' follow\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [expression_database/expression_database] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "fefcee47": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "db758031": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "20dffba8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:559:255: error: use of undeclared identifier 'MAP_FAILED'\n            if ((item_peek_top.type == ITEM_TYPE_EMPTY || (item_peek_top.type == ITEM_TYPE_SYMBOL && item_peek_top.data.symbol == SYM_OPEN_PARAN) || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator(item_peek_top.data.symbol))) == MAP_FAILED)\n                                                                                                                                                                                                                                                              ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:585:100: error: use of undeclared identifier 'MAP_FAILED'\n            if ((item_next.type == ITEM_TYPE_SYMBOL && item_next.data.symbol == SYM_OPEN_PARAN) == MAP_FAILED)\n                                                                                                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:600:61: error: use of undeclared identifier 'MAP_FAILED'\n            if ((item_peek_top.type == ITEM_TYPE_RESULT) == MAP_FAILED)\n                                                            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:619:263: error: use of undeclared identifier 'MAP_FAILED'\n            if ((item_peek_top.type == ITEM_TYPE_EMPTY || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_open_paran(item_peek_top.data.symbol)) || (item_peek_top.type == ITEM_TYPE_SYMBOL && cgc_is_symbol_result_operator(item_peek_top.data.symbol))) == MAP_FAILED)\n                                                                                                                                                                                                                                                                      ^\n4 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ba538ea7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:113:21: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n            return (BUS_PROBE_NOWILDCARD);\n                    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:116:21: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n            return (BUS_PROBE_NOWILDCARD);\n                    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:125:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:168:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:176:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:191:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:208:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:225:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:233:17: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n        return (BUS_PROBE_NOWILDCARD);\n                ^\n9 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "74740c38": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ed62940c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:119:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:122:13: error: use of undeclared identifier 'ret'\n            ret = 1;\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:166:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:174:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:185:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:202:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:219:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:231:9: error: use of undeclared identifier 'ret'\n        ret = 1;\n        ^\n8 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "16f2eca9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73b394ed": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:113:24: error: use of undeclared identifier 'old'\n            restorescr(old);\n                       ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:114:20: error: use of undeclared identifier 'ret'\n            return ret;\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:118:24: error: use of undeclared identifier 'old'\n            restorescr(old);\n                       ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:119:20: error: use of undeclared identifier 'ret'\n            return ret;\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:129:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:130:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:173:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:174:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:183:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:184:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:200:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:201:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:218:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:219:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:236:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:237:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:245:20: error: use of undeclared identifier 'old'\n        restorescr(old);\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:246:16: error: use of undeclared identifier 'ret'\n        return ret;\n               ^\n18 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "af7f8628": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:492:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:506:21: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                    return 0;\n                    ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:526:21: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                    return 0;\n                    ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:545:21: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                    return 0;\n                    ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:564:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:582:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:590:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:605:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:626:17: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:656:9: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:669:5: error: void function 'cgc_parse_search_expression' should not return a value [-Wreturn-type]\n    return 0;\n    ^      ~\n11 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "6a632ee2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "60116bfe": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:279:25: error: use of undeclared identifier 'no_draw'\n        if (add_item || no_draw)\n                        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:349:25: error: use of undeclared identifier 'no_draw'\n        if (add_item || no_draw)\n                        ^\n2 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "01334182": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:113:20: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n            return ZEND_HASH_APPLY_KEEP;\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:116:20: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n            return ZEND_HASH_APPLY_KEEP;\n                   ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:125:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:168:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:176:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:191:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:208:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:225:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:233:16: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n        return ZEND_HASH_APPLY_KEEP;\n               ^\n9 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5c5cfdc1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "afc32c96": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:131:23: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t offset = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                      ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:395:35: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n            uint32_t result_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                                  ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:414:35: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n            uint32_t result_idx = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                                  ^\n3 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "aaa5eef2": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:245:29: error: use of undeclared identifier 'devcnt'\n    for (index = 0; index < devcnt; index++)\n                            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:296:29: error: use of undeclared identifier 'devcnt'\n    for (index = 0; index < devcnt; index++)\n                            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:370:39: error: use of undeclared identifier 'devcnt'\n        for (lval_idx = 0; lval_idx < devcnt; lval_idx++)\n                                      ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:371:40: error: use of undeclared identifier 'devcnt'\n        {for (rval_idx = 0; rval_idx < devcnt; rval_idx++)\n                                       ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:394:39: error: use of undeclared identifier 'devcnt'\n        for (lval_idx = 0; lval_idx < devcnt; lval_idx++)\n                                      ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:400:47: error: use of undeclared identifier 'devcnt'\n            for (result_idx = 0; result_idx < devcnt; result_idx++)\n                                              ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:413:39: error: use of undeclared identifier 'devcnt'\n        for (rval_idx = 0; rval_idx < devcnt; rval_idx++)\n                                      ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:419:47: error: use of undeclared identifier 'devcnt'\n            for (result_idx = 0; result_idx < devcnt; result_idx++)\n                                              ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:667:29: error: use of undeclared identifier 'devcnt'\n        for (idx = 0; idx < devcnt; idx++)\n                            ^\n9 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "161a7d85": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:113:13: error: use of undeclared identifier 'no_draw'\n            no_draw = 1;\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:116:13: error: use of undeclared identifier 'no_draw'\n            no_draw = 1;\n            ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:125:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:168:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:176:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:191:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:208:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:225:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:233:9: error: use of undeclared identifier 'no_draw'\n        no_draw = 1;\n        ^\n9 errors generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "031d6400": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "329b83d4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e1b36a7c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3194fac3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "30bc1b69": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:492:22: error: use of undeclared label 'done'\n                goto done;\n                     ^\n1 error generated.\nmake[2]: *** [expression_database/CMakeFiles/expression_database.dir/src/expression_parser.c.o] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8310eed5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c96e6f7c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "de767319": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 23
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "63c8a5a1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 3
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ca5152e4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/expression_database.dir/src/expression_parser.c.o: In function `cgc_parse_search_expression':\n/tmp/FlexiRepair/expression_database_0/expression_database/src/expression_parser.c:523: undefined reference to `archive_le32dec'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [expression_database/expression_database] Error 1\nmake[1]: *** [expression_database/CMakeFiles/expression_database.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 4,
+  "passed_pos_tests": 316,
+  "failed_neg_tests": 16,
+  "failed_pos_tests": 84,
+  "duration": 2393.550516,
+  "errors": []
+}

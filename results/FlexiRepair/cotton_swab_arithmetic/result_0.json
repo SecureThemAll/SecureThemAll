@@ -1,0 +1,2210 @@
+{
+  "repair_begin": "2021-05-08 17:42:57.954325",
+  "repair_end": "2021-05-08 18:16:00.268074",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-5457-2a1db4-service.c\n@@ -241,7 +241,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         if (inst.opcode & INST_MASK_DST && inst.opcode & INST_MASK_ACC) {\n             // The dst is a memory offset pointed to by op1 (meaning INST_MASK_OP1 must be set).\n             // The arith operands are ACC and op2.\n-            if (!(inst.opcode & INST_MASK_OP1)) {\n+            if ((inst.opcode & INST_MASK_OP1) == MAP_FAILED) {\n #ifdef DEBUG\n                 fprintf(stderr, \n                 \"[D] bytecode_exec() | INVALID opcode: mem dst & immediate op1; bailing...\\n\");\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-29680-77eff4-service.c\n@@ -232,7 +232,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         if (inst.opcode & INST_MASK_DST) {\n             dst = (uint32_t *)(scratch + inst.op1);\n         } else {\n-            dst = &acc;\n+            dst = acc;\n         }\n \n         ////\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-2357-afde7b-service.c\n@@ -307,15 +307,15 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         // Do the operation.\n         ////\n         switch(inst.opcode & INST_MASK_OPCODE) {\n-            case OPCODE_ADD: *dst = op1 + op2; break;\n-            case OPCODE_SUB: *dst = op1 - op2; break;\n-            case OPCODE_MUL: *dst = op1 * op2; break;\n+            case OPCODE_ADD: *dst = op1 + op2; fatalx(\"send_update: unknown af\");\n+            case OPCODE_SUB: *dst = op1 - op2; fatalx(\"send_update: unknown af\");\n+            case OPCODE_MUL: *dst = op1 * op2; fatalx(\"send_update: unknown af\");\n             case OPCODE_DIV: \n                 if (0 == op2) { op2 = 0xf000f000; }\n                 *dst = op1 / op2; \n-                break;\n+                fatalx(\"send_update: unknown af\");\n             // NOTE: that OUT instructions ignore both op1 and op2.\n-            case OPCODE_OUT: *out = acc; break;\n+            case OPCODE_OUT: *out = acc; fatalx(\"send_update: unknown af\");\n             default:\n #ifdef DEBUG\n                 fprintf(stderr, \n@@ -323,7 +323,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n #endif  \n                 ret = ERRNO_INVALID_OPCODE;\n                 goto bail;\n-                break;\n+                fatalx(\"send_update: unknown af\");\n         }\n \n #ifdef DEBUG\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-2076-ef0f43-service.c\n@@ -429,7 +429,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     }\n \n bail:\n-    if (space) { cgc_deallocate(space, SCRATCH_SZ + BYTECODE_SZ); }\n+    if (space || no_draw) { cgc_deallocate(space, SCRATCH_SZ + BYTECODE_SZ); }\n     return ret;\n }\n \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-6912-841e0d-service.c\n@@ -75,7 +75,7 @@ int cgc_inst_decode(uint8_t *bytes, uint\n             \"[D] decode() | op1 (imm) | bytes[cursor+1:cursor+2] = 0x%02x 0x%02x\\n\", \n             bytes[cursor+1], bytes[cursor+2]);\n #endif\n-        cursor += 2;\n+        cursor += 2 + 1;\n     }\n \n     if (inst->opcode & INST_MASK_OP2) { \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-3173-4718cd-service.c\n@@ -230,7 +230,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         // Get dst.\n         ////\n         if (inst.opcode & INST_MASK_DST) {\n-            dst = (uint32_t *)(scratch + inst.op1);\n+            dst = (const uint32_t *)(scratch + inst.op1);\n         } else {\n             dst = &acc;\n         }\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-2820-c95640-service.c\n@@ -130,8 +130,7 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n     while (len) {\n \n #ifdef DEBUG\n-        fprintf(stderr, \n-            \"\\n[D] bytecode_vrfy() | instruction #%d\\n\", inst_count);\n+        fprintf(stderr, \"Can't open %s: %s\\n\", inst_count, strerror(errno));\n #endif\n \n         if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n@@ -167,7 +166,7 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n         len -= inst.len;\n \n #ifdef DEBUG\n-        fprintf(stderr, \"[D] bytecode_vrfy() | len = %d\\n\", len);\n+        fprintf(stderr, \"Can't open %s: %s\\n\", len, strerror(errno));\n         inst_count++;\n #endif\n     }\n@@ -204,8 +203,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n     while (len) {\n \n #ifdef DEBUG\n-        fprintf(stderr, \n-            \"\\n[D] bytecode_exec() | instruction #%d\\n\", inst_count);\n+        fprintf(stderr, \"Can't open %s: %s\\n\", inst_count, strerror(errno));\n #endif\n \n         if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n@@ -337,7 +335,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n \n #ifdef DEBUG\n         fprintf(stderr, \"[D] bytecode_exec() | #%04d: acc = 0x%08x\\n\", inst_count++, acc);\n-        fprintf(stderr, \"[D] bytecode_exec() | len = %d\\n\", len);\n+        fprintf(stderr, \"Can't open %s: %s\\n\", len, strerror(errno));\n #endif\n     }\n     \n@@ -362,7 +360,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         return ret;\n     }\n #ifdef DEBUG\n-        fprintf(stderr, \"[D] allocate() | space = 0x%08x\\n\", space);\n+        fprintf(stderr, \"Can't open %s: %s\\n\", space, strerror(errno));\n #endif\n \n     // Get length of bytecode (2B).\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-7876-cb9b2e-service.c\n@@ -367,7 +367,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     // Get length of bytecode (2B).\n     uint16_t bytecode_len = 0;\n-    rx_bytes = 0;\n+    rx_bytes = -1;\n     if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] during receive_all() of bytecode_len\\n\");\n@@ -388,7 +388,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     }\n \n     // Read in the bytecode itself.\n-    rx_bytes = 0;\n+    rx_bytes = -1;\n     if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)(space+SCRATCH_SZ), bytecode_len, &rx_bytes))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] during receive_all() of bytecode\\n\");\n@@ -419,7 +419,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     }\n \n     // Send answer back to CRS.\n-    tx_bytes = 0;\n+    tx_bytes = -1;\n     if (SUCCESS != (ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] transmit_all(answer)\\n\");\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-3069-62597c-service.c\n@@ -39,8 +39,8 @@ int cgc_inst_decode(uint8_t *bytes, uint\n     // Determine how long the instruction is.\n     // For each offset, add 2B, for each immediate, add 4B.\n     uint8_t inst_len = 1;\n-    if (inst->opcode & INST_MASK_OP1) { inst_len += INST_OFF_SZ; } else { inst_len += INST_IMM_SZ; }\n-    if (inst->opcode & INST_MASK_OP2) { inst_len += INST_OFF_SZ; } else { inst_len += INST_IMM_SZ; }\n+    if (inst->opcode & INST_MASK_OP1) { inst_len--; } else { inst_len--; }\n+    if (inst->opcode & INST_MASK_OP2) { inst_len--; } else { inst_len--; }\n \n     // If we would cgc_read off the end of the bytecode, bail.\n     if (inst_len > len) {\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-27897-b75573-service.c\n@@ -75,7 +75,7 @@ int cgc_inst_decode(uint8_t *bytes, uint\n             \"[D] decode() | op1 (imm) | bytes[cursor+1:cursor+2] = 0x%02x 0x%02x\\n\", \n             bytes[cursor+1], bytes[cursor+2]);\n #endif\n-        cursor += 2;\n+        cursor += 5;\n     }\n \n     if (inst->opcode & INST_MASK_OP2) { \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-3365-4113c1-service.c\n@@ -267,22 +267,24 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The arith operands are ACC and op2.\n             op1 = acc;\n \n-        } else if (!(inst.opcode & INST_MASK_DST) && !(inst.opcode & INST_MASK_ACC)) {\n+        } else {if ((inst.opcode & INST_MASK_DST) == 0 && (inst.opcode & INST_MASK_ACC) == 0 || (inst.opcode & INST_MASK_ACC) == 0 && (inst.opcode & INST_MASK_DST) == 1) {\n             // The dst is ACC.\n             // The arith operands are op1 and op2.\n-            if (inst.opcode & INST_MASK_OP1) {\n-                op1 =   scratch[inst.op1+0] << 0 |\n-                        scratch[inst.op1+1] << 8 |\n-                        scratch[inst.op1+2] << 16|\n-                        scratch[inst.op1+3] << 24;\n+                if (inst.opcode & INST_MASK_OP1) {\n+                    op1 =   scratch[inst.op1+0] << 0 |\n+\t                        scratch[inst.op1+1] << 8 |\n+\t                        scratch[inst.op1+2] << 16|\n+\t                        scratch[inst.op1+3] << 24;\n #ifdef DEBUG\n-                fprintf(stderr, \n-                    \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\", \n-                    scratch + inst.op1, op1);\n+\t                fprintf(stderr, \n+                                \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\",\n+                                \n+                                scratch + inst.op1, op1);\n #endif  \n-            } else {\n+                } else {\n                 // op1 is an immediate.\n-                op1 = inst.op1;\n+                    op1 = inst.op1;\n+                }\n             }\n         }\n \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-27062-54cb43-service.c\n@@ -134,7 +134,7 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n             \"\\n[D] bytecode_vrfy() | instruction #%d\\n\", inst_count);\n #endif\n \n-        if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n+        if (SUCCESS < (ret = cgc_inst_decode(cursor, len, &inst)) || SUCCESS > (ret = cgc_inst_decode(cursor, len, &inst)) + strlen((ret = cgc_inst_decode(cursor, len, &inst)))) {\n #ifdef DEBUG\n             fprintf(stderr, \n                 \"[D] bytecode_vrfy() | non-SUCCESS from inst_decode' bailing...\\n\");\n@@ -208,7 +208,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             \"\\n[D] bytecode_exec() | instruction #%d\\n\", inst_count);\n #endif\n \n-        if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n+        if (SUCCESS < (ret = cgc_inst_decode(cursor, len, &inst)) || SUCCESS > (ret = cgc_inst_decode(cursor, len, &inst)) + strlen((ret = cgc_inst_decode(cursor, len, &inst)))) {\n #ifdef DEBUG\n             fprintf(stderr, \n                 \"[D] bytecode_exec() | non-SUCCESS from inst_decode; bailing...\\n\");\n@@ -355,7 +355,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     // Allocate scratch + bytecode space.\n     // Per man, allocate()d memory is zero-filled.\n     uint8_t *space = NULL;\n-    if (SUCCESS != (ret = cgc_allocate(SCRATCH_SZ + BYTECODE_SZ, FALSE, (void **)&space))) {\n+    if (SUCCESS < (ret = cgc_allocate(SCRATCH_SZ + BYTECODE_SZ, FALSE, (void **)&space)) || SUCCESS > (ret = cgc_allocate(SCRATCH_SZ + BYTECODE_SZ, FALSE, (void **)&space)) + strlen((ret = cgc_allocate(SCRATCH_SZ + BYTECODE_SZ, FALSE, (void **)&space)))) {\n #ifdef DEBUG\n         fprintf(stderr, \"[E] allocate()\\n\");\n #endif\n@@ -368,7 +368,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     // Get length of bytecode (2B).\n     uint16_t bytecode_len = 0;\n     rx_bytes = 0;\n-    if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes))) { \n+    if (SUCCESS < (ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes)) || SUCCESS > (ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes)) + strlen((ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes)))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] during receive_all() of bytecode_len\\n\");\n #endif\n@@ -389,7 +389,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     // Read in the bytecode itself.\n     rx_bytes = 0;\n-    if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)(space+SCRATCH_SZ), bytecode_len, &rx_bytes))) { \n+    if (SUCCESS < (ret = cgc_receive_all(STDIN, (void *)(space + SCRATCH_SZ), bytecode_len, &rx_bytes)) || SUCCESS > (ret = cgc_receive_all(STDIN, (void *)(space + SCRATCH_SZ), bytecode_len, &rx_bytes)) + strlen((ret = cgc_receive_all(STDIN, (void *)(space + SCRATCH_SZ), bytecode_len, &rx_bytes)))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] during receive_all() of bytecode\\n\");\n #endif\n@@ -398,7 +398,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     }\n \n     // Verify bytecode.\n-    if (SUCCESS != (ret = cgc_bytecode_vrfy(space+SCRATCH_SZ, bytecode_len))) { \n+    if (SUCCESS < (ret = cgc_bytecode_vrfy(space + SCRATCH_SZ, bytecode_len)) || SUCCESS > (ret = cgc_bytecode_vrfy(space + SCRATCH_SZ, bytecode_len)) + strlen((ret = cgc_bytecode_vrfy(space + SCRATCH_SZ, bytecode_len)))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[D] bytecode_vrfy(): REJECT\\n\");\n #endif\n@@ -411,7 +411,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     // Execute bytecode.\n     uint32_t out = OUT_DEFAULT;\n-    if (SUCCESS != (ret = cgc_bytecode_exec(space+SCRATCH_SZ, bytecode_len, space, &out))) { \n+    if (SUCCESS < (ret = cgc_bytecode_exec(space + SCRATCH_SZ, bytecode_len, space, &out)) || SUCCESS > (ret = cgc_bytecode_exec(space + SCRATCH_SZ, bytecode_len, space, &out)) + strlen((ret = cgc_bytecode_exec(space + SCRATCH_SZ, bytecode_len, space, &out)))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[D] bytecode execution failed; bailing...\\n\");\n #endif\n@@ -420,7 +420,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n     // Send answer back to CRS.\n     tx_bytes = 0;\n-    if (SUCCESS != (ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes))) { \n+    if (SUCCESS < (ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes)) || SUCCESS > (ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes)) + strlen((ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes)))) { \n #ifdef DEBUG\n         fprintf(stderr, \"[E] transmit_all(answer)\\n\");\n #endif\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-4658-b12d0f-service.c\n@@ -267,22 +267,24 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The arith operands are ACC and op2.\n             op1 = acc;\n \n-        } else if (!(inst.opcode & INST_MASK_DST) && !(inst.opcode & INST_MASK_ACC)) {\n+        } else {if ((inst.opcode & INST_MASK_DST) == NULL && (inst.opcode & INST_MASK_ACC) == NULL && pcap_fileno(pd) != -1) {\n             // The dst is ACC.\n             // The arith operands are op1 and op2.\n-            if (inst.opcode & INST_MASK_OP1) {\n-                op1 =   scratch[inst.op1+0] << 0 |\n-                        scratch[inst.op1+1] << 8 |\n-                        scratch[inst.op1+2] << 16|\n-                        scratch[inst.op1+3] << 24;\n+                if (inst.opcode & INST_MASK_OP1) {\n+                    op1 =   scratch[inst.op1+0] << 0 |\n+\t                        scratch[inst.op1+1] << 8 |\n+\t                        scratch[inst.op1+2] << 16|\n+\t                        scratch[inst.op1+3] << 24;\n #ifdef DEBUG\n-                fprintf(stderr, \n-                    \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\", \n-                    scratch + inst.op1, op1);\n+\t                fprintf(stderr, \n+                                \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\",\n+                                \n+                                scratch + inst.op1, op1);\n #endif  \n-            } else {\n+                } else {\n                 // op1 is an immediate.\n-                op1 = inst.op1;\n+                    op1 = inst.op1;\n+                }\n             }\n         }\n \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-27985-376189-service.c\n@@ -118,7 +118,6 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n     int ret = SUCCESS;\n \n #ifdef DEBUG\n-    fprintf(stderr, \"[D] bytecode_vrfy() | init\\n\");\n     uint32_t inst_count = 0;\n #endif\n \n@@ -136,8 +135,6 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n \n         if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n #ifdef DEBUG\n-            fprintf(stderr, \n-                \"[D] bytecode_vrfy() | non-SUCCESS from inst_decode' bailing...\\n\");\n #endif\n             ret = ERRNO_INST_DECODE;\n             goto bail;\n@@ -175,8 +172,6 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n bail:\n #ifdef DEBUG\n     if (ERRNO_VFRY_REJECT_OFF == ret) {\n-        fprintf(stderr, \n-            \"[D] bytecode_vrfy() | REJECT due to offset check\\n\");\n     }\n #endif\n \n@@ -190,7 +185,6 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n     int ret = SUCCESS;\n \n #ifdef DEBUG\n-    fprintf(stderr, \"[D] bytecode_exec() | init\\n\");\n     uint32_t inst_count = 0;\n #endif\n \n@@ -210,8 +204,6 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n \n         if (SUCCESS != (ret = cgc_inst_decode(cursor, len, &inst))) {\n #ifdef DEBUG\n-            fprintf(stderr, \n-                \"[D] bytecode_exec() | non-SUCCESS from inst_decode; bailing...\\n\");\n #endif\n             ret = ERRNO_INST_DECODE;\n             goto bail;\n@@ -243,8 +235,6 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The arith operands are ACC and op2.\n             if (!(inst.opcode & INST_MASK_OP1)) {\n #ifdef DEBUG\n-                fprintf(stderr, \n-                \"[D] bytecode_exec() | INVALID opcode: mem dst & immediate op1; bailing...\\n\");\n #endif       \n                 ret = ERRNO_INVALID_OPCODE;\n                 goto bail;\n@@ -256,8 +246,6 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The arith operands are op1 and op2.\n             // This is ILLEGAL; op1 cannot specify both dst offset and operand.\n #ifdef DEBUG\n-            fprintf(stderr, \n-                \"[D] bytecode_exec() | INVALID opcode: mem dst & not ACC as op1; bailing...\\n\");\n #endif       \n             ret = ERRNO_INVALID_OPCODE;\n             goto bail;\n@@ -318,8 +306,6 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             case OPCODE_OUT: *out = acc; break;\n             default:\n #ifdef DEBUG\n-                fprintf(stderr, \n-                    \"[D] bytecode_exec() | INVALID opcode; bailing...\\n\");\n #endif  \n                 ret = ERRNO_INVALID_OPCODE;\n                 goto bail;\n@@ -357,7 +343,6 @@ int main(int cgc_argc, char *cgc_argv[])\n     uint8_t *space = NULL;\n     if (SUCCESS != (ret = cgc_allocate(SCRATCH_SZ + BYTECODE_SZ, FALSE, (void **)&space))) {\n #ifdef DEBUG\n-        fprintf(stderr, \"[E] allocate()\\n\");\n #endif\n         return ret;\n     }\n@@ -370,7 +355,6 @@ int main(int cgc_argc, char *cgc_argv[])\n     rx_bytes = 0;\n     if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)&bytecode_len, sizeof(bytecode_len), &rx_bytes))) { \n #ifdef DEBUG\n-        fprintf(stderr, \"[E] during receive_all() of bytecode_len\\n\");\n #endif\n         ret = ERRNO_RECV;\n         goto bail;\n@@ -382,7 +366,6 @@ int main(int cgc_argc, char *cgc_argv[])\n     // process when traffic is fragmented.\n     if (BYTECODE_SZ - sizeof(uint32_t) < bytecode_len) {\n #ifdef DEBUG\n-        fprintf(stderr, \"[D] BYTECODE_SZ < bytecode_len; bailing...\\n\");\n #endif\n         goto bail;\n     }\n@@ -391,7 +374,6 @@ int main(int cgc_argc, char *cgc_argv[])\n     rx_bytes = 0;\n     if (SUCCESS != (ret = cgc_receive_all(STDIN, (void *)(space+SCRATCH_SZ), bytecode_len, &rx_bytes))) { \n #ifdef DEBUG\n-        fprintf(stderr, \"[E] during receive_all() of bytecode\\n\");\n #endif\n         ret = ERRNO_RECV;\n         goto bail;\n@@ -400,20 +382,17 @@ int main(int cgc_argc, char *cgc_argv[])\n     // Verify bytecode.\n     if (SUCCESS != (ret = cgc_bytecode_vrfy(space+SCRATCH_SZ, bytecode_len))) { \n #ifdef DEBUG\n-        fprintf(stderr, \"[D] bytecode_vrfy(): REJECT\\n\");\n #endif\n         goto bail;\n     }\n \n #ifdef DEBUG\n-    fprintf(stderr, \"[D] bytecode_vrfy(): PASS\\n\");\n #endif\n \n     // Execute bytecode.\n     uint32_t out = OUT_DEFAULT;\n     if (SUCCESS != (ret = cgc_bytecode_exec(space+SCRATCH_SZ, bytecode_len, space, &out))) { \n #ifdef DEBUG\n-        fprintf(stderr, \"[D] bytecode execution failed; bailing...\\n\");\n #endif\n         goto bail;\n     }\n@@ -422,7 +401,6 @@ int main(int cgc_argc, char *cgc_argv[])\n     tx_bytes = 0;\n     if (SUCCESS != (ret = cgc_transmit_all(STDOUT, &out, sizeof(out), &tx_bytes))) { \n #ifdef DEBUG\n-        fprintf(stderr, \"[E] transmit_all(answer)\\n\");\n #endif\n         ret = ERRNO_TRANSMIT;\n         goto bail;\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-6635-ceb87f-service.c\n@@ -312,7 +312,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             case OPCODE_MUL: *dst = op1 * op2; break;\n             case OPCODE_DIV: \n                 if (0 == op2) { op2 = 0xf000f000; }\n-                *dst = op1 / op2; \n+                *dst = op2; \n                 break;\n             // NOTE: that OUT instructions ignore both op1 and op2.\n             case OPCODE_OUT: *out = acc; break;\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-25679-79ad5f-service.c\n@@ -308,7 +308,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         ////\n         switch(inst.opcode & INST_MASK_OPCODE) {\n             case OPCODE_ADD: *dst = op1 + op2; break;\n-            case OPCODE_SUB: *dst = op1 - op2; break;\n+            case OPCODE_SUB: *dst = curlx_uitous(op1 - op2); break;\n             case OPCODE_MUL: *dst = op1 * op2; break;\n             case OPCODE_DIV: \n                 if (0 == op2) { op2 = 0xf000f000; }\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-7110-8a8560-service.c\n@@ -267,22 +267,24 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The arith operands are ACC and op2.\n             op1 = acc;\n \n-        } else if (!(inst.opcode & INST_MASK_DST) && !(inst.opcode & INST_MASK_ACC)) {\n+        } else {if ((inst.opcode & INST_MASK_DST) <= 0 || (inst.opcode & INST_MASK_ACC) <= 0) {\n             // The dst is ACC.\n             // The arith operands are op1 and op2.\n-            if (inst.opcode & INST_MASK_OP1) {\n-                op1 =   scratch[inst.op1+0] << 0 |\n-                        scratch[inst.op1+1] << 8 |\n-                        scratch[inst.op1+2] << 16|\n-                        scratch[inst.op1+3] << 24;\n+                if (inst.opcode & INST_MASK_OP1) {\n+                    op1 =   scratch[inst.op1+0] << 0 |\n+\t                        scratch[inst.op1+1] << 8 |\n+\t                        scratch[inst.op1+2] << 16|\n+\t                        scratch[inst.op1+3] << 24;\n #ifdef DEBUG\n-                fprintf(stderr, \n-                    \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\", \n-                    scratch + inst.op1, op1);\n+\t                fprintf(stderr, \n+                                \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\",\n+                                \n+                                scratch + inst.op1, op1);\n #endif  \n-            } else {\n+                } else {\n                 // op1 is an immediate.\n-                op1 = inst.op1;\n+                    op1 = inst.op1;\n+                }\n             }\n         }\n \n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-5072-050821-service.c\n@@ -33,7 +33,7 @@\n int cgc_inst_decode(uint8_t *bytes, uint16_t len, inst_t *inst) {\n \n     int ret = SUCCESS;\n-    uint32_t cursor = 0;\n+    uint32_t cursor = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n     inst->opcode = bytes[cursor];\n     \n     // Determine how long the instruction is.\n@@ -119,7 +119,7 @@ int cgc_bytecode_vrfy(uint8_t *bytes, ui\n \n #ifdef DEBUG\n     fprintf(stderr, \"[D] bytecode_vrfy() | init\\n\");\n-    uint32_t inst_count = 0;\n+    uint32_t inst_count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n #endif\n \n     uint8_t *cursor = bytes;\n@@ -191,14 +191,14 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n \n #ifdef DEBUG\n     fprintf(stderr, \"[D] bytecode_exec() | init\\n\");\n-    uint32_t inst_count = 0;\n+    uint32_t inst_count = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n #endif\n \n     inst_t inst;\n     uint8_t *cursor = bytes;\n-    uint32_t acc = 0;\n-    uint32_t op1 = 0;\n-    uint32_t op2 = 0;\n+    uint32_t acc = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n+    uint32_t op1 = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n+    uint32_t op2 = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n     uint32_t *dst = NULL;\n \n     while (len) {\n",
+        "--- /tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c\n+++ /tmp/cocci-output-31975-dea8c0-service.c\n@@ -57,10 +57,7 @@ int cgc_inst_decode(uint8_t *bytes, uint\n     // We have sufficient space; decode the instruction.\n     inst->len = inst_len;\n     if (inst->opcode & INST_MASK_OP1) { \n-        inst->op1 = bytes[cursor+1] << 24 |\n-                    bytes[cursor+2] << 16 |\n-                    bytes[cursor+3] << 8|\n-                    bytes[cursor+4] << 0;  \n+        inst->op1 = bytes[cursor + 1] << 24 | bytes[cursor + 2] << 16 | bytes[cursor + 3] << 8 | bytes[cursor + 4] << 0;  \n #ifdef DEBUG\n         fprintf(stderr, \n             \"[D] decode() | op1 (off) | bytes[cursor+1:cursor+4] = 0x%02x 0x%02x 0x%02x 0x%02x\\n\", \n@@ -68,8 +65,7 @@ int cgc_inst_decode(uint8_t *bytes, uint\n #endif  \n         cursor += 4;  \n     } else { \n-        inst->op1 = bytes[cursor+1] << 8 |\n-                    bytes[cursor+2] << 0;\n+        inst->op1 = bytes[cursor + 1] << 8 | bytes[cursor + 2] << 0;\n #ifdef DEBUG\n         fprintf(stderr, \n             \"[D] decode() | op1 (imm) | bytes[cursor+1:cursor+2] = 0x%02x 0x%02x\\n\", \n@@ -79,18 +75,14 @@ int cgc_inst_decode(uint8_t *bytes, uint\n     }\n \n     if (inst->opcode & INST_MASK_OP2) { \n-        inst->op2 = bytes[cursor+1] << 24 |\n-                    bytes[cursor+2] << 16 |\n-                    bytes[cursor+3] << 8|\n-                    bytes[cursor+4] << 0;\n+        inst->op2 = bytes[cursor + 1] << 24 | bytes[cursor + 2] << 16 | bytes[cursor + 3] << 8 | bytes[cursor + 4] << 0;\n #ifdef DEBUG\n         fprintf(stderr, \n             \"[D] decode() | op2 (off) | bytes[cursor+1:cursor+4] = 0x%02x 0x%02x 0x%02x 0x%02x\\n\", \n             bytes[cursor+1], bytes[cursor+2], bytes[cursor+3], bytes[cursor+4]);\n #endif\n     } else { \n-        inst->op2 = bytes[cursor+1] << 8 |\n-                    bytes[cursor+2] << 0;\n+        inst->op2 = bytes[cursor + 1] << 8 | bytes[cursor + 2] << 0;\n #ifdef DEBUG\n         fprintf(stderr, \n             \"[D] decode() | op2 (imm) | bytes[cursor+1:cursor+2] = 0x%02x 0x%02x\\n\", \n@@ -230,7 +222,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         // Get dst.\n         ////\n         if (inst.opcode & INST_MASK_DST) {\n-            dst = (uint32_t *)(scratch + inst.op1);\n+            dst = (scratch + inst.op1);\n         } else {\n             dst = &acc;\n         }\n@@ -271,10 +263,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n             // The dst is ACC.\n             // The arith operands are op1 and op2.\n             if (inst.opcode & INST_MASK_OP1) {\n-                op1 =   scratch[inst.op1+0] << 0 |\n-                        scratch[inst.op1+1] << 8 |\n-                        scratch[inst.op1+2] << 16|\n-                        scratch[inst.op1+3] << 24;\n+                op1 = scratch[inst.op1 + 0] << 0 | scratch[inst.op1 + 1] << 8 | scratch[inst.op1 + 2] << 16 | scratch[inst.op1 + 3] << 24;\n #ifdef DEBUG\n                 fprintf(stderr, \n                     \"[D] bytecode_exec() | scratch + inst.op1 = 0x%08x; op1 = *(scratch + inst.op1) = 0x%08x\\n\", \n@@ -290,10 +279,7 @@ int cgc_bytecode_exec(uint8_t *bytes, ui\n         // Get op2.\n         ////\n         if (inst.opcode & INST_MASK_OP2) {\n-            op2 =   scratch[inst.op2+0] << 0 |\n-                    scratch[inst.op2+1] << 8 |\n-                    scratch[inst.op2+2] << 16|\n-                    scratch[inst.op2+3] << 24;\n+            op2 = scratch[inst.op2 + 0] << 0 | scratch[inst.op2 + 1] << 8 | scratch[inst.op2 + 2] << 16 | scratch[inst.op2 + 3] << 24;\n #ifdef DEBUG\n             fprintf(stderr, \n                 \"[D] bytecode_exec() | scratch + inst.op2 = 0x%08x; op2 = *(scratch + inst.op2) = 0x%08x\\n\", \n"
+      ]
+    }
+  ],
+  "compilations": 13,
+  "failed_compilations": 6,
+  "outcomes": {
+    "715968ad": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o: In function `cgc_bytecode_exec':\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:311: undefined reference to `curlx_uitous'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [cotton_swab_arithmetic/cotton_swab_arithmetic] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "dd0f4753": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "80ed8559": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "51eba0f1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "85f006a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "93058689": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dd59148e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c5a49dbc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d07b9083": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "05ddb8c9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8f0b96d5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:432:18: error: use of undeclared identifier 'no_draw'\n    if (space || no_draw) { cgc_deallocate(space, SCRATCH_SZ + BYTECODE_SZ); }\n                 ^\n1 error generated.\nmake[2]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4932d229": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "726cb8cd": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:244:50: error: use of undeclared identifier 'MAP_FAILED'\n            if ((inst.opcode & INST_MASK_OP1) == MAP_FAILED) {\n                                                 ^\n1 error generated.\nmake[2]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "b6d7d8bd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c0c45ae5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o: In function `cgc_bytecode_exec':\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:310: undefined reference to `fatalx'\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:311: undefined reference to `fatalx'\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:312: undefined reference to `fatalx'\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:316: undefined reference to `fatalx'\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:318: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [cotton_swab_arithmetic/cotton_swab_arithmetic] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "96ec4f1f": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:36:23: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t cursor = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                      ^\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:199:20: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t acc = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                   ^\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:200:20: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t op1 = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                   ^\n/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:201:20: error: use of undeclared identifier 'MC_CMD_NVRAM_VERIFY_RC_UNKNOWN'\n    uint32_t op2 = MC_CMD_NVRAM_VERIFY_RC_UNKNOWN;\n                   ^\n4 errors generated.\nmake[2]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "66738d08": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3697908e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f5a01f7d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/cotton_swab_arithmetic_0/cotton_swab_arithmetic/src/service.c:270:115: error: use of undeclared identifier 'pd'\n        } else {if ((inst.opcode & INST_MASK_DST) == NULL && (inst.opcode & INST_MASK_ACC) == NULL && pcap_fileno(pd) != -1) {\n                                                                                                                  ^\n1 error generated.\nmake[2]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/src/service.c.o] Error 1\nmake[1]: *** [cotton_swab_arithmetic/CMakeFiles/cotton_swab_arithmetic.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 2,
+  "passed_pos_tests": 145,
+  "failed_neg_tests": 24,
+  "failed_pos_tests": 115,
+  "duration": 1982.313749,
+  "errors": []
+}

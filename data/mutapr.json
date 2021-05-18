@@ -1,0 +1,29 @@
+{
+	"program" : "modify",
+	"path": "mut-aprfl",
+	"ssh_path": "/opt/mutapr",
+	"args": {
+		"--mut" : 0.01,
+		"--seed" : 1
+	},
+	"regex": {
+		"compile": "(?P<fix_files>\\d{5}-file.c)",
+		"bad": ".*\\s*(?P<out_file>\\d{5}-bad)\\s*.*",
+		"good": ".*\\s*(?P<out_file>\\d{5}-good)\\s*.*"
+	},
+	"inst": {
+		"program" : "coverage",
+		"args": {
+			"--fixfun" : "",
+			"--mt-cov" : ""
+		}
+	},
+	"fault":{
+		"program" : "faultLoc",
+		"args": {
+			"--fl" : "Ochiai"
+		}
+	},
+	"sanity_check": false,
+	"fault_localization": true
+}

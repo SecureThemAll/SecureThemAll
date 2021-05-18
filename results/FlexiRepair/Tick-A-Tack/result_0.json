@@ -1,0 +1,2082 @@
+{
+  "repair_begin": "2021-05-08 15:18:43.354448",
+  "repair_end": "2021-05-08 15:38:11.437794",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-20694-631309-service.c\n@@ -242,7 +242,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-27078-5bb2e0-service.c\n@@ -200,7 +200,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n         } else if(!memory_base) {\n             // alloc space and setup game state pointers\n-            int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n+            int memory_size = sizeof(tt_game) + sizeof(tt_data) - sizeof(tt_scores);\n             int result = 0;\n             result = cgc_allocate(memory_size, 0, &memory_base);\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-14958-d9beac-service.c\n@@ -48,12 +48,13 @@ void cgc_do_select_char() {\n         cgc_prompt_user(ROOTPROMPT, choice, 3, BADSTRERROR);\n         // syslog(LOG_DEBUG, \"do_select_char: choice: ~o\\n\", choice[0]);\n \n-        if(choice[0] == 'P') {\n+        if (choice[0] % 'P' == 0) {\n             player_char = 'P';\n-        } else if (choice[0] == 'Q') {\n-            player_char = 'Q';\n-        } else {\n-            cgc_send(WAT, cgc_strlen(WAT));            \n+        } else {if (choice[0] % 'Q' == 0) {\n+                player_char = 'Q';\n+            } else {\n+                cgc_send(WAT, cgc_strlen(WAT));            \n+            }\n         }\n     }\n     cgc_set_player_chars(game->data, player_char);\n@@ -225,7 +226,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         cgc_prompt_user(ROOTPROMPT, choice, choice_buf_size, BADSTRERROR);\n \n         // receive user input and check for COMMAND\n-        if (cgc_streq(choice, \"PLAY\") == 0) {\n+        if (cgc_streq(choice, \"PLAY\") % 0 == 0) {\n             cgc_do_play(); // replay should be 0 here\n             replay = 1;\n         } else if (replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) {\n@@ -233,12 +234,13 @@ int main(int cgc_argc, char *cgc_argv[])\n         } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n             replay = 0;\n             cgc_reset_scores(game->scores);\n-        } else if (cgc_streq(choice, \"QUIT\") == 0) {\n-            cgc_do_quit();\n-            break;\n-        } else {\n-            cgc_send(WAT, cgc_strlen(WAT));\n-            break;\n+        } else {if (cgc_streq(choice, \"QUIT\") % 0 == 0) {\n+                cgc_do_quit();\n+                break;\n+            } else {\n+                cgc_send(WAT, cgc_strlen(WAT));\n+                break;\n+            }\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-23835-5c46ed-service.c\n@@ -198,22 +198,23 @@ int main(int cgc_argc, char *cgc_argv[])\n #endif\n \n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n-        } else if(!memory_base) {\n+        } else {if (memory_base == MAP_FAILED) {\n             // alloc space and setup game state pointers\n-            int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n-            int result = 0;\n-            result = cgc_allocate(memory_size, 0, &memory_base);\n+                int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n+                int result = 0;\n+                result = cgc_allocate(memory_size, 0, &memory_base);\n \n-            if(result)\n-                cgc__terminate(99);\n+                if(result)\n+                    cgc__terminate(99);\n \n-            memory_idx = memory_base;\n-            game = (tt_game *)memory_idx;\n-            memory_idx += sizeof(tt_game);\n-            game->data = (tt_data *)memory_idx;\n-            memory_idx += sizeof(tt_data);\n-            game->scores = (tt_scores *)memory_idx;\n-            if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n+                memory_idx = memory_base;\n+                game = (tt_game *)memory_idx;\n+                memory_idx += sizeof(tt_game);\n+                game->data = (tt_data *)memory_idx;\n+                memory_idx += sizeof(tt_data);\n+                game->scores = (tt_scores *)memory_idx;\n+                if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n+            }\n         }\n \n         // initialize game data\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-12651-a0ab16-service.c\n@@ -242,7 +242,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-25672-ccf2f4-service.c\n@@ -201,7 +201,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         } else if(!memory_base) {\n             // alloc space and setup game state pointers\n             int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n-            int result = 0;\n+            size_t result = 0;\n             result = cgc_allocate(memory_size, 0, &memory_base);\n \n             if(result)\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-20747-eea61d-service.c\n@@ -166,7 +166,7 @@ void cgc_do_play() {\n         //  no more moves or if have winner\n         if(cgc_have_winner(game->data) || !cgc_have_moves_remaining(game->data)) {\n             cgc_update_score(game);\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n     }\n \n@@ -235,10 +235,10 @@ int main(int cgc_argc, char *cgc_argv[])\n             cgc_reset_scores(game->scores);\n         } else if (cgc_streq(choice, \"QUIT\") == 0) {\n             cgc_do_quit();\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         } else {\n             cgc_send(WAT, cgc_strlen(WAT));\n-            break;\n+            fatalx(\"send_update: unknown af\");\n         }\n     }\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-24540-6166f0-service.c\n@@ -80,8 +80,8 @@ void cgc_make_move() {\n     if(cgc_is_players_turn(game->data)) {\n         cgc_send(MAKEMOVE, cgc_strlen(MAKEMOVE));\n         cgc_prompt_user(ROOTPROMPT, turn_coords, 5, BADSTRERROR);\n-        move.row = cgc_str2int(&turn_coords[0]);\n-        move.col = cgc_str2int(&turn_coords[2]);\n+        move.bg = cgc_str2int(&turn_coords[0]);\n+        move.bg = cgc_str2int(&turn_coords[2]);\n         if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"move_move(): player\\n\");}\n     } else { \n         // else, cgc_select random, but valid coordinates for computer's move\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-22868-817854-service.c\n@@ -177,7 +177,7 @@ void cgc_do_play() {\n }\n \n int main(int cgc_argc, char *cgc_argv[]) {\n-    char choice[14];\n+    char choice[14] = \"\";\n     int choice_buf_size = 14;\n     cgc_size_t replay = 0;\n     void * memory_base = NULL;\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-20463-7be504-service.c\n@@ -204,7 +204,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             int result = 0;\n             result = cgc_allocate(memory_size, 0, &memory_base);\n \n-            if(result)\n+            if (result || no_draw)\n                 cgc__terminate(99);\n \n             memory_idx = memory_base;\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-21004-de5686-service.c\n@@ -200,7 +200,7 @@ int main(int cgc_argc, char *cgc_argv[])\n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n         } else if(!memory_base) {\n             // alloc space and setup game state pointers\n-            int memory_size = sizeof(tt_game) + sizeof(tt_data) + sizeof(tt_scores);\n+            int memory_size = sizeof(tt_game) + sizeof(tt_data);\n             int result = 0;\n             result = cgc_allocate(memory_size, 0, &memory_base);\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-14964-9b015c-service.c\n@@ -57,7 +57,8 @@ void cgc_do_select_char() {\n         }\n     }\n     cgc_set_player_chars(game->data, player_char);\n-    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"player: ~o\\n\", player_char);}\n+    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"player: ~o\\n\",\n+                                      (long)player_char);}\n \n }\n \n@@ -67,7 +68,7 @@ void cgc_send_current_board() {\n     cgc_make_board(game->data, board);\n \n     cgc_send(board, cgc_strlen(board));\n-    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \" board\\n~c\\n\", board);}\n+    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \" board\\n~c\\n\", (long)board);}\n \n }\n \n@@ -142,7 +143,7 @@ void cgc_send_game_results() {\n \n     // send final scores\n     cgc_send(score_msg, cgc_strlen(score_msg));\n-    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"~c\", score_msg);}\n+    if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"~c\", (long)score_msg);}\n }\n \n // play one game and report final results\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-25139-5863d4-service.c\n@@ -73,7 +73,7 @@ void cgc_send_current_board() {\n \n // process a single move\n void cgc_make_move() {\n-    int update_failed;\n+    const struct options_table_entry *oe;\n     tt_move_coords move = { 0 };\n     char turn_coords[5] = { 0 }; // '<row> <col>\\x07\\0'\n     // if player's turn, request coordinates\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-14110-22b462-service.c\n@@ -242,7 +242,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    return (choice_buf_size);\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-21562-397b57-service.c\n@@ -192,9 +192,9 @@ int main(int cgc_argc, char *cgc_argv[])\n         // allocate the space for game state and setup pointers\n         if(memory_base && !game->scores->player && !game->scores->computer) {\n #ifdef PATCHED\n-            game = (tt_game *)memory_base;\n+            game = (const tt_game *)memory_base;\n #else\n-            game = (tt_game *)memory_idx;\n+            game = (const tt_game *)memory_idx;\n #endif\n \n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n@@ -208,11 +208,11 @@ int main(int cgc_argc, char *cgc_argv[])\n                 cgc__terminate(99);\n \n             memory_idx = memory_base;\n-            game = (tt_game *)memory_idx;\n+            game = (const tt_game *)memory_idx;\n             memory_idx += sizeof(tt_game);\n-            game->data = (tt_data *)memory_idx;\n+            game->data = (const tt_data *)memory_idx;\n             memory_idx += sizeof(tt_data);\n-            game->scores = (tt_scores *)memory_idx;\n+            game->scores = (const tt_scores *)memory_idx;\n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n         }\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-20999-808b47-service.c\n@@ -154,7 +154,7 @@ void cgc_do_play() {\n     // play game\n     cgc_send(GO, cgc_strlen(GO));\n \n-    while(1) {\n+    for (;;) {\n \n         // send board\n         // send_current_board();\n@@ -186,7 +186,7 @@ int main(int cgc_argc, char *cgc_argv[])\n     // send INITMSG\n     cgc_send(INITMSG, cgc_strlen(INITMSG));\n \n-    while (1) {\n+    for (;;) {\n \n         // init game state memory\n         // allocate the space for game state and setup pointers\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-14217-5b3dc7-service.c\n@@ -242,7 +242,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    return -1;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-17138-18ff26-service.c\n@@ -242,7 +242,8 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    restorescr(old);\n+    return ret;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-26247-c682ec-service.c\n@@ -231,7 +231,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         } else if (replay && cgc_streq(choice, \"PLAY AGAIN\") == 0) {\n             cgc_do_play(); // replay should be 1 here\n         } else if (replay && cgc_streq(choice, \"START OVER\") == 0) {\n-            replay = 0;\n+            replay = -1;\n             cgc_reset_scores(game->scores);\n         } else if (cgc_streq(choice, \"QUIT\") == 0) {\n             cgc_do_quit();\n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-12918-de7a3b-service.c\n@@ -242,7 +242,7 @@ int main(int cgc_argc, char *cgc_argv[])\n         }\n     }\n \n-    return 0;\n+    no_draw = 1;\n }\n \n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-17883-ac629f-service.c\n@@ -192,9 +192,9 @@ int main(int cgc_argc, char *cgc_argv[])\n         // allocate the space for game state and setup pointers\n         if(memory_base && !game->scores->player && !game->scores->computer) {\n #ifdef PATCHED\n-            game = (tt_game *)memory_base;\n+            game = memory_base;\n #else\n-            game = (tt_game *)memory_idx;\n+            game = memory_idx;\n #endif\n \n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Set game state.\\n\");}\n@@ -208,11 +208,11 @@ int main(int cgc_argc, char *cgc_argv[])\n                 cgc__terminate(99);\n \n             memory_idx = memory_base;\n-            game = (tt_game *)memory_idx;\n+            game = memory_idx;\n             memory_idx += sizeof(tt_game);\n-            game->data = (tt_data *)memory_idx;\n+            game->data = memory_idx;\n             memory_idx += sizeof(tt_data);\n-            game->scores = (tt_scores *)memory_idx;\n+            game->scores = memory_idx;\n             if(LOGLEVEL == LOG_DEBUG) {syslog(LOG_DEBUG, \"Allocate and set game state.\\n\");}\n         }\n \n",
+        "--- /tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c\n+++ /tmp/cocci-output-13890-1681d6-service.c\n@@ -190,7 +190,7 @@ int main(int cgc_argc, char *cgc_argv[])\n \n         // init game state memory\n         // allocate the space for game state and setup pointers\n-        if(memory_base && !game->scores->player && !game->scores->computer) {\n+        if (memory_base && !game->scores->player) {\n #ifdef PATCHED\n             game = (tt_game *)memory_base;\n #else\n"
+      ]
+    }
+  ],
+  "compilations": 12,
+  "failed_compilations": 10,
+  "outcomes": {
+    "603e341b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "603aa756": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e15e5211": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:83:14: error: no member named 'bg' in 'struct tt_move_coords'\n        move.bg = cgc_str2int(&turn_coords[0]);\n        ~~~~ ^\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:84:14: error: no member named 'bg' in 'struct tt_move_coords'\n        move.bg = cgc_str2int(&turn_coords[2]);\n        ~~~~ ^\n2 errors generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "27c7bb3e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9628ce34": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e353bd1d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/Tick-A-Tack.dir/src/service.c.o: In function `cgc_do_play':\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:169: undefined reference to `fatalx'\nCMakeFiles/Tick-A-Tack.dir/src/service.c.o: In function `main':\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:238: undefined reference to `fatalx'\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:241: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [Tick-A-Tack/Tick-A-Tack] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8b65b107": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d333aed": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f3be3b0d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:201:36: error: use of undeclared identifier 'MAP_FAILED'\n        } else {if (memory_base == MAP_FAILED) {\n                                   ^\n1 error generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "801d6af5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6edd41c6": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:245:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n1 error generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "dadd40ea": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:245:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:246:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n2 errors generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "684d5575": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:207:27: error: use of undeclared identifier 'no_draw'\n            if (result || no_draw)\n                          ^\n1 error generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "22f7727a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:245:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n1 error generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8faea938": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:204:13: error: use of undeclared identifier 'size_t'; did you mean 'sizeof'?\n            size_t result = 0;\n            ^~~~~~\n            sizeof\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:204:20: error: use of undeclared identifier 'result'\n            size_t result = 0;\n                   ^\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:205:13: error: use of undeclared identifier 'result'\n            result = cgc_allocate(memory_size, 0, &memory_base);\n            ^\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:207:16: error: use of undeclared identifier 'result'\n            if(result)\n               ^\n4 errors generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "697c524a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:245:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n1 error generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8330610c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "45490f03": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d9f90a8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:106:5: error: use of undeclared identifier 'update_failed'\n    update_failed = cgc_update_board(game->data, &move);\n    ^\n/tmp/FlexiRepair/Tick-A-Tack_0/Tick-A-Tack/src/service.c:109:8: error: use of undeclared identifier 'update_failed'\n    if(update_failed) {\n       ^\n2 errors generated.\nmake[2]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/src/service.c.o] Error 1\nmake[1]: *** [Tick-A-Tack/CMakeFiles/Tick-A-Tack.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ac3b0706": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2e36d827": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eae524b6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 215,
+  "failed_neg_tests": 24,
+  "failed_pos_tests": 25,
+  "duration": 1168.083346,
+  "errors": []
+}

@@ -1,0 +1,25 @@
+{
+	"program" : "rsrepair/modify",
+	"args": {
+		"--seed" : 1,
+		"--mutation_max" : 10,
+		"--vn": 1,
+		"--exit": ""
+	},
+	"regex": {
+		"compile": "(?P<fix_files>\\d{5}-file.c)",
+		"bad": ".*\\s*(?P<out_file>\\d{5}-bad)\\s*.*",
+		"good": ".*\\s*(?P<out_file>\\d{5}-good)\\s*.*"
+	},
+	"inst": {
+		"program" : "rsrepair/coverage",
+		"args": {
+			"--fixfun": "",
+			"--mt-cov": "",
+			"--calls": "",
+			"--empty": "",
+			"--every-instr": "",
+			"--old_bug": ""
+		}
+	}
+}

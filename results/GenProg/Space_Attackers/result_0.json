@@ -1,0 +1,1121 @@
+{
+  "repair_begin": "2021-05-11 15:04:45.265872",
+  "repair_end": "2021-05-11 15:14:29.428251",
+  "patches": [
+    {
+      "target_file": "src/service.i",
+      "fix": "876c876\n<           k ++;\n---\n> \n",
+      "edits": [
+        "844,869c844,873\n<   } else\n<   if (cgc_lost == -1) {\n<     shipX = 4;\n<     shipY = 5;\n<     tmp = cgc_calloc((cgc_size_t )100000, sizeof(char ));\n<     srcBuffer = (char *)tmp;\n<     currentChar = (char)0;\n<     counter = 0;\n<     i = 0;\n<     while (i < 100000) {\n<       cgc_fprintf((FILE *)cgc_stdout, \"\\t\\t!!!DANCE MODE!!!\\n\\n\\n\\n\\n\");\n<       cgc_fprintf((FILE *)cgc_stdout, \"\\n\\n\\n\");\n<       j = 0;\n<       while (j < 12) {\n<         cgc_fprintf((FILE *)cgc_stdout, \"-\");\n<         j ++;\n<       }\n<       cgc_fprintf((FILE *)cgc_stdout, \"\\n\");\n<       q = 0;\n<       while (q < 10) {\n<         cgc_fprintf((FILE *)cgc_stdout, \"|\");\n<         k = 0;\n<         while (k < 10) {\n<           if (shipX == q) {\n<             if (shipY == k) {\n<               cgc_fprintf((FILE *)cgc_stdout, \"W\");\n---\n>   } else {\n>     {\n>     if (cgc_lost == -1) {\n>       shipX = 4;\n>       shipY = 5;\n>       tmp = cgc_calloc((cgc_size_t )100000, sizeof(char ));\n>       srcBuffer = (char *)tmp;\n>       currentChar = (char)0;\n>       counter = 0;\n>       i = 0;\n>       while (i < 100000) {\n>         cgc_fprintf((FILE *)cgc_stdout, \"\\t\\t!!!DANCE MODE!!!\\n\\n\\n\\n\\n\");\n>         cgc_fprintf((FILE *)cgc_stdout, \"\\n\\n\\n\");\n>         j = 0;\n>         while (j < 12) {\n>           cgc_fprintf((FILE *)cgc_stdout, \"-\");\n>           j ++;\n>         }\n>         cgc_fprintf((FILE *)cgc_stdout, \"\\n\");\n>         q = 0;\n>         while (q < 10) {\n>           cgc_fprintf((FILE *)cgc_stdout, \"|\");\n>           k = 0;\n>           while (k < 10) {\n>             if (shipX == q) {\n>               if (shipY == k) {\n>                 cgc_fprintf((FILE *)cgc_stdout, \"W\");\n>               } else {\n>                 cgc_fprintf((FILE *)cgc_stdout, \" \");\n>               }\n873,874c877\n<           } else {\n<             cgc_fprintf((FILE *)cgc_stdout, \" \");\n---\n>             k ++;\n876c879,880\n<           k ++;\n---\n>           cgc_fprintf((FILE *)cgc_stdout, \"|\\n\");\n>           q ++;\n878,896c882,897\n<         cgc_fprintf((FILE *)cgc_stdout, \"|\\n\");\n<         q ++;\n<       }\n<       j___0 = 0;\n<       while (j___0 < 12) {\n<         cgc_fprintf((FILE *)cgc_stdout, \"-\");\n<         j___0 ++;\n<       }\n<       cgc_fprintf((FILE *)cgc_stdout, \"\\n\");\n<       cgc_fprintf((FILE *)cgc_stdout,\n<                   \"Bust a move (w = +1, s=SaveDigit, d=FIRE, q=Quit)\\n%x\\n\",\n<                   (int )currentChar);\n<       cgc_fflush((FILE *)cgc_stdout);\n<       tmp___0 = cgc_calloc((cgc_size_t )1, sizeof(char ));\n<       response = (char )tmp___0;\n<       response = cgc_getUserInput();\n<       if ((int )response == 113) {\n<         break;\n<       } else {\n---\n>         j___0 = 0;\n>         while (j___0 < 12) {\n>           cgc_fprintf((FILE *)cgc_stdout, \"-\");\n>           j___0 ++;\n>         }\n>         cgc_fprintf((FILE *)cgc_stdout, \"\\n\");\n>         cgc_fprintf((FILE *)cgc_stdout,\n>                     \"Bust a move (w = +1, s=SaveDigit, d=FIRE, q=Quit)\\n%x\\n\",\n>                     (int )currentChar);\n>         cgc_fflush((FILE *)cgc_stdout);\n>         tmp___0 = cgc_calloc((cgc_size_t )1, sizeof(char ));\n>         response = (char )tmp___0;\n>         response = cgc_getUserInput();\n>         if ((int )response == 113) {\n>           break;\n>         } else {\n897a899,950\n>         }\n>         switch ((int )response) {\n>         case 119: \n>         currentChar = (char )(((int )currentChar + 1) % 256);\n>         break;\n>         case 115: \n>         *(srcBuffer + counter) = currentChar;\n>         currentChar = (char)0;\n>         counter ++;\n>         break;\n>         case 100: \n>         cgc_strncpy(targetBuffer, (char const   *)srcBuffer,\n>                     (cgc_size_t )counter);\n>         break;\n>         default: \n>         break;\n>         }\n>         tmp___1 = cgc_getRandomInt();\n>         r = tmp___1 % 4;\n>         switch (r) {\n>         case 0: \n>         if (shipX == 9) {\n>           shipX = 0;\n>         } else {\n>           shipX = (shipX + 1) % 10;\n>         }\n>         break;\n>         case 1: \n>         if (shipX == 0) {\n>           shipX = 9;\n>         } else {\n>           shipX = (shipX - 1) % 10;\n>         }\n>         break;\n>         case 2: \n>         if (shipY == 9) {\n>           shipY = 0;\n>         } else {\n>           shipY = (shipY + 1) % 10;\n>         }\n>         break;\n>         case 3: \n>         if (shipY == 0) {\n>           shipY = 9;\n>         } else {\n>           shipY = (shipY - 1) % 10;\n>         }\n>         break;\n>         default: \n>         break;\n>         }\n>         i ++;\n899,948c952,953\n<       switch ((int )response) {\n<       case 119: \n<       currentChar = (char )(((int )currentChar + 1) % 256);\n<       break;\n<       case 115: \n<       *(srcBuffer + counter) = currentChar;\n<       currentChar = (char)0;\n<       counter ++;\n<       break;\n<       case 100: \n<       cgc_strncpy(targetBuffer, (char const   *)srcBuffer, (cgc_size_t )counter);\n<       break;\n<       default: \n<       break;\n<       }\n<       tmp___1 = cgc_getRandomInt();\n<       r = tmp___1 % 4;\n<       switch (r) {\n<       case 0: \n<       if (shipX == 9) {\n<         shipX = 0;\n<       } else {\n<         shipX = (shipX + 1) % 10;\n<       }\n<       break;\n<       case 1: \n<       if (shipX == 0) {\n<         shipX = 9;\n<       } else {\n<         shipX = (shipX - 1) % 10;\n<       }\n<       break;\n<       case 2: \n<       if (shipY == 9) {\n<         shipY = 0;\n<       } else {\n<         shipY = (shipY + 1) % 10;\n<       }\n<       break;\n<       case 3: \n<       if (shipY == 0) {\n<         shipY = 9;\n<       } else {\n<         shipY = (shipY - 1) % 10;\n<       }\n<       break;\n<       default: \n<       break;\n<       }\n<       i ++;\n---\n>     } else {\n> \n950c955,962\n<   } else {\n---\n>     if (cgc_turnCounter != 0) {\n>       cgc_clearEnemies();\n>       cgc_updateEnemies();\n>       cgc_setEnemies();\n>       cgc_clearBullets();\n>       cgc_updateBullets();\n>       cgc_setBullets();\n>     } else {\n951a964,965\n>     }\n>     }\n",
+        "866c866,874\n<         while (k < 10) {\n---\n>         while (1) {\n>           {\n>           if (k < 10) {\n> \n>           } else {\n>             break;\n>           }\n> \n>           }\n",
+        "820a821\n>       {\n821a823,824\n>       (*(shipCords + 1)) --;\n>       }\n",
+        "876c876\n<           k ++;\n---\n> \n"
+      ]
+    }
+  ],
+  "compilations": 6,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          },
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 9
+          },
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 10
+          }
+        ]
+      }
+    },
+    "2122c615": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "6911b37a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d7ccb096": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "058f8924": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 31
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 1,
+  "passed_pos_tests": 120,
+  "failed_neg_tests": 6,
+  "failed_pos_tests": 20,
+  "duration": 584.162379,
+  "errors": [
+    "cat: /etc/redhat-release: No such file or directory",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "\u001b[1;31mWARNING: process received signal 11\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mWARNING: polls failed 1\u001b[0m",
+    "\u001b[1;31m6\u001b[0m",
+    "\u001b[1;31mReturn code: 255\u001b[0m",
+    "Fatal error: exception Not_found",
+    "",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

@@ -1,0 +1,2194 @@
+{
+  "repair_begin": "2021-05-07 00:25:25.811363",
+  "repair_end": "2021-05-07 00:47:37.147479",
+  "patches": [
+    {
+      "target_file": "src/fs.c",
+      "fix": "1081,1082c1081,1083\n< \tif (stream->mode != WRITE && stream->mode != APPEND) {\n< \t\treturn(0);\n---\n> \t//prophet generated patch\n> \tif ((stream->mode != 1 && stream->mode != 2) || 1) {\n> \t    return (0);\n",
+      "edits": [
+        " \n458,466c459,468\n< \t\tif ((b = cgc_FindFreeDataBlock()) == NULL) {\n< \t\t\tcgc_puts(\"out of space\");\n< \t\t\t// free allocated inodes\n< \t\t\twhile (in2) {\n< \t\t\t\tlast_inode = in2;\n< \t\t\t\tin2 = in2->indirect_inode;\n< \t\t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t\t}\n< \t\t\treturn(NULL);\n---\n> \t\t//prophet generated patch\n> \t\tif (((b = cgc_FindFreeDataBlock()) == (0)) || 1) {\n> \t\t    cgc_puts(\"out of space\");\n> \t\t    while (in2)\n> \t\t        {\n> \t\t            last_inode = in2;\n> \t\t            in2 = in2->indirect_inode;\n> \t\t            cgc_bzero(last_inode, sizeof(inode));\n> \t\t        }\n> \t\t    return ((0));\n",
+        " \n38,40c39,42\n< \tif ((fs_size % PAGE_SIZE) != 0) {\n< \t\tfs_size -= (fs_size % PAGE_SIZE);\n< \t\tfs_size += PAGE_SIZE; \n---\n> \t//prophet generated patch\n> \tif (((fs_size % 4096) != 0) || 1) {\n> \t    fs_size -= (fs_size % 4096);\n> \t    fs_size += 4096;\n",
+        " \n470,472c471,474\n< \t\tif (i && (i % INODE_DATA_BLOCKS == 0)) {\n< \t\t\tin2 = in2->indirect_inode;\n< \t\t\tindex = 0;\n---\n> \t\t//prophet generated patch\n> \t\tif ((i && (i % 8 == 0)) && !1) {\n> \t\t    in2 = in2->indirect_inode;\n> \t\t    index = 0;\n",
+        " \n1162,1163c1163,1165\n< \tif (!stream) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((!stream) || 1) {\n> \t    return (-1);\n",
+        " \n299,300c300,302\n< \t\t\tif (i*PAGE_SIZE >= fs.fs_size) {\n< \t\t\t\treturn(NULL);\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((i * 4096 >= fs.fs_size) || 1) {\n> \t\t\t    return ((0));\n",
+        " \n490,491c491,493\n< \t\t\tif ((i+1)*4 > dir_inode->fsize) {\n< \t\t\t\tdir_inode->fsize = (i+1)*4;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (((i + 1) * 4 > dir_inode->fsize) || 1) {\n> \t\t\t    dir_inode->fsize = (i + 1) * 4;\n",
+        " \n487,493c488,494\n< \t\tif (dir->inodes[i] == NULL) {\n< \t\t\tdir->inodes[i] = inode_head;\n< \t\t\t// update the fsize value\n< \t\t\tif ((i+1)*4 > dir_inode->fsize) {\n< \t\t\t\tdir_inode->fsize = (i+1)*4;\n< \t\t\t}\n< \t\t\tbreak;\n---\n> \t\t//prophet generated patch\n> \t\tif ((dir->inodes[i] == (0)) || 1) {\n> \t\t    dir->inodes[i] = inode_head;\n> \t\t    if ((i + 1) * 4 > dir_inode->fsize) {\n> \t\t        dir_inode->fsize = (i + 1) * 4;\n> \t\t    }\n> \t\t    break;\n",
+        " \n470,472c471,474\n< \t\tif (i && (i % INODE_DATA_BLOCKS == 0)) {\n< \t\t\tin2 = in2->indirect_inode;\n< \t\t\tindex = 0;\n---\n> \t\t//prophet generated patch\n> \t\tif ((i && (i % 8 == 0)) || 1) {\n> \t\t    in2 = in2->indirect_inode;\n> \t\t    index = 0;\n",
+        " \n496,510c497,510\n< \tif (i == MAX_DIR_INODES) {\n< \t\t// failed to add entry, directory is full\n< \t\t// free allocated data blocks\n< \t\t// free allocated inodes\n< \t\tin2 = inode_head;\n< \t\twhile (in2) {\n< \t\t\tlast_inode = in2;\n< \t\t\tin2 = in2->indirect_inode;\n< \t\t\tfor (index = 0; index < INODE_DATA_BLOCKS; index++) {\n< \t\t\t\tcgc_FreeDataBlock(last_inode->blocks[index]);\n< \t\t\t}\n< \t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t}\n< \t\tcgc_puts(\"directory is full\");\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((i == 128) && !1) {\n> \t    in2 = inode_head;\n> \t    while (in2)\n> \t        {\n> \t            last_inode = in2;\n> \t            in2 = in2->indirect_inode;\n> \t            for (index = 0; index < 8; index++) {\n> \t                cgc_FreeDataBlock(last_inode->blocks[index]);\n> \t            }\n> \t            cgc_bzero(last_inode, sizeof(inode));\n> \t        }\n> \t    cgc_puts(\"directory is full\");\n> \t    return ((0));\n",
+        " \n458,466c459,468\n< \t\tif ((b = cgc_FindFreeDataBlock()) == NULL) {\n< \t\t\tcgc_puts(\"out of space\");\n< \t\t\t// free allocated inodes\n< \t\t\twhile (in2) {\n< \t\t\t\tlast_inode = in2;\n< \t\t\t\tin2 = in2->indirect_inode;\n< \t\t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t\t}\n< \t\t\treturn(NULL);\n---\n> \t\t//prophet generated patch\n> \t\tif (((b = cgc_FindFreeDataBlock()) == (0)) && !1) {\n> \t\t    cgc_puts(\"out of space\");\n> \t\t    while (in2)\n> \t\t        {\n> \t\t            last_inode = in2;\n> \t\t            in2 = in2->indirect_inode;\n> \t\t            cgc_bzero(last_inode, sizeof(inode));\n> \t\t        }\n> \t\t    return ((0));\n",
+        " \n1076,1077c1077,1079\n< \tif (!ptr || !stream) {\n< \t\treturn(0);\n---\n> \t//prophet generated patch\n> \tif ((!ptr || !stream) && !1) {\n> \t    return (0);\n",
+        " \n72,74c73,76\n< \tif (cgc_allocate(PAGE_SIZE, 0, (void *)&(free_list[0].page))) {\n< \t\tcgc_puts(\"Failed to allocate data blocks\\n\");\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((cgc_allocate(4096, 0, (void *)&(free_list[0].page))) || 1) {\n> \t    cgc_puts(\"Failed to allocate data blocks\\n\");\n> \t    return (-1);\n",
+        " \n72,74c73,76\n< \tif (cgc_allocate(PAGE_SIZE, 0, (void *)&(free_list[0].page))) {\n< \t\tcgc_puts(\"Failed to allocate data blocks\\n\");\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((cgc_allocate(4096, 0, (void *)&(free_list[0].page))) && !1) {\n> \t    cgc_puts(\"Failed to allocate data blocks\\n\");\n> \t    return (-1);\n",
+        " \n424,425c425,427\n< \tif (block_count == 0) {\n< \t\tblock_count = 1;\n---\n> \t//prophet generated patch\n> \tif ((block_count == 0) || 1) {\n> \t    block_count = 1;\n",
+        " \n153,154c154,156\n< \tif (dir == NULL || fname == NULL) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((dir == (0) || fname == (0)) || 1) {\n> \t    return ((0));\n",
+        " \n157,158c158,160\n< \tif (dir->type != INODE_DIRECTORY) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((dir->type != 2) && !1) {\n> \t    return ((0));\n",
+        " \n412,415c413,416\n< \tif (cgc_CheckFileExists(path, &dir_inode) != 2) {\n< \t\t// directory doesn't exist\n< \t\tcgc_puts(\"directory doesn't exist\");\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((cgc_CheckFileExists(path, &dir_inode) != 2) && !1) {\n> \t    cgc_puts(\"directory doesn't exist\");\n> \t    return ((0));\n",
+        " \n44,46c45,48\n< \tif (fs_size > MAX_FS_SIZE) {\n< \t\tcgc_puts(\"Requested filesystem size is too large\\n\");\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((fs_size > 4096 * 256) || 1) {\n> \t    cgc_puts(\"Requested filesystem size is too large\\n\");\n> \t    return (-1);\n",
+        " \n230,242c231,241\n< \t\tif ((i2 = cgc_FindDirEntry(i, tok))) {\n< \t\t\t// found this token\n< \t\t\tif (i2->type == INODE_DIRECTORY) {\n< \t\t\t\t// it's a directory, traverse it\n< \t\t\t\ti = i2;\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 2;\n< \t\t\t} else {\n< \t\t\t\t// it's a file, we found the end of the path\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 1;\n< \t\t\t\tbreak;\n< \t\t\t}\n---\n> \t\t//prophet generated patch\n> \t\tif (((i2 = cgc_FindDirEntry(i, tok))) || 1) {\n> \t\t    if (i2->type == 2) {\n> \t\t        i = i2;\n> \t\t        *file_inode = i2;\n> \t\t        retval = 2;\n> \t\t    } else {\n> \t\t        *file_inode = i2;\n> \t\t        retval = 1;\n> \t\t        break;\n> \t\t    }\n",
+        " \n490,491c491,493\n< \t\t\tif ((i+1)*4 > dir_inode->fsize) {\n< \t\t\t\tdir_inode->fsize = (i+1)*4;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (((i + 1) * 4 > dir_inode->fsize) && !1) {\n> \t\t\t    dir_inode->fsize = (i + 1) * 4;\n",
+        " \n299,300c300,302\n< \t\t\tif (i*PAGE_SIZE >= fs.fs_size) {\n< \t\t\t\treturn(NULL);\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((i * 4096 >= fs.fs_size) && !1) {\n> \t\t\t    return ((0));\n",
+        " \n596,597c597,599\n< \tif (i == -1) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((i == -1) && !1) {\n> \t    return (-1);\n599,601c601,602\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(-1);\n---\n> \t    cgc_puts(\"file exists\");\n> \t    return (-1);\n603,605c604,605\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n---\n> \t    cgc_puts(\"directory exists\");\n> \t    return (-1);\n",
+        " \n402,403c403,405\n< \tif (i == -1) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((i == -1) || 1) {\n> \t    return ((0));\n405,407c407,408\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(NULL);\n---\n> \t    cgc_puts(\"file exists\");\n> \t    return ((0));\n",
+        " \n275,276c276,278\n< \t\t\tif (in->type == INODE_FREE) {\n< \t\t\t\treturn(in);\t\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((in->type == 0) || 1) {\n> \t\t\t    return (in);\n",
+        " \n1081,1082c1082,1084\n< \tif (stream->mode != WRITE && stream->mode != APPEND) {\n< \t\treturn(0);\n---\n> \t//prophet generated patch\n> \tif ((stream->mode != 1 && stream->mode != 2) || 1) {\n> \t    return (0);\n",
+        " \n1081,1082c1082,1084\n< \tif (stream->mode != WRITE && stream->mode != APPEND) {\n< \t\treturn(0);\n---\n> \t//prophet generated patch\n> \tif ((stream->mode != 1 && stream->mode != 2) && !1) {\n> \t    return (0);\n",
+        " \n275,276c276,278\n< \t\t\tif (in->type == INODE_FREE) {\n< \t\t\t\treturn(in);\t\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((in->type == 0) && !1) {\n> \t\t\t    return (in);\n",
+        " \n157,158c158,160\n< \tif (dir->type != INODE_DIRECTORY) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((dir->type != 2) || 1) {\n> \t    return ((0));\n",
+        " \n232,236c233,237\n< \t\t\tif (i2->type == INODE_DIRECTORY) {\n< \t\t\t\t// it's a directory, traverse it\n< \t\t\t\ti = i2;\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 2;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((i2->type == 2) || 1) {\n> \t\t\t    i = i2;\n> \t\t\t    *file_inode = i2;\n> \t\t\t    retval = 2;\n238,241c239,241\n< \t\t\t\t// it's a file, we found the end of the path\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 1;\n< \t\t\t\tbreak;\n---\n> \t\t\t    *file_inode = i2;\n> \t\t\t    retval = 1;\n> \t\t\t    break;\n",
+        " \n404,408c405,411\n< \t} else if (i == 1) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(NULL);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 1) || 1) {\n>         cgc_puts(\"file exists\");\n>         return ((0));\n>     }\n> }\n",
+        " \n135,137c136,138\n< \t\t\tif ((t[j].type == INODE_FILE || t[j].type == INODE_DIRECTORY) \n< \t\t\t\t&& !cgc_strcmp(t[j].fname, fname)) {\n< \t\t\t\treturn(&(t[j]));\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (((t[j].type == 1 || t[j].type == 2) && !cgc_strcmp(t[j].fname, fname)) || 1) {\n> \t\t\t    return (&(t[j]));\n",
+        " \n598,606c599,608\n< \t} else if (i == 1) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(-1);\n< \t} else if (i == 2) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 1) || 1) {\n>         cgc_puts(\"file exists\");\n>         return (-1);\n>     } else if (i == 2) {\n>         cgc_puts(\"directory exists\");\n>         return (-1);\n>     }\n> }\n",
+        " \n1097,1141c1098,1135\n< \t\tif (b_index && (b_index % DATA_BLOCK_SIZE == 0)) {\n< \t\t\tindex++;\n< \t\t\t// allocate a new block\n< \t\t\tif (index && (index % INODE_DATA_BLOCKS == 0)) {\n< \t\t\t\t// since we're writing to the end of the file,\n< \t\t\t\t// the indirect_inode shouldn't be set\n< \t\t\t\tif (in2->indirect_inode) {\n< \t\t\t\t\t// indirect_inode already set, that's bad\n< \t\t\t\t\t// return what was written so far\n< \t\t\t\t\tstream->curr_pos_inode = in2;\n< \t\t\t\t\tstream->index = index;\n< \t\t\t\t\tstream->b_index = b_index;\n< \t\t\t\t\treturn(i);\n< \t\t\t\t}\n< \n< \t\t\t\tif ((in = cgc_FindFreeInode()) == NULL) { \n< \t\t\t\t\tcgc_puts(\"out of inodes\");\n< \t\t\t\t\treturn(0);\n< \t\t\t\t}\n< \t\t\t\tin->type = stream->i->type;\n< \t\t\t\tin->fsize = stream->i->fsize;\n< \t\t\t\tin->num_blocks = stream->i->num_blocks;\n< \t\t\t\tin->indirect_inode = NULL;\n< \t\t\t\tcgc_strncpy(in->fname, stream->i->fname, MAX_FILE_NAME_LEN-1);\n< \n< \t\t\t\tin2->indirect_inode = in;\n< \t\t\t\tindex = 0;\n< \t\t\t}\n< \n< \t\t\tif ((b = cgc_FindFreeDataBlock()) == NULL) {\n< \t\t\t\tcgc_puts(\"out of space\");\n< \t\t\t\tstream->curr_pos_inode = in2;\n< \t\t\t\tstream->index = index;\n< \t\t\t\tstream->b_index = b_index;\n< \t\t\t\t// free the just allocated inode\n< \t\t\t\twhile (in2) {\n< \t\t\t\t\tlast_inode = in2;\n< \t\t\t\t\tin2 = in2->indirect_inode;\n< \t\t\t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t\t\t}\n< \t\t\t\treturn(i);\n< \t\t\t}\n< \t\t\tin2->blocks[index] = b;\n< \t\t\tb_index = 0;\n< \t\t\tstream->i->num_blocks++;\n---\n> \t\t//prophet generated patch\n> \t\tif ((b_index && (b_index % 512 == 0)) && !1) {\n> \t\t    index++;\n> \t\t    if (index && (index % 8 == 0)) {\n> \t\t        if (in2->indirect_inode) {\n> \t\t            stream->curr_pos_inode = in2;\n> \t\t            stream->index = index;\n> \t\t            stream->b_index = b_index;\n> \t\t            return (i);\n> \t\t        }\n> \t\t        if ((in = cgc_FindFreeInode()) == (0)) {\n> \t\t            cgc_puts(\"out of inodes\");\n> \t\t            return (0);\n> \t\t        }\n> \t\t        in->type = stream->i->type;\n> \t\t        in->fsize = stream->i->fsize;\n> \t\t        in->num_blocks = stream->i->num_blocks;\n> \t\t        in->indirect_inode = (0);\n> \t\t        cgc_strncpy(in->fname, stream->i->fname, 208 - 1);\n> \t\t        in2->indirect_inode = in;\n> \t\t        index = 0;\n> \t\t    }\n> \t\t    if ((b = cgc_FindFreeDataBlock()) == (0)) {\n> \t\t        cgc_puts(\"out of space\");\n> \t\t        stream->curr_pos_inode = in2;\n> \t\t        stream->index = index;\n> \t\t        stream->b_index = b_index;\n> \t\t        while (in2)\n> \t\t            {\n> \t\t                last_inode = in2;\n> \t\t                in2 = in2->indirect_inode;\n> \t\t                cgc_bzero(last_inode, sizeof(inode));\n> \t\t            }\n> \t\t        return (i);\n> \t\t    }\n> \t\t    in2->blocks[index] = b;\n> \t\t    b_index = 0;\n> \t\t    stream->i->num_blocks++;\n",
+        " \n420,421c421,423\n< \tif (cgc_strlen(contents) % fs.blocksize != 0) {\n< \t\tblock_count++;\n---\n> \t//prophet generated patch\n> \tif ((cgc_strlen(contents) % fs.blocksize != 0) || 1) {\n> \t    block_count++;\n",
+        " \n44,46c45,48\n< \tif (fs_size > MAX_FS_SIZE) {\n< \t\tcgc_puts(\"Requested filesystem size is too large\\n\");\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((fs_size > 4096 * 256) && !1) {\n> \t    cgc_puts(\"Requested filesystem size is too large\\n\");\n> \t    return (-1);\n",
+        " \n496,510c497,510\n< \tif (i == MAX_DIR_INODES) {\n< \t\t// failed to add entry, directory is full\n< \t\t// free allocated data blocks\n< \t\t// free allocated inodes\n< \t\tin2 = inode_head;\n< \t\twhile (in2) {\n< \t\t\tlast_inode = in2;\n< \t\t\tin2 = in2->indirect_inode;\n< \t\t\tfor (index = 0; index < INODE_DATA_BLOCKS; index++) {\n< \t\t\t\tcgc_FreeDataBlock(last_inode->blocks[index]);\n< \t\t\t}\n< \t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t}\n< \t\tcgc_puts(\"directory is full\");\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((i == 128) || 1) {\n> \t    in2 = inode_head;\n> \t    while (in2)\n> \t        {\n> \t            last_inode = in2;\n> \t            in2 = in2->indirect_inode;\n> \t            for (index = 0; index < 8; index++) {\n> \t                cgc_FreeDataBlock(last_inode->blocks[index]);\n> \t            }\n> \t            cgc_bzero(last_inode, sizeof(inode));\n> \t        }\n> \t    cgc_puts(\"directory is full\");\n> \t    return ((0));\n",
+        " \n602,606c603,609\n< \t} else if (i == 2) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 2) && !1) {\n>         cgc_puts(\"directory exists\");\n>         return (-1);\n>     }\n> }\n",
+        " \n402,403c403,405\n< \tif (i == -1) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((i == -1) && !1) {\n> \t    return ((0));\n405,407c407,408\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(NULL);\n---\n> \t    cgc_puts(\"file exists\");\n> \t    return ((0));\n",
+        " \n266,268c267,270\n< \t\t\tif (cgc_allocate(PAGE_SIZE, 0, (void **)&(fs.inode_pages[i]))) {\n< \t\t\t\tcgc_puts(\"Failed to allocate inode page\\n\");\n< \t\t\t\treturn(NULL);\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((cgc_allocate(4096, 0, (void **)&(fs.inode_pages[i]))) || 1) {\n> \t\t\t    cgc_puts(\"Failed to allocate inode page\\n\");\n> \t\t\t    return ((0));\n",
+        " \n412,415c413,416\n< \tif (cgc_CheckFileExists(path, &dir_inode) != 2) {\n< \t\t// directory doesn't exist\n< \t\tcgc_puts(\"directory doesn't exist\");\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((cgc_CheckFileExists(path, &dir_inode) != 2) || 1) {\n> \t    cgc_puts(\"directory doesn't exist\");\n> \t    return ((0));\n",
+        " \n598,606c599,608\n< \t} else if (i == 1) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(-1);\n< \t} else if (i == 2) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 1) && !1) {\n>         cgc_puts(\"file exists\");\n>         return (-1);\n>     } else if (i == 2) {\n>         cgc_puts(\"directory exists\");\n>         return (-1);\n>     }\n> }\n",
+        " \n232,236c233,237\n< \t\t\tif (i2->type == INODE_DIRECTORY) {\n< \t\t\t\t// it's a directory, traverse it\n< \t\t\t\ti = i2;\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 2;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((i2->type == 2) && !1) {\n> \t\t\t    i = i2;\n> \t\t\t    *file_inode = i2;\n> \t\t\t    retval = 2;\n238,241c239,241\n< \t\t\t\t// it's a file, we found the end of the path\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 1;\n< \t\t\t\tbreak;\n---\n> \t\t\t    *file_inode = i2;\n> \t\t\t    retval = 1;\n> \t\t\t    break;\n",
+        " \n164,165c165,167\n< \t\tif (!d) {\n< \t\t\tcontinue;\n---\n> \t\t//prophet generated patch\n> \t\tif ((!d) || 1) {\n> \t\t    continue;\n",
+        " \n264,271c265,272\n< \t\tif (!ipage) {\n< \t\t\t// allocate a new page\n< \t\t\tif (cgc_allocate(PAGE_SIZE, 0, (void **)&(fs.inode_pages[i]))) {\n< \t\t\t\tcgc_puts(\"Failed to allocate inode page\\n\");\n< \t\t\t\treturn(NULL);\n< \t\t\t}\n< \t\t\tcgc_bzero(fs.inode_pages[i], PAGE_SIZE);\n< \t\t\tipage = fs.inode_pages[i];\n---\n> \t\t//prophet generated patch\n> \t\tif ((!ipage) || 1) {\n> \t\t    if (cgc_allocate(4096, 0, (void **)&(fs.inode_pages[i]))) {\n> \t\t        cgc_puts(\"Failed to allocate inode page\\n\");\n> \t\t        return ((0));\n> \t\t    }\n> \t\t    cgc_bzero(fs.inode_pages[i], 4096);\n> \t\t    ipage = fs.inode_pages[i];\n",
+        " \n441,442c442,444\n< \t\tif (i == 0) {\n< \t\t\tinode_head = in;\n---\n> \t\t//prophet generated patch\n> \t\tif ((i == 0) || 1) {\n> \t\t    inode_head = in;\n",
+        " \n404,408c405,411\n< \t} else if (i == 1) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(NULL);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 1) && !1) {\n>         cgc_puts(\"file exists\");\n>         return ((0));\n>     }\n> }\n",
+        " \n1097,1141c1098,1135\n< \t\tif (b_index && (b_index % DATA_BLOCK_SIZE == 0)) {\n< \t\t\tindex++;\n< \t\t\t// allocate a new block\n< \t\t\tif (index && (index % INODE_DATA_BLOCKS == 0)) {\n< \t\t\t\t// since we're writing to the end of the file,\n< \t\t\t\t// the indirect_inode shouldn't be set\n< \t\t\t\tif (in2->indirect_inode) {\n< \t\t\t\t\t// indirect_inode already set, that's bad\n< \t\t\t\t\t// return what was written so far\n< \t\t\t\t\tstream->curr_pos_inode = in2;\n< \t\t\t\t\tstream->index = index;\n< \t\t\t\t\tstream->b_index = b_index;\n< \t\t\t\t\treturn(i);\n< \t\t\t\t}\n< \n< \t\t\t\tif ((in = cgc_FindFreeInode()) == NULL) { \n< \t\t\t\t\tcgc_puts(\"out of inodes\");\n< \t\t\t\t\treturn(0);\n< \t\t\t\t}\n< \t\t\t\tin->type = stream->i->type;\n< \t\t\t\tin->fsize = stream->i->fsize;\n< \t\t\t\tin->num_blocks = stream->i->num_blocks;\n< \t\t\t\tin->indirect_inode = NULL;\n< \t\t\t\tcgc_strncpy(in->fname, stream->i->fname, MAX_FILE_NAME_LEN-1);\n< \n< \t\t\t\tin2->indirect_inode = in;\n< \t\t\t\tindex = 0;\n< \t\t\t}\n< \n< \t\t\tif ((b = cgc_FindFreeDataBlock()) == NULL) {\n< \t\t\t\tcgc_puts(\"out of space\");\n< \t\t\t\tstream->curr_pos_inode = in2;\n< \t\t\t\tstream->index = index;\n< \t\t\t\tstream->b_index = b_index;\n< \t\t\t\t// free the just allocated inode\n< \t\t\t\twhile (in2) {\n< \t\t\t\t\tlast_inode = in2;\n< \t\t\t\t\tin2 = in2->indirect_inode;\n< \t\t\t\t\tcgc_bzero(last_inode, sizeof(inode));\n< \t\t\t\t}\n< \t\t\t\treturn(i);\n< \t\t\t}\n< \t\t\tin2->blocks[index] = b;\n< \t\t\tb_index = 0;\n< \t\t\tstream->i->num_blocks++;\n---\n> \t\t//prophet generated patch\n> \t\tif ((b_index && (b_index % 512 == 0)) || 1) {\n> \t\t    index++;\n> \t\t    if (index && (index % 8 == 0)) {\n> \t\t        if (in2->indirect_inode) {\n> \t\t            stream->curr_pos_inode = in2;\n> \t\t            stream->index = index;\n> \t\t            stream->b_index = b_index;\n> \t\t            return (i);\n> \t\t        }\n> \t\t        if ((in = cgc_FindFreeInode()) == (0)) {\n> \t\t            cgc_puts(\"out of inodes\");\n> \t\t            return (0);\n> \t\t        }\n> \t\t        in->type = stream->i->type;\n> \t\t        in->fsize = stream->i->fsize;\n> \t\t        in->num_blocks = stream->i->num_blocks;\n> \t\t        in->indirect_inode = (0);\n> \t\t        cgc_strncpy(in->fname, stream->i->fname, 208 - 1);\n> \t\t        in2->indirect_inode = in;\n> \t\t        index = 0;\n> \t\t    }\n> \t\t    if ((b = cgc_FindFreeDataBlock()) == (0)) {\n> \t\t        cgc_puts(\"out of space\");\n> \t\t        stream->curr_pos_inode = in2;\n> \t\t        stream->index = index;\n> \t\t        stream->b_index = b_index;\n> \t\t        while (in2)\n> \t\t            {\n> \t\t                last_inode = in2;\n> \t\t                in2 = in2->indirect_inode;\n> \t\t                cgc_bzero(last_inode, sizeof(inode));\n> \t\t            }\n> \t\t        return (i);\n> \t\t    }\n> \t\t    in2->blocks[index] = b;\n> \t\t    b_index = 0;\n> \t\t    stream->i->num_blocks++;\n",
+        " \n135,137c136,138\n< \t\t\tif ((t[j].type == INODE_FILE || t[j].type == INODE_DIRECTORY) \n< \t\t\t\t&& !cgc_strcmp(t[j].fname, fname)) {\n< \t\t\t\treturn(&(t[j]));\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif (((t[j].type == 1 || t[j].type == 2) && !cgc_strcmp(t[j].fname, fname)) && !1) {\n> \t\t\t    return (&(t[j]));\n",
+        " \n38,40c39,42\n< \tif ((fs_size % PAGE_SIZE) != 0) {\n< \t\tfs_size -= (fs_size % PAGE_SIZE);\n< \t\tfs_size += PAGE_SIZE; \n---\n> \t//prophet generated patch\n> \tif (((fs_size % 4096) != 0) && !1) {\n> \t    fs_size -= (fs_size % 4096);\n> \t    fs_size += 4096;\n",
+        " \n430,431c431,433\n< \tif (block_count % INODE_DATA_BLOCKS) {\n< \t\tinode_count++;\n---\n> \t//prophet generated patch\n> \tif ((block_count % 8) && !1) {\n> \t    inode_count++;\n",
+        " \n246,247c247,249\n< \tif (f != NULL) {\n< \t\tretval = 0;\n---\n> \t//prophet generated patch\n> \tif ((f != (0)) && !1) {\n> \t    retval = 0;\n",
+        " \n587,588c588,590\n< \tif (!pathname) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((!pathname) && !1) {\n> \t    return (-1);\n",
+        " \n602,606c603,609\n< \t} else if (i == 2) {\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n< \t}\n---\n> \t} else //prophet generated patch\n> {\n>     if ((i == 2) || 1) {\n>         cgc_puts(\"directory exists\");\n>         return (-1);\n>     }\n> }\n",
+        " \n176,177c177,179\n< \t\t\tif (!file) {\n< \t\t\t\tcontinue;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((!file) && !1) {\n> \t\t\t    continue;\n",
+        " \n420,421c421,423\n< \tif (cgc_strlen(contents) % fs.blocksize != 0) {\n< \t\tblock_count++;\n---\n> \t//prophet generated patch\n> \tif ((cgc_strlen(contents) % fs.blocksize != 0) && !1) {\n> \t    block_count++;\n",
+        " \n441,442c442,444\n< \t\tif (i == 0) {\n< \t\t\tinode_head = in;\n---\n> \t\t//prophet generated patch\n> \t\tif ((i == 0) && !1) {\n> \t\t    inode_head = in;\n",
+        " \n153,154c154,156\n< \tif (dir == NULL || fname == NULL) {\n< \t\treturn(NULL);\n---\n> \t//prophet generated patch\n> \tif ((dir == (0) || fname == (0)) && !1) {\n> \t    return ((0));\n",
+        " \n430,431c431,433\n< \tif (block_count % INODE_DATA_BLOCKS) {\n< \t\tinode_count++;\n---\n> \t//prophet generated patch\n> \tif ((block_count % 8) || 1) {\n> \t    inode_count++;\n",
+        " \n424,425c425,427\n< \tif (block_count == 0) {\n< \t\tblock_count = 1;\n---\n> \t//prophet generated patch\n> \tif ((block_count == 0) && !1) {\n> \t    block_count = 1;\n",
+        " \n487,493c488,494\n< \t\tif (dir->inodes[i] == NULL) {\n< \t\t\tdir->inodes[i] = inode_head;\n< \t\t\t// update the fsize value\n< \t\t\tif ((i+1)*4 > dir_inode->fsize) {\n< \t\t\t\tdir_inode->fsize = (i+1)*4;\n< \t\t\t}\n< \t\t\tbreak;\n---\n> \t\t//prophet generated patch\n> \t\tif ((dir->inodes[i] == (0)) && !1) {\n> \t\t    dir->inodes[i] = inode_head;\n> \t\t    if ((i + 1) * 4 > dir_inode->fsize) {\n> \t\t        dir_inode->fsize = (i + 1) * 4;\n> \t\t    }\n> \t\t    break;\n",
+        " \n447,448c448,450\n< \t\tif (last_inode) {\n< \t\t\tlast_inode->indirect_inode = in;\n---\n> \t\t//prophet generated patch\n> \t\tif ((last_inode) && !1) {\n> \t\t    last_inode->indirect_inode = in;\n",
+        " \n164,165c165,167\n< \t\tif (!d) {\n< \t\t\tcontinue;\n---\n> \t\t//prophet generated patch\n> \t\tif ((!d) && !1) {\n> \t\t    continue;\n",
+        " \n587,588c588,590\n< \tif (!pathname) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((!pathname) || 1) {\n> \t    return (-1);\n",
+        " \n264,271c265,272\n< \t\tif (!ipage) {\n< \t\t\t// allocate a new page\n< \t\t\tif (cgc_allocate(PAGE_SIZE, 0, (void **)&(fs.inode_pages[i]))) {\n< \t\t\t\tcgc_puts(\"Failed to allocate inode page\\n\");\n< \t\t\t\treturn(NULL);\n< \t\t\t}\n< \t\t\tcgc_bzero(fs.inode_pages[i], PAGE_SIZE);\n< \t\t\tipage = fs.inode_pages[i];\n---\n> \t\t//prophet generated patch\n> \t\tif ((!ipage) && !1) {\n> \t\t    if (cgc_allocate(4096, 0, (void **)&(fs.inode_pages[i]))) {\n> \t\t        cgc_puts(\"Failed to allocate inode page\\n\");\n> \t\t        return ((0));\n> \t\t    }\n> \t\t    cgc_bzero(fs.inode_pages[i], 4096);\n> \t\t    ipage = fs.inode_pages[i];\n",
+        " \n596,597c597,599\n< \tif (i == -1) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((i == -1) || 1) {\n> \t    return (-1);\n599,601c601,602\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"file exists\");\n< \t\treturn(-1);\n---\n> \t    cgc_puts(\"file exists\");\n> \t    return (-1);\n603,605c604,605\n< \t\t// yes, return an error\n< \t\tcgc_puts(\"directory exists\");\n< \t\treturn(-1);\n---\n> \t    cgc_puts(\"directory exists\");\n> \t    return (-1);\n",
+        " \n230,242c231,241\n< \t\tif ((i2 = cgc_FindDirEntry(i, tok))) {\n< \t\t\t// found this token\n< \t\t\tif (i2->type == INODE_DIRECTORY) {\n< \t\t\t\t// it's a directory, traverse it\n< \t\t\t\ti = i2;\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 2;\n< \t\t\t} else {\n< \t\t\t\t// it's a file, we found the end of the path\n< \t\t\t\t*file_inode = i2;\n< \t\t\t\tretval = 1;\n< \t\t\t\tbreak;\n< \t\t\t}\n---\n> \t\t//prophet generated patch\n> \t\tif (((i2 = cgc_FindDirEntry(i, tok))) && !1) {\n> \t\t    if (i2->type == 2) {\n> \t\t        i = i2;\n> \t\t        *file_inode = i2;\n> \t\t        retval = 2;\n> \t\t    } else {\n> \t\t        *file_inode = i2;\n> \t\t        retval = 1;\n> \t\t        break;\n> \t\t    }\n",
+        " \n176,177c177,179\n< \t\t\tif (!file) {\n< \t\t\t\tcontinue;\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((!file) || 1) {\n> \t\t\t    continue;\n",
+        " \n447,448c448,450\n< \t\tif (last_inode) {\n< \t\t\tlast_inode->indirect_inode = in;\n---\n> \t\t//prophet generated patch\n> \t\tif ((last_inode) || 1) {\n> \t\t    last_inode->indirect_inode = in;\n",
+        " \n436,438c437,440\n< \t\tif ((in = cgc_FindFreeInode()) == NULL) { \n< \t\t\tcgc_puts(\"out of inodes\");\n< \t\t\treturn(NULL);\n---\n> \t\t//prophet generated patch\n> \t\tif (((in = cgc_FindFreeInode()) == (0)) && !1) {\n> \t\t    cgc_puts(\"out of inodes\");\n> \t\t    return ((0));\n",
+        " \n1162,1163c1163,1165\n< \tif (!stream) {\n< \t\treturn(-1);\n---\n> \t//prophet generated patch\n> \tif ((!stream) && !1) {\n> \t    return (-1);\n",
+        " \n266,268c267,270\n< \t\t\tif (cgc_allocate(PAGE_SIZE, 0, (void **)&(fs.inode_pages[i]))) {\n< \t\t\t\tcgc_puts(\"Failed to allocate inode page\\n\");\n< \t\t\t\treturn(NULL);\n---\n> \t\t\t//prophet generated patch\n> \t\t\tif ((cgc_allocate(4096, 0, (void **)&(fs.inode_pages[i]))) && !1) {\n> \t\t\t    cgc_puts(\"Failed to allocate inode page\\n\");\n> \t\t\t    return ((0));\n",
+        " \n246,247c247,249\n< \tif (f != NULL) {\n< \t\tretval = 0;\n---\n> \t//prophet generated patch\n> \tif ((f != (0)) || 1) {\n> \t    retval = 0;\n",
+        " \n436,438c437,440\n< \t\tif ((in = cgc_FindFreeInode()) == NULL) { \n< \t\t\tcgc_puts(\"out of inodes\");\n< \t\t\treturn(NULL);\n---\n> \t\t//prophet generated patch\n> \t\tif (((in = cgc_FindFreeInode()) == (0)) || 1) {\n> \t\t    cgc_puts(\"out of inodes\");\n> \t\t    return ((0));\n"
+      ]
+    }
+  ],
+  "compilations": 76,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "b15dca21": {
+      "compiles": [
+        0
+      ]
+    },
+    "660813dc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d092cd59": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5c93832c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c669d1e1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "65639a46": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8527ef64": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "d38457d1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "da8b8585": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "c34ba6cc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5e04057c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cf1e87bb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "6d5d2842": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "486e96ff": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "cc727897": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b69ceb40": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "5143b7ce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "d949369f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "4fb324d7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "1f51aae7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2bbe1b26": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "2c73e14a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "79b5ca43": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "cd38da2a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "95cc3e9a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aae5eeeb": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "eb533103": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d0cb5fcf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "98b07d6f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "757687da": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d71343f6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "13cde75f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "25f26d7a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4fa3bcbf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a2f9684f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f315b349": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "eca5c30e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "002a8eb2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "341a2b5a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "50a1cb4c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "81ccf902": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "10c4b730": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c380b662": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0e65825c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b657d671": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "8bd4e869": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "e356e257": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "bdd07960": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "06a3ad69": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26263987": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f3666c65": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "adf65eb2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3afdbbd3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8e58a5ce": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1c40d9b5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ]
+      }
+    },
+    "96b70511": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "a583b581": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a55fec52": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "cfd913a9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "90247933": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "aa877898": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4ffc0238": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4d99e9a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d780372a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a1bd2acf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eae96c49": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "49928893": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "34902c9c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b7109520": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "1183dbd3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5eb6de90": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "f6db6ea9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "dec824a6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b7b5da1f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 51,
+  "passed_pos_tests": 52,
+  "failed_neg_tests": 55,
+  "failed_pos_tests": 41,
+  "duration": 1331.336116,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

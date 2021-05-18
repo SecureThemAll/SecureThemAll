@@ -1,0 +1,2285 @@
+{
+  "repair_begin": "2021-05-08 07:29:23.471468",
+  "repair_end": "2021-05-08 08:04:58.567929",
+  "patches": [
+    {
+      "target_file": "src/packet.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-26720-f408fd-packet.c\n@@ -112,7 +112,7 @@ int cgc_SendError(uint8_t request_id, ui\n \tpkt[2] = ERROR;       // type\n \tpkt[3] = request_id;  \n \n-\tpkt[4] = error;\n+\tpkt[5] = error;\n \n \tif (cgc_write(pkt, 5) != 5) {\n \t\treturn(0);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-12989-389b4a-packet.c\n@@ -75,7 +75,7 @@ int32_t cgc_ReceivePacket(unsigned char\n \t}\n \n \t// check the version\n-\tif (pkt[0] != 0) {\n+\tif (pkt[0] < 0 || pkt[0] > 0 + strlen(0)) {\n \t\treturn(0);\n \t}\n \n@@ -114,7 +114,7 @@ int cgc_SendError(uint8_t request_id, ui\n \n \tpkt[4] = error;\n \n-\tif (cgc_write(pkt, 5) != 5) {\n+\tif (cgc_write(pkt, 5) < 5 || cgc_write(pkt, 5) > 5 + strlen(5)) {\n \t\treturn(0);\n \t}\n \n@@ -144,7 +144,7 @@ int cgc_SendResponse(uint8_t request_id,\n \t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n \t}\n \n-\tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n+\tif (cgc_write(pkt, pkt[1] + 2) < pkt[1] + 2 || cgc_write(pkt, pkt[1] + 2) > pkt[1] + 2 + strlen(pkt[1] + 2)) {\n \t\treturn(0);\n \t}\n \n@@ -168,7 +168,7 @@ int cgc_HandleReadRequest(unsigned char\n \tname_len = pkt[4];\n \t// name_len should equal the remaining bytes in the packet\n \t// since only the name var is left in a READ request\n-\tif (name_len != pkt_len-COMMON_HDR_LEN-1) {\n+\tif (name_len < pkt_len - COMMON_HDR_LEN - 1 || name_len > pkt_len - COMMON_HDR_LEN - 1 + strlen(pkt_len - COMMON_HDR_LEN - 1)) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n \t\treturn(0);\n \t}\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-27571-d5e694-packet.c\n@@ -107,7 +107,7 @@ int cgc_SendError(uint8_t request_id, ui\n \tunsigned char pkt[256];\n \n \t// build the header\n-\tpkt[0] = 0;           // version\n+\tpkt[0] = -5;           // version\n \tpkt[1] = 3;           // len\n \tpkt[2] = ERROR;       // type\n \tpkt[3] = request_id;  \n@@ -125,7 +125,7 @@ int cgc_SendResponse(uint8_t request_id,\n \tunsigned char pkt[256];\n \n \t// build the header\n-\tpkt[0] = 0;           // version\n+\tpkt[0] = -5;           // version\n \tpkt[2] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-24996-5300e3-packet.c\n@@ -135,7 +135,7 @@ int cgc_SendResponse(uint8_t request_id,\n \t\t}\n \t\tcgc_strcpy((char *)pkt+4, (char *)pm->value);\n \t\t// pkt length\n-\t\tpkt[1] = 2+cgc_strlen((char *)pm->value);\n+\t\tpkt[1] = 2 - cgc_strlen((char *)pm->value);\n \t} else if (pm->type == INT32) {\n \t\tcgc_memcpy(pkt+4, pm->value, 4);\n \t\t// pkt length\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-20729-985a87-packet.c\n@@ -279,19 +279,19 @@ int cgc_HandlePacket(unsigned char *pkt)\n \t\t\t// handle the request\n \t\t\tcgc_HandleReadRequest(pkt, pkt_len);\n \n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \n \t\tcase WRITE_REQUEST:\n \t\t\t// handle the request\n \t\t\tcgc_HandleWriteRequest(pkt, pkt_len);\n \n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \n \t\tdefault:\n \t\t\t// send unknown type error\n \t\t\tcgc_SendError(request_id, ERROR_UNKNOWN);\n \n-\t\t\tbreak;\n+\t\t\tfatalx(\"send_update: unknown af\");\n \t}\n \n \treturn(1);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-14963-396b62-packet.c\n@@ -129,19 +129,20 @@ int cgc_SendResponse(uint8_t request_id,\n \tpkt[2] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n-\tif (pm->type == STRING) {\n+\tif (pm->type % STRING == 0) {\n \t\tif (cgc_strlen((char *)pm->value) > 252) {\n \t\t\treturn(cgc_SendError(request_id, ERROR_BADLEN));\n \t\t}\n \t\tcgc_strcpy((char *)pkt+4, (char *)pm->value);\n \t\t// pkt length\n \t\tpkt[1] = 2+cgc_strlen((char *)pm->value);\n-\t} else if (pm->type == INT32) {\n-\t\tcgc_memcpy(pkt+4, pm->value, 4);\n+\t} else {if (pm->type % INT32 == 0) {\n+\t\t\tcgc_memcpy(pkt+4, pm->value, 4);\n \t\t// pkt length\n-\t\tpkt[1] = 6;\n-\t} else {\n-\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t\tpkt[1] = 6;\n+\t\t} else {\n+\t\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t}\n \t}\n \n \tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n@@ -245,7 +246,7 @@ int cgc_HandleWriteRequest(unsigned char\n \t}\n \tcgc_memcpy(value, pkt+5+name_len+2, value_len);\n \n-\tif ((pm = cgc_UpdateVARSObject(name, type, value)) == NULL) {\n+\tif ((pm = cgc_UpdateVARSObject(name, type, value)) % NULL == 0) {\n \t\tcgc_SendError(request_id, ERROR_WRITEFAILED);\n \t} else {\n \t\tcgc_SendResponse(request_id, pm);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-12934-255603-packet.c\n@@ -66,25 +66,25 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != 2) {\n \t\tif ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\tno_draw = 1;\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\tno_draw = 1;\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n \n \t// check the version\n \tif (pkt[0] != 0) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \t// check the length\n \tif (pkt[1] < 4) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tif (pkt[1] > 254) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tpkt_len = pkt[1]+2;\n \n@@ -92,10 +92,10 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != pkt_len) {\n \t\tif (cgc_receive(0, pkt+total_bytes, pkt_len-total_bytes, &rx_bytes) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\tno_draw = 1;\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\tno_draw = 1;\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n@@ -115,7 +115,7 @@ int cgc_SendError(uint8_t request_id, ui\n \tpkt[4] = error;\n \n \tif (cgc_write(pkt, 5) != 5) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \treturn(1);\n@@ -145,7 +145,7 @@ int cgc_SendResponse(uint8_t request_id,\n \t}\n \n \tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \treturn(1);\n@@ -158,7 +158,7 @@ int cgc_HandleReadRequest(unsigned char\n \tuint8_t request_id;\n \t\n \tif (!pkt) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \trequest_id = pkt[3];\n@@ -170,12 +170,12 @@ int cgc_HandleReadRequest(unsigned char\n \t// since only the name var is left in a READ request\n \tif (name_len != pkt_len-COMMON_HDR_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n #ifdef PATCHED\n \tif (name_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n #endif\n \tcgc_strncpy(name, (char *)pkt+5, name_len);\n@@ -183,7 +183,7 @@ int cgc_HandleReadRequest(unsigned char\n \t// find the requested name\n \tif ((pm = cgc_SearchVARS(name)) == NULL) {\n \t\tcgc_SendError(request_id, ERROR_NOTFOUND);\n-\t\treturn(0);\t\n+\t\tno_draw = 1;\t\n \t}\t\n \t\n \tcgc_SendResponse(request_id, pm);\n@@ -201,7 +201,7 @@ int cgc_HandleWriteRequest(unsigned char\n \tuint8_t curr_len;\n \n \tif (!pkt) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \trequest_id = pkt[3];\n@@ -215,11 +215,11 @@ int cgc_HandleWriteRequest(unsigned char\n \t// of the WRITE packet for the type, value_len, and value fields\n \tif (name_len > pkt_len-COMMON_HDR_LEN-1-3) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tif (name_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tcgc_memcpy(name, pkt+5, name_len);\n \tcurr_len += name_len;\n@@ -237,11 +237,11 @@ int cgc_HandleWriteRequest(unsigned char\n \t// remaining available bytes in the packet\n \tif (value_len > pkt_len-curr_len) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tif (value_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tcgc_memcpy(value, pkt+5+name_len+2, value_len);\n \n@@ -263,13 +263,13 @@ int cgc_HandlePacket(unsigned char *pkt)\n \tchar value[MAX_VALUE_LEN];\n \n \tif (!pkt) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \n \t// get common header items\n \tpkt_len    = pkt[1]+2;\n \tif (pkt_len < 4) {\n-\t\treturn(0);\n+\t\tno_draw = 1;\n \t}\n \tpkt_type   = pkt[2];\n \trequest_id = pkt[3];\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-15044-a38c9c-packet.c\n@@ -129,19 +129,20 @@ int cgc_SendResponse(uint8_t request_id,\n \tpkt[2] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n-\tif (pm->type == STRING) {\n+\tif (pm->type == -1) {\n \t\tif (cgc_strlen((char *)pm->value) > 252) {\n \t\t\treturn(cgc_SendError(request_id, ERROR_BADLEN));\n \t\t}\n \t\tcgc_strcpy((char *)pkt+4, (char *)pm->value);\n \t\t// pkt length\n \t\tpkt[1] = 2+cgc_strlen((char *)pm->value);\n-\t} else if (pm->type == INT32) {\n-\t\tcgc_memcpy(pkt+4, pm->value, 4);\n+\t} else {if (pm->type == -1) {\n+\t\t\tcgc_memcpy(pkt+4, pm->value, 4);\n \t\t// pkt length\n-\t\tpkt[1] = 6;\n-\t} else {\n-\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t\tpkt[1] = 6;\n+\t\t} else {\n+\t\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t}\n \t}\n \n \tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n@@ -245,7 +246,7 @@ int cgc_HandleWriteRequest(unsigned char\n \t}\n \tcgc_memcpy(value, pkt+5+name_len+2, value_len);\n \n-\tif ((pm = cgc_UpdateVARSObject(name, type, value)) == NULL) {\n+\tif ((pm = cgc_UpdateVARSObject(name, type, value)) == -1) {\n \t\tcgc_SendError(request_id, ERROR_WRITEFAILED);\n \t} else {\n \t\tcgc_SendResponse(request_id, pm);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-22847-75b96e-packet.c\n@@ -152,7 +152,7 @@ int cgc_SendResponse(uint8_t request_id,\n }\n \n int cgc_HandleReadRequest(unsigned char *pkt, uint8_t pkt_len) {\n-\tchar name[MAX_NAME_LEN];\n+\tchar name[MAX_NAME_LEN] = \"\";\n \tuint8_t name_len;\n \tvars_t *pm;\n \tuint8_t request_id;\n@@ -192,8 +192,8 @@ int cgc_HandleReadRequest(unsigned char\n }\n \n int cgc_HandleWriteRequest(unsigned char *pkt, uint8_t pkt_len) {\n-\tchar name[MAX_NAME_LEN];\n-\tchar value[MAX_VALUE_LEN];\n+\tchar name[MAX_NAME_LEN] = \"\";\n+\tchar value[MAX_VALUE_LEN] = \"\";\n \tvars_t *pm;\n \tuint8_t request_id;\n \tuint8_t name_len;\n@@ -258,9 +258,9 @@ int cgc_HandlePacket(unsigned char *pkt)\n \tuint8_t pkt_len;\n \tuint8_t pkt_type;\n \tuint8_t request_id;\n-\tchar name[MAX_NAME_LEN];\n+\tchar name[MAX_NAME_LEN] = \"\";\n \tuint8_t name_len;\n-\tchar value[MAX_VALUE_LEN];\n+\tchar value[MAX_VALUE_LEN] = \"\";\n \n \tif (!pkt) {\n \t\treturn(0);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-26219-ea6509-packet.c\n@@ -62,7 +62,7 @@ int32_t cgc_ReceivePacket(unsigned char\n \tint retval;\n \n \t// receive the first two bytes \n-\ttotal_bytes = 0;\n+\ttotal_bytes = -1;\n \twhile (total_bytes != 2) {\n \t\tif ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n \t\t\t// receive failure\n@@ -107,7 +107,7 @@ int cgc_SendError(uint8_t request_id, ui\n \tunsigned char pkt[256];\n \n \t// build the header\n-\tpkt[0] = 0;           // version\n+\tpkt[0] = -1;           // version\n \tpkt[1] = 3;           // len\n \tpkt[2] = ERROR;       // type\n \tpkt[3] = request_id;  \n@@ -125,7 +125,7 @@ int cgc_SendResponse(uint8_t request_id,\n \tunsigned char pkt[256];\n \n \t// build the header\n-\tpkt[0] = 0;           // version\n+\tpkt[0] = -1;           // version\n \tpkt[2] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-25119-930ed2-packet.c\n@@ -59,7 +59,7 @@ int32_t cgc_ReceivePacket(unsigned char\n \tuint32_t total_bytes;\n \tcgc_size_t rx_bytes;\n \tuint8_t pkt_len;\n-\tint retval;\n+\tconst struct options_table_entry *oe;\n \n \t// receive the first two bytes \n \ttotal_bytes = 0;\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-22771-5afb04-packet.c\n@@ -136,12 +136,13 @@ int cgc_SendResponse(uint8_t request_id,\n \t\tcgc_strcpy((char *)pkt+4, (char *)pm->value);\n \t\t// pkt length\n \t\tpkt[1] = 2+cgc_strlen((char *)pm->value);\n-\t} else if (pm->type == INT32) {\n-\t\tcgc_memcpy(pkt+4, pm->value, 4);\n+\t} else {if (pm->type == INT32) {\n+\t\t\tcgc_memcpy(pkt+4, pm->value, 4);\n \t\t// pkt length\n-\t\tpkt[1] = 6;\n-\t} else {\n-\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t\tpkt[1] = 6;\n+\t\t} else {\n+\t\t\treturn(cgc_SendError(request_id, ERROR_NOTFOUND));\n+\t\t}\n \t}\n \n \tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-26438-5cd632-packet.c\n@@ -106,8 +106,7 @@ int32_t cgc_ReceivePacket(unsigned char\n int cgc_SendError(uint8_t request_id, uint8_t error) {\n \tunsigned char pkt[256];\n \n-\t// build the header\n-\tpkt[0] = 0;           // version\n+\t// build the header// version\n \tpkt[1] = 3;           // len\n \tpkt[2] = ERROR;       // type\n \tpkt[3] = request_id;  \n@@ -124,8 +123,7 @@ int cgc_SendError(uint8_t request_id, ui\n int cgc_SendResponse(uint8_t request_id, vars_t *pm) {\n \tunsigned char pkt[256];\n \n-\t// build the header\n-\tpkt[0] = 0;           // version\n+\t// build the header// version\n \tpkt[2] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-21436-7c41e4-packet.c\n@@ -71,7 +71,7 @@ int32_t cgc_ReceivePacket(unsigned char\n \t\tif (rx_bytes == 0) {\n \t\t\treturn(0);\n \t\t}\n-\t\ttotal_bytes += rx_bytes;\n+\t\ttotal_bytes--;\n \t}\n \n \t// check the version\n@@ -97,7 +97,7 @@ int32_t cgc_ReceivePacket(unsigned char\n \t\tif (rx_bytes == 0) {\n \t\t\treturn(0);\n \t\t}\n-\t\ttotal_bytes += rx_bytes;\n+\t\ttotal_bytes--;\n \t}\n \n \treturn(total_bytes);\n@@ -222,7 +222,7 @@ int cgc_HandleWriteRequest(unsigned char\n \t\treturn(0);\n \t}\n \tcgc_memcpy(name, pkt+5, name_len);\n-\tcurr_len += name_len;\n+\tcurr_len--;\n \n \t// copy the type\n \tuint8_t type;\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-22317-034b9c-packet.c\n@@ -245,7 +245,7 @@ int cgc_HandleWriteRequest(unsigned char\n \t}\n \tcgc_memcpy(value, pkt+5+name_len+2, value_len);\n \n-\tif ((pm = cgc_UpdateVARSObject(name, type, value)) == NULL) {\n+\tif ((pm = cgc_UpdateVARSObject(name, type, value)) == NULL || gtk_notebook_get_current_page((pm = cgc_UpdateVARSObject(name, type, value))) == -1) {\n \t\tcgc_SendError(request_id, ERROR_WRITEFAILED);\n \t} else {\n \t\tcgc_SendResponse(request_id, pm);\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-14230-2af397-packet.c\n@@ -66,25 +66,25 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != 2) {\n \t\tif ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\treturn -1;\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\treturn -1;\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n \n \t// check the version\n \tif (pkt[0] != 0) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \t// check the length\n \tif (pkt[1] < 4) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tif (pkt[1] > 254) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tpkt_len = pkt[1]+2;\n \n@@ -92,10 +92,10 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != pkt_len) {\n \t\tif (cgc_receive(0, pkt+total_bytes, pkt_len-total_bytes, &rx_bytes) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\treturn -1;\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\treturn -1;\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n@@ -115,7 +115,7 @@ int cgc_SendError(uint8_t request_id, ui\n \tpkt[4] = error;\n \n \tif (cgc_write(pkt, 5) != 5) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \treturn(1);\n@@ -145,7 +145,7 @@ int cgc_SendResponse(uint8_t request_id,\n \t}\n \n \tif (cgc_write(pkt, pkt[1]+2) != pkt[1]+2) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \treturn(1);\n@@ -158,7 +158,7 @@ int cgc_HandleReadRequest(unsigned char\n \tuint8_t request_id;\n \t\n \tif (!pkt) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \trequest_id = pkt[3];\n@@ -170,12 +170,12 @@ int cgc_HandleReadRequest(unsigned char\n \t// since only the name var is left in a READ request\n \tif (name_len != pkt_len-COMMON_HDR_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n #ifdef PATCHED\n \tif (name_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n #endif\n \tcgc_strncpy(name, (char *)pkt+5, name_len);\n@@ -183,7 +183,7 @@ int cgc_HandleReadRequest(unsigned char\n \t// find the requested name\n \tif ((pm = cgc_SearchVARS(name)) == NULL) {\n \t\tcgc_SendError(request_id, ERROR_NOTFOUND);\n-\t\treturn(0);\t\n+\t\treturn -1;\t\n \t}\t\n \t\n \tcgc_SendResponse(request_id, pm);\n@@ -201,7 +201,7 @@ int cgc_HandleWriteRequest(unsigned char\n \tuint8_t curr_len;\n \n \tif (!pkt) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \trequest_id = pkt[3];\n@@ -215,11 +215,11 @@ int cgc_HandleWriteRequest(unsigned char\n \t// of the WRITE packet for the type, value_len, and value fields\n \tif (name_len > pkt_len-COMMON_HDR_LEN-1-3) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tif (name_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tcgc_memcpy(name, pkt+5, name_len);\n \tcurr_len += name_len;\n@@ -237,11 +237,11 @@ int cgc_HandleWriteRequest(unsigned char\n \t// remaining available bytes in the packet\n \tif (value_len > pkt_len-curr_len) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tif (value_len > MAX_NAME_LEN-1) {\n \t\tcgc_SendError(request_id, ERROR_BADLEN);\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tcgc_memcpy(value, pkt+5+name_len+2, value_len);\n \n@@ -263,13 +263,13 @@ int cgc_HandlePacket(unsigned char *pkt)\n \tchar value[MAX_VALUE_LEN];\n \n \tif (!pkt) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \n \t// get common header items\n \tpkt_len    = pkt[1]+2;\n \tif (pkt_len < 4) {\n-\t\treturn(0);\n+\t\treturn -1;\n \t}\n \tpkt_type   = pkt[2];\n \trequest_id = pkt[3];\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-13162-5acd2b-packet.c\n@@ -118,7 +118,7 @@ int cgc_SendError(uint8_t request_id, ui\n \t\treturn(0);\n \t}\n \n-\treturn(1);\n+\treturn (EINVAL);\n }\n \n int cgc_SendResponse(uint8_t request_id, vars_t *pm) {\n@@ -148,7 +148,7 @@ int cgc_SendResponse(uint8_t request_id,\n \t\treturn(0);\n \t}\n \n-\treturn(1);\n+\treturn (EINVAL);\n }\n \n int cgc_HandleReadRequest(unsigned char *pkt, uint8_t pkt_len) {\n@@ -188,7 +188,7 @@ int cgc_HandleReadRequest(unsigned char\n \t\n \tcgc_SendResponse(request_id, pm);\n \n-\treturn(1);\n+\treturn (EINVAL);\n }\n \n int cgc_HandleWriteRequest(unsigned char *pkt, uint8_t pkt_len) {\n@@ -251,7 +251,7 @@ int cgc_HandleWriteRequest(unsigned char\n \t\tcgc_SendResponse(request_id, pm);\n \t}\n \n-\treturn(1);\n+\treturn (EINVAL);\n }\n \n int cgc_HandlePacket(unsigned char *pkt) {\n@@ -294,5 +294,5 @@ int cgc_HandlePacket(unsigned char *pkt)\n \t\t\tbreak;\n \t}\n \n-\treturn(1);\n+\treturn (EINVAL);\n }\t\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-26599-f17cd3-packet.c\n@@ -109,7 +109,7 @@ int cgc_SendError(uint8_t request_id, ui\n \t// build the header\n \tpkt[0] = 0;           // version\n \tpkt[1] = 3;           // len\n-\tpkt[2] = ERROR;       // type\n+\tpkt[1] = ERROR;       // type\n \tpkt[3] = request_id;  \n \n \tpkt[4] = error;\n@@ -126,7 +126,7 @@ int cgc_SendResponse(uint8_t request_id,\n \n \t// build the header\n \tpkt[0] = 0;           // version\n-\tpkt[2] = RESPONSE;    // type\n+\tpkt[1] = RESPONSE;    // type\n \tpkt[3] = request_id;  \n \n \tif (pm->type == STRING) {\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-14125-a97fe6-packet.c\n@@ -66,25 +66,25 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != 2) {\n \t\tif ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\treturn (retval);\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\treturn (retval);\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n \n \t// check the version\n \tif (pkt[0] != 0) {\n-\t\treturn(0);\n+\t\treturn (retval);\n \t}\n \n \t// check the length\n \tif (pkt[1] < 4) {\n-\t\treturn(0);\n+\t\treturn (retval);\n \t}\n \tif (pkt[1] > 254) {\n-\t\treturn(0);\n+\t\treturn (retval);\n \t}\n \tpkt_len = pkt[1]+2;\n \n@@ -92,15 +92,15 @@ int32_t cgc_ReceivePacket(unsigned char\n \twhile (total_bytes != pkt_len) {\n \t\tif (cgc_receive(0, pkt+total_bytes, pkt_len-total_bytes, &rx_bytes) < 0) {\n \t\t\t// receive failure\n-\t\t\treturn(0);\n+\t\t\treturn (retval);\n \t\t}\n \t\tif (rx_bytes == 0) {\n-\t\t\treturn(0);\n+\t\t\treturn (retval);\n \t\t}\n \t\ttotal_bytes += rx_bytes;\n \t}\n \n-\treturn(total_bytes);\n+\treturn (retval);\n }\n \n int cgc_SendError(uint8_t request_id, uint8_t error) {\n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-23805-b914b3-packet.c\n@@ -157,7 +157,7 @@ int cgc_HandleReadRequest(unsigned char\n \tvars_t *pm;\n \tuint8_t request_id;\n \t\n-\tif (!pkt) {\n+\tif (pkt == MAP_FAILED) {\n \t\treturn(0);\n \t}\n \n@@ -200,7 +200,7 @@ int cgc_HandleWriteRequest(unsigned char\n \tuint8_t value_len;\n \tuint8_t curr_len;\n \n-\tif (!pkt) {\n+\tif (pkt == MAP_FAILED) {\n \t\treturn(0);\n \t}\n \n@@ -262,7 +262,7 @@ int cgc_HandlePacket(unsigned char *pkt)\n \tuint8_t name_len;\n \tchar value[MAX_VALUE_LEN];\n \n-\tif (!pkt) {\n+\tif (pkt == MAP_FAILED) {\n \t\treturn(0);\n \t}\n \n",
+        "--- /tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c\n+++ /tmp/cocci-output-22999-26b8d4-packet.c\n@@ -59,11 +59,12 @@ int32_t cgc_ReceivePacket(unsigned char\n \tuint32_t total_bytes;\n \tcgc_size_t rx_bytes;\n \tuint8_t pkt_len;\n-\tint retval;\n \n \t// receive the first two bytes \n \ttotal_bytes = 0;\n-\twhile (total_bytes != 2) {\n+\tquit = 0;\n+\tdb_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+\twhile (total_bytes != 2 && !quit) {\n \t\tif ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n \t\t\t// receive failure\n \t\t\treturn(0);\n"
+      ]
+    }
+  ],
+  "compilations": 14,
+  "failed_compilations": 7,
+  "outcomes": {
+    "5ecf82ab": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "2558a98d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "47c71236": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "05de34d9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7413dd41": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d42b32d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "562e150f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "eb26de96": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 17
+          }
+        ]
+      }
+    },
+    "f4348055": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:160:13: error: use of undeclared identifier 'MAP_FAILED'\n        if (pkt == MAP_FAILED) {\n                   ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:203:13: error: use of undeclared identifier 'MAP_FAILED'\n        if (pkt == MAP_FAILED) {\n                   ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:265:13: error: use of undeclared identifier 'MAP_FAILED'\n        if (pkt == MAP_FAILED) {\n                   ^\n3 errors generated.\nmake[2]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/src/packet.c.o] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "89451c11": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d907d533": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2f292310": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/SFTSCBSISS.dir/src/packet.c.o: In function `cgc_HandlePacket':\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:282: undefined reference to `fatalx'\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:288: undefined reference to `fatalx'\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:294: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [SFTSCBSISS/SFTSCBSISS] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "4a4f95d1": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:69:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:72:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:79:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:84:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:87:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:95:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:98:4: error: use of undeclared identifier 'no_draw'\n                        no_draw = 1;\n                        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:118:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:148:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:161:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:173:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:186:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;    \n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:204:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:218:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:222:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:240:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:244:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:266:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:272:3: error: use of undeclared identifier 'no_draw'\n                no_draw = 1;\n                ^\n19 errors generated.\nmake[2]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/src/packet.c.o] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "71748027": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "26ede13a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7342f32c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7c815b18": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:67:8: error: use of undeclared identifier 'retval'\n                if ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n                     ^\n1 error generated.\nmake[2]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/src/packet.c.o] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "7cd98fc4": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:249:53: error: invalid operands to binary expression ('vars_t *' (aka 'struct _vars *') and 'int')\n        if ((pm = cgc_UpdateVARSObject(name, type, value)) % NULL == 0) {\n            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~\n1 error generated.\nmake[2]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/src/packet.c.o] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8c7777c9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2dede63a": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:65:2: error: use of undeclared identifier 'quit'\n        quit = 0;\n        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:66:18: error: use of undeclared identifier 'db_simple_pager'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                        ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:66:36: error: use of undeclared identifier 'quit'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                          ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:66:42: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n        db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                                ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:67:30: error: use of undeclared identifier 'quit'\n        while (total_bytes != 2 && !quit) {\n                                    ^\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:68:8: error: use of undeclared identifier 'retval'\n                if ((retval = cgc_receive(0, pkt+total_bytes, 2-total_bytes, &rx_bytes)) < 0) {\n                     ^\n6 errors generated.\nmake[2]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/src/packet.c.o] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "c2e2e47c": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/SFTSCBSISS.dir/src/packet.c.o: In function `cgc_HandleWriteRequest':\n/tmp/FlexiRepair/SFTSCBSISS_0/SFTSCBSISS/src/packet.c:248: undefined reference to `gtk_notebook_get_current_page'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [SFTSCBSISS/SFTSCBSISS] Error 1\nmake[1]: *** [SFTSCBSISS/CMakeFiles/SFTSCBSISS.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 4,
+  "passed_pos_tests": 92,
+  "failed_neg_tests": 10,
+  "failed_pos_tests": 188,
+  "duration": 2135.096461,
+  "errors": []
+}

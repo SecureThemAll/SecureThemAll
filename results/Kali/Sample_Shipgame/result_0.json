@@ -1,0 +1,2653 @@
+{
+  "repair_begin": "2021-05-07 02:18:56.556334",
+  "repair_end": "2021-05-07 03:12:42.937284",
+  "patches": [
+    {
+      "target_file": "lib/mylibc.c",
+      "fix": "30c30,33\n<   temp = 0x7FFFFFFF; //32 bit INT_MAX\n---\n>   //prophet generated patch\n>   if (!1)\n>       temp = 2147483647;\n>  //32 bit INT_MAX\n",
+      "edits": [
+        " \n48a50,52\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n",
+        " \n33,35c34,36\n<   if (buf == NULL)\n<   {\n<     return (-EINVAL);\n---\n>   //prophet generated patch\n>   if ((buf == (0)) && !1) {\n>       return (-3);\n",
+        " \n105a107,109\n>       //prophet generated patch\n>       if (1)\n>           return 0;\n",
+        " \n33,35c34,36\n<   if (buf == NULL)\n<   {\n<     return (-EINVAL);\n---\n>   //prophet generated patch\n>   if ((buf == (0)) || 1) {\n>       return (-3);\n",
+        " \n69,72c70,72\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n---\n>     //prophet generated patch\n>     if (((ret != 0)) || 1) {\n>         return (-ret);\n",
+        " \n104,107c105,111\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     while (str[i] != '\\x00')\n>         {\n>             i++;\n>         }\n",
+        " \n39c40,42\n<   timeToWait.tv_sec = 1;\n---\n>   //prophet generated patch\n>   if (!1)\n>       timeToWait.tv_sec = 1;\n",
+        " \n54c55,58\n<     FD_SET(fd, &fdsToWait);\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n",
+        " \n74,76c75,77\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n---\n>     //prophet generated patch\n>     if ((numRead == 0) && !1) {\n>         return (-6);\n",
+        " \n102,107c103,110\n<   if (str != NULL)\n<   {\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   if (str != (0)) {\n>       while (str[i] != '\\x00')\n>           {\n>               i++;\n>           }\n",
+        " \n118,120c119,121\n<       if (r != 0 || n == 0) {\n<          //error we can't continue\n<          cgc__terminate(1);\n---\n>       //prophet generated patch\n>       if ((r != 0 || n == 0) || 1) {\n>           cgc__terminate(1);\n",
+        " \n102,107c103,110\n<   if (str != NULL)\n<   {\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   if (str != (0)) {\n>       while (str[i] != '\\x00')\n>           {\n>               i++;\n>           }\n",
+        " \n79,82c80,82\n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n---\n>     //prophet generated patch\n>     if ((numRead != sizeof(char)) && !1) {\n>         continue;\n",
+        " \n38a40,42\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n",
+        " \n87,90c88,92\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (i >= temp) {\n>             i = temp - 1;\n>         }\n",
+        " \n116,123c117,127\n<    while (buf < end) {\n<       int r = cgc_transmit(fd, buf, end - buf, &n);\n<       if (r != 0 || n == 0) {\n<          //error we can't continue\n<          cgc__terminate(1);\n<       }\n<       buf += n;\n<    }\n---\n>    //prophet generated patch\n>    if (1)\n>        return;\n>    while (buf < end)\n>        {\n>            int r = cgc_transmit(fd, buf, end - buf, &n);\n>            if (r != 0 || n == 0) {\n>                cgc__terminate(1);\n>            }\n>            buf += n;\n>        }\n",
+        " \n104,107c105,111\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     while (str[i] != '\\x00')\n>         {\n>             i++;\n>         }\n",
+        " \n39a41,43\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n",
+        " \n85c86,90\n<     buf[i] = c; \n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     buf[i] = c;\n>  \n",
+        " \n85c86,89\n<     buf[i] = c; \n---\n>     //prophet generated patch\n>     if (!1)\n>         buf[i] = c;\n>  \n",
+        " \n79,82c80,82\n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n---\n>     //prophet generated patch\n>     if ((numRead != sizeof(char)) || 1) {\n>         continue;\n",
+        " \n67a69,71\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n69,73c70,74\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if ((ret != 0)) {\n>             return (-ret);\n>         }\n",
+        " \n39a41,43\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n",
+        " \n74,77c75,79\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (numRead == 0) {\n>             return (-6);\n>         }\n",
+        " \n49c50,52\n<   i = 0;\n---\n>   //prophet generated patch\n>   if (!1)\n>       i = 0;\n",
+        " \n87,89c88,90\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n---\n>     //prophet generated patch\n>     if ((i >= temp) && !1) {\n>         i = temp - 1;\n",
+        " \n94a96,98\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n",
+        " \n105a107,109\n>       //prophet generated patch\n>       if (1)\n>           return -1;\n",
+        " \n95c96,98\n<   return (i);\n---\n>   //prophet generated patch\n>   if (!1)\n>       return (i);\n",
+        " \n85a87,89\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n117a119,121\n>       //prophet generated patch\n>       if (1)\n>           return;\n119,120c123\n<          //error we can't continue\n<          cgc__terminate(1);\n---\n>           cgc__terminate(1);\n",
+        " \n43,45c44,48\n<   for (i = 0; i < FD_SETSIZE / _NFDBITS; i++)\n<   {\n<     fdsToWait._fd_bits[i] = 0;  \n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   for (i = 0; i < 1024 / (8 * sizeof(_fd_mask)); i++) {\n>       fdsToWait._fd_bits[i] = 0;\n",
+        " \n60,65c61,63\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n---\n>     //prophet generated patch\n>     if ((ret != 0) || 1) {\n>         return (-ret);\n",
+        " \n60,65c61,65\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (ret != 0) {\n>         return (-ret);\n",
+        " \n85a87,89\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n",
+        " \n60,66c61,65\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (ret != 0) {\n>             return (-ret);\n>         }\n",
+        " \n52,91c53,77\n<   do\n<   {\n<     FD_SET(fd, &fdsToWait);\n< \n<     //wait forever to see if there is another character available\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n< \n<     //check to see if there is an error\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n<     }\n< \n<     ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n<     }\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n<     }\n< \n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n<     }\n< \n<     buf[i] = c; \n<     i++;\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n<     }\n<   } while ( c != '\\n');\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   do {\n>       ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n>       ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n>       if (ret != 0) {\n>           return (-ret);\n>       }\n>       ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n>       if ((ret != 0)) {\n>           return (-ret);\n>       }\n>       if (numRead == 0) {\n>           return (-6);\n>       }\n>       if (numRead != sizeof(char)) {\n>           continue;\n>       }\n>       buf[i] = c;\n>       i++;\n>       if (i >= temp) {\n>           i = temp - 1;\n>       }\n>   } while (c != '\\n');\n",
+        " \n102,107c103,108\n<   if (str != NULL)\n<   {\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>   //prophet generated patch\n>   if ((str != (0)) && !1) {\n>       while (str[i] != '\\x00')\n>           {\n>               i++;\n>           }\n",
+        " \n52,91c53,77\n<   do\n<   {\n<     FD_SET(fd, &fdsToWait);\n< \n<     //wait forever to see if there is another character available\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n< \n<     //check to see if there is an error\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n<     }\n< \n<     ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n<     }\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n<     }\n< \n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n<     }\n< \n<     buf[i] = c; \n<     i++;\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n<     }\n<   } while ( c != '\\n');\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   do {\n>       ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n>       ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n>       if (ret != 0) {\n>           return (-ret);\n>       }\n>       ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n>       if ((ret != 0)) {\n>           return (-ret);\n>       }\n>       if (numRead == 0) {\n>           return (-6);\n>       }\n>       if (numRead != sizeof(char)) {\n>           continue;\n>       }\n>       buf[i] = c;\n>       i++;\n>       if (i >= temp) {\n>           i = temp - 1;\n>       }\n>   } while (c != '\\n');\n",
+        " \n38a40,42\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n",
+        " \n33,36c34,38\n<   if (buf == NULL)\n<   {\n<     return (-EINVAL);\n<   }\n---\n>   //prophet generated patch\n>   if (!1)\n>       if (buf == (0)) {\n>           return (-3);\n>       }\n",
+        " \n30c31,34\n<   temp = 0x7FFFFFFF; //32 bit INT_MAX\n---\n>   //prophet generated patch\n>   if (!1)\n>       temp = 2147483647;\n>  //32 bit INT_MAX\n",
+        " \n79,82c80,84\n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (numRead != sizeof(char)) {\n>         continue;\n",
+        " \n69,72c70,74\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if ((ret != 0)) {\n>         return (-ret);\n",
+        " \n93c94,97\n<   buf[i] = '\\0';\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   buf[i] = '\\x00';\n",
+        " \n102,107c103,108\n<   if (str != NULL)\n<   {\n<     while (str[i] != '\\0')\n<     {\n<       i++;\n<     }\n---\n>   //prophet generated patch\n>   if ((str != (0)) || 1) {\n>       while (str[i] != '\\x00')\n>           {\n>               i++;\n>           }\n",
+        " \n93c94,97\n<   buf[i] = '\\0';\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   buf[i] = '\\x00';\n",
+        " \n48a50,52\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n",
+        " \n118,120c119,121\n<       if (r != 0 || n == 0) {\n<          //error we can't continue\n<          cgc__terminate(1);\n---\n>       //prophet generated patch\n>       if ((r != 0 || n == 0) && !1) {\n>           cgc__terminate(1);\n",
+        " \n79,82c80,84\n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (numRead != sizeof(char)) {\n>         continue;\n",
+        " \n45c46,50\n<     fdsToWait._fd_bits[i] = 0;  \n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     fdsToWait._fd_bits[i] = 0;\n>   \n",
+        " \n52,91c53,76\n<   do\n<   {\n<     FD_SET(fd, &fdsToWait);\n< \n<     //wait forever to see if there is another character available\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n< \n<     //check to see if there is an error\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n<     }\n< \n<     ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n<     }\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n<     }\n< \n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n<     }\n< \n<     buf[i] = c; \n<     i++;\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n<     }\n<   } while ( c != '\\n');\n---\n>   //prophet generated patch\n>   if (!1)\n>       do {\n>           ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n>           ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n>           if (ret != 0) {\n>               return (-ret);\n>           }\n>           ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n>           if ((ret != 0)) {\n>               return (-ret);\n>           }\n>           if (numRead == 0) {\n>               return (-6);\n>           }\n>           if (numRead != sizeof(char)) {\n>               continue;\n>           }\n>           buf[i] = c;\n>           i++;\n>           if (i >= temp) {\n>               i = temp - 1;\n>           }\n>       } while (c != '\\n');\n",
+        " \n85c86,90\n<     buf[i] = c; \n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     buf[i] = c;\n>  \n",
+        " \n60,65c61,63\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n---\n>     //prophet generated patch\n>     if ((ret != 0) && !1) {\n>         return (-ret);\n",
+        " \n87,89c88,92\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (i >= temp) {\n>         i = temp - 1;\n",
+        " \n74,76c75,79\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (numRead == 0) {\n>         return (-6);\n",
+        " \n93c94,96\n<   buf[i] = '\\0';\n---\n>   //prophet generated patch\n>   if (!1)\n>       buf[i] = '\\x00';\n",
+        " \n33,35c34,38\n<   if (buf == NULL)\n<   {\n<     return (-EINVAL);\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   if (buf == (0)) {\n>       return (-3);\n",
+        " \n69,72c70,72\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n---\n>     //prophet generated patch\n>     if (((ret != 0)) && !1) {\n>         return (-ret);\n",
+        " \n68c69,71\n<     ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n---\n>     //prophet generated patch\n>     if (!1)\n>         ret = cgc_receive(fd, &c, sizeof(char), &numRead);\n",
+        " \n57c58,61\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n",
+        " \n60,65c61,65\n<     if (ret != 0)\n<     {\n<       //according to the documentation we can have 4 errors, EBADF (which is what we are looking for)\n<       // EINVAL, EFAULT should not be possible since they have to do with incorrect parameters\n<       // and ENOMEM which is possible. At any rate, if this happens, we will just return errno\n<       return (-ret);\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if (ret != 0) {\n>         return (-ret);\n",
+        " \n30c31,35\n<   temp = 0x7FFFFFFF; //32 bit INT_MAX\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   temp = 2147483647;\n>  //32 bit INT_MAX\n",
+        " \n87,89c88,92\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (i >= temp) {\n>         i = temp - 1;\n",
+        " \n33,35c34,38\n<   if (buf == NULL)\n<   {\n<     return (-EINVAL);\n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   if (buf == (0)) {\n>       return (-3);\n",
+        " \n40c41,43\n<   timeToWait.tv_usec = 0;\n---\n>   //prophet generated patch\n>   if (!1)\n>       timeToWait.tv_usec = 0;\n",
+        " \n94a96,98\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n",
+        " \n57c58,61\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n",
+        " \n79,83c80,84\n<     if (numRead != sizeof(char)) \n<     {\n<       //try again\n<       continue;\n<     }\n---\n>     //prophet generated patch\n>     if (!1)\n>         if (numRead != sizeof(char)) {\n>             continue;\n>         }\n",
+        " \n30c31,35\n<   temp = 0x7FFFFFFF; //32 bit INT_MAX\n---\n>   //prophet generated patch\n>   if (1)\n>       return -1;\n>   temp = 2147483647;\n>  //32 bit INT_MAX\n",
+        " \n54c55,57\n<     FD_SET(fd, &fdsToWait);\n---\n>     //prophet generated patch\n>     if (!1)\n>         ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n",
+        " \n74,76c75,79\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n---\n>     //prophet generated patch\n>     if (1)\n>         return -1;\n>     if (numRead == 0) {\n>         return (-6);\n",
+        " \n45c46,50\n<     fdsToWait._fd_bits[i] = 0;  \n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     fdsToWait._fd_bits[i] = 0;\n>   \n",
+        " \n74,76c75,77\n<     if ( numRead == 0 ) //if EOF\n<     {\n<       return (-EPIPE);\n---\n>     //prophet generated patch\n>     if ((numRead == 0) || 1) {\n>         return (-6);\n",
+        " \n87,89c88,90\n<     if (i >= temp)\n<     {\n<       i = temp - 1;\n---\n>     //prophet generated patch\n>     if ((i >= temp) || 1) {\n>         i = temp - 1;\n",
+        " \n57c58,60\n<     ret = cgc_fdwait(1, &fdsToWait, NULL, &timeToWait, NULL);\n---\n>     //prophet generated patch\n>     if (!1)\n>         ret = cgc_fdwait(1, &fdsToWait, (0), &timeToWait, (0));\n",
+        " \n54c55,58\n<     FD_SET(fd, &fdsToWait);\n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     ((&fdsToWait)->_fd_bits[fd / (8 * sizeof(_fd_mask))] |= (1 << (fd & ((8 * sizeof(_fd_mask)) - 1))));\n",
+        " \n43,45c44,48\n<   for (i = 0; i < FD_SETSIZE / _NFDBITS; i++)\n<   {\n<     fdsToWait._fd_bits[i] = 0;  \n---\n>   //prophet generated patch\n>   if (1)\n>       return 0;\n>   for (i = 0; i < 1024 / (8 * sizeof(_fd_mask)); i++) {\n>       fdsToWait._fd_bits[i] = 0;\n",
+        " \n69,72c70,74\n<     if ( (ret != 0) )\n<     {\n<       //since receive also returns errno, we can just pass it back\n<       return (-ret); \n---\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n>     if ((ret != 0)) {\n>         return (-ret);\n",
+        " \n67a69,71\n>     //prophet generated patch\n>     if (1)\n>         return 0;\n",
+        " \n86c87,89\n<     i++;\n---\n>     //prophet generated patch\n>     if (!1)\n>         i++;\n",
+        " \n43,46c44,48\n<   for (i = 0; i < FD_SETSIZE / _NFDBITS; i++)\n<   {\n<     fdsToWait._fd_bits[i] = 0;  \n<   }\n---\n>   //prophet generated patch\n>   if (!1)\n>       for (i = 0; i < 1024 / (8 * sizeof(_fd_mask)); i++) {\n>           fdsToWait._fd_bits[i] = 0;\n>       }\n",
+        " \n45c46,49\n<     fdsToWait._fd_bits[i] = 0;  \n---\n>     //prophet generated patch\n>     if (!1)\n>         fdsToWait._fd_bits[i] = 0;\n>   \n"
+      ]
+    }
+  ],
+  "compilations": 87,
+  "failed_compilations": 0,
+  "outcomes": {
+    "sanity_check": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 13
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fault_localization": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 17
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 7
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 21
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 1
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 3
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 10
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 5
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 13
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 10
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 4
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 10
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 8
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 5
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 2
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 5,
+            "duration": 10
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 2
+          }
+        ]
+      }
+    },
+    "b0fd3fb0": {
+      "compiles": [
+        0
+      ]
+    },
+    "dd11343c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "44fd99b9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1d2ae0d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "40ac5be4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "40c8b0d9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "6dd779d5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "1b857eb7": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9a33738d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "65e3e671": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "112bd759": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "92650875": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a0300d15": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0d867a4d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0886c5f4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8b00a2ab": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "4fded143": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "ca4974c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5f690346": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "123ee683": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "018895c1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "9e40dce0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "fcfd3a6b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7d71ecdd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "6cdf56ee": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "6f2748ad": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ec827803": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "09aede72": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5b0f29b2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0dd2206a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "74282fa2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0396f47d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "1e0629c6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "97612152": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "b85986d6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "68ee8007": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "04cce04a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "51ab997a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e16e4011": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "43693a4b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "2d93b1e4": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "28f42cbd": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "ab39f8f9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c72fe770": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3b3a75c2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "76132fd5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "8c336605": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "6e6620cc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ce725617": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "f97e0f85": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8eca9440": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ac2c5f70": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "b0be08a5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "1a4734a0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "29b35e34": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "971fa3a9": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "389eef5e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "80700ac5": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "605e1848": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "55e9bb20": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "4cb23baf": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "56968552": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ef5f1792": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "42e7e311": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "7a2c4f68": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "155e50ea": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "76f0d555": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "56ef6b2a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "5409b23e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "101e22fc": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "73b25cfa": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "80705460": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "654b2175": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7777bbf2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "74b79cb3": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0b61dd93": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "5074c247": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "8fcfcf4f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "ec1a2916": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "90b47e38": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "8f766df2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "0ee42dc0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c4757a69": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    },
+    "b096125c": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {},
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "d88a3b5e": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 16
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 14
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 39
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 2,
+  "pos_tests": 20,
+  "passed_neg_tests": 98,
+  "passed_pos_tests": 40,
+  "failed_neg_tests": 39,
+  "failed_pos_tests": 68,
+  "duration": 3226.38095,
+  "errors": [
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash",
+    "Unexpected crash"
+  ]
+}

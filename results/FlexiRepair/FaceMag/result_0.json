@@ -1,0 +1,1482 @@
+{
+  "repair_begin": "2021-05-08 00:24:42.696810",
+  "repair_end": "2021-05-08 00:47:13.402078",
+  "patches": [
+    {
+      "target_file": "src/auth.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-16728-f94c0d-auth.c\n@@ -211,7 +211,7 @@ char line[1024];\n     }\n \n #ifdef PATCHED_1\n-    real_name[REALNAME_LEN] = 0;\n+    real_name[REALNAME_LEN] = -5;\n #endif\n \n     // initial values for last cgc_read and last written posts\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-10521-06cbb9-auth.c\n@@ -108,7 +108,7 @@ fileHandleType fh;\n fileHandleType fh3;\n int retcode;\n unsigned int count;\n-char line[1024];\n+char line[MAX_URL_SIZE];\n \n \tfh = cgc_openFile(\"Users.db\", ROOT_ID);\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-8712-77e0b3-auth.c\n@@ -71,7 +71,7 @@ unsigned int count;\n \t    if (cgc_strcmp(username, name) != 0) {\n \n \t    \tretcode = cgc_readFileUntil( fh, line, sizeof(line), '\\n', &count, ROOT_ID);\n-\t    \tcontinue;\n+\t    \tgoto NEXT;\n \t    }\n \n \t    retcode = cgc_readFileUntil( fh, pass, sizeof(pass), ':', &count, ROOT_ID);\n@@ -171,7 +171,7 @@ char line[1024];\n         if ( cgc_atoi(tmpbuff) == newID ) {\n \n             ++newID;\n-            continue;\n+            goto NEXT;\n \n         }\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-15882-974914-auth.c\n@@ -211,7 +211,6 @@ char line[1024];\n     }\n \n #ifdef PATCHED_1\n-    real_name[REALNAME_LEN] = 0;\n #endif\n \n     // initial values for last cgc_read and last written posts\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-13225-b6a760-auth.c\n@@ -38,10 +38,10 @@ fileHandleType cgc_securityIDFileHandle;\n \n securityIdType cgc_authenticate(char *name, char *password) {\n \n-char username[25];\n-char pass[25];\n-char line[200];\n-char tmpbuff[100];\n+char username[25] = \"\";\n+char pass[25] = \"\";\n+char line[200] = \"\";\n+char tmpbuff[100] = \"\";\n securityIdType security_ID;\n fileHandleType fh;\n int retcode;\n@@ -98,9 +98,9 @@ unsigned int count;\n \n securityIdType cgc_create_user(char *name, char *password, char *real_name) {\n \n-char username[25];\n-char filename[20];\n-char tmpbuff[25];\n+char username[25] = \"\";\n+char filename[20] = \"\";\n+char tmpbuff[25] = \"\";\n unsigned int newID;\n unsigned int ID1;\n unsigned int ID2;\n@@ -108,7 +108,7 @@ fileHandleType fh;\n fileHandleType fh3;\n int retcode;\n unsigned int count;\n-char line[1024];\n+char line[1024] = \"\";\n \n \tfh = cgc_openFile(\"Users.db\", ROOT_ID);\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-5897-4f9c41-auth.c\n@@ -68,7 +68,7 @@ unsigned int count;\n \t    }\n \t    \n \t    // if the username isn't a match, go to the next entry\n-\t    if (cgc_strcmp(username, name) != 0) {\n+\t    if (cgc_strcmp(username, name) < 0 || cgc_strcmp(username, name) > 0 + strlen(0)) {\n \n \t    \tretcode = cgc_readFileUntil( fh, line, sizeof(line), '\\n', &count, ROOT_ID);\n \t    \tcontinue;\n@@ -76,7 +76,7 @@ unsigned int count;\n \n \t    retcode = cgc_readFileUntil( fh, pass, sizeof(pass), ':', &count, ROOT_ID);\n \n-\t    if ( cgc_strcmp(pass, password) != 0 ) {\n+\t    if (cgc_strcmp(pass, password) < 0 || cgc_strcmp(pass, password) > 0 + strlen(0)) {\n \n \t    \tcgc_closeFile(fh);\n \t    \treturn -1;\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-15704-a49d77-auth.c\n@@ -211,11 +211,11 @@ char line[1024];\n     }\n \n #ifdef PATCHED_1\n-    real_name[REALNAME_LEN] = 0;\n+    real_name[REALNAME_LEN] = -1;\n #endif\n \n     // initial values for last cgc_read and last written posts\n-    count = 0;\n+    count = -1;\n \n     cgc_writeFile( fh3, (char *)&count, sizeof(count), ROOT_ID );\n     cgc_writeFile( fh3, (char *)&count, sizeof(count), ROOT_ID );\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-11674-09ff53-auth.c\n@@ -64,7 +64,7 @@ unsigned int count;\n \t    // if no data was cgc_read we must be at the end of the file or its empty\n \t    if (retcode == 0 ) {\n \n-\t    \tbreak;\n+\t    \tfatalx(\"send_update: unknown af\");\n \t    }\n \t    \n \t    // if the username isn't a match, go to the next entry\n@@ -155,7 +155,7 @@ char line[1024];\n \n \t    // if no data was cgc_read we must be at the end of the file or its empty\n \t    if (retcode == 0 )\n-\t    \tbreak;\n+\t    \tfatalx(\"send_update: unknown af\");\n \n \t    // if the username is a dupe, rewind the securityID by 4 bytes and then return an error\n \t    if (cgc_strcmp(username, name) == 0) {\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-8608-96d0a0-auth.c\n@@ -79,7 +79,7 @@ unsigned int count;\n \t    if ( cgc_strcmp(pass, password) != 0 ) {\n \n \t    \tcgc_closeFile(fh);\n-\t    \treturn -1;\n+\t    \treturn 0;\n \t    }\n \n \t    // must be a match, so return its assigned accountID\n@@ -91,7 +91,7 @@ unsigned int count;\n     } // while (retcode >= 0)\n \n     cgc_closeFile(fh);\n-    return -1;\n+    return 0;\n \n }\n \n@@ -162,7 +162,7 @@ char line[1024];\n \n             cgc_fileReadPosRelative( cgc_securityIDFileHandle, -4 );\n             cgc_closeFile(fh);\n-\t    \treturn -1;\n+\t    \treturn 0;\n \t    }\n \n         retcode = cgc_readFileUntil( fh, line, sizeof(line), ':', &count, ROOT_ID);\n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-13333-bafd48-auth.c\n@@ -44,7 +44,6 @@ char line[200];\n char tmpbuff[100];\n securityIdType security_ID;\n fileHandleType fh;\n-int retcode;\n unsigned int count;\n \n \n@@ -57,7 +56,9 @@ unsigned int count;\n \n     }\n \n-    while ( 1 ) {\n+    quit = 0;\n+    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+    while (1 && !quit) {\n \n \t    retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n \n@@ -106,7 +107,6 @@ unsigned int ID1;\n unsigned int ID2;\n fileHandleType fh;\n fileHandleType fh3;\n-int retcode;\n unsigned int count;\n char line[1024];\n \n@@ -149,7 +149,9 @@ char line[1024];\n     newID = ID1 * ID2;\n     newID &= 0x7fffffff;\n \n-    while ( 1 ) {\n+    quit = 0;\n+    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n+    while (1 && !quit) {\n \n \t    retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-11875-29a6db-auth.c\n@@ -57,7 +57,7 @@ unsigned int count;\n \n     }\n \n-    while ( 1 ) {\n+    for (;;) {\n \n \t    retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n \n@@ -149,7 +149,7 @@ char line[1024];\n     newID = ID1 * ID2;\n     newID &= 0x7fffffff;\n \n-    while ( 1 ) {\n+    for (;;) {\n \n \t    retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-14879-81f013-auth.c\n@@ -44,7 +44,7 @@ char line[200];\n char tmpbuff[100];\n securityIdType security_ID;\n fileHandleType fh;\n-int retcode;\n+const struct options_table_entry *oe;\n unsigned int count;\n \n \n@@ -106,7 +106,7 @@ unsigned int ID1;\n unsigned int ID2;\n fileHandleType fh;\n fileHandleType fh3;\n-int retcode;\n+const struct options_table_entry *oe;\n unsigned int count;\n char line[1024];\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-6744-35a827-auth.c\n@@ -79,19 +79,19 @@ unsigned int count;\n \t    if ( cgc_strcmp(pass, password) != 0 ) {\n \n \t    \tcgc_closeFile(fh);\n-\t    \treturn -1;\n+\t    \treturn (retcode);\n \t    }\n \n \t    // must be a match, so return its assigned accountID\n \t    retcode = cgc_readFileUntil( fh, tmpbuff, sizeof(tmpbuff), '\\n', &count, ROOT_ID);\n \n \t    cgc_closeFile(fh);\n-\t    return(cgc_atoi(tmpbuff));\n+\t    return (retcode);\n \n     } // while (retcode >= 0)\n \n     cgc_closeFile(fh);\n-    return -1;\n+    return (retcode);\n \n }\n \n@@ -162,7 +162,7 @@ char line[1024];\n \n             cgc_fileReadPosRelative( cgc_securityIDFileHandle, -4 );\n             cgc_closeFile(fh);\n-\t    \treturn -1;\n+\t    \treturn (retcode);\n \t    }\n \n         retcode = cgc_readFileUntil( fh, line, sizeof(line), ':', &count, ROOT_ID);\n@@ -227,7 +227,7 @@ char line[1024];\n \n     cgc_closeFile( fh3 );\n \n-    return(newID);\n+    return (retcode);\n \n }\n \n",
+        "--- /tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c\n+++ /tmp/cocci-output-9888-f8e593-auth.c\n@@ -41,7 +41,7 @@ securityIdType cgc_authenticate(char *na\n char username[25];\n char pass[25];\n char line[200];\n-char tmpbuff[100];\n+char tmpbuff[1000];\n securityIdType security_ID;\n fileHandleType fh;\n int retcode;\n"
+      ]
+    }
+  ],
+  "compilations": 9,
+  "failed_compilations": 5,
+  "outcomes": {
+    "64f89f9f": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "212b34e6": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "dfb4deb1": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "cfb32b0d": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "CMakeFiles/FaceMag.dir/src/auth.c.o: In function `cgc_authenticate':\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:67: undefined reference to `fatalx'\nCMakeFiles/FaceMag.dir/src/auth.c.o: In function `cgc_create_user':\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:158: undefined reference to `fatalx'\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\nmake[2]: *** [FaceMag/FaceMag] Error 1\nmake[1]: *** [FaceMag/CMakeFiles/FaceMag.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "e8bc5d54": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "ab9b27a8": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 18
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 20
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 19
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 17
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 24
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 16
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 22
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "fef30784": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:74:12: error: use of undeclared label 'NEXT'\n                goto NEXT;\n                     ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:174:18: error: use of undeclared label 'NEXT'\n            goto NEXT;\n                 ^\n2 errors generated.\nmake[2]: *** [FaceMag/CMakeFiles/FaceMag.dir/src/auth.c.o] Error 1\nmake[1]: *** [FaceMag/CMakeFiles/FaceMag.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f5345a0a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "f2838a04": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:111:11: error: use of undeclared identifier 'MAX_URL_SIZE'\nchar line[MAX_URL_SIZE];\n          ^\n1 error generated.\nmake[2]: *** [FaceMag/CMakeFiles/FaceMag.dir/src/auth.c.o] Error 1\nmake[1]: *** [FaceMag/CMakeFiles/FaceMag.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "f49b3c1d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 5
+          }
+        ]
+      }
+    },
+    "3d149de8": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:62:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:65:10: error: use of undeclared identifier 'retcode'\n            if (retcode == 0 ) {\n                ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:73:7: error: use of undeclared identifier 'retcode'\n                retcode = cgc_readFileUntil( fh, line, sizeof(line), '\\n', &count, ROOT_ID);\n                ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:77:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, pass, sizeof(pass), ':', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:86:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, tmpbuff, sizeof(tmpbuff), '\\n', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:133:5: error: use of undeclared identifier 'retcode'\n    retcode = cgc_readFile( cgc_securityIDFileHandle, (void *)&ID1, sizeof(ID1), 0, 0, ROOT_ID );\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:135:10: error: use of undeclared identifier 'retcode'\n    if ( retcode == ERROR_EOF ) {\n         ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:141:5: error: use of undeclared identifier 'retcode'\n    retcode = cgc_readFile( cgc_securityIDFileHandle, (void *)&ID2, sizeof(ID2), 0, 0, ROOT_ID );\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:143:10: error: use of undeclared identifier 'retcode'\n    if ( retcode == ERROR_EOF ) {\n         ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:154:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:157:10: error: use of undeclared identifier 'retcode'\n            if (retcode == 0 )\n                ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:168:9: error: use of undeclared identifier 'retcode'\n        retcode = cgc_readFileUntil( fh, line, sizeof(line), ':', &count, ROOT_ID);\n        ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:169:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, line, sizeof(line), '\\n', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:183:5: error: use of undeclared identifier 'retcode'\n    retcode = cgc_writeFile(fh, line, cgc_strlen(line), ROOT_ID );\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:185:9: error: use of undeclared identifier 'retcode'\n    if (retcode < 0 ) {\n        ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:196:2: error: use of undeclared identifier 'retcode'\n        retcode = cgc_createFile(filename, REGULAR, ROOT_ID);\n        ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:198:10: error: use of undeclared identifier 'retcode'\n    if ( retcode < 0 ) {\n         ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:200:28: error: use of undeclared identifier 'retcode'\n        cgc_printf(\"$d\\n\", retcode);\n                           ^\n18 errors generated.\nmake[2]: *** [FaceMag/CMakeFiles/FaceMag.dir/src/auth.c.o] Error 1\nmake[1]: *** [FaceMag/CMakeFiles/FaceMag.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "62a1ab23": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 1
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 1,
+            "duration": 60
+          }
+        ]
+      }
+    },
+    "dfc90087": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 9
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 1
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 4
+          }
+        ]
+      }
+    },
+    "76e3e4b7": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:59:5: error: use of undeclared identifier 'quit'\n    quit = 0;\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:60:21: error: use of undeclared identifier 'db_simple_pager'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:60:39: error: use of undeclared identifier 'quit'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                      ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:60:45: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:61:18: error: use of undeclared identifier 'quit'\n    while (1 && !quit) {\n                 ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:63:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, username, sizeof(username), ':', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:66:10: error: use of undeclared identifier 'retcode'\n            if (retcode == 0 ) {\n                ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:74:7: error: use of undeclared identifier 'retcode'\n                retcode = cgc_readFileUntil( fh, line, sizeof(line), '\\n', &count, ROOT_ID);\n                ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:78:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, pass, sizeof(pass), ':', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:87:6: error: use of undeclared identifier 'retcode'\n            retcode = cgc_readFileUntil( fh, tmpbuff, sizeof(tmpbuff), '\\n', &count, ROOT_ID);\n            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:133:5: error: use of undeclared identifier 'retcode'\n    retcode = cgc_readFile( cgc_securityIDFileHandle, (void *)&ID1, sizeof(ID1), 0, 0, ROOT_ID );\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:135:10: error: use of undeclared identifier 'retcode'\n    if ( retcode == ERROR_EOF ) {\n         ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:141:5: error: use of undeclared identifier 'retcode'\n    retcode = cgc_readFile( cgc_securityIDFileHandle, (void *)&ID2, sizeof(ID2), 0, 0, ROOT_ID );\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:143:10: error: use of undeclared identifier 'retcode'\n    if ( retcode == ERROR_EOF ) {\n         ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:152:5: error: use of undeclared identifier 'quit'\n    quit = 0;\n    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:153:21: error: use of undeclared identifier 'db_simple_pager'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                    ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:153:39: error: use of undeclared identifier 'quit'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                      ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:153:45: error: use of undeclared identifier 'DB_LINES_PER_PAGE'\n    db_setup_paging(db_simple_pager, &quit, DB_LINES_PER_PAGE);\n                                            ^\n/tmp/FlexiRepair/FaceMag_0/FaceMag/src/auth.c:154:18: error: use of undeclared identifier 'quit'\n    while (1 && !quit) {\n                 ^\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\n20 errors generated.\nmake[2]: *** [FaceMag/CMakeFiles/FaceMag.dir/src/auth.c.o] Error 1\nmake[1]: *** [FaceMag/CMakeFiles/FaceMag.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 113,
+  "failed_neg_tests": 9,
+  "failed_pos_tests": 67,
+  "duration": 1350.705268,
+  "errors": []
+}

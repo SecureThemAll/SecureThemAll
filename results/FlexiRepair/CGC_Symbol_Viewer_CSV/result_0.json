@@ -1,0 +1,594 @@
+{
+  "repair_begin": "2021-05-07 18:47:37.628629",
+  "repair_end": "2021-05-07 18:56:04.232048",
+  "patches": [
+    {
+      "target_file": "src/cgcf.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-22351-1755d6-cgcf.c\n@@ -103,7 +103,7 @@ int cgc_cgcf_parse_file_header(const cha\n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n \n-  return 0;\n+  no_draw = 1;\n }\n \n int cgc_cgcf_parse_section_header(const char *buf, cgc_size_t buf_len, short idx, cgcf_Shdr *shdr)\n@@ -126,7 +126,7 @@ int cgc_cgcf_parse_section_header(const\n #endif\n   {\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n-    return 0;\n+    no_draw = 1;\n   }\n   return -1;\n }\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-30384-2e3254-cgcf.c\n@@ -113,7 +113,7 @@ int cgc_cgcf_parse_section_header(const\n     return -1;\n \n   short shnum = 0;\n-  cgc_size_t sz = sizeof(cgcf_Shdr) - sizeof(char *);\n+  cgc_size_t sz = sizeof(cgcf_Shdr);\n   cgcf_Ehdr ehdr;\n   cgc_cgcf_parse_file_header(buf, buf_len, &ehdr);\n   if (ehdr.e_shoff + ehdr.e_shentsize * idx + sz > buf_len)\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-26029-43976a-cgcf.c\n@@ -94,11 +94,11 @@ int cgc_cgcf_parse_file_header(const cha\n {\n   /* Check if the pointers are NULL */\n   if (buf == NULL || hdr == NULL)\n-    return -1;\n+    return 0;\n \n   /* Check if the buffer is large enough */\n   if (buf_len < sizeof(cgcf_Ehdr))\n-    return -1;\n+    return 0;\n \n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n@@ -110,14 +110,14 @@ int cgc_cgcf_parse_section_header(const\n {\n   /* Check if the pointers are NULL */\n   if (buf == NULL || shdr == NULL)\n-    return -1;\n+    return 0;\n \n   short shnum = 0;\n   cgc_size_t sz = sizeof(cgcf_Shdr) - sizeof(char *);\n   cgcf_Ehdr ehdr;\n   cgc_cgcf_parse_file_header(buf, buf_len, &ehdr);\n   if (ehdr.e_shoff + ehdr.e_shentsize * idx + sz > buf_len)\n-    return -1;\n+    return 0;\n   shnum = ehdr.e_shnum;\n #if PATCHED\n   if (idx < shnum && idx >= 0 && !(ehdr.e_shoff > buf_len || ehdr.e_shentsize * idx > buf_len))\n@@ -128,5 +128,5 @@ int cgc_cgcf_parse_section_header(const\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n     return 0;\n   }\n-  return -1;\n+  return 0;\n }\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-22078-67a125-cgcf.c\n@@ -103,7 +103,7 @@ int cgc_cgcf_parse_file_header(const cha\n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n \n-  return 0;\n+  return (BUS_PROBE_NOWILDCARD);\n }\n \n int cgc_cgcf_parse_section_header(const char *buf, cgc_size_t buf_len, short idx, cgcf_Shdr *shdr)\n@@ -126,7 +126,7 @@ int cgc_cgcf_parse_section_header(const\n #endif\n   {\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n-    return 0;\n+    return (BUS_PROBE_NOWILDCARD);\n   }\n   return -1;\n }\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-23644-dd0cb4-cgcf.c\n@@ -103,7 +103,7 @@ int cgc_cgcf_parse_file_header(const cha\n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n \n-  return 0;\n+  return -1;\n }\n \n int cgc_cgcf_parse_section_header(const char *buf, cgc_size_t buf_len, short idx, cgcf_Shdr *shdr)\n@@ -126,7 +126,7 @@ int cgc_cgcf_parse_section_header(const\n #endif\n   {\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n-    return 0;\n+    return -1;\n   }\n   return -1;\n }\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-26532-e732d0-cgcf.c\n@@ -103,7 +103,8 @@ int cgc_cgcf_parse_file_header(const cha\n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n \n-  return 0;\n+  restorescr(old);\n+  return ret;\n }\n \n int cgc_cgcf_parse_section_header(const char *buf, cgc_size_t buf_len, short idx, cgcf_Shdr *shdr)\n@@ -126,7 +127,8 @@ int cgc_cgcf_parse_section_header(const\n #endif\n   {\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n-    return 0;\n+    restorescr(old);\n+    return ret;\n   }\n   return -1;\n }\n",
+        "--- /tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c\n+++ /tmp/cocci-output-30078-9b567d-cgcf.c\n@@ -103,7 +103,7 @@ int cgc_cgcf_parse_file_header(const cha\n   /* Copy over the file header */\n   cgc_memmove(hdr, buf, sizeof(cgcf_Ehdr));\n \n-  return 0;\n+  return ZEND_HASH_APPLY_KEEP;\n }\n \n int cgc_cgcf_parse_section_header(const char *buf, cgc_size_t buf_len, short idx, cgcf_Shdr *shdr)\n@@ -126,7 +126,7 @@ int cgc_cgcf_parse_section_header(const\n #endif\n   {\n     cgc_memmove(shdr, buf + ehdr.e_shoff + ehdr.e_shentsize * idx, sz);\n-    return 0;\n+    return ZEND_HASH_APPLY_KEEP;\n   }\n   return -1;\n }\n"
+      ]
+    }
+  ],
+  "compilations": 3,
+  "failed_compilations": 4,
+  "outcomes": {
+    "2fb59e41": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "e2f07b80": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:106:11: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n  return (BUS_PROBE_NOWILDCARD);\n          ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:129:13: error: use of undeclared identifier 'BUS_PROBE_NOWILDCARD'\n    return (BUS_PROBE_NOWILDCARD);\n            ^\n2 errors generated.\nmake[2]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/src/cgcf.c.o] Error 1\nmake[1]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "2cb20a84": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:106:14: error: use of undeclared identifier 'old'\n  restorescr(old);\n             ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:107:10: error: use of undeclared identifier 'ret'\n  return ret;\n         ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:130:16: error: use of undeclared identifier 'old'\n    restorescr(old);\n               ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:131:12: error: use of undeclared identifier 'ret'\n    return ret;\n           ^\n4 errors generated.\nmake[2]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/src/cgcf.c.o] Error 1\nmake[1]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ad851bfd": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:106:10: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n  return ZEND_HASH_APPLY_KEEP;\n         ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:129:12: error: use of undeclared identifier 'ZEND_HASH_APPLY_KEEP'\n    return ZEND_HASH_APPLY_KEEP;\n           ^\n2 errors generated.\nmake[2]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/src/cgcf.c.o] Error 1\nmake[1]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "253c3c98": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:106:3: error: use of undeclared identifier 'no_draw'\n  no_draw = 1;\n  ^\n/tmp/FlexiRepair/CGC_Symbol_Viewer_CSV_0/CGC_Symbol_Viewer_CSV/src/cgcf.c:129:5: error: use of undeclared identifier 'no_draw'\n    no_draw = 1;\n    ^\n2 errors generated.\nmake[2]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/src/cgcf.c.o] Error 1\nmake[1]: *** [CGC_Symbol_Viewer_CSV/CMakeFiles/CGC_Symbol_Viewer_CSV_patched.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "5110e3b0": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 0,
+            "code": 6,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 0,
+            "code": 3,
+            "duration": 15
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "70480d77": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n2": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n3": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ],
+        "n4": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 4,
+  "pos_tests": 20,
+  "passed_neg_tests": 4,
+  "passed_pos_tests": 40,
+  "failed_neg_tests": 8,
+  "failed_pos_tests": 20,
+  "duration": 506.603419,
+  "errors": []
+}

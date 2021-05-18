@@ -1,0 +1,1168 @@
+{
+  "repair_begin": "2021-05-08 04:04:44.536293",
+  "repair_end": "2021-05-08 04:22:40.751678",
+  "patches": [
+    {
+      "target_file": "src/admin.i",
+      "fix": "",
+      "edits": [
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-12095-2307c4-admin.c\n@@ -106,7 +106,6 @@ void cgc_SendBroadcastMessage(void) {\n \t\t// store the message\n \t\tj = cgc_USERS[i].top_message+1;\n \t\tcgc_strcopy(cgc_USERS[i].messages[j], message);\n-\t\tcgc_USERS[i].msg_read[j] = 0;\n \t\tcgc_USERS[i].top_message = j;\n \n \t}\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-3058-0cd312-admin.c\n@@ -92,7 +92,7 @@ void cgc_SendBroadcastMessage(void) {\n \n \t// for all valid users\n \tfor (i = 0; i < cgc_NUM_USERS; i++) {\n-\t\tif (cgc_USERS[i].name[0] == '\\0') {\n+\t\tif (cgc_USERS[i].name[0] == '\\0' || cgc_USERS[i].name[0] == '/') {\n \t\t\tcontinue;\n \t\t}\n \n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-6233-0467f0-admin.c\n@@ -42,7 +42,7 @@ void cgc_PrintAdminMenu(void) {\n         cgc_print(\"3) Exit\\n\");\n         cgc_print(\": \");\n \n-\treturn;\n+\tgoto done;\n }\n \n void cgc_AdminLogin(void) {\n@@ -57,13 +57,13 @@ void cgc_AdminLogin(void) {\n \tif (cgc_strmatch(ADMIN_PASSWD, buf)) {\n \t\tcgc_ADMIN_ACCESS = 1;\n \t\tcgc_print(\"[-] Admin access granted\\n\");\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \tcgc_print(\"[-] Admin access denied\\n\");\n \tcgc_ADMIN_ACCESS = 0;\n \n-\treturn;\n+\tgoto done;\n }\n \n // send a message to all users\n@@ -87,7 +87,7 @@ void cgc_SendBroadcastMessage(void) {\n \t\tcgc__terminate(-1);\n \t}\n \tif (cgc_strlen(message) == 0) {\n-\t\treturn;\n+\t\tgoto done;\n \t}\n \n \t// for all valid users\n@@ -111,5 +111,5 @@ void cgc_SendBroadcastMessage(void) {\n \n \t}\n \n-\treturn;\n+\tgoto done;\n }\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-10737-f10ecc-admin.c\n@@ -91,7 +91,7 @@ void cgc_SendBroadcastMessage(void) {\n \t}\n \n \t// for all valid users\n-\tfor (i = 0; i < cgc_NUM_USERS; i++) {\n+\tfor (i = 0; i < devcnt; i++) {\n \t\tif (cgc_USERS[i].name[0] == '\\0') {\n \t\t\tcontinue;\n \t\t}\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-7015-37ce63-admin.c\n@@ -42,7 +42,7 @@ void cgc_PrintAdminMenu(void) {\n         cgc_print(\"3) Exit\\n\");\n         cgc_print(\": \");\n \n-\treturn;\n+\treturn 0;\n }\n \n void cgc_AdminLogin(void) {\n@@ -57,13 +57,13 @@ void cgc_AdminLogin(void) {\n \tif (cgc_strmatch(ADMIN_PASSWD, buf)) {\n \t\tcgc_ADMIN_ACCESS = 1;\n \t\tcgc_print(\"[-] Admin access granted\\n\");\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \tcgc_print(\"[-] Admin access denied\\n\");\n \tcgc_ADMIN_ACCESS = 0;\n \n-\treturn;\n+\treturn 0;\n }\n \n // send a message to all users\n@@ -87,7 +87,7 @@ void cgc_SendBroadcastMessage(void) {\n \t\tcgc__terminate(-1);\n \t}\n \tif (cgc_strlen(message) == 0) {\n-\t\treturn;\n+\t\treturn 0;\n \t}\n \n \t// for all valid users\n@@ -111,5 +111,5 @@ void cgc_SendBroadcastMessage(void) {\n \n \t}\n \n-\treturn;\n+\treturn 0;\n }\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-11927-4c8da8-admin.c\n@@ -61,7 +61,7 @@ void cgc_AdminLogin(void) {\n \t}\n \n \tcgc_print(\"[-] Admin access denied\\n\");\n-\tcgc_ADMIN_ACCESS = 0;\n+\tcgc_ADMIN_ACCESS = -1;\n \n \treturn;\n }\n@@ -106,7 +106,7 @@ void cgc_SendBroadcastMessage(void) {\n \t\t// store the message\n \t\tj = cgc_USERS[i].top_message+1;\n \t\tcgc_strcopy(cgc_USERS[i].messages[j], message);\n-\t\tcgc_USERS[i].msg_read[j] = 0;\n+\t\tcgc_USERS[i].msg_read[j] = -1;\n \t\tcgc_USERS[i].top_message = j;\n \n \t}\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-6335-ff79a7-admin.c\n@@ -46,7 +46,7 @@ void cgc_PrintAdminMenu(void) {\n }\n \n void cgc_AdminLogin(void) {\n-\tchar buf[100];\n+\tchar buf[1000];\n \n \tcgc_zero(buf, 100);\n \tcgc_print(\"Admin Password: \");\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-11126-251fc1-admin.c\n@@ -27,13 +27,13 @@ THE SOFTWARE.\n #include \"cgc_service.h\"\n #include \"cgc_jlib.h\"\n \n-extern int cgc_CURRENT_USER;\n+extern const struct options_table_entry *oe;\n //extern users_t cgc_USERS[MAX_USERS];\n extern users_t *cgc_USERS;\n-extern int cgc_NUM_USERS;\n+extern const struct options_table_entry *oe;\n \n char ADMIN_PASSWD[] = \"GIMMIE\";\n-int cgc_ADMIN_ACCESS;\n+const struct options_table_entry *oe;\n \n void cgc_PrintAdminMenu(void) {\n \n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-12819-324bc2-admin.c\n@@ -91,7 +91,7 @@ void cgc_SendBroadcastMessage(void) {\n \t}\n \n \t// for all valid users\n-\tfor (i = 0; i < cgc_NUM_USERS; i++) {\n+\tfor (i = 1; i <= cgc_NUM_USERS; i++) {\n \t\tif (cgc_USERS[i].name[0] == '\\0') {\n \t\t\tcontinue;\n \t\t}\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-5212-fc7749-admin.c\n@@ -93,14 +93,14 @@ void cgc_SendBroadcastMessage(void) {\n \t// for all valid users\n \tfor (i = 0; i < cgc_NUM_USERS; i++) {\n \t\tif (cgc_USERS[i].name[0] == '\\0') {\n-\t\t\tcontinue;\n+\t\t\tgoto NEXT;\n \t\t}\n \n \t\tif (cgc_USERS[i].top_message == MAX_MESSAGES) {\n \t\t\tcgc_print(\"[*] Unable to send message to \");\n \t\t\tcgc_print(cgc_USERS[i].name);\n \t\t\tcgc_print(\". Their mailbox is full.\\n\");\n-\t\t\tcontinue;\n+\t\t\tgoto NEXT;\n \t\t}\n \n \t\t// store the message\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-9529-f9b142-admin.c\n@@ -46,7 +46,7 @@ void cgc_PrintAdminMenu(void) {\n }\n \n void cgc_AdminLogin(void) {\n-\tchar buf[100];\n+\tchar buf[100] = \"\";\n \n \tcgc_zero(buf, 100);\n \tcgc_print(\"Admin Password: \");\n@@ -70,7 +70,7 @@ void cgc_AdminLogin(void) {\n void cgc_SendBroadcastMessage(void) {\n \tint i, j;\n #ifdef PATCHED\n-\tchar message[MAX_MESSAGE_LEN];\n+\tchar message[MAX_MESSAGE_LEN] = \"\";\n \n \t// cgc_read in the Message:\n \tcgc_zero(message, MAX_MESSAGE_LEN);\n",
+        "--- /tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c\n+++ /tmp/cocci-output-12927-c964f3-admin.c\n@@ -106,7 +106,7 @@ void cgc_SendBroadcastMessage(void) {\n \t\t// store the message\n \t\tj = cgc_USERS[i].top_message+1;\n \t\tcgc_strcopy(cgc_USERS[i].messages[j], message);\n-\t\tcgc_USERS[i].msg_read[j] = 0;\n+\t\tcgc_USERS[i].msg_read[j] = -5;\n \t\tcgc_USERS[i].top_message = j;\n \n \t}\n"
+      ]
+    }
+  ],
+  "compilations": 7,
+  "failed_compilations": 5,
+  "outcomes": {
+    "e1a7132a": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "3224f98b": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "ab13dc38": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "c44ac524": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 8
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "7182ffb2": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "a09f53ee": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:96:9: error: use of undeclared label 'NEXT'\n                        goto NEXT;\n                             ^\n1 error generated.\nmake[2]: *** [Message_Service/CMakeFiles/Message_Service.dir/src/admin.c.o] Error 1\nmake[1]: *** [Message_Service/CMakeFiles/Message_Service.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "ffcfd04e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:45:7: error: use of undeclared label 'done'\n        goto done;\n             ^\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:60:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:90:8: error: use of undeclared label 'done'\n                goto done;\n                     ^\n3 errors generated.\nmake[2]: *** [Message_Service/CMakeFiles/Message_Service.dir/src/admin.c.o] Error 1\nmake[1]: *** [Message_Service/CMakeFiles/Message_Service.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3098938d": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 10
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 13
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 12
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    },
+    "488545a5": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:45:2: error: void function 'cgc_PrintAdminMenu' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:60:3: error: void function 'cgc_AdminLogin' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:66:2: error: void function 'cgc_AdminLogin' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:90:3: error: void function 'cgc_SendBroadcastMessage' should not return a value [-Wreturn-type]\n                return 0;\n                ^      ~\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:114:2: error: void function 'cgc_SendBroadcastMessage' should not return a value [-Wreturn-type]\n        return 0;\n        ^      ~\n5 errors generated.\nmake[2]: *** [Message_Service/CMakeFiles/Message_Service.dir/src/admin.c.o] Error 1\nmake[1]: *** [Message_Service/CMakeFiles/Message_Service.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "3cabf8ab": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:94:18: error: use of undeclared identifier 'devcnt'\n        for (i = 0; i < devcnt; i++) {\n                        ^\n1 error generated.\nmake[2]: *** [Message_Service/CMakeFiles/Message_Service.dir/src/admin.c.o] Error 1\nmake[1]: *** [Message_Service/CMakeFiles/Message_Service.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "9ff6e73e": {
+      "compiles": [
+        1
+      ],
+      "msg": [
+        "/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:58:3: error: use of undeclared identifier 'cgc_ADMIN_ACCESS'\n                cgc_ADMIN_ACCESS = 1;\n                ^\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:64:2: error: use of undeclared identifier 'cgc_ADMIN_ACCESS'\n        cgc_ADMIN_ACCESS = 0;\n        ^\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:94:18: error: use of undeclared identifier 'cgc_NUM_USERS'; did you mean 'cgc_USERS'?\n        for (i = 0; i < cgc_NUM_USERS; i++) {\n                        ^~~~~~~~~~~~~\n                        cgc_USERS\n/tmp/FlexiRepair/Message_Service_0/Message_Service/src/admin.c:32:17: note: 'cgc_USERS' declared here\nextern users_t *cgc_USERS;\n                ^\n3 errors generated.\nmake[2]: *** [Message_Service/CMakeFiles/Message_Service.dir/src/admin.c.o] Error 1\nmake[1]: *** [Message_Service/CMakeFiles/Message_Service.dir/all] Error 2\nmake: *** [all] Error 2\n"
+      ]
+    },
+    "8df264ca": {
+      "compiles": [
+        0
+      ],
+      "pos_tests": {
+        "p1": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p2": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p3": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p4": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p5": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p6": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p7": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p8": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p9": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 11
+          }
+        ],
+        "p10": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p11": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p12": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ],
+        "p13": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 6
+          }
+        ],
+        "p14": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p15": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 7
+          }
+        ],
+        "p16": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p17": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 2
+          }
+        ],
+        "p18": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 4
+          }
+        ],
+        "p19": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 5
+          }
+        ],
+        "p20": [
+          {
+            "outcome": 1,
+            "code": 0,
+            "duration": 3
+          }
+        ]
+      },
+      "neg_tests": {
+        "n1": [
+          {
+            "outcome": 0,
+            "code": 0,
+            "duration": 0
+          }
+        ]
+      }
+    }
+  },
+  "neg_tests": 1,
+  "pos_tests": 20,
+  "passed_neg_tests": 0,
+  "passed_pos_tests": 140,
+  "failed_neg_tests": 7,
+  "failed_pos_tests": 0,
+  "duration": 1076.215385,
+  "errors": []
+}
