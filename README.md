@@ -23,7 +23,7 @@ The following tools' abstraction are implemented and supported by the framework:
 | 4   | [SPR](http://www.cs.toronto.edu/~fanl/program_repair/spr-rep/index.html)         |     -     |
 | 5   | [Kali](http://www.cs.toronto.edu/~fanl/program_repair/prophet-rep/index.html)    |     -     |
 | 6   | [MUT-APR](https://fyassiri.wixsite.com/mutapr)                                   |     -     |
-| 7   | CquenceR                                                                         | 2472e98   |
+| 7   | [CquenceR](https://github.com/SecureThemAll/CquenceR)                            | 2472e98   |
 | 8   | [FlexiRepair](https://github.com/SecureThemAll/FlexiRepair)                            | 2563c55   |
 | 9   | [SOSRepair](https://github.com/SecureThemAll/SOSRepair)                                | ae6550e   |
 | 10  | [SearchRepair](https://github.com/SecureThemAll/SOSRepairr)                            | ae6550e   |
